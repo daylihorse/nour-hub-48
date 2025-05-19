@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
-  Horse, 
+  Rabbit, // Changed from Horse to Rabbit 
   FlaskRound, 
   Hospital, 
   DollarSign, 
@@ -15,7 +15,7 @@ import {
 import { Link } from "react-router-dom";
 
 const departmentCards = [
-  { title: "Horses Department", path: "/dashboard/horses", icon: Horse, color: "bg-blue-100" },
+  { title: "Horses Department", path: "/dashboard/horses", icon: Rabbit, color: "bg-blue-100" },
   { title: "Laboratory", path: "/dashboard/laboratory", icon: FlaskRound, color: "bg-purple-100" },
   { title: "Clinic", path: "/dashboard/clinic", icon: Hospital, color: "bg-green-100" },
   { title: "Finance", path: "/dashboard/finance", icon: DollarSign, color: "bg-yellow-100" },
