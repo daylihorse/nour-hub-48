@@ -30,6 +30,13 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
+// Import Collapsible components for creating the expandable group
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+
 const departments = [
   { title: "Horses Department", path: "/dashboard/horses", icon: Rabbit }, // Changed from Horse to Rabbit
   { title: "Laboratory", path: "/dashboard/laboratory", icon: FlaskRound },
@@ -81,8 +88,7 @@ const DashboardSidebar = () => {
       </SidebarHeader>
 
       <SidebarContent>
-        {/* Fixed: Removed defaultOpen and added open prop instead */}
-        <SidebarGroup open={isExpanded}>
+        <SidebarGroup>
           <SidebarGroupLabel>Departments</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
