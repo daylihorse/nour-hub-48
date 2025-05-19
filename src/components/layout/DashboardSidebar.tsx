@@ -81,8 +81,8 @@ const DashboardSidebar = () => {
       </SidebarHeader>
 
       <SidebarContent>
-        {/* Fix the defaultOpen issue by using proper option */}
-        <SidebarGroup defaultOpen={isExpanded}>
+        {/* Fixed: Removed defaultOpen and added open prop instead */}
+        <SidebarGroup open={isExpanded}>
           <SidebarGroupLabel>Departments</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
