@@ -1,10 +1,23 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import DashboardLayout from "./components/layout/DashboardLayout";
+import Dashboard from "./pages/dashboard/Dashboard";
+import HorsesDepartment from "./pages/dashboard/HorsesDepartment";
+import LaboratoryDepartment from "./pages/dashboard/LaboratoryDepartment";
+import ClinicDepartment from "./pages/dashboard/ClinicDepartment";
+import FinanceDepartment from "./pages/dashboard/FinanceDepartment";
+import HRDepartment from "./pages/dashboard/HRDepartment";
+import InventoryManagement from "./pages/dashboard/InventoryManagement";
+import HorseMovements from "./pages/dashboard/HorseMovements";
+import TrainingCenter from "./pages/dashboard/TrainingCenter";
+import StableRooms from "./pages/dashboard/StableRooms";
+import MaintenanceDepartment from "./pages/dashboard/MaintainenceDepartment";
 
 const queryClient = new QueryClient();
 
@@ -15,8 +28,20 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="horses" element={<HorsesDepartment />} />
+            <Route path="laboratory" element={<LaboratoryDepartment />} />
+            <Route path="clinic" element={<ClinicDepartment />} />
+            <Route path="finance" element={<FinanceDepartment />} />
+            <Route path="hr" element={<HRDepartment />} />
+            <Route path="inventory" element={<InventoryManagement />} />
+            <Route path="movements" element={<HorseMovements />} />
+            <Route path="training" element={<TrainingCenter />} />
+            <Route path="rooms" element={<StableRooms />} />
+            <Route path="maintenance" element={<MaintenanceDepartment />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
