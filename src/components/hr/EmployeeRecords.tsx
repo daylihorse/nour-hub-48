@@ -1,98 +1,91 @@
 
 import { useState } from "react";
-import { format } from "date-fns";
-import { User, Search, UserCog } from "lucide-react";
 import { Employee } from "@/types/employee";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal, Search } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface EmployeeRecordsProps {
   employees: Employee[];
 }
 
 const EmployeeRecords = ({ employees }: EmployeeRecordsProps) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive" | "on-leave">("all");
 
   const filteredEmployees = employees.filter((employee) => {
-    const fullName = `${employee.firstName} ${employee.lastName}`.toLowerCase();
-    const searchLower = searchTerm.toLowerCase();
-    
-    return (
-      fullName.includes(searchLower) ||
-      employee.email.toLowerCase().includes(searchLower) ||
-      employee.department.toLowerCase().includes(searchLower) ||
-      employee.position.toLowerCase().includes(searchLower)
-    );
+    // First filter by search term
+    const matchesSearch =
+      employee.firstName.toLowerCase().includes(search.toLowerCase()) ||
+      employee.lastName.toLowerCase().includes(search.toLowerCase()) ||
+      employee.email.toLowerCase().includes(search.toLowerCase()) ||
+      employee.position.toLowerCase().includes(search.toLowerCase());
+
+    // Then filter by status if not "all"
+    const matchesStatus = statusFilter === "all" || employee.status === statusFilter;
+
+    return matchesSearch && matchesStatus;
   });
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "bg-green-100 text-green-800";
-      case "inactive":
-        return "bg-red-100 text-red-800";
-      case "on-leave":
-        return "bg-yellow-100 text-yellow-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
+  // Fix for the TypeScript error: convert department array to string before using toLowerCase
+  const getDepartmentString = (departments: string[]): string => {
+    return departments.join(", ");
   };
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-2">
-        <div className="relative flex-grow">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search employees..."
             className="pl-8"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <Button variant="outline">
-          Export
-        </Button>
+        <Select
+          value={statusFilter}
+          onValueChange={(value: "all" | "active" | "inactive" | "on-leave") => setStatusFilter(value)}
+        >
+          <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectValue placeholder="Filter by status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Statuses</SelectItem>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="inactive">Inactive</SelectItem>
+            <SelectItem value="on-leave">On Leave</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {employees.length === 0 ? (
-        <Card className="border-dashed">
-          <CardContent className="pt-6 text-center">
-            <User className="mx-auto h-8 w-8 text-muted-foreground" />
-            <p className="mt-2 text-sm text-muted-foreground">
-              No employee records found. Add your first employee to get started.
-            </p>
-          </CardContent>
-        </Card>
+        <div className="text-center py-10">
+          <p className="text-muted-foreground">No employees found. Add your first employee.</p>
+        </div>
+      ) : filteredEmployees.length === 0 ? (
+        <div className="text-center py-10">
+          <p className="text-muted-foreground">No employees match your search.</p>
+        </div>
       ) : (
-        <div className="rounded-md border">
+        <div className="border rounded-md">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Position</TableHead>
-                <TableHead>Department</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Hire Date</TableHead>
+                <TableHead className="hidden md:table-cell">Position</TableHead>
+                <TableHead className="hidden md:table-cell">Department</TableHead>
+                <TableHead className="hidden md:table-cell">Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -100,79 +93,50 @@ const EmployeeRecords = ({ employees }: EmployeeRecordsProps) => {
               {filteredEmployees.map((employee) => (
                 <TableRow key={employee.id}>
                   <TableCell>
-                    <div className="font-medium">{`${employee.firstName} ${employee.lastName}`}</div>
-                    <div className="text-sm text-muted-foreground">{employee.email}</div>
+                    <div>
+                      <div className="font-medium">
+                        {employee.firstName} {employee.lastName}
+                      </div>
+                      <div className="text-sm text-muted-foreground">{employee.email}</div>
+                    </div>
                   </TableCell>
-                  <TableCell>{employee.position}</TableCell>
-                  <TableCell>{employee.department}</TableCell>
-                  <TableCell>
-                    <Badge variant="secondary" className={getStatusColor(employee.status)}>
-                      {employee.status === "active" ? "Active" :
-                       employee.status === "inactive" ? "Inactive" : "On Leave"}
+                  <TableCell className="hidden md:table-cell">{employee.position}</TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    <div className="flex flex-wrap gap-1">
+                      {employee.department.map((dept) => (
+                        <Badge key={dept} variant="outline">
+                          {dept}
+                        </Badge>
+                      ))}
+                    </div>
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    <Badge
+                      variant={
+                        employee.status === "active"
+                          ? "success"
+                          : employee.status === "inactive"
+                          ? "destructive"
+                          : "warning"
+                      }
+                    >
+                      {employee.status}
                     </Badge>
                   </TableCell>
-                  <TableCell>{format(new Date(employee.hireDate), "MMM d, yyyy")}</TableCell>
                   <TableCell className="text-right">
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => setSelectedEmployee(employee)}
-                        >
-                          <UserCog className="h-4 w-4" />
-                          <span className="sr-only">View details</span>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
                         </Button>
-                      </DialogTrigger>
-                      <DialogContent className="sm:max-w-md">
-                        <DialogHeader>
-                          <DialogTitle>Employee Details</DialogTitle>
-                        </DialogHeader>
-                        {selectedEmployee && (
-                          <div className="space-y-4">
-                            <div className="grid grid-cols-2 gap-2">
-                              <div className="space-y-1">
-                                <p className="text-sm font-medium leading-none">Full Name</p>
-                                <p className="text-sm text-muted-foreground">
-                                  {`${selectedEmployee.firstName} ${selectedEmployee.lastName}`}
-                                </p>
-                              </div>
-                              <div className="space-y-1">
-                                <p className="text-sm font-medium leading-none">Position</p>
-                                <p className="text-sm text-muted-foreground">{selectedEmployee.position}</p>
-                              </div>
-                              <div className="space-y-1">
-                                <p className="text-sm font-medium leading-none">Email</p>
-                                <p className="text-sm text-muted-foreground">{selectedEmployee.email}</p>
-                              </div>
-                              <div className="space-y-1">
-                                <p className="text-sm font-medium leading-none">Phone</p>
-                                <p className="text-sm text-muted-foreground">{selectedEmployee.phone}</p>
-                              </div>
-                              <div className="space-y-1">
-                                <p className="text-sm font-medium leading-none">Department</p>
-                                <p className="text-sm text-muted-foreground">{selectedEmployee.department}</p>
-                              </div>
-                              <div className="space-y-1">
-                                <p className="text-sm font-medium leading-none">Hire Date</p>
-                                <p className="text-sm text-muted-foreground">
-                                  {format(new Date(selectedEmployee.hireDate), "MMM d, yyyy")}
-                                </p>
-                              </div>
-                              <div className="space-y-1">
-                                <p className="text-sm font-medium leading-none">Status</p>
-                                <p className="text-sm">
-                                  <Badge variant="secondary" className={getStatusColor(selectedEmployee.status)}>
-                                    {selectedEmployee.status === "active" ? "Active" :
-                                     selectedEmployee.status === "inactive" ? "Inactive" : "On Leave"}
-                                  </Badge>
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </DialogContent>
-                    </Dialog>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem>View details</DropdownMenuItem>
+                        <DropdownMenuItem>Edit</DropdownMenuItem>
+                        <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))}
