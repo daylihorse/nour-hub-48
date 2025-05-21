@@ -5,12 +5,13 @@ export interface Employee {
   lastName: string;
   nickname?: string;
   email: string;
-  phone: {
+  phones: {
+    id: string;
     countryCode: string;
     number: string;
     hasWhatsapp: boolean;
     hasTelegram: boolean;
-  };
+  }[];
   position: string;
   department: string[];
   hireDate: Date;

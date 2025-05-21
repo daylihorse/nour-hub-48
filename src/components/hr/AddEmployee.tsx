@@ -28,12 +28,7 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
       lastName: "",
       nickname: "",
       email: "",
-      phone: {
-        countryCode: "+1",
-        number: "",
-        hasWhatsapp: false,
-        hasTelegram: false
-      },
+      phones: [],
       position: "",
       department: [],
       hireDate: new Date(),
