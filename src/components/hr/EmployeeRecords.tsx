@@ -114,10 +114,17 @@ const EmployeeRecords = ({ employees }: EmployeeRecordsProps) => {
                     <Badge
                       variant={
                         employee.status === "active"
-                          ? "success"
+                          ? "default"
                           : employee.status === "inactive"
                           ? "destructive"
-                          : "warning"
+                          : "secondary"
+                      }
+                      className={
+                        employee.status === "active"
+                          ? "bg-green-500 hover:bg-green-600"
+                          : employee.status === "inactive"
+                          ? ""
+                          : "bg-yellow-500 hover:bg-yellow-600"
                       }
                     >
                       {employee.status}
