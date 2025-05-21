@@ -22,6 +22,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { Employee } from "@/types/employee";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Badge } from "@/components/ui/badge";
 
 interface AddEmployeeProps {
   onSubmit: (employee: Employee) => void;
@@ -40,6 +43,7 @@ const departments = [
 
 const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
   const [date, setDate] = useState<Date>(new Date());
+  const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
   
   const form = useForm<Omit<Employee, "id">>({
     defaultValues: {
@@ -48,9 +52,11 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
       email: "",
       phone: "",
       position: "",
-      department: "Horses",
+      department: [],
       hireDate: new Date(),
       status: "active",
+      salary: undefined,
+      salaryType: "monthly",
       address: {
         street: "",
         city: "",
@@ -65,6 +71,7 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
     const newEmployee: Employee = {
       id: uuidv4(),
       ...data,
+      department: selectedDepartments,
     };
     
     onSubmit(newEmployee);
@@ -76,7 +83,18 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
     
     form.reset();
     setDate(new Date());
+    setSelectedDepartments([]);
   });
+
+  const toggleDepartment = (department: string) => {
+    setSelectedDepartments((current) => {
+      if (current.includes(department)) {
+        return current.filter(d => d !== department);
+      } else {
+        return [...current, department];
+      }
+    });
+  };
 
   return (
     <Form {...form}>
@@ -152,30 +170,50 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
             )}
           />
           
-          <FormField
-            control={form.control}
-            name="department"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Department</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select department" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {departments.map((dept) => (
-                      <SelectItem key={dept} value={dept}>
-                        {dept}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div>
+            <FormLabel className="block mb-2">Departments</FormLabel>
+            <div className="space-y-2">
+              <div className="grid grid-cols-2 gap-2">
+                {departments.map((dept) => (
+                  <div key={dept} className="flex items-center space-x-2">
+                    <Checkbox 
+                      id={`dept-${dept}`}
+                      checked={selectedDepartments.includes(dept)}
+                      onCheckedChange={() => toggleDepartment(dept)}
+                    />
+                    <label 
+                      htmlFor={`dept-${dept}`}
+                      className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {dept}
+                    </label>
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-1 mt-2">
+                {selectedDepartments.length > 0 ? (
+                  selectedDepartments.map(dept => (
+                    <Badge 
+                      key={dept} 
+                      variant="secondary" 
+                      className="flex items-center gap-1"
+                    >
+                      {dept}
+                      <button 
+                        type="button"
+                        onClick={() => toggleDepartment(dept)}
+                        className="ml-1 h-4 w-4 rounded-full bg-muted/20 inline-flex items-center justify-center text-muted-foreground hover:bg-muted"
+                      >
+                        ×
+                      </button>
+                    </Badge>
+                  ))
+                ) : (
+                  <FormDescription>No departments selected</FormDescription>
+                )}
+              </div>
+            </div>
+          </div>
           
           <FormField
             control={form.control}
@@ -237,6 +275,56 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
                     <SelectItem value="on-leave">On Leave</SelectItem>
                   </SelectContent>
                 </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="salary"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Salary</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="number" 
+                    placeholder="Enter salary amount" 
+                    {...field} 
+                    onChange={(e) => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))} 
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="salaryType"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>Salary Type</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-row space-x-4"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="daily" id="daily" />
+                      <FormLabel htmlFor="daily" className="cursor-pointer font-normal">
+                        Daily
+                      </FormLabel>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="monthly" id="monthly" />
+                      <FormLabel htmlFor="monthly" className="cursor-pointer font-normal">
+                        Monthly
+                      </FormLabel>
+                    </div>
+                  </RadioGroup>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}

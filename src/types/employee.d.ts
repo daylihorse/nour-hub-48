@@ -1,4 +1,3 @@
-
 export interface Employee {
   id: string;
   firstName: string;
@@ -6,9 +5,10 @@ export interface Employee {
   email: string;
   phone: string;
   position: string;
-  department: string;
+  department: string[];
   hireDate: Date;
   salary?: number;
+  salaryType?: 'daily' | 'monthly';
   status: 'active' | 'inactive' | 'on-leave';
   address?: {
     street: string;
