@@ -1,9 +1,16 @@
+
 export interface Employee {
   id: string;
   firstName: string;
   lastName: string;
+  nickname?: string;
   email: string;
-  phone: string;
+  phone: {
+    countryCode: string;
+    number: string;
+    hasWhatsapp: boolean;
+    hasTelegram: boolean;
+  };
   position: string;
   department: string[];
   hireDate: Date;

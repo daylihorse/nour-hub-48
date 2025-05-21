@@ -27,6 +27,7 @@ const EmployeeRecords = ({ employees }: EmployeeRecordsProps) => {
     const matchesSearch =
       employee.firstName.toLowerCase().includes(search.toLowerCase()) ||
       employee.lastName.toLowerCase().includes(search.toLowerCase()) ||
+      (employee.nickname && employee.nickname.toLowerCase().includes(search.toLowerCase())) ||
       employee.email.toLowerCase().includes(search.toLowerCase()) ||
       employee.position.toLowerCase().includes(search.toLowerCase());
 
@@ -36,9 +37,16 @@ const EmployeeRecords = ({ employees }: EmployeeRecordsProps) => {
     return matchesSearch && matchesStatus;
   });
 
-  // Fix for the TypeScript error: convert department array to string before using toLowerCase
-  const getDepartmentString = (departments: string[]): string => {
-    return departments.join(", ");
+  // Function to format the display name with nickname if available
+  const getDisplayName = (employee: Employee) => {
+    if (employee.nickname) {
+      return (
+        <>
+          {employee.firstName} {employee.lastName} <span className="text-muted-foreground font-normal">({employee.nickname})</span>
+        </>
+      );
+    }
+    return `${employee.firstName} ${employee.lastName}`;
   };
 
   return (
@@ -95,7 +103,7 @@ const EmployeeRecords = ({ employees }: EmployeeRecordsProps) => {
                   <TableCell>
                     <div>
                       <div className="font-medium">
-                        {employee.firstName} {employee.lastName}
+                        {getDisplayName(employee)}
                       </div>
                       <div className="text-sm text-muted-foreground">{employee.email}</div>
                     </div>

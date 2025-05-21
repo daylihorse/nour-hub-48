@@ -1,8 +1,7 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
-import { CalendarIcon, UserPlus } from "lucide-react";
+import { CalendarIcon, UserPlus, MessageCircle, Whatsapp, MessageSquare, UserRound } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
 
@@ -25,10 +24,30 @@ import { Employee } from "@/types/employee";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 
 interface AddEmployeeProps {
   onSubmit: (employee: Employee) => void;
 }
+
+const countryCodes = [
+  { label: "United States", value: "+1" },
+  { label: "United Kingdom", value: "+44" },
+  { label: "Germany", value: "+49" },
+  { label: "France", value: "+33" },
+  { label: "Spain", value: "+34" },
+  { label: "Italy", value: "+39" },
+  { label: "Canada", value: "+1" },
+  { label: "Australia", value: "+61" },
+  { label: "Japan", value: "+81" },
+  { label: "China", value: "+86" },
+  { label: "India", value: "+91" },
+  { label: "Brazil", value: "+55" },
+  { label: "Mexico", value: "+52" },
+  { label: "Argentina", value: "+54" },
+  { label: "South Africa", value: "+27" },
+  { label: "Nigeria", value: "+234" },
+];
 
 const departments = [
   "Horses",
@@ -49,8 +68,14 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
     defaultValues: {
       firstName: "",
       lastName: "",
+      nickname: "",
       email: "",
-      phone: "",
+      phone: {
+        countryCode: "+1",
+        number: "",
+        hasWhatsapp: false,
+        hasTelegram: false
+      },
       position: "",
       department: [],
       hireDate: new Date(),
@@ -130,6 +155,24 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
           
           <FormField
             control={form.control}
+            name="nickname"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nickname</FormLabel>
+                <FormControl>
+                  <div className="flex items-center">
+                    <UserRound className="mr-2 h-4 w-4 text-muted-foreground" />
+                    <Input placeholder="Enter nickname (optional)" {...field} />
+                  </div>
+                </FormControl>
+                <FormDescription>How the employee prefers to be called</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
@@ -144,17 +187,89 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
           
           <FormField
             control={form.control}
-            name="phone"
+            name="phone.countryCode"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Phone</FormLabel>
+                <FormLabel>Country Code</FormLabel>
                 <FormControl>
-                  <Input placeholder="(123) 456-7890" {...field} />
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select country code" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {countryCodes.map((country) => (
+                        <SelectItem key={country.value} value={country.value}>
+                          {country.label} ({country.value})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="phone.number"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone Number</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <MessageCircle className="absolute left-2.5 top-2.5 h-5 w-5 text-muted-foreground" />
+                    <Input 
+                      placeholder="Enter phone number" 
+                      className="pl-10" 
+                      {...field} 
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div className="col-span-2 flex items-center space-x-2">
+            <FormField
+              control={form.control}
+              name="phone.hasWhatsapp"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormLabel className="text-sm font-normal">
+                    <Whatsapp className="mr-1 h-4 w-4 inline-block" />
+                    WhatsApp
+                  </FormLabel>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="phone.hasTelegram"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormLabel className="text-sm font-normal">
+                    <MessageSquare className="mr-1 h-4 w-4 inline-block" />
+                    Telegram
+                  </FormLabel>
+                </FormItem>
+              )}
+            />
+          </div>
           
           <FormField
             control={form.control}
