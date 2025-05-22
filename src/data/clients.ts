@@ -150,3 +150,8 @@ export function getClientById(id: string): Client | HorseOwner | undefined {
 export function getHorseOwners(): HorseOwner[] {
   return mockClients.filter(client => client.type === "Horse Owner") as HorseOwner[];
 }
+
+// Add the missing getAllClients function
+export function getAllClients(): (Client | HorseOwner)[] {
+  return mockClients;
+}

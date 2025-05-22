@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Card, 
@@ -16,8 +15,7 @@ import { MessageSquare, Search, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Client } from '@/types/client';
 
-// Simulate getting clients from the data source
-// In a real app, this would be an API call
+// Import the getAllClients function from data/clients
 import { getAllClients } from '@/data/clients';
 
 interface ConversationPreview {
