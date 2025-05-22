@@ -29,7 +29,17 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const departments = [
+// Define a type for our icon component
+type IconComponent = React.ComponentType<{ className?: string }>;
+
+// Define our department structure
+interface Department {
+  title: string;
+  path: string;
+  icon: IconComponent | ((props: { className?: string }) => React.ReactNode);
+}
+
+const departments: Department[] = [
   { title: "Horses Department", path: "/dashboard/horses", icon: House },
   { title: "Laboratory", path: "/dashboard/laboratory", icon: FlaskRound },
   { title: "Clinic", path: "/dashboard/clinic", icon: Hospital },
@@ -81,6 +91,16 @@ const DashboardSidebar = () => {
               {departments.map((dept) => {
                 const active = isActive(dept.path);
                 
+                // Rendering the icon component
+                const renderIcon = () => {
+                  if (typeof dept.icon === 'function') {
+                    return dept.icon({ className: "h-6 w-6" });
+                  } else {
+                    const IconComponent = dept.icon;
+                    return <IconComponent className="h-6 w-6" />;
+                  }
+                };
+                
                 return (
                   <SidebarMenuItem key={dept.path} className="px-3 py-1">
                     <SidebarMenuButton 
@@ -104,11 +124,7 @@ const DashboardSidebar = () => {
                           ${active ? 'text-primary' : 'text-muted-foreground'}
                           hover:scale-110
                         `}>
-                          {typeof dept.icon === 'function' ? (
-                            dept.icon({ className: "h-6 w-6" })
-                          ) : (
-                            <dept.icon className="h-6 w-6" />
-                          )}
+                          {renderIcon()}
                         </div>
                         
                         {state === "expanded" && (
