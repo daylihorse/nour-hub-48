@@ -2,8 +2,7 @@
 import { useLocation } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import {
-  // Replace Horse with appropriate icons
-  Rabbit, // Using Rabbit as a substitute for Horse
+  Horse,
   FlaskRound,
   Hospital,
   DollarSign,
@@ -22,23 +21,15 @@ import {
   SidebarHeader,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuButton,
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 
-// Import Collapsible components for creating the expandable group
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-
 const departments = [
-  { title: "Horses Department", path: "/dashboard/horses", icon: Rabbit }, // Changed from Horse to Rabbit
+  { title: "Horses Department", path: "/dashboard/horses", icon: Horse },
   { title: "Laboratory", path: "/dashboard/laboratory", icon: FlaskRound },
   { title: "Clinic", path: "/dashboard/clinic", icon: Hospital },
   { title: "Finance", path: "/dashboard/finance", icon: DollarSign },
@@ -49,8 +40,8 @@ const departments = [
     path: "/dashboard/movements", 
     icon: (props) => (
       <div className="flex" {...props}>
-        <ArrowRight className="h-4 w-4 mr-1" />
-        <ArrowLeft className="h-4 w-4" />
+        <ArrowRight className="h-6 w-6 mr-1" />
+        <ArrowLeft className="h-6 w-6" />
       </div>
     )
   },
@@ -65,20 +56,14 @@ const DashboardSidebar = () => {
   const currentPath = location.pathname;
 
   const isActive = (path: string) => currentPath.startsWith(path);
-  const isExpanded = departments.some((d) => isActive(d.path));
-
-  const getNavClass = ({ isActive }: { isActive: boolean }) =>
-    isActive 
-      ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" 
-      : "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground";
 
   return (
     <Sidebar 
       variant="sidebar" 
       collapsible="icon"
-      className={state === "expanded" ? "w-64" : "w-[3rem]"}
+      className={state === "expanded" ? "w-64 shadow-md" : "w-[4rem] shadow-md"}
     >
-      <SidebarHeader className="py-4">
+      <SidebarHeader className="py-6 border-b border-sidebar-border">
         <div className="flex items-center justify-between px-4">
           {state === "expanded" && (
             <h1 className="text-xl font-bold">Equus Manager</h1>
@@ -87,24 +72,52 @@ const DashboardSidebar = () => {
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="py-2">
         <SidebarGroup>
-          <SidebarGroupLabel>Departments</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {departments.map((dept) => (
-                <SidebarMenuItem key={dept.path}>
-                  <SidebarMenuButton 
-                    asChild 
-                    tooltip={state === "collapsed" ? dept.title : undefined}
-                  >
-                    <NavLink to={dept.path} className={getNavClass} end>
-                      <dept.icon className="h-5 w-5" />
-                      {state === "expanded" && <span>{dept.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {departments.map((dept) => {
+                const active = isActive(dept.path);
+                
+                return (
+                  <SidebarMenuItem key={dept.path} className="px-3 py-1">
+                    <SidebarMenuButton 
+                      asChild 
+                      tooltip={state === "collapsed" ? dept.title : undefined}
+                      className="w-full"
+                    >
+                      <NavLink 
+                        to={dept.path} 
+                        className={({ isActive }) => `
+                          flex items-center p-3 rounded-md font-medium transition-all duration-200
+                          ${isActive 
+                            ? 'bg-sidebar-accent text-sidebar-accent-foreground font-semibold' 
+                            : 'hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground'
+                          }
+                        `}
+                        end
+                      >
+                        <div className={`
+                          flex-shrink-0 transition-transform duration-200 mr-3
+                          ${active ? 'text-primary' : 'text-muted-foreground'}
+                          hover:scale-110
+                        `}>
+                          {typeof dept.icon === 'function' 
+                            ? <dept.icon className="h-6 w-6" /> 
+                            : <dept.icon className="h-6 w-6" />
+                          }
+                        </div>
+                        
+                        {state === "expanded" && (
+                          <span className="flex-grow truncate">
+                            {dept.title}
+                          </span>
+                        )}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
