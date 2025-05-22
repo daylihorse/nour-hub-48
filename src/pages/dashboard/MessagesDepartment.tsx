@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   Card, 
@@ -12,8 +13,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from 'date-fns';
 import { MessageSquare, Search, Plus } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { Client } from '@/types/client';
+import ChatInterface from '@/components/chat/ChatInterface';
 
 // Import the getAllClients function from data/clients
 import { getAllClients } from '@/data/clients';
@@ -28,8 +29,9 @@ interface ConversationPreview {
 }
 
 const MessagesDepartment = () => {
-  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeClient, setActiveClient] = useState<Client | null>(null);
+  
   const clients = getAllClients();
   
   // Mock conversation data - in a real app this would come from an API
@@ -51,11 +53,14 @@ const MessagesDepartment = () => {
   );
   
   const handleConversationClick = (clientId: string) => {
-    navigate(`/dashboard/clients/${clientId}`);
+    const client = clients.find(c => c.id === clientId);
+    if (client) {
+      setActiveClient(client);
+    }
   };
   
   const handleNewConversation = () => {
-    navigate('/dashboard/clients');
+    setActiveClient(null);
   };
 
   return (
@@ -96,7 +101,7 @@ const MessagesDepartment = () => {
                     <div 
                       key={conv.clientId}
                       className={`p-4 cursor-pointer hover:bg-muted/50 transition-colors ${
-                        conv.unread ? 'bg-muted/20' : ''
+                        activeClient && activeClient.id === conv.clientId ? 'bg-muted' : conv.unread ? 'bg-muted/20' : ''
                       }`}
                       onClick={() => handleConversationClick(conv.clientId)}
                     >
@@ -137,17 +142,23 @@ const MessagesDepartment = () => {
           </CardContent>
         </Card>
         
-        {/* Right Panel - Empty State (full chat interface would show when selecting a conversation) */}
-        <Card className="lg:col-span-2 flex flex-col items-center justify-center h-[70vh] text-center">
-          <MessageSquare className="h-16 w-16 text-muted-foreground/60 mb-4" />
-          <h2 className="text-xl font-medium">Select a conversation</h2>
-          <p className="text-muted-foreground mb-4 max-w-md">
-            Choose a conversation from the list or start a new conversation with a client to begin messaging
-          </p>
-          <Button onClick={handleNewConversation} variant="outline">
-            <Plus className="h-4 w-4 mr-2" />
-            Start a new conversation
-          </Button>
+        {/* Right Panel - Chat Interface or Empty State */}
+        <Card className="lg:col-span-2 flex flex-col h-[70vh] overflow-hidden">
+          {activeClient ? (
+            <ChatInterface client={activeClient} />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full text-center p-6">
+              <MessageSquare className="h-16 w-16 text-muted-foreground/60 mb-4" />
+              <h2 className="text-xl font-medium">Select a conversation</h2>
+              <p className="text-muted-foreground mb-4 max-w-md">
+                Choose a conversation from the list or start a new conversation with a client to begin messaging
+              </p>
+              <Button onClick={() => window.location.href = '/dashboard/clients'} variant="outline">
+                <Plus className="h-4 w-4 mr-2" />
+                Start a new conversation
+              </Button>
+            </div>
+          )}
         </Card>
       </div>
     </div>
