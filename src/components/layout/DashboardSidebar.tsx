@@ -30,15 +30,15 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-// Define our types for icon rendering
-type IconType = React.ComponentType<{ className?: string }>;
-type IconRenderer = ((props: { className?: string }) => React.ReactNode);
+// Explicit type definitions for icons
+type IconComponent = React.ComponentType<{ className?: string }>;
+type CustomIconRenderer = (props: { className?: string }) => React.ReactNode;
 
-// Define our department structure
+// Department structure
 interface Department {
   title: string;
   path: string;
-  icon: IconType | IconRenderer;
+  icon: IconComponent | CustomIconRenderer;
 }
 
 const departments: Department[] = [
@@ -94,23 +94,22 @@ const DashboardSidebar = () => {
               {departments.map((dept) => {
                 const active = isActive(dept.path);
                 
-                // Fixed icon rendering logic 
+                // Properly handle both icon types with explicit type checks
                 const renderIcon = () => {
-                  // First check if it's a function
                   if (typeof dept.icon === 'function') {
-                    // Check if it's our custom renderer (not a React component)
+                    // Check if it's our custom renderer function by looking for React Component properties
                     if (!('$$typeof' in dept.icon)) {
                       // It's our custom renderer function
-                      return dept.icon({ className: "h-6 w-6" });
+                      return (dept.icon as CustomIconRenderer)({ className: "h-6 w-6" });
                     } else {
-                      // It's a React component function
-                      const IconComponent = dept.icon;
-                      return <IconComponent className="h-6 w-6" />;
+                      // It's a React component
+                      const IconComp = dept.icon as IconComponent;
+                      return <IconComp className="h-6 w-6" />;
                     }
                   } else {
-                    // It's a React component class or other component type
-                    const IconComponent = dept.icon;
-                    return <IconComponent className="h-6 w-6" />;
+                    // For non-function icons (should be React components)
+                    const IconComp = dept.icon as IconComponent;
+                    return <IconComp className="h-6 w-6" />;
                   }
                 };
                 
