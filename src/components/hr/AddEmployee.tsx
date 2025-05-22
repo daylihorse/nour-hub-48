@@ -127,7 +127,9 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
       position: positions.length > 0 ? positions.join(", ") : data.position || "",
       phones: formattedPhones,
       // Ensure hireDate is explicitly assigned
-      hireDate: data.hireDate || new Date()
+      hireDate: data.hireDate || new Date(),
+      // Ensure status is explicitly assigned
+      status: data.status || "active"
     };
     
     onSubmit(newEmployee);
