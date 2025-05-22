@@ -30,14 +30,15 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-// Define a type for our icon component
+// Improved type definition that handles both React components and render functions
 type IconType = React.ComponentType<{ className?: string }>;
+type IconRenderer = ((props: { className?: string }) => React.ReactNode);
 
 // Define our department structure
 interface Department {
   title: string;
   path: string;
-  icon: IconType | ((props: { className?: string }) => React.ReactNode);
+  icon: IconType | IconRenderer;
 }
 
 const departments: Department[] = [
@@ -93,15 +94,20 @@ const DashboardSidebar = () => {
               {departments.map((dept) => {
                 const active = isActive(dept.path);
                 
-                // Rendering the icon component
+                // Improved icon rendering logic
                 const renderIcon = () => {
-                  if (typeof dept.icon === 'function' && 
-                      // Check if it's a JSX function component and not a React component class
-                      !('render' in dept.icon)) {
-                    // Handle function that returns JSX
-                    return dept.icon({ className: "h-6 w-6" });
+                  if (typeof dept.icon === 'function') {
+                    // Check if it's a JSX function renderer
+                    if (!('$$typeof' in dept.icon)) {
+                      // It's our custom renderer function
+                      return dept.icon({ className: "h-6 w-6" });
+                    } else {
+                      // It's a React component function
+                      const IconComponent = dept.icon as IconType;
+                      return <IconComponent className="h-6 w-6" />;
+                    }
                   } else {
-                    // Handle React component class or function component
+                    // It's a React component class or other component type
                     const IconComponent = dept.icon as IconType;
                     return <IconComponent className="h-6 w-6" />;
                   }
