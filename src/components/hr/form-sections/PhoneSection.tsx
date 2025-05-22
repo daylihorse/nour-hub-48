@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
@@ -86,6 +87,7 @@ export const PhoneSection = ({ control }: PhoneSectionProps) => {
                       <Input 
                         placeholder="e.g. +1, +44"
                         {...field}
+                        required
                       />
                     </FormControl>
                     <FormMessage />
@@ -104,7 +106,7 @@ export const PhoneSection = ({ control }: PhoneSectionProps) => {
                     <FormControl>
                       <div className="flex items-center">
                         <MessageCircle className="mr-2 h-4 w-4 text-muted-foreground" />
-                        <Input placeholder="(123) 456-7890" {...field} />
+                        <Input placeholder="(123) 456-7890" {...field} required />
                       </div>
                     </FormControl>
                     <FormMessage />

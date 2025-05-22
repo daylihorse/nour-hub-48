@@ -110,13 +110,22 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
       console.error("Error parsing positions:", e);
     }
 
+    // Ensure each phone object has all required fields with default values if missing
+    const formattedPhones = data.phones.map(phone => ({
+      id: phone.id || uuidv4(),
+      countryCode: phone.countryCode || "",
+      number: phone.number || "",
+      hasWhatsapp: phone.hasWhatsapp || false,
+      hasTelegram: phone.hasTelegram || false
+    }));
+
     const newEmployee: Employee = {
       id: uuidv4(),
       ...data,
       department: selectedDepartments,
       // Add positions to the employee
       position: positions.length > 0 ? positions.join(", ") : data.position || "",
-      phones: data.phones || []
+      phones: formattedPhones
     };
     
     onSubmit(newEmployee);
