@@ -1,4 +1,5 @@
 
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,34 +20,39 @@ import TrainingCenter from "./pages/dashboard/TrainingCenter";
 import StableRooms from "./pages/dashboard/StableRooms";
 import MaintenanceDepartment from "./pages/dashboard/MaintainenceDepartment";
 
+// Create a new QueryClient instance
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="horses" element={<HorsesDepartment />} />
-            <Route path="laboratory" element={<LaboratoryDepartment />} />
-            <Route path="clinic" element={<ClinicDepartment />} />
-            <Route path="finance" element={<FinanceDepartment />} />
-            <Route path="hr" element={<HRDepartment />} />
-            <Route path="inventory" element={<InventoryManagement />} />
-            <Route path="movements" element={<HorseMovements />} />
-            <Route path="training" element={<TrainingCenter />} />
-            <Route path="rooms" element={<StableRooms />} />
-            <Route path="maintenance" element={<MaintenanceDepartment />} />
-          </Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  return (
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<DashboardLayout />}>
+                <Route index element={<Dashboard />} />
+                <Route path="horses" element={<HorsesDepartment />} />
+                <Route path="laboratory" element={<LaboratoryDepartment />} />
+                <Route path="clinic" element={<ClinicDepartment />} />
+                <Route path="finance" element={<FinanceDepartment />} />
+                <Route path="hr" element={<HRDepartment />} />
+                <Route path="inventory" element={<InventoryManagement />} />
+                <Route path="movements" element={<HorseMovements />} />
+                <Route path="training" element={<TrainingCenter />} />
+                <Route path="rooms" element={<StableRooms />} />
+                <Route path="maintenance" element={<MaintenanceDepartment />} />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </React.StrictMode>
+  );
+};
 
 export default App;

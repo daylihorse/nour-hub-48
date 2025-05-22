@@ -1,9 +1,9 @@
 
 export interface Employee {
   id: string;
-  firstName: string;
+  firstName?: string;
   firstNameArabic?: string;
-  lastName: string;
+  lastName?: string;
   lastNameArabic?: string;
   nickname?: string;
   nicknameArabic?: string;
@@ -25,11 +25,11 @@ export interface Employee {
   salaryType?: 'daily' | 'monthly';
   status: 'active' | 'inactive' | 'on-leave';
   address?: {
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-    country: string;
+    street?: string;
+    city?: string;
+    state?: string;
+    zipCode?: string;
+    country?: string;
   };
 }
 
