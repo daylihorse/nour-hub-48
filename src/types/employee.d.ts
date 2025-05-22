@@ -7,7 +7,7 @@ export interface Employee {
   lastNameArabic?: string;
   nickname?: string;
   nicknameArabic?: string;
-  email?: string; // Changed from required to optional
+  email?: string;
   phones: {
     id: string;
     countryCode: string;
@@ -15,7 +15,7 @@ export interface Employee {
     hasWhatsapp: boolean;
     hasTelegram: boolean;
   }[];
-  position?: string; // Changed from required to optional
+  position?: string;
   positions?: string;
   otherPosition?: string;
   department: string[];

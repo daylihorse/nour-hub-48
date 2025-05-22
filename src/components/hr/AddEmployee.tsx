@@ -125,7 +125,9 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
       department: selectedDepartments,
       // Add positions to the employee
       position: positions.length > 0 ? positions.join(", ") : data.position || "",
-      phones: formattedPhones
+      phones: formattedPhones,
+      // Ensure hireDate is explicitly assigned
+      hireDate: data.hireDate || new Date()
     };
     
     onSubmit(newEmployee);
