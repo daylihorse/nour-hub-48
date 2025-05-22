@@ -3,10 +3,9 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { UserRound } from "lucide-react";
 import { Control } from "react-hook-form";
-import { Employee } from "@/types/employee";
 
 interface PersonalInfoSectionProps {
-  control: Control<Omit<Employee, "id">>;
+  control: Control<any>;
 }
 
 export const PersonalInfoSection = ({ control }: PersonalInfoSectionProps) => {

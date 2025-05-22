@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -11,10 +12,9 @@ import { CalendarIcon, Plus } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Control } from "react-hook-form";
-import { Employee } from "@/types/employee";
 
 interface EmploymentDetailsSectionProps {
-  control: Control<Omit<Employee, "id">>;
+  control: Control<any>;
   date: Date;
   setDate: (date: Date) => void;
 }

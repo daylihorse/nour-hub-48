@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
@@ -7,10 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { MessageCircle, MessageSquare, Plus, Trash2 } from "lucide-react";
 import { Control, useFieldArray } from "react-hook-form";
-import { Employee } from "@/types/employee";
 
 interface PhoneSectionProps {
-  control: Control<Omit<Employee, "id">>;
+  control: Control<any>;
 }
 
 export const PhoneSection = ({ control }: PhoneSectionProps) => {

@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { UserPlus } from "lucide-react";
@@ -20,7 +20,7 @@ interface AddEmployeeProps {
   onSubmit: (employee: Employee) => void;
 }
 
-// Extend the Employee type to include the new Arabic fields
+// Create a form schema that matches our Employee interface
 const formSchema = z.object({
   firstName: z.string().optional(),
   firstNameArabic: z.string().optional(),
@@ -32,12 +32,12 @@ const formSchema = z.object({
   phones: z.array(
     z.object({
       id: z.string(),
-      countryCode: z.string().optional(),
-      number: z.string().optional(),
+      countryCode: z.string(),
+      number: z.string(),
       hasWhatsapp: z.boolean(),
       hasTelegram: z.boolean(),
     })
-  ),
+  ).default([]),
   position: z.string().optional(),
   positions: z.string().optional(),
   otherPosition: z.string().optional(),
@@ -116,6 +116,7 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
       department: selectedDepartments,
       // Add positions to the employee
       position: positions.length > 0 ? positions.join(", ") : data.position || "",
+      phones: data.phones || []
     };
     
     onSubmit(newEmployee);
