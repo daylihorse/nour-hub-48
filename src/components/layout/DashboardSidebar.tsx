@@ -14,6 +14,7 @@ import {
   Warehouse,
   Wrench,
   User,
+  MessageSquare,
 } from "lucide-react";
 
 import {
@@ -45,6 +46,7 @@ const departments: Department[] = [
   { title: "Clinic", path: "/dashboard/clinic", icon: Hospital },
   { title: "Finance", path: "/dashboard/finance", icon: DollarSign },
   { title: "Clients", path: "/dashboard/clients", icon: Users },
+  { title: "Messages", path: "/dashboard/messages", icon: MessageSquare },
   { title: "HR Department", path: "/dashboard/hr", icon: Users },
   { title: "Inventory", path: "/dashboard/inventory", icon: Package },
   { 

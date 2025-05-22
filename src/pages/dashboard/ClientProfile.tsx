@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -38,6 +37,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
+import ClientChatButton from "@/components/chat/ClientChatButton";
 
 const ClientProfile = () => {
   const { id } = useParams();
@@ -138,9 +138,12 @@ const ClientProfile = () => {
                     </CardDescription>
                   </div>
                 </div>
-                <Button size="sm" variant="outline" onClick={() => navigate(`/dashboard/clients/${client.id}/edit`)}>
-                  <Edit className="h-4 w-4 mr-1" /> Edit
-                </Button>
+                <div className="flex">
+                  <ClientChatButton client={client} />
+                  <Button size="sm" variant="outline" onClick={() => navigate(`/dashboard/clients/${client.id}/edit`)} className="ml-2">
+                    <Edit className="h-4 w-4 mr-1" /> Edit
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">

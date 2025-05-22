@@ -19,6 +19,7 @@ import HorseMovements from "./pages/dashboard/HorseMovements";
 import TrainingCenter from "./pages/dashboard/TrainingCenter";
 import StableRooms from "./pages/dashboard/StableRooms";
 import MaintenanceDepartment from "./pages/dashboard/MaintainenceDepartment";
+import MessagesDepartment from "./pages/dashboard/MessagesDepartment";
 
 // New client-related imports
 import ClientsDepartment from "./pages/dashboard/ClientsDepartment";
@@ -50,6 +51,7 @@ const App = () => {
                 <Route path="training" element={<TrainingCenter />} />
                 <Route path="rooms" element={<StableRooms />} />
                 <Route path="maintenance" element={<MaintenanceDepartment />} />
+                <Route path="messages" element={<MessagesDepartment />} />
                 
                 {/* Client Management Routes */}
                 <Route path="clients" element={<ClientsDepartment />} />
