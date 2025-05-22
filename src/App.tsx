@@ -20,6 +20,11 @@ import TrainingCenter from "./pages/dashboard/TrainingCenter";
 import StableRooms from "./pages/dashboard/StableRooms";
 import MaintenanceDepartment from "./pages/dashboard/MaintainenceDepartment";
 
+// New client-related imports
+import ClientsDepartment from "./pages/dashboard/ClientsDepartment";
+import ClientProfile from "./pages/dashboard/ClientProfile";
+import ClientForm from "./pages/dashboard/ClientForm";
+
 // Create a new QueryClient instance
 const queryClient = new QueryClient();
 
@@ -45,6 +50,12 @@ const App = () => {
                 <Route path="training" element={<TrainingCenter />} />
                 <Route path="rooms" element={<StableRooms />} />
                 <Route path="maintenance" element={<MaintenanceDepartment />} />
+                
+                {/* Client Management Routes */}
+                <Route path="clients" element={<ClientsDepartment />} />
+                <Route path="clients/:id" element={<ClientProfile />} />
+                <Route path="clients/new" element={<ClientForm />} />
+                <Route path="clients/:id/edit" element={<ClientForm />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -2,7 +2,7 @@
 import { useLocation } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import {
-  House, // Changed from Horse to House
+  House,
   FlaskRound,
   Hospital,
   DollarSign,
@@ -13,6 +13,7 @@ import {
   Dumbbell,
   Warehouse,
   Wrench,
+  User,
 } from "lucide-react";
 
 import {
@@ -29,10 +30,11 @@ import {
 } from "@/components/ui/sidebar";
 
 const departments = [
-  { title: "Horses Department", path: "/dashboard/horses", icon: House }, // Changed from Horse to House
+  { title: "Horses Department", path: "/dashboard/horses", icon: House },
   { title: "Laboratory", path: "/dashboard/laboratory", icon: FlaskRound },
   { title: "Clinic", path: "/dashboard/clinic", icon: Hospital },
   { title: "Finance", path: "/dashboard/finance", icon: DollarSign },
+  { title: "Clients", path: "/dashboard/clients", icon: Users },
   { title: "HR Department", path: "/dashboard/hr", icon: Users },
   { title: "Inventory", path: "/dashboard/inventory", icon: Package },
   { 
@@ -103,7 +105,7 @@ const DashboardSidebar = () => {
                           ${active ? 'text-primary' : 'text-muted-foreground'}
                           hover:scale-110
                         `}>
-                          {typeof dept.icon === 'function' 
+                          {typeof IconComponent === 'function' 
                             ? <IconComponent className="h-6 w-6" /> 
                             : <IconComponent className="h-6 w-6" />
                           }
