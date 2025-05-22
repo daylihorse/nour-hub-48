@@ -30,7 +30,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-// Improved type definition that handles both React components and render functions
+// Define our types for icon rendering
 type IconType = React.ComponentType<{ className?: string }>;
 type IconRenderer = ((props: { className?: string }) => React.ReactNode);
 
@@ -94,21 +94,22 @@ const DashboardSidebar = () => {
               {departments.map((dept) => {
                 const active = isActive(dept.path);
                 
-                // Improved icon rendering logic
+                // Fixed icon rendering logic 
                 const renderIcon = () => {
+                  // First check if it's a function
                   if (typeof dept.icon === 'function') {
-                    // Check if it's a JSX function renderer
+                    // Check if it's our custom renderer (not a React component)
                     if (!('$$typeof' in dept.icon)) {
                       // It's our custom renderer function
                       return dept.icon({ className: "h-6 w-6" });
                     } else {
                       // It's a React component function
-                      const IconComponent = dept.icon as IconType;
+                      const IconComponent = dept.icon;
                       return <IconComponent className="h-6 w-6" />;
                     }
                   } else {
                     // It's a React component class or other component type
-                    const IconComponent = dept.icon as IconType;
+                    const IconComponent = dept.icon;
                     return <IconComponent className="h-6 w-6" />;
                   }
                 };
