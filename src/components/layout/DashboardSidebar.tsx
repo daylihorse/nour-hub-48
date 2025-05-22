@@ -78,6 +78,7 @@ const DashboardSidebar = () => {
             <SidebarMenu>
               {departments.map((dept) => {
                 const active = isActive(dept.path);
+                const IconComponent = dept.icon;
                 
                 return (
                   <SidebarMenuItem key={dept.path} className="px-3 py-1">
@@ -103,8 +104,8 @@ const DashboardSidebar = () => {
                           hover:scale-110
                         `}>
                           {typeof dept.icon === 'function' 
-                            ? <dept.icon className="h-6 w-6" /> 
-                            : <dept.icon className="h-6 w-6" />
+                            ? <IconComponent className="h-6 w-6" /> 
+                            : <IconComponent className="h-6 w-6" />
                           }
                         </div>
                         
