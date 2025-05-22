@@ -30,13 +30,13 @@ import {
 } from "@/components/ui/sidebar";
 
 // Define a type for our icon component
-type IconComponent = React.ComponentType<{ className?: string }>;
+type IconType = React.ComponentType<{ className?: string }>;
 
 // Define our department structure
 interface Department {
   title: string;
   path: string;
-  icon: IconComponent | ((props: { className?: string }) => React.ReactNode);
+  icon: IconType | ((props: { className?: string }) => React.ReactNode);
 }
 
 const departments: Department[] = [
@@ -93,10 +93,14 @@ const DashboardSidebar = () => {
                 
                 // Rendering the icon component
                 const renderIcon = () => {
-                  if (typeof dept.icon === 'function') {
+                  if (typeof dept.icon === 'function' && 
+                      // Check if it's a JSX function component and not a React component class
+                      !('render' in dept.icon)) {
+                    // Handle function that returns JSX
                     return dept.icon({ className: "h-6 w-6" });
                   } else {
-                    const IconComponent = dept.icon;
+                    // Handle React component class or function component
+                    const IconComponent = dept.icon as IconType;
                     return <IconComponent className="h-6 w-6" />;
                   }
                 };
