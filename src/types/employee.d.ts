@@ -2,8 +2,11 @@
 export interface Employee {
   id: string;
   firstName: string;
+  firstNameArabic?: string;
   lastName: string;
+  lastNameArabic?: string;
   nickname?: string;
+  nicknameArabic?: string;
   email: string;
   phones: {
     id: string;
@@ -13,9 +16,12 @@ export interface Employee {
     hasTelegram: boolean;
   }[];
   position: string;
+  positions?: string;
+  otherPosition?: string;
   department: string[];
   hireDate: Date;
   salary?: number;
+  currency?: string;
   salaryType?: 'daily' | 'monthly';
   status: 'active' | 'inactive' | 'on-leave';
   address?: {

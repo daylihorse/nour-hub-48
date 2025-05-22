@@ -12,50 +12,101 @@ interface PersonalInfoSectionProps {
 export const PersonalInfoSection = ({ control }: PersonalInfoSectionProps) => {
   return (
     <>
-      <FormField
-        control={control}
-        name="firstName"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>First Name</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter first name" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className="grid grid-cols-2 gap-4">
+        <FormField
+          control={control}
+          name="firstName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>First Name (English)</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter first name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <FormField
+          control={control}
+          name="firstNameArabic"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>First Name (Arabic)</FormLabel>
+              <FormControl>
+                <Input placeholder="أدخل الاسم الأول" dir="rtl" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
       
-      <FormField
-        control={control}
-        name="lastName"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Last Name</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter last name" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className="grid grid-cols-2 gap-4">
+        <FormField
+          control={control}
+          name="lastName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Last Name (English)</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter last name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <FormField
+          control={control}
+          name="lastNameArabic"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Last Name (Arabic)</FormLabel>
+              <FormControl>
+                <Input placeholder="أدخل اسم العائلة" dir="rtl" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
       
-      <FormField
-        control={control}
-        name="nickname"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Nickname</FormLabel>
-            <FormControl>
-              <div className="flex items-center">
-                <UserRound className="mr-2 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Enter nickname (optional)" {...field} />
-              </div>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className="grid grid-cols-2 gap-4">
+        <FormField
+          control={control}
+          name="nickname"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nickname (English)</FormLabel>
+              <FormControl>
+                <div className="flex items-center">
+                  <UserRound className="mr-2 h-4 w-4 text-muted-foreground" />
+                  <Input placeholder="Enter nickname (optional)" {...field} />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <FormField
+          control={control}
+          name="nicknameArabic"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nickname (Arabic)</FormLabel>
+              <FormControl>
+                <div className="flex items-center">
+                  <UserRound className="mr-2 h-4 w-4 text-muted-foreground" />
+                  <Input placeholder="أدخل اللقب (اختياري)" dir="rtl" {...field} />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
       
       <FormField
         control={control}
