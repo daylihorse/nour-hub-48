@@ -2,7 +2,7 @@
 import { useLocation } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import {
-  Horse,
+  House, // Changed from Horse to House
   FlaskRound,
   Hospital,
   DollarSign,
@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/sidebar";
 
 const departments = [
-  { title: "Horses Department", path: "/dashboard/horses", icon: Horse },
+  { title: "Horses Department", path: "/dashboard/horses", icon: House }, // Changed from Horse to House
   { title: "Laboratory", path: "/dashboard/laboratory", icon: FlaskRound },
   { title: "Clinic", path: "/dashboard/clinic", icon: Hospital },
   { title: "Finance", path: "/dashboard/finance", icon: DollarSign },
