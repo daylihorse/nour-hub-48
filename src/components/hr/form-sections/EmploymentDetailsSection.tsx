@@ -186,7 +186,7 @@ export const EmploymentDetailsSection = ({
           
           <FormField control={control} name="salaryType" render={({
           field
-        }) => <FormItem className="space-y-3">
+        }) => <FormItem className="space-y-3 my-[13px]">
                 <FormControl>
                   <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-row space-x-4">
                     <div className="flex items-center space-x-2">
