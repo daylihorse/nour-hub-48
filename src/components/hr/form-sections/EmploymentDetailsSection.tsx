@@ -114,8 +114,8 @@ export const EmploymentDetailsSection = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField control={control} name="hireDate" render={({
         field
-      }) => <FormItem className="flex flex-col">
-              <FormLabel className="my-[10px]">Hire Date</FormLabel>
+      }) => <FormItem className="flex flex-col my-[32px]">
+              <FormLabel className="my-px">Hire Date</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -137,7 +137,7 @@ export const EmploymentDetailsSection = ({
         
         <FormField control={control} name="status" render={({
         field
-      }) => <FormItem>
+      }) => <FormItem className="my-[25px]">
               <FormLabel>Status</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
