@@ -1,9 +1,11 @@
+
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -13,6 +15,35 @@ function Calendar({
   showOutsideDays = true,
   ...props
 }: CalendarProps) {
+  // Get the current month and year for the default values
+  const [currentMonth, setCurrentMonth] = React.useState<Date>(
+    props.defaultMonth || new Date()
+  );
+
+  // Handler for month change
+  const handleMonthChange = (month: string) => {
+    const newDate = new Date(currentMonth);
+    newDate.setMonth(parseInt(month));
+    setCurrentMonth(newDate);
+  };
+
+  // Handler for year change
+  const handleYearChange = (year: string) => {
+    const newDate = new Date(currentMonth);
+    newDate.setFullYear(parseInt(year));
+    setCurrentMonth(newDate);
+  };
+
+  // Generate month options
+  const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  // Generate year options (10 years back and forward)
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 21 }, (_, i) => currentYear - 10 + i);
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -21,7 +52,7 @@ function Calendar({
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
         caption: "flex justify-center pt-1 relative items-center",
-        caption_label: "text-sm font-medium",
+        caption_label: "text-sm font-medium hidden", // Hide the default caption label
         nav: "space-x-1 flex items-center",
         nav_button: cn(
           buttonVariants({ variant: "outline" }),
@@ -54,7 +85,58 @@ function Calendar({
       components={{
         IconLeft: ({ ..._props }) => <ChevronLeft className="h-4 w-4" />,
         IconRight: ({ ..._props }) => <ChevronRight className="h-4 w-4" />,
+        Caption: ({ displayMonth }) => {
+          return (
+            <div className="flex justify-center items-center space-x-2 py-1">
+              <Select
+                value={displayMonth.getMonth().toString()}
+                onValueChange={handleMonthChange}
+              >
+                <SelectTrigger className="h-7 w-[110px] text-xs font-medium">
+                  <SelectValue>
+                    {months[displayMonth.getMonth()]}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent position="popper" className="min-w-[110px]">
+                  {months.map((month, index) => (
+                    <SelectItem
+                      key={month}
+                      value={index.toString()}
+                      className="text-xs"
+                    >
+                      {month}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select 
+                value={displayMonth.getFullYear().toString()}
+                onValueChange={handleYearChange}
+              >
+                <SelectTrigger className="h-7 w-[70px] text-xs font-medium">
+                  <SelectValue>
+                    {displayMonth.getFullYear()}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent position="popper" className="min-w-[70px] max-h-[200px] overflow-y-auto">
+                  {years.map((year) => (
+                    <SelectItem
+                      key={year}
+                      value={year.toString()}
+                      className="text-xs"
+                    >
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          );
+        },
       }}
+      month={currentMonth}
+      onMonthChange={setCurrentMonth}
       {...props}
     />
   );
