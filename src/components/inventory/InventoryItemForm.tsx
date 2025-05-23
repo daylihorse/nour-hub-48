@@ -61,6 +61,7 @@ const formSchema = z.object({
   purchasePrice: z.number().min(0, "Purchase price is required"),
   listForSale: z.boolean().default(false),
   sellingPrice: z.number().optional(),
+  images: z.array(z.string()).optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -107,7 +108,7 @@ const unitOptions = [
 ];
 
 interface InventoryItemFormProps {
-  onSave: (data: FormValues) => void;
+  onSave: (data: FormValues & { images?: string[] }) => void;
   onCancel: () => void;
 }
 
