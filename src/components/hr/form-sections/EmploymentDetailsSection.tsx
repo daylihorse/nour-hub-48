@@ -114,7 +114,7 @@ export const EmploymentDetailsSection = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField control={control} name="hireDate" render={({
         field
-      }) => <FormItem className="flex flex-col my-[32px]">
+      }) => <FormItem className="flex flex-col my-[33px]">
               <FormLabel className="my-px">Hire Date</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
