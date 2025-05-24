@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { 
   Card, 
@@ -17,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import InventoryItemForm from "@/components/inventory/InventoryItemForm";
-import InventoryServiceForm from "@/components/inventory/InventoryServiceForm";
+import InventoryServiceForm from "@/components/inventory/service-form/InventoryServiceForm";
 import { toast } from "@/hooks/use-toast";
 
 // Sample data for demonstration
