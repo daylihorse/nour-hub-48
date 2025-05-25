@@ -91,7 +91,7 @@ function Calendar({
               </Select>
 
               <Select value={displayMonth.getFullYear().toString()} onValueChange={handleYearChange}>
-                <SelectTrigger className="h-7 w-[70px] font-medium text-xs">
+                <SelectTrigger className="h-7 w-[70px] font-medium text-xs bg-orange-100">
                   <SelectValue>
                     {displayMonth.getFullYear()}
                   </SelectValue>
