@@ -1,8 +1,7 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer } from "recharts";
-import { Horse, Heart, Activity, Calendar, Users, AlertTriangle, TrendingUp } from "lucide-react";
+import { Heart, Activity, Calendar, Users, AlertTriangle, TrendingUp } from "lucide-react";
 
 const HorsesDashboard = () => {
   // Sample data for charts
@@ -35,7 +34,7 @@ const HorsesDashboard = () => {
       value: "63",
       change: "+2 this month",
       trend: "up",
-      icon: Horse,
+      icon: Heart,
       color: "text-blue-600"
     },
     {
