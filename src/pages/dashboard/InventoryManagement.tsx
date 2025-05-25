@@ -1,10 +1,11 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import InventoryItemForm from "@/components/inventory/InventoryItemForm";
 import InventoryServiceForm from "@/components/inventory/service-form/InventoryServiceForm";
 import InventoryActions from "@/components/inventory/InventoryActions";
 import InventoryTabs from "@/components/inventory/InventoryTabs";
+import InventoryDashboard from "@/components/inventory/InventoryDashboard";
 import ExportButtons from "@/components/inventory/ExportButtons";
 import { toast } from "@/hooks/use-toast";
 
@@ -147,15 +148,56 @@ const InventoryManagement = () => {
       )}
       
       {!showItemForm && !showServiceForm && (
-        <>
-          <InventoryTabs
-            items={items}
-            onToggleItemStatus={handleToggleItemStatus}
-            onAddToStock={handleAddToStock}
-            onWithdrawFromStock={handleWithdrawFromStock}
-          />
-          <ExportButtons />
-        </>
+        <Tabs defaultValue="dashboard">
+          <TabsList className="grid w-full md:w-auto grid-cols-3 md:grid-cols-4">
+            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+            <TabsTrigger value="items">Items</TabsTrigger>
+            <TabsTrigger value="services">Services</TabsTrigger>
+            <TabsTrigger value="export">Export</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="dashboard">
+            <Card>
+              <CardHeader>
+                <CardTitle>Inventory Dashboard</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <InventoryDashboard items={items} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="items">
+            <InventoryTabs
+              items={items}
+              onToggleItemStatus={handleToggleItemStatus}
+              onAddToStock={handleAddToStock}
+              onWithdrawFromStock={handleWithdrawFromStock}
+            />
+          </TabsContent>
+
+          <TabsContent value="services">
+            <Card>
+              <CardHeader>
+                <CardTitle>Current Services</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p>No services available.</p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="export">
+            <Card>
+              <CardHeader>
+                <CardTitle>Export Data</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ExportButtons />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       )}
     </div>
   );
