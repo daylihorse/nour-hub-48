@@ -1,13 +1,10 @@
-
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
-
 function Calendar({
   className,
   classNames,
@@ -39,7 +36,6 @@ function Calendar({
   const years = Array.from({
     length: 21
   }, (_, i) => currentYear - 10 + i);
-  
   return <DayPicker showOutsideDays={showOutsideDays} className={cn("p-3", className)} classNames={{
     months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
     month: "space-y-4",
@@ -80,22 +76,16 @@ function Calendar({
     }) => {
       return <div className="flex justify-center items-center space-x-2 py-1">
               <Select value={displayMonth.getMonth().toString()} onValueChange={handleMonthChange}>
-                <SelectTrigger className="h-7 w-[110px] font-medium text-base">
+                <SelectTrigger className="h-7 w-[110px] font-medium text-base px-[10px] bg-orange-100">
                   <SelectValue>
                     {months[displayMonth.getMonth()]}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent position="popper" className="min-w-[280px]">
                   <div className="grid grid-cols-3 gap-1 p-1">
-                    {months.map((month, index) => (
-                      <SelectItem 
-                        key={month} 
-                        value={index.toString()} 
-                        className="text-xs py-1.5 px-2 rounded-md cursor-pointer"
-                      >
+                    {months.map((month, index) => <SelectItem key={month} value={index.toString()} className="text-xs py-1.5 px-2 rounded-md cursor-pointer">
                         {month}
-                      </SelectItem>
-                    ))}
+                      </SelectItem>)}
                   </div>
                 </SelectContent>
               </Select>
@@ -107,16 +97,12 @@ function Calendar({
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent position="popper" className="min-w-[70px] max-h-[180px] overflow-y-auto">
-                  <div className="py-1 scroll-smooth" style={{ scrollBehavior: 'smooth' }}>
-                    {years.map(year => (
-                      <SelectItem 
-                        key={year} 
-                        value={year.toString()} 
-                        className="text-xs py-2"
-                      >
+                  <div className="py-1 scroll-smooth" style={{
+              scrollBehavior: 'smooth'
+            }}>
+                    {years.map(year => <SelectItem key={year} value={year.toString()} className="text-xs py-2">
                         {year}
-                      </SelectItem>
-                    ))}
+                      </SelectItem>)}
                   </div>
                 </SelectContent>
               </Select>
