@@ -62,6 +62,15 @@ const InventoryManagement = () => {
     setShowItemForm(false);
   };
 
+  const handleBrowseMarketplace = () => {
+    toast({
+      title: "Marketplace Browser",
+      description: "Opening marketplace to browse your store listings...",
+    });
+    // Here you could navigate to a marketplace page or open a modal
+    console.log("Browse marketplace clicked");
+  };
+
   const handleToggleItemStatus = (id: string) => {
     setItems(items.map(item => 
       item.id === id ? { ...item, enabled: !item.enabled } : item
@@ -121,6 +130,7 @@ const InventoryManagement = () => {
           <InventoryActions 
             onAddItem={handleAddItem}
             onAddService={handleAddService}
+            onBrowseMarketplace={handleBrowseMarketplace}
           />
         )}
       </div>
