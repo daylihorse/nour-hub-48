@@ -36,7 +36,6 @@ const ClassificationField = ({ form }: ClassificationFieldProps) => {
                   <SelectValue placeholder="Select classification" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="categories">Categories</SelectItem>
                   {classificationOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
