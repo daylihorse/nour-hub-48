@@ -66,4 +66,12 @@ export const formStages: FormStage[] = [
     isComplete: false,
     isRequired: false,
   },
+  {
+    id: "review",
+    title: "Review & Confirmation",
+    description: "Final review and submission",
+    fields: [],
+    isComplete: false,
+    isRequired: true,
+  },
 ];

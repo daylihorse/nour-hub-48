@@ -1,8 +1,6 @@
 
-import { useFormContext } from "react-hook-form";
-import { AlertCircle, CheckCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
+import { CheckCircle, AlertCircle, Info } from "lucide-react";
 import { FormStage } from "@/types/horse";
 
 interface ValidationFeedbackProps {
@@ -12,56 +10,38 @@ interface ValidationFeedbackProps {
 }
 
 const ValidationFeedback = ({ stage, currentStage, completedStages }: ValidationFeedbackProps) => {
-  const form = useFormContext();
-  const errors = form.formState.errors;
   const isCompleted = completedStages.has(currentStage);
+  const isRequired = stage.isRequired;
 
-  // Get errors specific to this stage
-  const stageErrors = stage.fields.filter(field => errors[field]).map(field => ({
-    field,
-    message: errors[field]?.message as string
-  }));
-
-  if (isCompleted && stageErrors.length === 0) {
+  if (isCompleted) {
     return (
       <Alert className="border-green-200 bg-green-50">
         <CheckCircle className="h-4 w-4 text-green-600" />
         <AlertDescription className="text-green-800">
-          This stage is complete and validated.
+          This stage has been completed successfully.
         </AlertDescription>
       </Alert>
     );
   }
 
-  if (stageErrors.length > 0) {
+  if (isRequired) {
     return (
-      <Alert variant="destructive">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          <div className="space-y-2">
-            <p>Please fix the following errors:</p>
-            <ul className="list-disc list-inside space-y-1">
-              {stageErrors.map(({ field, message }) => (
-                <li key={field} className="text-sm">
-                  <span className="font-medium">{field}:</span> {message}
-                </li>
-              ))}
-            </ul>
-          </div>
+      <Alert className="border-orange-200 bg-orange-50">
+        <AlertCircle className="h-4 w-4 text-orange-600" />
+        <AlertDescription className="text-orange-800">
+          This stage is required. Please fill in all mandatory fields before proceeding.
         </AlertDescription>
       </Alert>
     );
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <Badge variant={stage.isRequired ? "default" : "secondary"}>
-        {stage.isRequired ? "Required" : "Optional"}
-      </Badge>
-      <span className="text-sm text-muted-foreground">
-        {stage.isRequired ? "This stage must be completed" : "This stage is optional"}
-      </span>
-    </div>
+    <Alert className="border-blue-200 bg-blue-50">
+      <Info className="h-4 w-4 text-blue-600" />
+      <AlertDescription className="text-blue-800">
+        This stage is optional but recommended for complete horse registration.
+      </AlertDescription>
+    </Alert>
   );
 };
 

@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { FormStage } from "@/types/horse";
 
 interface FormNavigationButtonsProps {
@@ -20,20 +20,24 @@ const FormNavigationButtons = ({
   onCancel,
   onSubmit
 }: FormNavigationButtonsProps) => {
+  const isFirstStage = currentStage === 0;
+  const isLastStage = currentStage === formStages.length - 1;
+
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-between items-center pt-6">
       <div className="flex gap-2">
-        {currentStage > 0 && (
+        {!isFirstStage && (
           <Button
             type="button"
             variant="outline"
             onClick={onPrevious}
             className="flex items-center gap-2"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4" />
             Previous
           </Button>
         )}
+        
         <Button
           type="button"
           variant="outline"
@@ -43,23 +47,23 @@ const FormNavigationButtons = ({
         </Button>
       </div>
 
-      <div className="flex gap-2">
-        {currentStage < formStages.length - 1 ? (
+      <div>
+        {isLastStage ? (
+          <Button
+            type="button"
+            onClick={onSubmit}
+            className="flex items-center gap-2"
+          >
+            Submit Registration
+          </Button>
+        ) : (
           <Button
             type="button"
             onClick={onNext}
             className="flex items-center gap-2"
           >
             Next
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-        ) : (
-          <Button
-            type="button"
-            onClick={onSubmit}
-            className="bg-green-600 hover:bg-green-700"
-          >
-            Register Horse
+            <ChevronRight className="h-4 w-4" />
           </Button>
         )}
       </div>

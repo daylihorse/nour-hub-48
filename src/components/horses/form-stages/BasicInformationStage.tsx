@@ -3,7 +3,6 @@ import { useFormContext } from "react-hook-form";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { HorseFormData } from "@/types/horse";
 
 const BasicInformationStage = () => {
@@ -33,7 +32,7 @@ const BasicInformationStage = () => {
             <FormItem>
               <FormLabel>Arabic Name</FormLabel>
               <FormControl>
-                <Input placeholder="اسم الحصان بالعربية" {...field} />
+                <Input placeholder="Enter Arabic name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -46,9 +45,19 @@ const BasicInformationStage = () => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Breed *</FormLabel>
-              <FormControl>
-                <Input placeholder="e.g., Arabian, Thoroughbred" {...field} />
-              </FormControl>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select breed" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="arabian">Arabian</SelectItem>
+                  <SelectItem value="thoroughbred">Thoroughbred</SelectItem>
+                  <SelectItem value="quarter">Quarter Horse</SelectItem>
+                  <SelectItem value="mustang">Mustang</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -84,7 +93,7 @@ const BasicInformationStage = () => {
             <FormItem>
               <FormLabel>Color *</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., Bay, Chestnut, Black" {...field} />
+                <Input placeholder="Enter horse color" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -96,13 +105,13 @@ const BasicInformationStage = () => {
           name="height"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Height (cm)</FormLabel>
+              <FormLabel>Height (hands)</FormLabel>
               <FormControl>
                 <Input 
                   type="number" 
-                  placeholder="e.g., 160"
+                  placeholder="Enter height" 
                   {...field}
-                  onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
                 />
               </FormControl>
               <FormMessage />
@@ -119,9 +128,9 @@ const BasicInformationStage = () => {
               <FormControl>
                 <Input 
                   type="number" 
-                  placeholder="e.g., 450"
+                  placeholder="Enter weight" 
                   {...field}
-                  onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
                 />
               </FormControl>
               <FormMessage />

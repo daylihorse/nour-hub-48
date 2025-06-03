@@ -55,7 +55,7 @@ const OwnershipDocumentationStage = () => {
             <FormItem>
               <FormLabel>Owner Contact *</FormLabel>
               <FormControl>
-                <Input placeholder="Phone or email" {...field} />
+                <Input placeholder="Enter contact information" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

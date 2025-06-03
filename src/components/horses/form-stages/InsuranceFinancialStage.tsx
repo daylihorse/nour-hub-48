@@ -2,6 +2,7 @@
 import { useFormContext } from "react-hook-form";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { HorseFormData } from "@/types/horse";
 
@@ -54,10 +55,10 @@ const InsuranceFinancialStage = () => {
               <FormLabel>Insurance Value</FormLabel>
               <FormControl>
                 <Input 
-                  type="number"
-                  placeholder="Enter insurance value"
+                  type="number" 
+                  placeholder="Enter insurance value" 
                   {...field}
-                  onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
                 />
               </FormControl>
               <FormMessage />
@@ -73,10 +74,10 @@ const InsuranceFinancialStage = () => {
               <FormLabel>Purchase Price</FormLabel>
               <FormControl>
                 <Input 
-                  type="number"
-                  placeholder="Enter purchase price"
+                  type="number" 
+                  placeholder="Enter purchase price" 
                   {...field}
-                  onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
                 />
               </FormControl>
               <FormMessage />
@@ -92,10 +93,10 @@ const InsuranceFinancialStage = () => {
               <FormLabel>Market Value</FormLabel>
               <FormControl>
                 <Input 
-                  type="number"
-                  placeholder="Enter current market value"
+                  type="number" 
+                  placeholder="Enter market value" 
                   {...field}
-                  onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
                 />
               </FormControl>
               <FormMessage />
