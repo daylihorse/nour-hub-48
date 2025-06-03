@@ -10,7 +10,8 @@ import {
   ArrowRightLeft, 
   Dumbbell, 
   Warehouse, 
-  Wrench 
+  Wrench,
+  Store
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -21,6 +22,7 @@ const departmentCards = [
   { title: "Finance", path: "/dashboard/finance", icon: DollarSign, color: "bg-yellow-100" },
   { title: "HR Department", path: "/dashboard/hr", icon: Users, color: "bg-pink-100" },
   { title: "Inventory", path: "/dashboard/inventory", icon: Package, color: "bg-indigo-100" },
+  { title: "Marketplace", path: "/dashboard/marketplace", icon: Store, color: "bg-teal-100" },
   { title: "Arrivals & Departures", path: "/dashboard/movements", icon: ArrowRightLeft, color: "bg-orange-100" },
   { title: "Training Center", path: "/dashboard/training", icon: Dumbbell, color: "bg-red-100" },
   { title: "Stable Rooms", path: "/dashboard/rooms", icon: Warehouse, color: "bg-emerald-100" },
