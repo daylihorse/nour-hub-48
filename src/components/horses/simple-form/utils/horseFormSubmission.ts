@@ -2,13 +2,25 @@
 import { HorseFormData } from "@/types/horse";
 import { SimpleHorseFormData } from "../../form-schema/SimpleHorseFormSchema";
 
+const convertGenderToBiological = (horseGender: "stallion" | "mare" | "gelding"): "male" | "female" => {
+  switch (horseGender) {
+    case "stallion":
+    case "gelding":
+      return "male";
+    case "mare":
+      return "female";
+    default:
+      return "female"; // fallback
+  }
+};
+
 export const convertSimpleToFullHorseData = (data: SimpleHorseFormData): HorseFormData => {
   console.log("Converting simple form data to full format:", data);
   
   return {
     name: data.name,
     breed: data.breed,
-    gender: data.gender,
+    gender: convertGenderToBiological(data.gender),
     birthDate: new Date(data.birthDate),
     color: data.color,
     ownerType: data.ownerType,
