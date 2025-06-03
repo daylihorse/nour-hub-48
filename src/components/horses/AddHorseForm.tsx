@@ -27,7 +27,7 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
     defaultValues: {
       name: "",
       breed: "",
-      gender: "mare",
+      gender: "female",
       birthDate: new Date(),
       color: "",
       ownerType: "individual",

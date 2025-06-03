@@ -35,7 +35,7 @@ const ArabicAddHorseForm = ({ onSave, onCancel }: ArabicAddHorseFormProps) => {
     defaultValues: {
       name: "",
       breed: "",
-      gender: "mare",
+      gender: "female",
       birthDate: new Date(),
       color: "",
       ownerType: "individual",

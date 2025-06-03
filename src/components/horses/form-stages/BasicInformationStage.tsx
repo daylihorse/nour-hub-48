@@ -92,9 +92,9 @@ const BasicInformationStage = () => {
                     field.onChange(value);
                     // Reset dependent fields when gender changes
                     form.setValue("ageClass", "");
-                    form.setValue("adultMaleType", "");
+                    form.setValue("adultMaleType", undefined);
                     form.setValue("castrationDate", "");
-                    form.setValue("isPregnant", "");
+                    form.setValue("isPregnant", undefined);
                     form.setValue("pregnancyDuration", undefined);
                   }}
                   defaultValue={field.value}
@@ -127,9 +127,9 @@ const BasicInformationStage = () => {
                   onValueChange={(value) => {
                     field.onChange(value);
                     // Reset dependent fields when age class changes
-                    form.setValue("adultMaleType", "");
+                    form.setValue("adultMaleType", undefined);
                     form.setValue("castrationDate", "");
-                    form.setValue("isPregnant", "");
+                    form.setValue("isPregnant", undefined);
                     form.setValue("pregnancyDuration", undefined);
                   }} 
                   defaultValue={field.value}
