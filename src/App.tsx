@@ -20,6 +20,7 @@ import TrainingCenter from "./pages/dashboard/TrainingCenter";
 import StableRooms from "./pages/dashboard/StableRooms";
 import MaintenanceDepartment from "./pages/dashboard/MaintainenceDepartment";
 import MessagesDepartment from "./pages/dashboard/MessagesDepartment";
+import MarketplaceDepartment from "./pages/dashboard/MarketplaceDepartment";
 
 // New client-related imports
 import ClientsDepartment from "./pages/dashboard/ClientsDepartment";
@@ -47,6 +48,7 @@ const App = () => {
                 <Route path="finance" element={<FinanceDepartment />} />
                 <Route path="hr" element={<HRDepartment />} />
                 <Route path="inventory" element={<InventoryManagement />} />
+                <Route path="marketplace" element={<MarketplaceDepartment />} />
                 <Route path="movements" element={<HorseMovements />} />
                 <Route path="training" element={<TrainingCenter />} />
                 <Route path="rooms" element={<StableRooms />} />
