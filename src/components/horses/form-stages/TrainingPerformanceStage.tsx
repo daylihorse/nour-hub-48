@@ -1,24 +1,13 @@
 
-import { useFormContext } from "react-hook-form";
-import { Plus, X } from "lucide-react";
 import { useState } from "react";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Plus, X } from "lucide-react";
+import { useFormContext } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { FormLabel } from "@/components/ui/form";
+import DynamicSelect from "../form-components/DynamicSelect";
+import { trainingLevelOptions } from "../form-components/constants/formOptions";
 import { HorseFormValues } from "../form-schema/HorseFormSchema";
 
 const TrainingPerformanceStage = () => {
@@ -72,29 +61,12 @@ const TrainingPerformanceStage = () => {
 
   return (
     <div className="space-y-6">
-      <FormField
-        control={form.control}
+      <DynamicSelect
         name="trainingLevel"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Training Level *</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select training level" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="untrained">Untrained</SelectItem>
-                <SelectItem value="basic">Basic</SelectItem>
-                <SelectItem value="intermediate">Intermediate</SelectItem>
-                <SelectItem value="advanced">Advanced</SelectItem>
-                <SelectItem value="professional">Professional</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
+        label="Training Level"
+        placeholder="Select training level"
+        options={trainingLevelOptions}
+        required
       />
 
       <div className="space-y-4">
