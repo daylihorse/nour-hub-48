@@ -74,7 +74,7 @@ export const useEnglishHorseForm = ({ onSave }: UseEnglishHorseFormProps) => {
     },
   });
 
-  const progress = ((currentStage + 1) / formStages.length) * 100;
+  const progress = ((completedStages.size) / formStages.length) * 100;
 
   const validateCurrentStage = () => {
     const currentStageData = formStages[currentStage];
@@ -117,9 +117,12 @@ export const useEnglishHorseForm = ({ onSave }: UseEnglishHorseFormProps) => {
   };
 
   const handleStageClick = (stageIndex: number) => {
-    // Allow clicking on completed stages or the next stage
-    if (completedStages.has(stageIndex) || stageIndex <= currentStage + 1) {
-      setCurrentStage(stageIndex);
+    // Allow clicking on any stage - free navigation
+    setCurrentStage(stageIndex);
+    
+    // If user navigates to a previous stage, validate current stage and mark as complete if valid
+    if (stageIndex !== currentStage && validateCurrentStage()) {
+      setCompletedStages(prev => new Set([...prev, currentStage]));
     }
   };
 
@@ -137,5 +140,6 @@ export const useEnglishHorseForm = ({ onSave }: UseEnglishHorseFormProps) => {
     handlePrevious,
     handleStageClick,
     handleSubmit,
+    validateCurrentStage,
   };
 };

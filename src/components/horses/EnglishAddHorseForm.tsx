@@ -26,6 +26,7 @@ const EnglishAddHorseForm = ({ onSave, onCancel }: EnglishAddHorseFormProps) => 
   } = useEnglishHorseForm({ onSave });
 
   console.log("Current stage:", currentStage);
+  console.log("Completed stages:", Array.from(completedStages));
 
   try {
     return (

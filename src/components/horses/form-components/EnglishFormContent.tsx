@@ -3,9 +3,9 @@ import { UseFormReturn } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HorseFormData } from "@/types/horse";
 import { formStages } from "../config/formStages";
-import FormNavigationButtons from "./FormNavigationButtons";
 import ValidationFeedback from "./ValidationFeedback";
 import StageContentRenderer from "./StageContentRenderer";
+import TopNavigationButtons from "./TopNavigationButtons";
 
 interface EnglishFormContentProps {
   form: UseFormReturn<HorseFormData>;
@@ -43,12 +43,21 @@ const EnglishFormContent = ({
 
   return (
     <Card>
+      <TopNavigationButtons
+        currentStage={currentStage}
+        formStages={formStages}
+        onPrevious={onPrevious}
+        onNext={onNext}
+        onSubmit={onSubmit}
+      />
+      
       <CardHeader>
         <div>
-          <CardTitle>{currentStageData.title}</CardTitle>
+          <CardTitle>Step {currentStage + 1}: {currentStageData.title}</CardTitle>
           <p className="text-muted-foreground">{currentStageData.description}</p>
         </div>
       </CardHeader>
+      
       <CardContent className="space-y-6">
         <ValidationFeedback
           stage={currentStageData}
@@ -59,14 +68,16 @@ const EnglishFormContent = ({
           stage={currentStageData} 
           onSubmit={onSubmit}
         />
-        <FormNavigationButtons
-          currentStage={currentStage}
-          formStages={formStages}
-          onPrevious={onPrevious}
-          onNext={onNext}
-          onCancel={onCancel}
-          onSubmit={onSubmit}
-        />
+        
+        <div className="flex justify-end pt-6 border-t">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Cancel
+          </button>
+        </div>
       </CardContent>
     </Card>
   );
