@@ -1,56 +1,108 @@
 
-import DynamicInput from "../form-components/DynamicInput";
-import DynamicSelect from "../form-components/DynamicSelect";
-import { ownerTypeOptions } from "../form-components/constants/formOptions";
+import { useFormContext } from "react-hook-form";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { HorseFormData } from "@/types/horse";
 
 const OwnershipDocumentationStage = () => {
+  const form = useFormContext<HorseFormData>();
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <DynamicSelect
+        <FormField
+          control={form.control}
           name="ownerType"
-          label="Owner Type"
-          placeholder="Select owner type"
-          options={ownerTypeOptions}
-          required
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Owner Type *</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select owner type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="individual">Individual</SelectItem>
+                  <SelectItem value="company">Company</SelectItem>
+                  <SelectItem value="partnership">Partnership</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
         />
 
-        <DynamicInput
+        <FormField
+          control={form.control}
           name="ownerName"
-          label="Owner Name"
-          placeholder="Enter owner name"
-          required
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Owner Name *</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter owner name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
 
-        <DynamicInput
+        <FormField
+          control={form.control}
           name="ownerContact"
-          label="Owner Contact"
-          placeholder="Phone number or email"
-          required
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Owner Contact *</FormLabel>
+              <FormControl>
+                <Input placeholder="Phone or email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
 
-      <div className="border-t pt-6">
-        <h4 className="text-lg font-semibold mb-4">Registration & Documentation</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <DynamicInput
-            name="registrationNumber"
-            label="Registration Number"
-            placeholder="e.g., REG-2024-001"
-          />
+        <FormField
+          control={form.control}
+          name="registrationNumber"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Registration Number</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter registration number" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          <DynamicInput
-            name="passportNumber"
-            label="Passport Number"
-            placeholder="International passport number"
-          />
+        <FormField
+          control={form.control}
+          name="passportNumber"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Passport Number</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter passport number" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          <DynamicInput
-            name="microchipId"
-            label="Microchip ID"
-            placeholder="15-digit microchip number"
-          />
-        </div>
+        <FormField
+          control={form.control}
+          name="microchipId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Microchip ID</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter microchip ID" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
     </div>
   );
