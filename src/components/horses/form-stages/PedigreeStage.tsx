@@ -43,10 +43,17 @@ const PedigreeStage = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Father Section */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Father Information</h3>
+          <div className="border-b pb-2">
+            <h3 className="text-lg font-semibold text-gray-800">Father Information</h3>
+            <p className="text-sm text-gray-600 mt-1">
+              Select the sire (father) from existing horses or add a new one to the system.
+            </p>
+          </div>
+          
           <PedigreeSelectWithAddNew
             name="sire"
             label="Sire (Father)"
@@ -55,10 +62,23 @@ const PedigreeStage = () => {
             onAddNew={() => handleAddNewParent("sire")}
             addNewLabel="Add New Father"
           />
+          
+          <div className="bg-blue-50 p-3 rounded-md">
+            <p className="text-xs text-blue-700">
+              💡 If the father is not in the list, use "Add New Father" to register them in the system first.
+            </p>
+          </div>
         </div>
 
+        {/* Mother Section */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Mother Information</h3>
+          <div className="border-b pb-2">
+            <h3 className="text-lg font-semibold text-gray-800">Mother Information</h3>
+            <p className="text-sm text-gray-600 mt-1">
+              Select the dam (mother) from existing horses or add a new one to the system.
+            </p>
+          </div>
+          
           <PedigreeSelectWithAddNew
             name="dam"
             label="Dam (Mother)"
@@ -67,10 +87,24 @@ const PedigreeStage = () => {
             onAddNew={() => handleAddNewParent("dam")}
             addNewLabel="Add New Mother"
           />
+          
+          <div className="bg-pink-50 p-3 rounded-md">
+            <p className="text-xs text-pink-700">
+              💡 If the mother is not in the list, use "Add New Mother" to register them in the system first.
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="space-y-4">
+      {/* Bloodline Origin Field */}
+      <div className="space-y-4 pt-6 border-t">
+        <div className="border-b pb-2">
+          <h3 className="text-lg font-semibold text-gray-800">Bloodline Information</h3>
+          <p className="text-sm text-gray-600 mt-1">
+            Additional pedigree and bloodline details for this horse.
+          </p>
+        </div>
+        
         <FormField
           control={form.control}
           name="bloodlineOrigin"
@@ -78,7 +112,10 @@ const PedigreeStage = () => {
             <FormItem>
               <FormLabel>Bloodline Origin</FormLabel>
               <FormControl>
-                <Input placeholder="Enter bloodline origin" {...field} />
+                <Input 
+                  placeholder="Enter bloodline origin (e.g., Arabian, Thoroughbred, etc.)" 
+                  {...field} 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -86,6 +123,7 @@ const PedigreeStage = () => {
         />
       </div>
 
+      {/* Add Parent Horse Dialog */}
       {dialogState.parentType && (
         <AddParentHorseDialog
           isOpen={dialogState.isOpen}
