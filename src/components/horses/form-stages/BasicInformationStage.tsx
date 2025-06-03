@@ -1,12 +1,34 @@
 
+import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { HorseFormData } from "@/types/horse";
+import { horseBreeds, horseColors, genderOptions } from "../form-components/constants/formOptions";
+import EnhancedSelectWithAddNew from "../form-components/EnhancedSelectWithAddNew";
+import AddColorDialog from "../form-components/dialogs/AddColorDialog";
+import AddBreedDialog from "../form-components/dialogs/AddBreedDialog";
 
 const BasicInformationStage = () => {
   const form = useFormContext<HorseFormData>();
+  const [isColorDialogOpen, setIsColorDialogOpen] = useState(false);
+  const [isBreedDialogOpen, setIsBreedDialogOpen] = useState(false);
+  const [customColors, setCustomColors] = useState<Array<{ value: string; label: string; arabicLabel: string }>>([]);
+  const [customBreeds, setCustomBreeds] = useState<Array<{ value: string; label: string; arabicLabel: string }>>([]);
+
+  const handleAddColor = (newColor: { value: string; label: string; arabicLabel: string }) => {
+    setCustomColors(prev => [...prev, newColor]);
+    form.setValue("color", newColor.value);
+  };
+
+  const handleAddBreed = (newBreed: { value: string; label: string; arabicLabel: string }) => {
+    setCustomBreeds(prev => [...prev, newBreed]);
+    form.setValue("breed", newBreed.value);
+  };
+
+  const allColors = [...horseColors, ...customColors];
+  const allBreeds = [...horseBreeds, ...customBreeds];
 
   return (
     <div className="space-y-6">
@@ -39,28 +61,14 @@ const BasicInformationStage = () => {
           )}
         />
 
-        <FormField
-          control={form.control}
+        <EnhancedSelectWithAddNew
           name="breed"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Breed *</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select breed" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="arabian">Arabian</SelectItem>
-                  <SelectItem value="thoroughbred">Thoroughbred</SelectItem>
-                  <SelectItem value="quarter">Quarter Horse</SelectItem>
-                  <SelectItem value="mustang">Mustang</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Breed"
+          placeholder="Select breed"
+          options={allBreeds}
+          required
+          onAddNew={() => setIsBreedDialogOpen(true)}
+          addNewLabel="Add New Breed"
         />
 
         <FormField
@@ -86,18 +94,14 @@ const BasicInformationStage = () => {
           )}
         />
 
-        <FormField
-          control={form.control}
+        <EnhancedSelectWithAddNew
           name="color"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Color *</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter horse color" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Color"
+          placeholder="Select color"
+          options={allColors}
+          required
+          onAddNew={() => setIsColorDialogOpen(true)}
+          addNewLabel="Add New Color"
         />
 
         <FormField
@@ -138,6 +142,18 @@ const BasicInformationStage = () => {
           )}
         />
       </div>
+
+      <AddColorDialog
+        open={isColorDialogOpen}
+        onOpenChange={setIsColorDialogOpen}
+        onAddColor={handleAddColor}
+      />
+
+      <AddBreedDialog
+        open={isBreedDialogOpen}
+        onOpenChange={setIsBreedDialogOpen}
+        onAddBreed={handleAddBreed}
+      />
     </div>
   );
 };
