@@ -2,6 +2,11 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LaboratoryDashboard from "@/components/laboratory/LaboratoryDashboard";
+import SampleManagement from "@/components/laboratory/SampleManagement";
+import TestRequests from "@/components/laboratory/TestRequests";
+import TestResults from "@/components/laboratory/TestResults";
+import EquipmentManagement from "@/components/laboratory/EquipmentManagement";
+import QualityControl from "@/components/laboratory/QualityControl";
 
 const LaboratoryDepartment = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -28,38 +33,23 @@ const LaboratoryDepartment = () => {
         </TabsContent>
         
         <TabsContent value="samples" className="mt-6">
-          <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2">Sample Management</h3>
-            <p className="text-muted-foreground">Track sample collection, processing, and storage</p>
-          </div>
+          <SampleManagement />
         </TabsContent>
         
         <TabsContent value="tests" className="mt-6">
-          <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2">Test Requests</h3>
-            <p className="text-muted-foreground">Manage laboratory test orders and scheduling</p>
-          </div>
+          <TestRequests />
         </TabsContent>
         
         <TabsContent value="results" className="mt-6">
-          <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2">Test Results</h3>
-            <p className="text-muted-foreground">View and manage laboratory test results</p>
-          </div>
+          <TestResults />
         </TabsContent>
         
         <TabsContent value="equipment" className="mt-6">
-          <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2">Equipment Management</h3>
-            <p className="text-muted-foreground">Monitor laboratory equipment and maintenance schedules</p>
-          </div>
+          <EquipmentManagement />
         </TabsContent>
         
         <TabsContent value="quality" className="mt-6">
-          <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2">Quality Control</h3>
-            <p className="text-muted-foreground">Quality assurance metrics and compliance tracking</p>
-          </div>
+          <QualityControl />
         </TabsContent>
       </Tabs>
     </div>
