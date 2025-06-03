@@ -5,9 +5,17 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { HorseFormData } from "@/types/horse";
 import PedigreeSelectWithAddNew from "../form-components/PedigreeSelectWithAddNew";
+import AddParentHorseDialog from "../form-components/AddParentHorseDialog";
 
 const PedigreeStage = () => {
   const form = useFormContext<HorseFormData>();
+  const [dialogState, setDialogState] = useState<{
+    isOpen: boolean;
+    parentType: "sire" | "dam" | null;
+  }>({
+    isOpen: false,
+    parentType: null,
+  });
   
   // Mock data for existing horses - in a real app, this would come from an API
   const existingHorses = [
@@ -19,6 +27,21 @@ const PedigreeStage = () => {
     { value: "mare-3", label: "Royal Beauty" },
   ];
 
+  const handleAddNewParent = (parentType: "sire" | "dam") => {
+    console.log(`Add new ${parentType} horse`);
+    setDialogState({
+      isOpen: true,
+      parentType,
+    });
+  };
+
+  const handleCloseDialog = () => {
+    setDialogState({
+      isOpen: false,
+      parentType: null,
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -29,7 +52,7 @@ const PedigreeStage = () => {
             label="Sire (Father)"
             placeholder="Select or add father..."
             options={existingHorses}
-            onAddNew={() => console.log("Add new father horse")}
+            onAddNew={() => handleAddNewParent("sire")}
             addNewLabel="Add New Father"
           />
         </div>
@@ -41,7 +64,7 @@ const PedigreeStage = () => {
             label="Dam (Mother)"
             placeholder="Select or add mother..."
             options={existingHorses}
-            onAddNew={() => console.log("Add new mother horse")}
+            onAddNew={() => handleAddNewParent("dam")}
             addNewLabel="Add New Mother"
           />
         </div>
@@ -62,6 +85,14 @@ const PedigreeStage = () => {
           )}
         />
       </div>
+
+      {dialogState.parentType && (
+        <AddParentHorseDialog
+          isOpen={dialogState.isOpen}
+          onClose={handleCloseDialog}
+          parentType={dialogState.parentType}
+        />
+      )}
     </div>
   );
 };
