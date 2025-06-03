@@ -4,13 +4,15 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HorseFormData } from "@/types/horse";
-import { horseFormSchema } from "./form-schema/HorseFormSchema";
+import { enhancedHorseFormSchema } from "./form-schema/EnhancedHorseFormSchema";
 import { useToast } from "@/hooks/use-toast";
+import { useStageValidation } from "@/hooks/useStageValidation";
 import { arabicFormStages } from "./config/arabicFormStages";
 import ArabicFormProgressHeader from "./form-components/ArabicFormProgressHeader";
 import ArabicStageNavigation from "./form-components/ArabicStageNavigation";
 import ArabicStageContentRenderer from "./form-components/ArabicStageContentRenderer";
 import ArabicFormNavigationButtons from "./form-components/ArabicFormNavigationButtons";
+import ArabicValidationFeedback from "./form-components/ArabicValidationFeedback";
 
 interface ArabicAddHorseFormProps {
   onSave: (data: HorseFormData) => void;
@@ -21,9 +23,10 @@ const ArabicAddHorseForm = ({ onSave, onCancel }: ArabicAddHorseFormProps) => {
   const [currentStage, setCurrentStage] = useState(0);
   const [completedStages, setCompletedStages] = useState<Set<number>>(new Set());
   const { toast } = useToast();
+  const { validateStage, getStageProgress, getOverallValidationStatus } = useStageValidation();
 
   const form = useForm<HorseFormData>({
-    resolver: zodResolver(horseFormSchema),
+    resolver: zodResolver(enhancedHorseFormSchema),
     defaultValues: {
       name: "",
       breed: "",
@@ -44,23 +47,28 @@ const ArabicAddHorseForm = ({ onSave, onCancel }: ArabicAddHorseFormProps) => {
     mode: "onChange",
   });
 
-  const progress = ((completedStages.size + (currentStage + 1)) / arabicFormStages.length) * 100;
+  const progress = getStageProgress(arabicFormStages, completedStages);
+  const validationStatus = getOverallValidationStatus(arabicFormStages, completedStages);
 
-  const validateCurrentStage = async () => {
+  const handleNext = async () => {
     const stage = arabicFormStages[currentStage];
-    const isValid = await form.trigger(stage.fields as any);
+    const isValid = await validateStage(stage);
     
     if (isValid) {
       setCompletedStages(prev => new Set(prev).add(currentStage));
-      return true;
-    }
-    return false;
-  };
-
-  const handleNext = async () => {
-    const isValid = await validateCurrentStage();
-    if (isValid && currentStage < arabicFormStages.length - 1) {
-      setCurrentStage(currentStage + 1);
+      if (currentStage < arabicFormStages.length - 1) {
+        setCurrentStage(currentStage + 1);
+      }
+      toast({
+        title: "تم إكمال المرحلة",
+        description: `تم إكمال مرحلة ${stage.title} بنجاح`,
+      });
+    } else {
+      toast({
+        title: "يوجد أخطاء",
+        description: "يرجى إصلاح الأخطاء قبل المتابعة",
+        variant: "destructive",
+      });
     }
   };
 
@@ -70,17 +78,58 @@ const ArabicAddHorseForm = ({ onSave, onCancel }: ArabicAddHorseFormProps) => {
     }
   };
 
+  const handleStageClick = async (stageIndex: number) => {
+    // Allow navigation to previous stages or completed stages
+    if (stageIndex <= currentStage || completedStages.has(stageIndex)) {
+      setCurrentStage(stageIndex);
+    } else {
+      // Validate all stages up to the target stage
+      let canNavigate = true;
+      for (let i = currentStage; i < stageIndex; i++) {
+        const isValid = await validateStage(arabicFormStages[i]);
+        if (!isValid) {
+          canNavigate = false;
+          break;
+        }
+        setCompletedStages(prev => new Set(prev).add(i));
+      }
+      
+      if (canNavigate) {
+        setCurrentStage(stageIndex);
+      } else {
+        toast({
+          title: "لا يمكن التنقل",
+          description: "يجب إكمال المراحل السابقة أولاً",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
   const handleSubmit = async (data: HorseFormData) => {
-    try {
-      await onSave(data);
+    // Validate all stages before submission
+    const allStagesValid = await Promise.all(
+      arabicFormStages.map(stage => validateStage(stage))
+    );
+
+    if (allStagesValid.every(Boolean)) {
+      try {
+        await onSave(data);
+        toast({
+          title: "نجح التسجيل",
+          description: `تم تسجيل ${data.name} بنجاح.`,
+        });
+      } catch (error) {
+        toast({
+          title: "خطأ",
+          description: "فشل في تسجيل الحصان. حاول مرة أخرى.",
+          variant: "destructive",
+        });
+      }
+    } else {
       toast({
-        title: "نجح التسجيل",
-        description: `تم تسجيل ${data.name} بنجاح.`,
-      });
-    } catch (error) {
-      toast({
-        title: "خطأ",
-        description: "فشل في تسجيل الحصان. حاول مرة أخرى.",
+        title: "يوجد أخطاء",
+        description: "يرجى مراجعة جميع المراحل وإصلاح الأخطاء",
         variant: "destructive",
       });
     }
@@ -92,13 +141,14 @@ const ArabicAddHorseForm = ({ onSave, onCancel }: ArabicAddHorseFormProps) => {
         currentStage={currentStage}
         formStages={arabicFormStages}
         progress={progress}
+        validationStatus={validationStatus}
       />
 
       <ArabicStageNavigation
         formStages={arabicFormStages}
         currentStage={currentStage}
         completedStages={completedStages}
-        onStageClick={setCurrentStage}
+        onStageClick={handleStageClick}
       />
 
       <FormProvider {...form}>
@@ -120,7 +170,12 @@ const ArabicAddHorseForm = ({ onSave, onCancel }: ArabicAddHorseFormProps) => {
                 />
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-6">
+              <ArabicValidationFeedback
+                stage={arabicFormStages[currentStage]}
+                currentStage={currentStage}
+                completedStages={completedStages}
+              />
               <ArabicStageContentRenderer stage={arabicFormStages[currentStage]} />
             </CardContent>
           </Card>
