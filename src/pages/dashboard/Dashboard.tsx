@@ -1,5 +1,4 @@
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   Rabbit, // Changed from Horse to Rabbit 
@@ -13,11 +12,98 @@ import {
   Warehouse, 
   Wrench,
   Store,
-  Home
+  MessageSquare
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {
+  const departments = [
+    {
+      title: "Horses Department",
+      icon: Rabbit,
+      description: "Manage horse records, health, and breeding information",
+      link: "/dashboard/horses",
+      color: "bg-blue-500"
+    },
+    {
+      title: "Laboratory",
+      icon: FlaskRound,
+      description: "Lab tests, results, and medical analysis",
+      link: "/dashboard/laboratory",
+      color: "bg-green-500"
+    },
+    {
+      title: "Clinic",
+      icon: Hospital,
+      description: "Veterinary care, appointments, and medical records",
+      link: "/dashboard/clinic",
+      color: "bg-red-500"
+    },
+    {
+      title: "Finance",
+      icon: DollarSign,
+      description: "Financial management, invoicing, and accounting",
+      link: "/dashboard/finance",
+      color: "bg-yellow-500"
+    },
+    {
+      title: "HR Department",
+      icon: Users,
+      description: "Employee management, payroll, and scheduling",
+      link: "/dashboard/hr",
+      color: "bg-purple-500"
+    },
+    {
+      title: "Inventory",
+      icon: Package,
+      description: "Stock management, supplies, and equipment",
+      link: "/dashboard/inventory",
+      color: "bg-orange-500"
+    },
+    {
+      title: "Marketplace",
+      icon: Store,
+      description: "Stable store and marketplace integration",
+      link: "/dashboard/marketplace",
+      color: "bg-pink-500"
+    },
+    {
+      title: "Horse Movements",
+      icon: ArrowRightLeft,
+      description: "Track arrivals, departures, and transfers",
+      link: "/dashboard/movements",
+      color: "bg-indigo-500"
+    },
+    {
+      title: "Training Center",
+      icon: Dumbbell,
+      description: "Training programs, schedules, and progress tracking",
+      link: "/dashboard/training",
+      color: "bg-teal-500"
+    },
+    {
+      title: "Stable Rooms",
+      icon: Warehouse,
+      description: "Room assignments, availability, and maintenance",
+      link: "/dashboard/rooms",
+      color: "bg-cyan-500"
+    },
+    {
+      title: "Maintenance",
+      icon: Wrench,
+      description: "Facility maintenance, repairs, and schedules",
+      link: "/dashboard/maintenance",
+      color: "bg-gray-500"
+    },
+    {
+      title: "Messages",
+      icon: MessageSquare,
+      description: "Internal messaging and communications",
+      link: "/dashboard/messages",
+      color: "bg-emerald-500"
+    }
+  ];
+
   return (
     <div className="space-y-6">
       <div>
@@ -25,212 +111,23 @@ const Dashboard = () => {
         <p className="text-muted-foreground">Manage all aspects of your equestrian operation</p>
       </div>
       
-      <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-6 lg:grid-cols-12">
-          <TabsTrigger value="overview" className="flex items-center gap-2">
-            <Home className="h-4 w-4" />
-            <span className="hidden sm:inline">Overview</span>
-          </TabsTrigger>
-          <TabsTrigger value="horses" className="flex items-center gap-2">
-            <Rabbit className="h-4 w-4" />
-            <span className="hidden sm:inline">Horses</span>
-          </TabsTrigger>
-          <TabsTrigger value="laboratory" className="flex items-center gap-2">
-            <FlaskRound className="h-4 w-4" />
-            <span className="hidden sm:inline">Lab</span>
-          </TabsTrigger>
-          <TabsTrigger value="clinic" className="flex items-center gap-2">
-            <Hospital className="h-4 w-4" />
-            <span className="hidden sm:inline">Clinic</span>
-          </TabsTrigger>
-          <TabsTrigger value="finance" className="flex items-center gap-2">
-            <DollarSign className="h-4 w-4" />
-            <span className="hidden sm:inline">Finance</span>
-          </TabsTrigger>
-          <TabsTrigger value="hr" className="flex items-center gap-2">
-            <Users className="h-4 w-4" />
-            <span className="hidden sm:inline">HR</span>
-          </TabsTrigger>
-          <TabsTrigger value="inventory" className="flex items-center gap-2">
-            <Package className="h-4 w-4" />
-            <span className="hidden sm:inline">Inventory</span>
-          </TabsTrigger>
-          <TabsTrigger value="marketplace" className="flex items-center gap-2">
-            <Store className="h-4 w-4" />
-            <span className="hidden sm:inline">Market</span>
-          </TabsTrigger>
-          <TabsTrigger value="movements" className="flex items-center gap-2">
-            <ArrowRightLeft className="h-4 w-4" />
-            <span className="hidden sm:inline">Movements</span>
-          </TabsTrigger>
-          <TabsTrigger value="training" className="flex items-center gap-2">
-            <Dumbbell className="h-4 w-4" />
-            <span className="hidden sm:inline">Training</span>
-          </TabsTrigger>
-          <TabsTrigger value="rooms" className="flex items-center gap-2">
-            <Warehouse className="h-4 w-4" />
-            <span className="hidden sm:inline">Rooms</span>
-          </TabsTrigger>
-          <TabsTrigger value="maintenance" className="flex items-center gap-2">
-            <Wrench className="h-4 w-4" />
-            <span className="hidden sm:inline">Maint</span>
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="overview">
-          <Card>
-            <CardHeader>
-              <CardTitle>Dashboard Overview</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Welcome to your horse management system. Select a department tab above to get started.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="horses">
-          <Card>
-            <CardHeader>
-              <CardTitle>Horses Department</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Link to="/dashboard/horses" className="text-primary hover:underline">
-                Go to Horses Management →
-              </Link>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="laboratory">
-          <Card>
-            <CardHeader>
-              <CardTitle>Laboratory</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Link to="/dashboard/laboratory" className="text-primary hover:underline">
-                Go to Laboratory →
-              </Link>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="clinic">
-          <Card>
-            <CardHeader>
-              <CardTitle>Clinic</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Link to="/dashboard/clinic" className="text-primary hover:underline">
-                Go to Clinic →
-              </Link>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="finance">
-          <Card>
-            <CardHeader>
-              <CardTitle>Finance</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Link to="/dashboard/finance" className="text-primary hover:underline">
-                Go to Finance →
-              </Link>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="hr">
-          <Card>
-            <CardHeader>
-              <CardTitle>HR Department</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Link to="/dashboard/hr" className="text-primary hover:underline">
-                Go to HR →
-              </Link>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="inventory">
-          <Card>
-            <CardHeader>
-              <CardTitle>Inventory</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Link to="/dashboard/inventory" className="text-primary hover:underline">
-                Go to Inventory →
-              </Link>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="marketplace">
-          <Card>
-            <CardHeader>
-              <CardTitle>Marketplace</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Link to="/dashboard/marketplace" className="text-primary hover:underline">
-                Go to Marketplace →
-              </Link>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="movements">
-          <Card>
-            <CardHeader>
-              <CardTitle>Arrivals & Departures</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Link to="/dashboard/movements" className="text-primary hover:underline">
-                Go to Movements →
-              </Link>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="training">
-          <Card>
-            <CardHeader>
-              <CardTitle>Training Center</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Link to="/dashboard/training" className="text-primary hover:underline">
-                Go to Training →
-              </Link>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="rooms">
-          <Card>
-            <CardHeader>
-              <CardTitle>Stable Rooms</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Link to="/dashboard/rooms" className="text-primary hover:underline">
-                Go to Rooms →
-              </Link>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="maintenance">
-          <Card>
-            <CardHeader>
-              <CardTitle>Maintenance</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Link to="/dashboard/maintenance" className="text-primary hover:underline">
-                Go to Maintenance →
-              </Link>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {departments.map((dept) => (
+          <Link key={dept.title} to={dept.link} className="group">
+            <Card className="h-full transition-all duration-200 hover:shadow-lg hover:scale-105">
+              <CardHeader className="pb-3">
+                <div className={`w-12 h-12 rounded-lg ${dept.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200`}>
+                  <dept.icon className="h-6 w-6 text-white" />
+                </div>
+                <CardTitle className="text-lg">{dept.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">{dept.description}</p>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 };
