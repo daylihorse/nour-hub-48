@@ -1,10 +1,9 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Search, Filter } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import AddHorseFormSimple from "./AddHorseFormSimple";
+import EnglishAddHorseForm from "./EnglishAddHorseForm";
 import { HorseFormData } from "@/types/horse";
 import { useToast } from "@/hooks/use-toast";
 
@@ -67,9 +66,9 @@ const HorseManagement = () => {
   };
 
   if (showAddForm) {
-    console.log("Rendering AddHorseFormSimple...");
+    console.log("Rendering EnglishAddHorseForm...");
     return (
-      <AddHorseFormSimple 
+      <EnglishAddHorseForm 
         onSave={handleSaveHorse}
         onCancel={handleCancelAdd}
       />
