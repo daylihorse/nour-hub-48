@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle, Horse, User, Heart, Trophy, Home, DollarSign, FileText } from "lucide-react";
+import { CheckCircle, Heart, User, Trophy, Home, DollarSign, FileText } from "lucide-react";
 import { HorseFormValues } from "../form-schema/HorseFormSchema";
 
 interface ReviewConfirmationStageProps {
@@ -60,7 +60,7 @@ const ReviewConfirmationStage = ({ onSubmit }: ReviewConfirmationStageProps) => 
         {/* Basic Information */}
         {renderSection(
           "Basic Information",
-          <Horse className="h-5 w-5" />,
+          <Heart className="h-5 w-5" />,
           <>
             {renderField("Name", formData.name)}
             {renderField("Arabic Name", formData.arabicName)}
