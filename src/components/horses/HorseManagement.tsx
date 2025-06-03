@@ -13,6 +13,8 @@ const HorseManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
 
+  console.log("HorseManagement rendering, showAddForm:", showAddForm);
+
   // Mock data for existing horses
   const horses = [
     {
@@ -45,6 +47,7 @@ const HorseManagement = () => {
       
       setShowAddForm(false);
     } catch (error) {
+      console.error("Error saving horse:", error);
       toast({
         title: "خطأ",
         description: "فشل في تسجيل الحصان. حاول مرة أخرى.",
@@ -54,17 +57,36 @@ const HorseManagement = () => {
   };
 
   const handleCancelAdd = () => {
+    console.log("Canceling add horse form");
     setShowAddForm(false);
   };
 
+  const handleAddNewHorse = () => {
+    console.log("Add new horse button clicked");
+    setShowAddForm(true);
+  };
+
   if (showAddForm) {
-    return (
-      <ArabicAddHorseForm 
-        onSave={handleSaveHorse}
-        onCancel={handleCancelAdd}
-      />
-    );
+    console.log("Rendering ArabicAddHorseForm...");
+    try {
+      return (
+        <ArabicAddHorseForm 
+          onSave={handleSaveHorse}
+          onCancel={handleCancelAdd}
+        />
+      );
+    } catch (error) {
+      console.error("Error rendering ArabicAddHorseForm:", error);
+      return (
+        <div className="p-6">
+          <p>Error loading form. Please try again.</p>
+          <Button onClick={handleCancelAdd}>Back</Button>
+        </div>
+      );
+    }
   }
+
+  console.log("Rendering horse list view...");
 
   return (
     <div className="space-y-6" dir="rtl">
@@ -75,7 +97,7 @@ const HorseManagement = () => {
           <p className="text-muted-foreground">إدارة جميع الخيول في الإسطبل</p>
         </div>
         <Button 
-          onClick={() => setShowAddForm(true)}
+          onClick={handleAddNewHorse}
           className="flex items-center gap-2"
         >
           <Plus className="h-4 w-4" />
