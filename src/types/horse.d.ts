@@ -5,7 +5,12 @@ export interface Horse {
   name: string;
   arabicName?: string;
   breed: string;
-  gender: 'stallion' | 'mare' | 'gelding';
+  gender: 'male' | 'female';
+  ageClass?: string;
+  adultMaleType?: 'stallion' | 'gelding';
+  castrationDate?: string;
+  isPregnant?: 'yes' | 'no';
+  pregnancyDuration?: number;
   birthDate: Date;
   color: string;
   height?: number;

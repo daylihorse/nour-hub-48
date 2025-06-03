@@ -6,7 +6,7 @@ export const formStages: FormStage[] = [
     id: "basic",
     title: "Basic Information",
     description: "Essential horse details",
-    fields: ["name", "arabicName", "breed", "gender", "birthDate", "color", "height", "weight"],
+    fields: ["name", "arabicName", "breed", "gender", "ageClass", "adultMaleType", "castrationDate", "isPregnant", "pregnancyDuration", "birthDate", "color", "height", "weight", "status"],
     isComplete: false,
     isRequired: true,
   },

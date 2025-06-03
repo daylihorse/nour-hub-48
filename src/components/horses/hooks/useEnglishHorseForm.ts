@@ -12,6 +12,11 @@ const horseFormSchema = z.object({
   arabicName: z.string().optional(),
   breed: z.string().min(1, "Breed is required"),
   gender: z.string().min(1, "Gender is required"),
+  ageClass: z.string().optional(),
+  adultMaleType: z.string().optional(),
+  castrationDate: z.string().optional(),
+  isPregnant: z.string().optional(),
+  pregnancyDuration: z.number().optional(),
   color: z.string().min(1, "Color is required"),
   height: z.number().optional(),
   weight: z.number().optional(),
@@ -45,6 +50,7 @@ const horseFormSchema = z.object({
   marketValue: z.number().optional(),
   images: z.array(z.string()).optional(),
   documents: z.array(z.string()).optional(),
+  status: z.string().min(1, "Status is required"),
 });
 
 interface UseEnglishHorseFormProps {
@@ -62,6 +68,11 @@ export const useEnglishHorseForm = ({ onSave }: UseEnglishHorseFormProps) => {
       arabicName: "",
       breed: "",
       gender: undefined,
+      ageClass: "",
+      adultMaleType: "",
+      castrationDate: "",
+      isPregnant: "",
+      pregnancyDuration: undefined,
       color: "",
       ownerType: undefined,
       ownerName: "",
@@ -71,6 +82,7 @@ export const useEnglishHorseForm = ({ onSave }: UseEnglishHorseFormProps) => {
       insured: false,
       images: [],
       documents: [],
+      status: undefined,
     },
   });
 
@@ -84,7 +96,30 @@ export const useEnglishHorseForm = ({ onSave }: UseEnglishHorseFormProps) => {
     const requiredFields = currentStageData.fields.filter(field => {
       // Define required fields for each stage
       if (currentStageData.id === "basic") {
-        return ["name", "breed", "gender", "color"].includes(field);
+        const basicRequiredFields = ["name", "breed", "gender", "color", "status"];
+        
+        // Add conditional required fields based on gender selection
+        if (formValues.gender) {
+          basicRequiredFields.push("ageClass");
+          
+          if (formValues.gender === "male" && formValues.ageClass === "adult_male") {
+            basicRequiredFields.push("adultMaleType");
+            
+            if (formValues.adultMaleType === "gelding") {
+              basicRequiredFields.push("castrationDate");
+            }
+          }
+          
+          if (formValues.gender === "female" && formValues.ageClass === "mare") {
+            basicRequiredFields.push("isPregnant");
+            
+            if (formValues.isPregnant === "yes") {
+              basicRequiredFields.push("pregnancyDuration");
+            }
+          }
+        }
+        
+        return basicRequiredFields.includes(field);
       }
       if (currentStageData.id === "ownership") {
         return ["ownerType", "ownerName", "ownerContact"].includes(field);
