@@ -61,7 +61,6 @@ export const arabicLabels = {
   "Register Horse": "تسجيل الحصان",
 
   // Headers
-  "Add New Horse": "إضافة حصان جديد",
   "Register a new horse in the stable": "تسجيل حصان جديد في الإسطبل",
   "Registration & Documentation": "التسجيل والوثائق",
   "Essential horse details": "تفاصيل الحصان الأساسية",
