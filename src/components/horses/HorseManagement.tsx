@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Search, Filter } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import AddHorseForm from "./AddHorseForm";
+import ArabicAddHorseForm from "./ArabicAddHorseForm";
 import { HorseFormData } from "@/types/horse";
 import { useToast } from "@/hooks/use-toast";
 
@@ -39,15 +39,15 @@ const HorseManagement = () => {
       console.log("Saving horse data:", data);
       
       toast({
-        title: "Success!",
-        description: `${data.name} has been registered successfully.`,
+        title: "نجح!",
+        description: `تم تسجيل ${data.name} بنجاح.`,
       });
       
       setShowAddForm(false);
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to register horse. Please try again.",
+        title: "خطأ",
+        description: "فشل في تسجيل الحصان. حاول مرة أخرى.",
         variant: "destructive",
       });
     }
@@ -59,7 +59,7 @@ const HorseManagement = () => {
 
   if (showAddForm) {
     return (
-      <AddHorseForm 
+      <ArabicAddHorseForm 
         onSave={handleSaveHorse}
         onCancel={handleCancelAdd}
       />
@@ -67,19 +67,19 @@ const HorseManagement = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" dir="rtl">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-bold">Horse Registry</h2>
-          <p className="text-muted-foreground">Manage all horses in the stable</p>
+        <div className="text-right">
+          <h2 className="text-2xl font-bold">سجل الخيول</h2>
+          <p className="text-muted-foreground">إدارة جميع الخيول في الإسطبل</p>
         </div>
         <Button 
           onClick={() => setShowAddForm(true)}
           className="flex items-center gap-2"
         >
           <Plus className="h-4 w-4" />
-          Add New Horse
+          إضافة حصان جديد
         </Button>
       </div>
 
@@ -89,18 +89,19 @@ const HorseManagement = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
-                  placeholder="Search horses by name, breed, or owner..."
+                  placeholder="البحث عن الخيول بالاسم أو السلالة أو المالك..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pr-10 text-right"
+                  dir="rtl"
                 />
               </div>
             </div>
             <Button variant="outline" className="flex items-center gap-2">
               <Filter className="h-4 w-4" />
-              Filters
+              فلاتر
             </Button>
           </div>
         </CardContent>
@@ -111,34 +112,34 @@ const HorseManagement = () => {
         {horses.map((horse) => (
           <Card key={horse.id} className="hover:shadow-lg transition-shadow">
             <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>{horse.name}</span>
+              <CardTitle className="flex items-center justify-between text-right">
                 <span className="text-sm font-normal text-muted-foreground">
                   {horse.gender}
                 </span>
+                <span>{horse.name}</span>
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="text-right">
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Breed:</span>
                   <span>{horse.breed}</span>
+                  <span className="text-muted-foreground">:السلالة</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Owner:</span>
                   <span>{horse.owner}</span>
+                  <span className="text-muted-foreground">:المالك</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Status:</span>
                   <span className="capitalize">{horse.status}</span>
+                  <span className="text-muted-foreground">:الحالة</span>
                 </div>
               </div>
               <div className="flex gap-2 mt-4">
                 <Button variant="outline" size="sm" className="flex-1">
-                  View Details
+                  عرض التفاصيل
                 </Button>
                 <Button variant="outline" size="sm" className="flex-1">
-                  Edit
+                  تعديل
                 </Button>
               </div>
             </CardContent>
