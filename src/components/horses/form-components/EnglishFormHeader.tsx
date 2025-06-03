@@ -1,6 +1,6 @@
 
-import { FormProgressHeader } from "./FormProgressHeader";
-import { StageNavigation } from "./StageNavigation";
+import FormProgressHeader from "./FormProgressHeader";
+import StageNavigation from "./StageNavigation";
 import { FormStage } from "@/types/horse";
 
 interface EnglishFormHeaderProps {
