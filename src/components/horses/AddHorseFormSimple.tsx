@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -66,11 +65,49 @@ const AddHorseFormSimple = ({ onSave, onCancel }: AddHorseFormSimpleProps) => {
     
     try {
       // Convert the simple form data to the full HorseFormData format
+      // Create the object explicitly with all required fields to satisfy TypeScript
       const fullData: HorseFormData = {
-        ...data,
+        name: data.name,
+        breed: data.breed,
+        gender: data.gender,
         birthDate: new Date(data.birthDate),
+        color: data.color,
+        ownerType: data.ownerType,
+        ownerName: data.ownerName,
+        ownerContact: data.ownerContact,
+        healthStatus: data.healthStatus,
+        vaccinationStatus: data.vaccinationStatus,
+        trainingLevel: data.trainingLevel,
+        insured: data.insured,
+        status: data.status,
+        // Required fields from HorseFormData that weren't in our simple form
+        // Adding empty arrays or default values as needed
         images: [],
         documents: [],
+        // Optional fields can be undefined
+        arabicName: undefined,
+        height: undefined,
+        weight: undefined,
+        registrationNumber: undefined,
+        passportNumber: undefined,
+        microchipId: undefined,
+        sire: undefined,
+        dam: undefined,
+        bloodlineOrigin: undefined,
+        lastVetCheckup: undefined,
+        medicalConditions: [],
+        allergies: [],
+        disciplines: [],
+        competitionHistory: [],
+        achievements: [],
+        stallNumber: undefined,
+        feedingSchedule: undefined,
+        exerciseRoutine: undefined,
+        specialNeeds: [],
+        insuranceProvider: undefined,
+        insuranceValue: undefined,
+        purchasePrice: undefined,
+        marketValue: undefined,
       };
       
       console.log("Calling onSave with:", fullData);
