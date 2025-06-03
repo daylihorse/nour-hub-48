@@ -16,6 +16,7 @@ import {
   User,
   MessageSquare,
   Store,
+  Home,
 } from "lucide-react";
 
 import {
@@ -43,6 +44,7 @@ interface Department {
 }
 
 const departments: Department[] = [
+  { title: "Home", path: "/dashboard", icon: Home },
   { title: "Horses Department", path: "/dashboard/horses", icon: House },
   { title: "Laboratory", path: "/dashboard/laboratory", icon: FlaskRound },
   { title: "Clinic", path: "/dashboard/clinic", icon: Hospital },
