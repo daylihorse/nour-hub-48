@@ -54,7 +54,7 @@ const QualityMetricsOverview = () => {
                 </div>
               </div>
             </CardContent>
-          </div>
+          </Card>
         );
       })}
     </div>
