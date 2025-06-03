@@ -105,22 +105,25 @@ const ArabicAddHorseForm = ({ onSave, onCancel }: ArabicAddHorseFormProps) => {
         <form className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-right">{arabicFormStages[currentStage].title}</CardTitle>
-              <p className="text-muted-foreground text-right">{arabicFormStages[currentStage].description}</p>
+              <div className="flex items-center justify-between">
+                <div className="text-right">
+                  <CardTitle>{arabicFormStages[currentStage].title}</CardTitle>
+                  <p className="text-muted-foreground">{arabicFormStages[currentStage].description}</p>
+                </div>
+                <ArabicFormNavigationButtons
+                  currentStage={currentStage}
+                  formStages={arabicFormStages}
+                  onPrevious={handlePrevious}
+                  onNext={handleNext}
+                  onCancel={onCancel}
+                  onSubmit={form.handleSubmit(handleSubmit)}
+                />
+              </div>
             </CardHeader>
             <CardContent>
               <ArabicStageContentRenderer stage={arabicFormStages[currentStage]} />
             </CardContent>
           </Card>
-
-          <ArabicFormNavigationButtons
-            currentStage={currentStage}
-            formStages={arabicFormStages}
-            onPrevious={handlePrevious}
-            onNext={handleNext}
-            onCancel={onCancel}
-            onSubmit={form.handleSubmit(handleSubmit)}
-          />
         </form>
       </FormProvider>
     </div>

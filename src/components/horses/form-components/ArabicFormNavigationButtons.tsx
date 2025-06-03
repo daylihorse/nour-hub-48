@@ -21,48 +21,45 @@ const ArabicFormNavigationButtons = ({
   onSubmit
 }: ArabicFormNavigationButtonsProps) => {
   return (
-    <div className="flex justify-between">
-      <div className="flex gap-2">
+    <div className="flex gap-2">
+      {currentStage < formStages.length - 1 ? (
+        <Button
+          type="button"
+          onClick={onNext}
+          className="flex items-center gap-2"
+        >
+          التالي
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+      ) : (
+        <Button
+          type="button"
+          onClick={onSubmit}
+          className="bg-green-600 hover:bg-green-700"
+        >
+          تسجيل الحصان
+        </Button>
+      )}
+      
+      {currentStage > 0 && (
         <Button
           type="button"
           variant="outline"
-          onClick={onCancel}
+          onClick={onPrevious}
+          className="flex items-center gap-2"
         >
-          إلغاء
+          <ArrowRight className="h-4 w-4" />
+          السابق
         </Button>
-        {currentStage > 0 && (
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onPrevious}
-            className="flex items-center gap-2"
-          >
-            <ArrowRight className="h-4 w-4" />
-            السابق
-          </Button>
-        )}
-      </div>
-
-      <div className="flex gap-2">
-        {currentStage < formStages.length - 1 ? (
-          <Button
-            type="button"
-            onClick={onNext}
-            className="flex items-center gap-2"
-          >
-            التالي
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        ) : (
-          <Button
-            type="button"
-            onClick={onSubmit}
-            className="bg-green-600 hover:bg-green-700"
-          >
-            تسجيل الحصان
-          </Button>
-        )}
-      </div>
+      )}
+      
+      <Button
+        type="button"
+        variant="outline"
+        onClick={onCancel}
+      >
+        إلغاء
+      </Button>
     </div>
   );
 };
