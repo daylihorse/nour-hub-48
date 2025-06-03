@@ -1,4 +1,3 @@
-
 import { useFormContext } from "react-hook-form";
 import {
   FormControl,
@@ -43,6 +42,8 @@ const PedigreeSelectWithAddNew = ({
   const handleValueChange = (value: string) => {
     if (value === "__add_new__") {
       onAddNew();
+      // Don't set the form value to __add_new__, keep the current value
+      return;
     } else {
       form.setValue(name, value);
     }
@@ -55,7 +56,7 @@ const PedigreeSelectWithAddNew = ({
       render={({ field }) => (
         <FormItem>
           <FormLabel>{label}</FormLabel>
-          <Select onValueChange={handleValueChange} defaultValue={field.value}>
+          <Select onValueChange={handleValueChange} value={field.value || ""}>
             <FormControl>
               <SelectTrigger>
                 <SelectValue placeholder={placeholder} />
