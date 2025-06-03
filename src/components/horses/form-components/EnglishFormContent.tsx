@@ -44,19 +44,9 @@ const EnglishFormContent = ({
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>{currentStageData.title}</CardTitle>
-            <p className="text-muted-foreground">{currentStageData.description}</p>
-          </div>
-          <FormNavigationButtons
-            currentStage={currentStage}
-            formStages={formStages}
-            onPrevious={onPrevious}
-            onNext={onNext}
-            onCancel={onCancel}
-            onSubmit={onSubmit}
-          />
+        <div>
+          <CardTitle>{currentStageData.title}</CardTitle>
+          <p className="text-muted-foreground">{currentStageData.description}</p>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -67,6 +57,14 @@ const EnglishFormContent = ({
         />
         <StageContentRenderer 
           stage={currentStageData} 
+          onSubmit={onSubmit}
+        />
+        <FormNavigationButtons
+          currentStage={currentStage}
+          formStages={formStages}
+          onPrevious={onPrevious}
+          onNext={onNext}
+          onCancel={onCancel}
           onSubmit={onSubmit}
         />
       </CardContent>
