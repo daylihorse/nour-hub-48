@@ -1,0 +1,77 @@
+
+import { FormStage } from "@/types/horse";
+
+export const formStages: FormStage[] = [
+  {
+    id: "basic",
+    title: "Basic Information",
+    description: "Essential horse details",
+    fields: ["name", "breed", "gender", "birthDate", "color"],
+    isComplete: false,
+    isRequired: true,
+  },
+  {
+    id: "ownership",
+    title: "Ownership & Documentation",
+    description: "Owner details and registration",
+    fields: ["ownerType", "ownerName", "ownerContact"],
+    isComplete: false,
+    isRequired: true,
+  },
+  {
+    id: "pedigree",
+    title: "Pedigree",
+    description: "Bloodline and ancestry",
+    fields: ["sire", "dam", "bloodlineOrigin"],
+    isComplete: false,
+    isRequired: false,
+  },
+  {
+    id: "health",
+    title: "Health & Medical",
+    description: "Medical history and status",
+    fields: ["healthStatus", "vaccinationStatus"],
+    isComplete: false,
+    isRequired: true,
+  },
+  {
+    id: "training",
+    title: "Training & Performance",
+    description: "Training level and achievements",
+    fields: ["trainingLevel"],
+    isComplete: false,
+    isRequired: false,
+  },
+  {
+    id: "stable",
+    title: "Stable Management",
+    description: "Housing and care details",
+    fields: ["stallNumber"],
+    isComplete: false,
+    isRequired: false,
+  },
+  {
+    id: "insurance",
+    title: "Insurance & Financial",
+    description: "Insurance and valuation",
+    fields: ["insured"],
+    isComplete: false,
+    isRequired: false,
+  },
+  {
+    id: "documents",
+    title: "Documents & Images",
+    description: "Upload files and photos",
+    fields: ["images"],
+    isComplete: false,
+    isRequired: false,
+  },
+  {
+    id: "review",
+    title: "Review & Confirmation",
+    description: "Final review before submission",
+    fields: [],
+    isComplete: false,
+    isRequired: true,
+  },
+];
