@@ -2,31 +2,13 @@
 export const horseBreeds = [
   { value: "arabian", label: "Arabian", arabicLabel: "عربي أصيل" },
   { value: "thoroughbred", label: "Thoroughbred", arabicLabel: "إنجليزي أصيل" },
-  { value: "quarter_horse", label: "Quarter Horse", arabicLabel: "كوارتر هورس" },
-  { value: "paint_horse", label: "Paint Horse", arabicLabel: "بينت هورس" },
-  { value: "appaloosa", label: "Appaloosa", arabicLabel: "أبالوسا" },
-  { value: "friesian", label: "Friesian", arabicLabel: "فريزيان" },
-  { value: "clydesdale", label: "Clydesdale", arabicLabel: "كلايدزديل" },
-  { value: "percheron", label: "Percheron", arabicLabel: "بيرشيرون" },
-  { value: "mustang", label: "Mustang", arabicLabel: "موستانغ" },
-  { value: "andalusian", label: "Andalusian", arabicLabel: "أندلسي" },
-  { value: "warmblood", label: "Warmblood", arabicLabel: "دم دافئ" },
-  { value: "other", label: "Other", arabicLabel: "أخرى" }
+  { value: "quarter_horse", label: "Quarter Horse", arabicLabel: "كوارتر هورس" }
 ];
 
 export const horseColors = [
   { value: "bay", label: "Bay", arabicLabel: "كستنائي" },
   { value: "chestnut", label: "Chestnut", arabicLabel: "أشقر" },
-  { value: "black", label: "Black", arabicLabel: "أسود" },
-  { value: "gray_grey", label: "Gray/Grey", arabicLabel: "رمادي" },
-  { value: "brown", label: "Brown", arabicLabel: "بني" },
-  { value: "palomino", label: "Palomino", arabicLabel: "ذهبي" },
-  { value: "buckskin", label: "Buckskin", arabicLabel: "جلد الغزال" },
-  { value: "roan", label: "Roan", arabicLabel: "مخلط" },
-  { value: "pinto", label: "Pinto", arabicLabel: "مرقط" },
-  { value: "dun", label: "Dun", arabicLabel: "أصفر باهت" },
-  { value: "cremello", label: "Cremello", arabicLabel: "كريمي" },
-  { value: "other", label: "Other", arabicLabel: "أخرى" }
+  { value: "black", label: "Black", arabicLabel: "أسود" }
 ];
 
 export const genderOptions = [

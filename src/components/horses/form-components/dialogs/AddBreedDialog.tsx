@@ -10,16 +10,18 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 interface AddBreedDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddBreed: (breed: { value: string; label: string; arabicLabel: string }) => void;
+  onAddBreed: (breed: { value: string; label: string; arabicLabel: string; description: string }) => void;
 }
 
 const AddBreedDialog = ({ open, onOpenChange, onAddBreed }: AddBreedDialogProps) => {
   const [englishName, setEnglishName] = useState("");
   const [arabicName, setArabicName] = useState("");
+  const [description, setDescription] = useState("");
 
   const handleSave = () => {
     if (englishName.trim()) {
@@ -27,10 +29,12 @@ const AddBreedDialog = ({ open, onOpenChange, onAddBreed }: AddBreedDialogProps)
       onAddBreed({
         value: breedValue,
         label: englishName.trim(),
-        arabicLabel: arabicName.trim() || englishName.trim()
+        arabicLabel: arabicName.trim() || englishName.trim(),
+        description: description.trim()
       });
       setEnglishName("");
       setArabicName("");
+      setDescription("");
       onOpenChange(false);
     }
   };
@@ -38,6 +42,7 @@ const AddBreedDialog = ({ open, onOpenChange, onAddBreed }: AddBreedDialogProps)
   const handleCancel = () => {
     setEnglishName("");
     setArabicName("");
+    setDescription("");
     onOpenChange(false);
   };
 
@@ -66,12 +71,22 @@ const AddBreedDialog = ({ open, onOpenChange, onAddBreed }: AddBreedDialogProps)
               placeholder="Enter breed name in Arabic"
             />
           </div>
+          <div className="grid gap-2">
+            <Label htmlFor="description">Detailed Description of this Breed</Label>
+            <Textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Enter detailed description of the breed"
+              className="min-h-[80px]"
+            />
+          </div>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={handleCancel}>
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={!englishName.trim()}>
+          <Button onClick={handleSave} disabled={!englishName.trim()} className="bg-orange-500 hover:bg-orange-600">
             Add Breed
           </Button>
         </DialogFooter>

@@ -14,15 +14,15 @@ const BasicInformationStage = () => {
   const form = useFormContext<HorseFormData>();
   const [isColorDialogOpen, setIsColorDialogOpen] = useState(false);
   const [isBreedDialogOpen, setIsBreedDialogOpen] = useState(false);
-  const [customColors, setCustomColors] = useState<Array<{ value: string; label: string; arabicLabel: string }>>([]);
-  const [customBreeds, setCustomBreeds] = useState<Array<{ value: string; label: string; arabicLabel: string }>>([]);
+  const [customColors, setCustomColors] = useState<Array<{ value: string; label: string; arabicLabel: string; description: string }>>([]);
+  const [customBreeds, setCustomBreeds] = useState<Array<{ value: string; label: string; arabicLabel: string; description: string }>>([]);
 
-  const handleAddColor = (newColor: { value: string; label: string; arabicLabel: string }) => {
+  const handleAddColor = (newColor: { value: string; label: string; arabicLabel: string; description: string }) => {
     setCustomColors(prev => [...prev, newColor]);
     form.setValue("color", newColor.value);
   };
 
-  const handleAddBreed = (newBreed: { value: string; label: string; arabicLabel: string }) => {
+  const handleAddBreed = (newBreed: { value: string; label: string; arabicLabel: string; description: string }) => {
     setCustomBreeds(prev => [...prev, newBreed]);
     form.setValue("breed", newBreed.value);
   };
