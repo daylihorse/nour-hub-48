@@ -23,6 +23,7 @@ export interface TestResultFormData {
   clientPhone: string;
   clientEmail: string;
   testType: string;
+  templateId?: string; // Added template ID
   
   // Step 2: Test Values
   values: Array<{
@@ -52,6 +53,7 @@ const AddTestResultDialog = ({ isOpen, setIsOpen }: AddTestResultDialogProps) =>
     clientPhone: "",
     clientEmail: "",
     testType: "",
+    templateId: "", // Added template ID
     values: [],
     status: "normal",
     findings: "",
@@ -95,6 +97,7 @@ const AddTestResultDialog = ({ isOpen, setIsOpen }: AddTestResultDialogProps) =>
       clientPhone: "",
       clientEmail: "",
       testType: "",
+      templateId: "", // Added template ID reset
       values: [],
       status: "normal",
       findings: "",
@@ -126,7 +129,7 @@ const AddTestResultDialog = ({ isOpen, setIsOpen }: AddTestResultDialogProps) =>
   const canProceed = () => {
     switch (currentStep) {
       case 1:
-        return formData.sampleId && formData.horseName && formData.testType;
+        return formData.sampleId && formData.horseName && formData.templateId; // Changed to check templateId
       case 2:
         return formData.values.length > 0;
       case 3:
