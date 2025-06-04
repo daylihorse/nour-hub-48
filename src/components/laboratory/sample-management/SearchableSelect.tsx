@@ -29,13 +29,18 @@ const SearchableSelect = ({
   addNewLabel = "Add New"
 }: SearchableSelectProps) => {
   const [open, setOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
 
-  const filteredOptions = options.filter((option) =>
-    option.label.toLowerCase().includes(searchValue.toLowerCase())
-  );
-
+  const filteredOptions = options;
   const selectedOption = options.find((option) => option.value === value);
+
+  const handleSelect = (selectedValue: string) => {
+    if (selectedValue === "__add_new__") {
+      onAddNew?.();
+    } else {
+      onValueChange(selectedValue === value ? "" : selectedValue);
+    }
+    setOpen(false);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -50,12 +55,10 @@ const SearchableSelect = ({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
+      <PopoverContent className="w-full p-0 bg-white border shadow-lg z-50">
         <Command>
           <CommandInput 
             placeholder={`Search ${placeholder.toLowerCase()}...`}
-            value={searchValue}
-            onValueChange={setSearchValue}
           />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
@@ -64,11 +67,7 @@ const SearchableSelect = ({
                 <CommandItem
                   key={option.value}
                   value={option.value}
-                  onSelect={(currentValue) => {
-                    onValueChange(currentValue === value ? "" : currentValue);
-                    setOpen(false);
-                    setSearchValue("");
-                  }}
+                  onSelect={() => handleSelect(option.value)}
                 >
                   <Check
                     className={cn(
@@ -81,11 +80,8 @@ const SearchableSelect = ({
               ))}
               {onAddNew && (
                 <CommandItem
-                  onSelect={() => {
-                    onAddNew();
-                    setOpen(false);
-                    setSearchValue("");
-                  }}
+                  value="__add_new__"
+                  onSelect={() => handleSelect("__add_new__")}
                   className="border-t mt-1 pt-2"
                 >
                   <Plus className="mr-2 h-4 w-4" />

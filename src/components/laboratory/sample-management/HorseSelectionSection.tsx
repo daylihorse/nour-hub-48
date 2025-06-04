@@ -20,7 +20,23 @@ const HorseSelectionSection = ({ selectedHorse, onHorseSelect }: HorseSelectionS
   ];
 
   const handleAddNew = () => {
+    console.log("Add new horse triggered");
     setShowAddHorse(true);
+  };
+
+  const handleHorseSelect = (value: string) => {
+    console.log("Horse selected:", value);
+    onHorseSelect(value);
+  };
+
+  const handleCancel = () => {
+    setShowAddHorse(false);
+  };
+
+  const handleSaveHorse = () => {
+    // In a real app, this would save the horse and update the selection
+    console.log("Horse saved, closing add form");
+    setShowAddHorse(false);
   };
 
   return (
@@ -31,7 +47,7 @@ const HorseSelectionSection = ({ selectedHorse, onHorseSelect }: HorseSelectionS
           options={horseOptions}
           value={selectedHorse}
           placeholder="Select horse"
-          onValueChange={onHorseSelect}
+          onValueChange={handleHorseSelect}
           onAddNew={handleAddNew}
           addNewLabel="Add New Horse"
         />
@@ -42,12 +58,20 @@ const HorseSelectionSection = ({ selectedHorse, onHorseSelect }: HorseSelectionS
             <Button 
               variant="outline" 
               size="sm"
-              onClick={() => setShowAddHorse(false)}
+              onClick={handleCancel}
             >
               Cancel
             </Button>
           </div>
           <AddHorseSection />
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveHorse}>
+              Save Horse
+            </Button>
+          </div>
         </div>
       )}
     </div>

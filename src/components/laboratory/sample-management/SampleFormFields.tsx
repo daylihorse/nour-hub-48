@@ -33,8 +33,14 @@ const SampleFormFields = ({
   ];
 
   const handleAddNewPerson = () => {
-    // This would trigger the add person dialog
+    console.log("Add new person triggered");
+    // This will trigger the add person dialog in the parent component
     onPersonSelect("__add_new__");
+  };
+
+  const handlePersonSelect = (value: string) => {
+    console.log("Person selected:", value);
+    onPersonSelect(value);
   };
 
   return (
@@ -46,7 +52,7 @@ const SampleFormFields = ({
           options={personOptions}
           value={personWhoBrought}
           placeholder="Search person"
-          onValueChange={onPersonSelect}
+          onValueChange={handlePersonSelect}
           onAddNew={handleAddNewPerson}
           addNewLabel="Add New Person"
         />
