@@ -17,5 +17,6 @@ export const rejectionReasonOptions = [
   "Contaminated sample",
   "Incorrect tube type",
   "Sample deteriorated",
-  "Labeling error"
+  "Labeling error",
+  "Other"
 ];
