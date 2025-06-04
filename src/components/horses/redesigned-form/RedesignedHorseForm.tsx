@@ -1,0 +1,70 @@
+
+import { FormProvider } from "react-hook-form";
+import { HorseFormData } from "@/types/horse";
+import { useEnglishHorseForm } from "../hooks/useEnglishHorseForm";
+import FormSidebar from "./FormSidebar";
+import FormMainContent from "./FormMainContent";
+import MobileFormHeader from "./MobileFormHeader";
+
+interface RedesignedHorseFormProps {
+  onSave: (data: HorseFormData) => void;
+  onCancel: () => void;
+}
+
+const RedesignedHorseForm = ({ onSave, onCancel }: RedesignedHorseFormProps) => {
+  const {
+    form,
+    currentStage,
+    completedStages,
+    progress,
+    handleNext,
+    handlePrevious,
+    handleStageClick,
+    handleSubmit,
+  } = useEnglishHorseForm({ onSave });
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <FormProvider {...form}>
+        <div className="flex h-screen">
+          {/* Desktop Sidebar */}
+          <div className="hidden lg:block">
+            <FormSidebar
+              currentStage={currentStage}
+              completedStages={completedStages}
+              progress={progress}
+              onStageClick={handleStageClick}
+              onCancel={onCancel}
+            />
+          </div>
+
+          {/* Mobile Header */}
+          <div className="lg:hidden">
+            <MobileFormHeader
+              currentStage={currentStage}
+              completedStages={completedStages}
+              progress={progress}
+              onStageClick={handleStageClick}
+              onCancel={onCancel}
+            />
+          </div>
+
+          {/* Main Content */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <FormMainContent
+              form={form}
+              currentStage={currentStage}
+              completedStages={completedStages}
+              onNext={handleNext}
+              onPrevious={handlePrevious}
+              onCancel={onCancel}
+              onSubmit={form.handleSubmit(handleSubmit)}
+            />
+          </div>
+        </div>
+      </FormProvider>
+    </div>
+  );
+};
+
+export default RedesignedHorseForm;
