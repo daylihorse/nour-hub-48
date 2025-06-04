@@ -116,9 +116,9 @@ const HistoricalComparisonTable = ({ horse, analysisType }: HistoricalComparison
                 {parameters.map((parameter) => (
                   <TableRow key={parameter}>
                     <TableCell className="font-medium">{parameter}</TableCell>
-                    <TableCell>{historicalData[0].parameters[parameter as keyof typeof historicalData[0].parameters].reference}</TableCell>
+                    <TableCell>{historicalData[0].parameters[parameter].reference}</TableCell>
                     {historicalData.map((data, index) => {
-                      const paramData = data.parameters[parameter as keyof typeof data.parameters];
+                      const paramData = data.parameters[parameter];
                       return (
                         <TableCell key={index} className="text-center">
                           <div className="space-y-1">
@@ -132,8 +132,8 @@ const HistoricalComparisonTable = ({ horse, analysisType }: HistoricalComparison
                     })}
                     <TableCell className="text-center">
                       {historicalData.length > 1 && getTrendIcon(
-                        historicalData[0].parameters[parameter as keyof typeof historicalData[0].parameters].value,
-                        historicalData[1].parameters[parameter as keyof typeof historicalData[1].parameters].value
+                        historicalData[0].parameters[parameter].value,
+                        historicalData[1].parameters[parameter].value
                       )}
                     </TableCell>
                   </TableRow>
