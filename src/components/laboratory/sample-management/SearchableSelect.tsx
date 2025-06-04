@@ -31,29 +31,34 @@ const SearchableSelect = ({
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
+  console.log("SearchableSelect rendered with:", { value, options, placeholder });
+
   const selectedOption = options.find((option) => option.value === value);
 
   // Filter options based on search value
   const filteredOptions = options.filter((option) =>
-    option.label.toLowerCase().includes(searchValue.toLowerCase())
+    option.label.toLowerCase().includes(searchValue.toLowerCase()) ||
+    option.value.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   const handleSelect = (selectedValue: string) => {
-    console.log("HandleSelect called with:", selectedValue);
+    console.log("SearchableSelect handleSelect called with:", selectedValue);
     
     if (selectedValue === "__add_new__") {
-      console.log("Add new triggered");
+      console.log("Add new triggered in SearchableSelect");
       handleClose();
       onAddNew?.();
       return;
     }
 
-    // Direct value matching since we now use consistent values
+    // Find the option by value
     const matchedOption = options.find(option => option.value === selectedValue);
 
     if (matchedOption) {
-      console.log("Setting value:", matchedOption.value);
-      onValueChange(matchedOption.value === value ? "" : matchedOption.value);
+      console.log("Setting value to:", matchedOption.value);
+      // Toggle selection - if already selected, deselect
+      const newValue = matchedOption.value === value ? "" : matchedOption.value;
+      onValueChange(newValue);
     } else {
       console.log("No match found for:", selectedValue);
     }
@@ -67,6 +72,7 @@ const SearchableSelect = ({
   };
 
   const handleOpenChange = (newOpen: boolean) => {
+    console.log("SearchableSelect open state changing to:", newOpen);
     setOpen(newOpen);
     if (!newOpen) {
       setSearchValue("");
@@ -86,7 +92,7 @@ const SearchableSelect = ({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 bg-white border border-gray-200 shadow-lg z-[100]" align="start">
+      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 bg-white border border-gray-200 shadow-lg z-[200]" align="start">
         <Command shouldFilter={false}>
           <CommandInput 
             placeholder={`Search ${placeholder.toLowerCase()}...`}
@@ -104,7 +110,7 @@ const SearchableSelect = ({
                   key={option.value}
                   value={option.value}
                   onSelect={() => handleSelect(option.value)}
-                  className="cursor-pointer flex items-center"
+                  className="cursor-pointer flex items-center hover:bg-gray-100"
                 >
                   <Check
                     className={cn(

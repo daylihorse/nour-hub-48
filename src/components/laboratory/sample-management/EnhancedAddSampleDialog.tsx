@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import HorseSelectionSection from "./HorseSelectionSection";
 import RequiredAnalysisSection from "./RequiredAnalysisSection";
@@ -26,6 +26,14 @@ const EnhancedAddSampleDialog = ({ isOpen, setIsOpen }: EnhancedAddSampleDialogP
   const [showAddPerson, setShowAddPerson] = useState(false);
   const [sampleReceiptDate, setSampleReceiptDate] = useState<Date>();
   const [notes, setNotes] = useState("");
+
+  // Debug logging
+  console.log("EnhancedAddSampleDialog rendered with:", {
+    isOpen,
+    selectedHorse,
+    sampleType,
+    selectedPreviousSample
+  });
 
   // Mock previous samples data - in real app this would come from an API
   const mockPreviousSamples = {
@@ -81,11 +89,13 @@ const EnhancedAddSampleDialog = ({ isOpen, setIsOpen }: EnhancedAddSampleDialogP
 
   // Reset previous sample selection when horse changes
   useEffect(() => {
+    console.log("Horse changed, resetting previous sample selection");
     setSelectedPreviousSample("");
   }, [selectedHorse]);
 
   // Reset sample type when horse changes
   useEffect(() => {
+    console.log("Horse changed, resetting sample type to new");
     setSampleType("new");
   }, [selectedHorse]);
 
@@ -138,6 +148,14 @@ const EnhancedAddSampleDialog = ({ isOpen, setIsOpen }: EnhancedAddSampleDialogP
     setSelectedHorse(value);
   };
 
+  const handleSampleTypeChange = (value: string) => {
+    console.log("Sample type changed to:", value);
+    setSampleType(value);
+    if (value === "new") {
+      setSelectedPreviousSample("");
+    }
+  };
+
   const handleSave = () => {
     console.log("Sample data:", {
       horse: selectedHorse,
@@ -159,6 +177,9 @@ const EnhancedAddSampleDialog = ({ isOpen, setIsOpen }: EnhancedAddSampleDialogP
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Sample</DialogTitle>
+          <DialogDescription>
+            Fill in the sample information including horse details, analysis requirements, and sample classification.
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-6">
           <HorseSelectionSection 
@@ -176,10 +197,12 @@ const EnhancedAddSampleDialog = ({ isOpen, setIsOpen }: EnhancedAddSampleDialogP
           />
 
           {selectedHorse && (
-            <SampleTypeField
-              value={sampleType}
-              onValueChange={setSampleType}
-            />
+            <div className="p-4 border rounded-lg bg-blue-50">
+              <SampleTypeField
+                value={sampleType}
+                onValueChange={handleSampleTypeChange}
+              />
+            </div>
           )}
 
           {sampleType === "retest" && selectedHorse && (

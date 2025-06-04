@@ -26,6 +26,8 @@ const SampleFormFields = ({
   onPriorityChange,
   onNotesChange
 }: SampleFormFieldsProps) => {
+  console.log("SampleFormFields rendered with personWhoBrought:", personWhoBrought);
+
   const personOptions = [
     { value: "john_doe", label: "John Doe" },
     { value: "jane_smith", label: "Jane Smith" },
@@ -33,11 +35,6 @@ const SampleFormFields = ({
     { value: "sarah_wilson", label: "Sarah Wilson" },
     { value: "david_brown", label: "David Brown" },
   ];
-
-  const handleAddNewPerson = () => {
-    console.log("Add new person triggered in SampleFormFields");
-    onPersonSelect("__add_new__");
-  };
 
   const handlePersonSelect = (value: string) => {
     console.log("Person selected in SampleFormFields:", value);
@@ -51,10 +48,10 @@ const SampleFormFields = ({
         <Label>Person Who Brought Sample</Label>
         <SearchableSelect
           options={personOptions}
-          value={personWhoBrought === "__add_new__" ? "" : personWhoBrought}
+          value={personWhoBrought}
           placeholder="Search person"
           onValueChange={handlePersonSelect}
-          onAddNew={handleAddNewPerson}
+          onAddNew={() => onPersonSelect("__add_new__")}
           addNewLabel="Add New Person"
         />
       </div>
@@ -76,7 +73,7 @@ const SampleFormFields = ({
           <SelectTrigger>
             <SelectValue placeholder="Select priority..." />
           </SelectTrigger>
-          <SelectContent className="bg-white z-[100]">
+          <SelectContent className="bg-white z-[150]">
             <SelectItem value="routine">Routine</SelectItem>
             <SelectItem value="urgent">Urgent</SelectItem>
             <SelectItem value="critical">Critical</SelectItem>

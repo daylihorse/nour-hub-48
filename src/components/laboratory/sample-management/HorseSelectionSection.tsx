@@ -13,6 +13,8 @@ interface HorseSelectionSectionProps {
 const HorseSelectionSection = ({ selectedHorse, onHorseSelect }: HorseSelectionSectionProps) => {
   const [showAddHorse, setShowAddHorse] = useState(false);
 
+  console.log("HorseSelectionSection rendered with selectedHorse:", selectedHorse);
+
   const horseOptions = [
     { value: "thunder", label: "Thunder" },
     { value: "bella", label: "Bella" },
@@ -28,11 +30,7 @@ const HorseSelectionSection = ({ selectedHorse, onHorseSelect }: HorseSelectionS
 
   const handleHorseSelect = (value: string) => {
     console.log("Horse selected in HorseSelectionSection:", value);
-    if (value === "__add_new__") {
-      handleAddNew();
-    } else {
-      onHorseSelect(value);
-    }
+    onHorseSelect(value);
   };
 
   const handleCancel = () => {
