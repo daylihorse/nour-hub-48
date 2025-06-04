@@ -41,28 +41,34 @@ const SearchableSelect = ({
   const handleSelect = (selectedValue: string) => {
     console.log("HandleSelect called with:", selectedValue);
     
-    // Handle the transformed value from CommandItem
-    const actualValue = selectedValue.toLowerCase().replace(/\s+/g, '_');
-    
-    if (actualValue === "__add_new__" || selectedValue === "__add_new__") {
+    if (selectedValue === "__add_new__") {
       console.log("Add new triggered");
-      setOpen(false);
-      setSearchValue("");
+      handleClose();
       onAddNew?.();
-    } else {
-      // Find the original option value by matching the label or value
-      const matchedOption = options.find(option => 
-        option.value === selectedValue || 
-        option.label.toLowerCase() === selectedValue.toLowerCase() ||
-        option.value === actualValue
-      );
-      
-      const valueToSet = matchedOption ? matchedOption.value : selectedValue;
-      console.log("Setting value:", valueToSet);
-      onValueChange(valueToSet === value ? "" : valueToSet);
-      setOpen(false);
-      setSearchValue("");
+      return;
     }
+
+    // Find the matching option by value first, then by label
+    const matchedOption = options.find(option => 
+      option.value === selectedValue || 
+      option.label === selectedValue ||
+      option.value.toLowerCase() === selectedValue.toLowerCase() ||
+      option.label.toLowerCase() === selectedValue.toLowerCase()
+    );
+
+    if (matchedOption) {
+      console.log("Setting value:", matchedOption.value);
+      onValueChange(matchedOption.value === value ? "" : matchedOption.value);
+    } else {
+      console.log("No match found for:", selectedValue);
+    }
+    
+    handleClose();
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSearchValue("");
   };
 
   const handleOpenChange = (newOpen: boolean) => {
@@ -101,7 +107,7 @@ const SearchableSelect = ({
               {filteredOptions.map((option) => (
                 <CommandItem
                   key={option.value}
-                  value={option.value}
+                  value={option.label}
                   onSelect={() => handleSelect(option.value)}
                   className="cursor-pointer flex items-center"
                 >
