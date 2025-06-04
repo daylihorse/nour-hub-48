@@ -1,3 +1,4 @@
+
 import { centralTemplateService } from "@/services/centralTemplateService";
 import { Template } from "@/types/template";
 
@@ -14,7 +15,27 @@ class TemplateSyncManager {
   // Save template selection for a sample
   async saveSampleTemplates(sampleId: string, templateIds: string[]): Promise<void> {
     try {
-      const templateDetails = await centralTemplateService.getSelectedTemplateDetails();
+      console.log(`Saving templates for sample ${sampleId}:`, templateIds);
+      
+      // Load all templates to ensure we have the latest data
+      await centralTemplateService.loadTemplates();
+      
+      // Fetch template details by the provided template IDs
+      const templateDetails: Template[] = [];
+      for (const templateId of templateIds) {
+        const template = centralTemplateService.getTemplateById(templateId);
+        if (template) {
+          templateDetails.push(template);
+          console.log(`Found template: ${template.nameEn} (ID: ${templateId})`);
+        } else {
+          console.warn(`Template not found for ID: ${templateId}`);
+        }
+      }
+
+      if (templateDetails.length === 0) {
+        console.error(`No valid templates found for sample ${sampleId}`);
+        return;
+      }
       
       const sampleTemplateData: SampleTemplateData = {
         sampleId,
@@ -24,7 +45,10 @@ class TemplateSyncManager {
       };
 
       this.sampleTemplateCache.set(sampleId, sampleTemplateData);
-      console.log(`Template data saved for sample ${sampleId}:`, sampleTemplateData);
+      console.log(`Template data saved for sample ${sampleId}:`, {
+        templateCount: templateDetails.length,
+        templateNames: templateDetails.map(t => t.nameEn)
+      });
       
       // In a real app, this would persist to a database
       localStorage.setItem(`sample_templates_${sampleId}`, JSON.stringify(sampleTemplateData));
@@ -35,6 +59,8 @@ class TemplateSyncManager {
 
   // Retrieve template data for a sample
   getSampleTemplates(sampleId: string): SampleTemplateData | null {
+    console.log(`Retrieving templates for sample ${sampleId}`);
+    
     // First check in-memory cache
     let sampleData = this.sampleTemplateCache.get(sampleId);
     
@@ -46,11 +72,24 @@ class TemplateSyncManager {
           sampleData = JSON.parse(stored);
           if (sampleData) {
             this.sampleTemplateCache.set(sampleId, sampleData);
+            console.log(`Loaded template data from localStorage for sample ${sampleId}:`, {
+              templateCount: sampleData.templateDetails.length,
+              templateNames: sampleData.templateDetails.map(t => t.nameEn)
+            });
           }
         } catch (error) {
           console.error("Failed to parse stored sample template data:", error);
         }
       }
+    } else {
+      console.log(`Found template data in cache for sample ${sampleId}:`, {
+        templateCount: sampleData.templateDetails.length,
+        templateNames: sampleData.templateDetails.map(t => t.nameEn)
+      });
+    }
+
+    if (!sampleData) {
+      console.log(`No template data found for sample ${sampleId}`);
     }
 
     return sampleData || null;
@@ -64,9 +103,12 @@ class TemplateSyncManager {
     error?: string;
   }> {
     try {
+      console.log(`Loading templates for test result creation for sample ${sampleId}`);
+      
       const sampleTemplateData = this.getSampleTemplates(sampleId);
       
       if (!sampleTemplateData) {
+        console.log(`No template data found for sample ${sampleId}`);
         return {
           success: false,
           templateIds: [],
@@ -80,10 +122,11 @@ class TemplateSyncManager {
         centralTemplateService.convertTemplateToFormValues(template)
       );
 
-      console.log(`Loaded templates for test result creation:`, {
+      console.log(`Successfully loaded templates for test result creation:`, {
         sampleId,
         templateIds: sampleTemplateData.selectedTemplateIds,
-        formValues
+        templateCount: sampleTemplateData.templateDetails.length,
+        formValueCount: formValues.length
       });
 
       return {
@@ -106,6 +149,7 @@ class TemplateSyncManager {
   clearSampleTemplates(sampleId: string): void {
     this.sampleTemplateCache.delete(sampleId);
     localStorage.removeItem(`sample_templates_${sampleId}`);
+    console.log(`Cleared template data for sample ${sampleId}`);
   }
 
   // Get all cached samples

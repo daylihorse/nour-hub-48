@@ -26,9 +26,10 @@ const TestResultStep1 = ({ formData, updateFormData }: TestResultStep1Props) => 
   useEffect(() => {
     const initializeMockData = async () => {
       try {
+        console.log("Starting mock template data initialization...");
         await initializeMockTemplateData();
         setMockDataInitialized(true);
-        console.log("Mock template data initialization completed");
+        console.log("Mock template data initialization completed successfully");
       } catch (error) {
         console.error("Failed to initialize mock template data:", error);
         setMockDataInitialized(true); // Continue even if initialization fails
@@ -48,6 +49,8 @@ const TestResultStep1 = ({ formData, updateFormData }: TestResultStep1Props) => 
   ];
 
   const handleSampleSelect = async (sampleId: string) => {
+    console.log(`Sample selected: ${sampleId}`);
+    
     const sample = availableSamples.find(s => s.id === sampleId);
     if (sample) {
       updateFormData({
@@ -62,12 +65,23 @@ const TestResultStep1 = ({ formData, updateFormData }: TestResultStep1Props) => 
       // Load templates associated with this sample
       setTemplatesLoading(true);
       try {
+        console.log(`Loading templates for sample ${sampleId}...`);
         const templateData = await templateSyncManager.loadTemplatesForTestResult(sampleId);
+        
+        console.log(`Template loading result:`, templateData);
+        
         if (templateData.success && templateData.templateIds.length > 0) {
+          console.log(`Found ${templateData.templateIds.length} templates for sample ${sampleId}:`, templateData.templateIds);
+          
           const templates = templateData.templateIds
-            .map(id => getTemplateById(id))
+            .map(id => {
+              const template = getTemplateById(id);
+              console.log(`Template lookup for ID ${id}:`, template ? `Found: ${template.nameEn}` : 'Not found');
+              return template;
+            })
             .filter((template): template is Template => template !== undefined);
           
+          console.log(`Successfully resolved ${templates.length} template objects`);
           setPreSelectedTemplates(templates);
           
           // Update form data with template IDs and combined test type
@@ -77,14 +91,17 @@ const TestResultStep1 = ({ formData, updateFormData }: TestResultStep1Props) => 
             testType: testType
           });
           
-          console.log(`Loaded ${templates.length} pre-selected templates for sample ${sampleId}`);
+          console.log(`Updated form data with ${templates.length} templates:`, {
+            templateIds: templateData.templateIds,
+            testType
+          });
         } else {
+          console.log(`No templates found for sample ${sampleId}:`, templateData.error || 'Unknown reason');
           setPreSelectedTemplates([]);
           updateFormData({
             templateIds: [],
             testType: ""
           });
-          console.log(`No templates found for sample ${sampleId}`);
         }
       } catch (error) {
         console.error("Failed to load templates for sample:", error);
@@ -102,6 +119,7 @@ const TestResultStep1 = ({ formData, updateFormData }: TestResultStep1Props) => 
   // Clear templates when sample is deselected
   useEffect(() => {
     if (!formData.sampleId) {
+      console.log("Sample deselected, clearing templates");
       setPreSelectedTemplates([]);
       updateFormData({
         templateIds: [],
