@@ -8,6 +8,7 @@ import TestResults from "@/components/laboratory/TestResults";
 import ResultComparison from "@/components/laboratory/ResultComparison";
 import EquipmentManagement from "@/components/laboratory/EquipmentManagement";
 import QualityControl from "@/components/laboratory/QualityControl";
+import TemplateManagement from "@/components/laboratory/TemplateManagement";
 
 const LaboratoryDepartment = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -20,7 +21,7 @@ const LaboratoryDepartment = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-8">
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="samples">Sample Management</TabsTrigger>
           <TabsTrigger value="tests">Test Requests</TabsTrigger>
@@ -28,6 +29,7 @@ const LaboratoryDepartment = () => {
           <TabsTrigger value="comparison">Comparison</TabsTrigger>
           <TabsTrigger value="equipment">Equipment</TabsTrigger>
           <TabsTrigger value="quality">Quality Control</TabsTrigger>
+          <TabsTrigger value="templates">Templates</TabsTrigger>
         </TabsList>
         
         <TabsContent value="dashboard" className="mt-6">
@@ -56,6 +58,10 @@ const LaboratoryDepartment = () => {
         
         <TabsContent value="quality" className="mt-6">
           <QualityControl />
+        </TabsContent>
+        
+        <TabsContent value="templates" className="mt-6">
+          <TemplateManagement />
         </TabsContent>
       </Tabs>
     </div>
