@@ -1,11 +1,11 @@
 
 import { useHorseData } from "./useHorseData";
-import { useAnalysisManagement } from "./useAnalysisManagement";
+import { useTemplateManagement } from "./useTemplateManagement";
 import { usePersonAndFormFields } from "./usePersonAndFormFields";
 
 export const useSampleForm = () => {
   const horseData = useHorseData();
-  const analysisData = useAnalysisManagement();
+  const templateData = useTemplateManagement();
   const formFieldsData = usePersonAndFormFields();
 
   const handleSave = () => {
@@ -13,9 +13,7 @@ export const useSampleForm = () => {
       horse: horseData.selectedHorse,
       sampleType: horseData.sampleType,
       selectedPreviousSample: horseData.sampleType === "retest" ? horseData.selectedPreviousSample : null,
-      requiredAnalysis: analysisData.selectedAnalysis,
-      tubeStatus: analysisData.tubeStatus,
-      rejectionReasons: analysisData.rejectionReasons,
+      selectedTemplates: templateData.selectedTemplates,
       priority: formFieldsData.priority,
       personWhoBrought: formFieldsData.personWhoBrought,
       sampleReceiptDate: formFieldsData.sampleReceiptDate,
@@ -35,13 +33,10 @@ export const useSampleForm = () => {
     handleHorseSelect: horseData.handleHorseSelect,
     handleSampleTypeChange: horseData.handleSampleTypeChange,
     
-    // Analysis data
-    selectedAnalysis: analysisData.selectedAnalysis,
-    tubeStatus: analysisData.tubeStatus,
-    rejectionReasons: analysisData.rejectionReasons,
-    handleAnalysisChange: analysisData.handleAnalysisChange,
-    handleTubeStatusChange: analysisData.handleTubeStatusChange,
-    handleRejectionReasonChange: analysisData.handleRejectionReasonChange,
+    // Template data (replacing analysis data)
+    selectedTemplates: templateData.selectedTemplates,
+    handleTemplateChange: templateData.handleTemplateChange,
+    resetTemplates: templateData.resetTemplates,
     
     // Form fields data
     priority: formFieldsData.priority,

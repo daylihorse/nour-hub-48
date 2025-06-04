@@ -1,6 +1,6 @@
 
 import HorseSelectionSection from "../HorseSelectionSection";
-import RequiredAnalysisSection from "../RequiredAnalysisSection";
+import TemplateSelectionSection from "../TemplateSelectionSection";
 import SampleFormFields from "../SampleFormFields";
 import SampleTypeField from "../SampleTypeField";
 import PreviousSamplesDisplay from "../PreviousSamplesDisplay";
@@ -9,9 +9,7 @@ interface SampleFormContentProps {
   selectedHorse: string;
   sampleType: string;
   selectedPreviousSample: string;
-  selectedAnalysis: string[];
-  tubeStatus: {[key: string]: string};
-  rejectionReasons: {[key: string]: string};
+  selectedTemplates: string[];
   priority: string;
   personWhoBrought: string;
   sampleReceiptDate?: Date;
@@ -21,9 +19,7 @@ interface SampleFormContentProps {
   onHorseSelect: (value: string) => void;
   onSampleTypeChange: (value: string) => void;
   onSampleSelect: (sampleId: string) => void;
-  onAnalysisChange: (analysisId: string, checked: boolean) => void;
-  onTubeStatusChange: (analysisId: string, status: string) => void;
-  onRejectionReasonChange: (analysisId: string, reason: string) => void;
+  onTemplateChange: (templateId: string, checked: boolean) => void;
   onPersonSelect: (value: string) => void;
   onSampleReceiptDateChange: (date: Date | undefined) => void;
   onPriorityChange: (priority: string) => void;
@@ -34,9 +30,7 @@ const SampleFormContent = ({
   selectedHorse,
   sampleType,
   selectedPreviousSample,
-  selectedAnalysis,
-  tubeStatus,
-  rejectionReasons,
+  selectedTemplates,
   priority,
   personWhoBrought,
   sampleReceiptDate,
@@ -46,9 +40,7 @@ const SampleFormContent = ({
   onHorseSelect,
   onSampleTypeChange,
   onSampleSelect,
-  onAnalysisChange,
-  onTubeStatusChange,
-  onRejectionReasonChange,
+  onTemplateChange,
   onPersonSelect,
   onSampleReceiptDateChange,
   onPriorityChange,
@@ -77,13 +69,9 @@ const SampleFormContent = ({
         />
       )}
 
-      <RequiredAnalysisSection
-        selectedAnalysis={selectedAnalysis}
-        tubeStatus={tubeStatus}
-        rejectionReasons={rejectionReasons}
-        onAnalysisChange={onAnalysisChange}
-        onTubeStatusChange={onTubeStatusChange}
-        onRejectionReasonChange={onRejectionReasonChange}
+      <TemplateSelectionSection
+        selectedTemplates={selectedTemplates}
+        onTemplateChange={onTemplateChange}
       />
 
       <SampleFormFields

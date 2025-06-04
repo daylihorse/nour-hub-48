@@ -16,9 +16,7 @@ const EnhancedAddSampleDialog = ({ isOpen, setIsOpen }: EnhancedAddSampleDialogP
     selectedHorse,
     sampleType,
     selectedPreviousSample,
-    selectedAnalysis,
-    tubeStatus,
-    rejectionReasons,
+    selectedTemplates,
     priority,
     personWhoBrought,
     showAddPerson,
@@ -31,9 +29,7 @@ const EnhancedAddSampleDialog = ({ isOpen, setIsOpen }: EnhancedAddSampleDialogP
     setSampleReceiptDate,
     setNotes,
     setShowAddPerson,
-    handleAnalysisChange,
-    handleTubeStatusChange,
-    handleRejectionReasonChange,
+    handleTemplateChange,
     handlePersonSelect,
     handlePersonAdded,
     handleHorseSelect,
@@ -46,7 +42,7 @@ const EnhancedAddSampleDialog = ({ isOpen, setIsOpen }: EnhancedAddSampleDialogP
     isOpen,
     selectedHorse,
     sampleType,
-    selectedPreviousSample
+    selectedTemplates
   });
 
   const handleSaveAndClose = () => {
@@ -69,9 +65,7 @@ const EnhancedAddSampleDialog = ({ isOpen, setIsOpen }: EnhancedAddSampleDialogP
           selectedHorse={selectedHorse}
           sampleType={sampleType}
           selectedPreviousSample={selectedPreviousSample}
-          selectedAnalysis={selectedAnalysis}
-          tubeStatus={tubeStatus}
-          rejectionReasons={rejectionReasons}
+          selectedTemplates={selectedTemplates}
           priority={priority}
           personWhoBrought={personWhoBrought}
           sampleReceiptDate={sampleReceiptDate}
@@ -81,9 +75,7 @@ const EnhancedAddSampleDialog = ({ isOpen, setIsOpen }: EnhancedAddSampleDialogP
           onHorseSelect={handleHorseSelect}
           onSampleTypeChange={handleSampleTypeChange}
           onSampleSelect={setSelectedPreviousSample}
-          onAnalysisChange={handleAnalysisChange}
-          onTubeStatusChange={handleTubeStatusChange}
-          onRejectionReasonChange={handleRejectionReasonChange}
+          onTemplateChange={handleTemplateChange}
           onPersonSelect={handlePersonSelect}
           onSampleReceiptDateChange={setSampleReceiptDate}
           onPriorityChange={setPriority}
