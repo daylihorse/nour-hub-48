@@ -1,42 +1,27 @@
 
-import { useState, useEffect } from "react";
-import { templateService, Template } from "@/services/templateService";
+import { useCentralTemplateService } from "@/hooks/useCentralTemplateService";
 
 export const useTemplateIntegration = () => {
-  const [templates, setTemplates] = useState<Template[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    templates,
+    loading,
+    error,
+    getTemplateById,
+    convertTemplateToFormValues
+  } = useCentralTemplateService();
 
-  useEffect(() => {
-    loadTemplates();
-  }, []);
-
-  const loadTemplates = async () => {
-    setLoading(true);
-    try {
-      const allTemplates = await templateService.getAllTemplates();
-      setTemplates(allTemplates);
-    } catch (error) {
-      console.error("Failed to load templates:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getTemplateById = (id: string): Template | undefined => {
-    return templates.find(template => template.id === id);
-  };
-
-  const getTemplatesByCategory = (category: string): Template[] => {
+  const getTemplatesByCategory = (category: string) => {
     return templates.filter(template => template.category === category);
   };
 
-  const convertTemplateParametersToFormValues = (template: Template) => {
-    return templateService.convertTemplateParametersToFormValues(template);
+  const convertTemplateParametersToFormValues = (template: any) => {
+    return convertTemplateToFormValues(template);
   };
 
   return {
     templates,
     loading,
+    error,
     getTemplateById,
     getTemplatesByCategory,
     convertTemplateParametersToFormValues

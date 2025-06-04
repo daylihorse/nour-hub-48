@@ -1,7 +1,7 @@
-
 import { useHorseData } from "./useHorseData";
 import { useTemplateManagement } from "./useTemplateManagement";
 import { usePersonAndFormFields } from "./usePersonAndFormFields";
+import { templateSyncManager } from "@/utils/templateSync";
 
 export const useSampleForm = () => {
   const horseData = useHorseData();
@@ -23,6 +23,14 @@ export const useSampleForm = () => {
         sampleReceiptDate: formFieldsData.sampleReceiptDate,
         notes: formFieldsData.notes
       });
+
+      // Generate a sample ID (in real app this would come from the server)
+      const sampleId = `S${Date.now().toString().slice(-6)}`;
+      
+      // Save template data for future test result creation
+      await templateSyncManager.saveSampleTemplates(sampleId, templateData.selectedTemplates);
+      
+      console.log(`Sample ${sampleId} saved with template sync enabled`);
       
       return true; // Return success status
     } catch (error) {

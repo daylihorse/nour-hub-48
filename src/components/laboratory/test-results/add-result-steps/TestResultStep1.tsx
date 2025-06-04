@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, Beaker } from "lucide-react";
 import { TestResultFormData } from "../AddTestResultDialog";
 import { useTemplateIntegration } from "../hooks/useTemplateIntegration";
+import { templateSyncManager } from "@/utils/templateSync";
 
 interface TestResultStep1Props {
   formData: TestResultFormData;
@@ -24,7 +24,7 @@ const TestResultStep1 = ({ formData, updateFormData }: TestResultStep1Props) => 
     { id: "S006", horseName: "Midnight", horsePhoto: "/placeholder.svg", clientName: "Tom Davis", clientPhone: "+1-555-0128", clientEmail: "tom.d@email.com" }
   ];
 
-  const handleSampleSelect = (sampleId: string) => {
+  const handleSampleSelect = async (sampleId: string) => {
     const sample = availableSamples.find(s => s.id === sampleId);
     if (sample) {
       updateFormData({
@@ -35,6 +35,21 @@ const TestResultStep1 = ({ formData, updateFormData }: TestResultStep1Props) => 
         clientPhone: sample.clientPhone,
         clientEmail: sample.clientEmail
       });
+
+      // Try to load template data from sample
+      const templateData = await templateSyncManager.loadTemplatesForTestResult(sampleId);
+      if (templateData.success && templateData.templateIds.length > 0) {
+        // Auto-select the first template from the sample
+        const firstTemplateId = templateData.templateIds[0];
+        const template = getTemplateById(firstTemplateId);
+        if (template) {
+          updateFormData({
+            testType: template.nameEn,
+            templateId: firstTemplateId
+          });
+          console.log(`Auto-loaded template ${template.nameEn} from sample ${sampleId}`);
+        }
+      }
     }
   };
 

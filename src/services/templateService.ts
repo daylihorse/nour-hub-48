@@ -1,4 +1,3 @@
-
 export interface Template {
   id: string;
   nameEn: string;
@@ -22,6 +21,19 @@ export interface Template {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface TemplateFilters {
+  category?: string;
+  sampleType?: string;
+  methodology?: string;
+  searchTerm?: string;
+}
+
+export interface TemplateCacheEntry {
+  data: Template[];
+  timestamp: number;
+  filters?: TemplateFilters;
 }
 
 // Mock templates data - in a real app this would come from an API
@@ -187,20 +199,48 @@ const mockTemplates: Template[] = [
   }
 ];
 
-export interface TemplateFilters {
-  category?: string;
-  sampleType?: string;
-  methodology?: string;
-  searchTerm?: string;
-}
-
 class TemplateService {
   private templates: Template[] = mockTemplates;
+  private cache: Map<string, TemplateCacheEntry> = new Map();
+  private cacheTimeout = 5 * 60 * 1000; // 5 minutes
+
+  private getCacheKey(filters?: TemplateFilters): string {
+    if (!filters) return 'all';
+    return JSON.stringify(filters);
+  }
+
+  private isCacheValid(entry: TemplateCacheEntry): boolean {
+    return Date.now() - entry.timestamp < this.cacheTimeout;
+  }
+
+  private setCache(key: string, data: Template[], filters?: TemplateFilters): void {
+    this.cache.set(key, {
+      data: [...data],
+      timestamp: Date.now(),
+      filters
+    });
+  }
+
+  private getFromCache(key: string): Template[] | null {
+    const entry = this.cache.get(key);
+    if (entry && this.isCacheValid(entry)) {
+      return entry.data;
+    }
+    this.cache.delete(key);
+    return null;
+  }
 
   async getAllTemplates(): Promise<Template[]> {
+    const cacheKey = this.getCacheKey();
+    const cached = this.getFromCache(cacheKey);
+    if (cached) return cached;
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 300));
-    return this.templates.filter(template => template.isActive);
+    const activeTemplates = this.templates.filter(template => template.isActive);
+    
+    this.setCache(cacheKey, activeTemplates);
+    return activeTemplates;
   }
 
   async getTemplateById(id: string): Promise<Template | undefined> {
@@ -214,6 +254,10 @@ class TemplateService {
   }
 
   async searchTemplates(filters: TemplateFilters): Promise<Template[]> {
+    const cacheKey = this.getCacheKey(filters);
+    const cached = this.getFromCache(cacheKey);
+    if (cached) return cached;
+
     await new Promise(resolve => setTimeout(resolve, 200));
     
     let filteredTemplates = this.templates.filter(template => template.isActive);
@@ -245,6 +289,7 @@ class TemplateService {
       );
     }
 
+    this.setCache(cacheKey, filteredTemplates, filters);
     return filteredTemplates;
   }
 
@@ -274,6 +319,26 @@ class TemplateService {
       reference: `${param.normalRangeMin}-${param.normalRangeMax}`,
       status: "normal" as const
     }));
+  }
+
+  // New methods for template synchronization
+  async syncTemplateData(templateIds: string[]): Promise<Template[]> {
+    console.log("Syncing template data for IDs:", templateIds);
+    return await this.getTemplatesByIds(templateIds);
+  }
+
+  clearCache(): void {
+    this.cache.clear();
+  }
+
+  getTemplateUsageStats(): { [templateId: string]: number } {
+    // Mock usage statistics - in real app this would come from analytics
+    return {
+      "cbc-template": 45,
+      "chemistry-template": 32,
+      "liver-template": 28,
+      "thyroid-template": 15
+    };
   }
 }
 
