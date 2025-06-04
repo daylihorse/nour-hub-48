@@ -1,6 +1,6 @@
 
 import { useState, useCallback, useMemo } from "react";
-import { TestResultFormData } from "../../AddTestResultDialog";
+import { TestResultFormData, TestValueStatus } from "../../AddTestResultDialog";
 import { useTemplateIntegration } from "../../hooks/useTemplateIntegration";
 import { calculateStatus } from "../utils/statusUtils";
 import { Template } from "@/types/template";
@@ -15,7 +15,7 @@ interface TestValue {
   value: string;
   unit: string;
   reference: string;
-  status: 'normal' | 'high' | 'low';
+  status: TestValueStatus;
   templateId?: string; // Add template association
 }
 
@@ -54,7 +54,7 @@ export const useTestValues = ({ formData, updateFormData }: UseTestValuesProps) 
           reference: param.normalRangeMin && param.normalRangeMax 
             ? `${param.normalRangeMin} - ${param.normalRangeMax}`
             : "Not specified",
-          status: "normal",
+          status: "normal" as TestValueStatus,
           templateId: template.id // Associate parameter with template
         });
       });

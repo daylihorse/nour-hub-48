@@ -14,6 +14,8 @@ interface AddTestResultDialogProps {
   setIsOpen: (open: boolean) => void;
 }
 
+export type TestValueStatus = 'critical-low' | 'very-low' | 'low' | 'slightly-low' | 'normal' | 'slightly-high' | 'high' | 'very-high' | 'critical-high';
+
 export interface TestResultFormData {
   // Step 1: Sample Selection
   sampleId: string;
@@ -31,7 +33,7 @@ export interface TestResultFormData {
     value: string;
     unit: string;
     reference: string;
-    status: 'normal' | 'high' | 'low';
+    status: TestValueStatus;
     templateId?: string; // Add templateId property
   }>;
   

@@ -4,13 +4,14 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Trash2, FlaskConical } from "lucide-react";
 import { StatusIndicator } from "./StatusIndicator";
+import { TestValueStatus } from "../../AddTestResultDialog";
 
 interface TestValue {
   parameter: string;
   value: string;
   unit: string;
   reference: string;
-  status: 'normal' | 'high' | 'low';
+  status: TestValueStatus;
   templateId?: string;
 }
 
