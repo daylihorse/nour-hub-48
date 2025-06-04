@@ -8,6 +8,14 @@ interface UseTestValuesProps {
   updateFormData: (updates: Partial<TestResultFormData>) => void;
 }
 
+interface TestValue {
+  parameter: string;
+  value: string;
+  unit: string;
+  reference: string;
+  status: 'normal' | 'high' | 'low';
+}
+
 export const useTestValues = ({ formData, updateFormData }: UseTestValuesProps) => {
   const { getTemplateById } = useTemplateIntegration();
   const [templateLoaded, setTemplateLoaded] = useState(false);
@@ -39,15 +47,21 @@ export const useTestValues = ({ formData, updateFormData }: UseTestValuesProps) 
     console.log(`Loaded ${allParameters.length} parameters from ${selectedTemplates.length} templates`);
   }, [selectedTemplates, updateFormData]);
 
-  const addCustomValue = useCallback((parameter: string, unit: string, reference: string) => {
-    const newValue = {
-      parameter,
-      value: "",
-      unit,
-      reference,
-      status: "normal" as const
-    };
-    updateFormData({ values: [...formData.values, newValue] });
+  const addCustomValue = useCallback((testValue: TestValue): boolean => {
+    try {
+      const newValue = {
+        parameter: testValue.parameter,
+        value: testValue.value,
+        unit: testValue.unit,
+        reference: testValue.reference,
+        status: testValue.status
+      };
+      updateFormData({ values: [...formData.values, newValue] });
+      return true;
+    } catch (error) {
+      console.error("Error adding custom value:", error);
+      return false;
+    }
   }, [formData.values, updateFormData]);
 
   const removeValue = useCallback((index: number) => {

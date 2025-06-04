@@ -28,15 +28,17 @@ export const AddCustomParameterForm = ({ onAddParameter }: AddCustomParameterFor
   });
 
   const handleAdd = () => {
-    const success = onAddParameter(newValue);
-    if (success) {
-      setNewValue({
-        parameter: "",
-        value: "",
-        unit: "",
-        reference: "",
-        status: "normal"
-      });
+    if (newValue.parameter && newValue.unit) {
+      const success = onAddParameter(newValue);
+      if (success) {
+        setNewValue({
+          parameter: "",
+          value: "",
+          unit: "",
+          reference: "",
+          status: "normal"
+        });
+      }
     }
   };
 
@@ -80,7 +82,10 @@ export const AddCustomParameterForm = ({ onAddParameter }: AddCustomParameterFor
             />
           </div>
           <div>
-            <Button onClick={handleAdd}>
+            <Button 
+              onClick={handleAdd}
+              disabled={!newValue.parameter || !newValue.unit}
+            >
               <Plus className="h-4 w-4 mr-2" />
               Add
             </Button>
