@@ -18,6 +18,7 @@ export interface EnhancedSample {
   completionDate?: string;
   labTechnician?: string;
   results?: {[key: string]: any};
+  templateIds?: string[]; // Added template association
 }
 
 export const enhancedMockSamples: EnhancedSample[] = [
@@ -39,7 +40,8 @@ export const enhancedMockSamples: EnhancedSample[] = [
     processingTime: "2 days",
     completionDate: "2024-06-03",
     labTechnician: "Sarah Wilson",
-    results: { "glucose": "95 mg/dL", "hemoglobin": "12.5 g/dL" }
+    results: { "glucose": "95 mg/dL", "hemoglobin": "12.5 g/dL" },
+    templateIds: ["1", "2"]
   },
   {
     id: "S002",
@@ -57,7 +59,8 @@ export const enhancedMockSamples: EnhancedSample[] = [
     tubeStatus: { "urinalysis": "yes", "protein_levels": "yes" },
     rejectionReasons: {},
     processingTime: "1 day",
-    labTechnician: "Mike Johnson"
+    labTechnician: "Mike Johnson",
+    templateIds: ["3"]
   },
   {
     id: "S003",
@@ -77,7 +80,8 @@ export const enhancedMockSamples: EnhancedSample[] = [
     processingTime: "3 days",
     completionDate: "2024-06-06",
     labTechnician: "Sarah Wilson",
-    results: { "parasites": "None detected" }
+    results: { "parasites": "None detected" },
+    templateIds: ["4"]
   },
   {
     id: "S004",
@@ -94,7 +98,8 @@ export const enhancedMockSamples: EnhancedSample[] = [
     requiredAnalysis: ["Blood Chemistry", "Liver Function"],
     tubeStatus: { "blood_chemistry": "no", "liver_function": "no" },
     rejectionReasons: { "blood_chemistry": "Hemolysis detected", "liver_function": "Insufficient volume" },
-    labTechnician: "Mike Johnson"
+    labTechnician: "Mike Johnson",
+    templateIds: ["1", "5"]
   },
   {
     id: "S005",
@@ -111,7 +116,8 @@ export const enhancedMockSamples: EnhancedSample[] = [
     requiredAnalysis: ["Drug Screen", "Performance Panel"],
     tubeStatus: { "drug_screen": "yes", "performance_panel": "yes" },
     rejectionReasons: {},
-    labTechnician: "Sarah Wilson"
+    labTechnician: "Sarah Wilson",
+    templateIds: ["6", "7"]
   }
 ];
 

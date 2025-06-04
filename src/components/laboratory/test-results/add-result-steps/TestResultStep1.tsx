@@ -9,6 +9,7 @@ import SampleDetailsCard from "./components/SampleDetailsCard";
 import TestCompletionSection from "./components/TestCompletionSection";
 import { useState, useEffect } from "react";
 import { Template } from "@/types/template";
+import { initializeMockTemplateData } from "../utils/mockTemplateData";
 
 interface TestResultStep1Props {
   formData: TestResultFormData;
@@ -19,6 +20,25 @@ const TestResultStep1 = ({ formData, updateFormData }: TestResultStep1Props) => 
   const { getTemplateById } = useTemplateIntegration();
   const [preSelectedTemplates, setPreSelectedTemplates] = useState<Template[]>([]);
   const [templatesLoading, setTemplatesLoading] = useState(false);
+  const [mockDataInitialized, setMockDataInitialized] = useState(false);
+
+  // Initialize mock template data on component mount
+  useEffect(() => {
+    const initializeMockData = async () => {
+      try {
+        await initializeMockTemplateData();
+        setMockDataInitialized(true);
+        console.log("Mock template data initialization completed");
+      } catch (error) {
+        console.error("Failed to initialize mock template data:", error);
+        setMockDataInitialized(true); // Continue even if initialization fails
+      }
+    };
+
+    if (!mockDataInitialized) {
+      initializeMockData();
+    }
+  }, [mockDataInitialized]);
 
   // Mock samples data - in real app this would come from an API
   const availableSamples = [
@@ -89,6 +109,21 @@ const TestResultStep1 = ({ formData, updateFormData }: TestResultStep1Props) => 
       });
     }
   }, [formData.sampleId]);
+
+  // Don't render until mock data is initialized
+  if (!mockDataInitialized) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center py-4 text-muted-foreground">
+              Initializing sample data...
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
