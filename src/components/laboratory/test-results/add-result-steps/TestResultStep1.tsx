@@ -1,13 +1,12 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { TestResultFormData } from "../AddTestResultDialog";
 import { useTemplateIntegration } from "../hooks/useTemplateIntegration";
 import { templateSyncManager } from "@/utils/templateSync";
 import PreSelectedTemplatesDisplay from "./components/PreSelectedTemplatesDisplay";
+import SampleSelectionSection from "./components/SampleSelectionSection";
+import SampleDetailsCard from "./components/SampleDetailsCard";
+import TestCompletionSection from "./components/TestCompletionSection";
 import { useState, useEffect } from "react";
 import { Template } from "@/types/template";
 
@@ -98,45 +97,19 @@ const TestResultStep1 = ({ formData, updateFormData }: TestResultStep1Props) => 
           <CardTitle>Sample Selection</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div>
-            <Label htmlFor="sample">Select Sample</Label>
-            <Select value={formData.sampleId} onValueChange={handleSampleSelect}>
-              <SelectTrigger>
-                <SelectValue placeholder="Choose a sample to analyze" />
-              </SelectTrigger>
-              <SelectContent>
-                {availableSamples.map((sample) => (
-                  <SelectItem key={sample.id} value={sample.id}>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-6 w-6">
-                        <AvatarImage src={sample.horsePhoto} alt={sample.horseName} />
-                        <AvatarFallback>{sample.horseName.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <span>{sample.id} - {sample.horseName} ({sample.clientName})</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <SampleSelectionSection
+            selectedSampleId={formData.sampleId}
+            onSampleSelect={handleSampleSelect}
+          />
 
           {formData.sampleId && (
-            <Card className="bg-gray-50">
-              <CardContent className="pt-4">
-                <div className="flex items-center gap-4">
-                  <Avatar className="h-16 w-16">
-                    <AvatarImage src={formData.horsePhoto} alt={formData.horseName} />
-                    <AvatarFallback>{formData.horseName.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div className="space-y-1">
-                    <h3 className="font-semibold">{formData.horseName}</h3>
-                    <p className="text-sm text-muted-foreground">Sample ID: {formData.sampleId}</p>
-                    <p className="text-sm text-muted-foreground">Client: {formData.clientName}</p>
-                    <p className="text-sm text-muted-foreground">Phone: {formData.clientPhone}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <SampleDetailsCard
+              horseName={formData.horseName}
+              horsePhoto={formData.horsePhoto}
+              sampleId={formData.sampleId}
+              clientName={formData.clientName}
+              clientPhone={formData.clientPhone}
+            />
           )}
         </CardContent>
       </Card>
@@ -148,22 +121,10 @@ const TestResultStep1 = ({ formData, updateFormData }: TestResultStep1Props) => 
         />
       )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Test Completion Details</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div>
-            <Label htmlFor="completedDate">Completion Date</Label>
-            <Input
-              id="completedDate"
-              type="date"
-              value={formData.completedDate}
-              onChange={(e) => updateFormData({ completedDate: e.target.value })}
-            />
-          </div>
-        </CardContent>
-      </Card>
+      <TestCompletionSection
+        completedDate={formData.completedDate}
+        onDateChange={(date) => updateFormData({ completedDate: date })}
+      />
     </div>
   );
 };
