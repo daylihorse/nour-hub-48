@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from "react";
 import { centralTemplateService, TemplateState } from "@/services/centralTemplateService";
-import { Template } from "@/services/templateService";
+import { Template } from "@/types/template";
 
 export const useCentralTemplateService = () => {
   const [state, setState] = useState<TemplateState>(centralTemplateService.getState());

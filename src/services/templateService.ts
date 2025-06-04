@@ -1,245 +1,24 @@
-export interface Template {
-  id: string;
-  nameEn: string;
-  nameAr: string;
-  category: string;
-  sampleType: string;
-  methodology: string;
-  turnaroundTime: string;
-  parametersCount: number;
-  parameters: Array<{
-    id: number;
-    nameEn: string;
-    nameAr: string;
-    unit: string;
-    dataType: string;
-    normalRangeMin: string;
-    normalRangeMax: string;
-    criticalLow: string;
-    criticalHigh: string;
-  }>;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
 
-export interface TemplateFilters {
-  category?: string;
-  sampleType?: string;
-  methodology?: string;
-  searchTerm?: string;
-}
-
-export interface TemplateCacheEntry {
-  data: Template[];
-  timestamp: number;
-  filters?: TemplateFilters;
-}
-
-// Mock templates data - in a real app this would come from an API
-const mockTemplates: Template[] = [
-  {
-    id: "cbc-template",
-    nameEn: "Complete Blood Count",
-    nameAr: "تعداد الدم الكامل",
-    category: "Hematology",
-    sampleType: "Blood",
-    methodology: "Automated",
-    turnaroundTime: "2 hours",
-    parametersCount: 12,
-    parameters: [
-      {
-        id: 1,
-        nameEn: "White Blood Cells",
-        nameAr: "خلايا الدم البيضاء",
-        unit: "x10³/μL",
-        dataType: "numeric",
-        normalRangeMin: "5.0",
-        normalRangeMax: "10.0",
-        criticalLow: "2.0",
-        criticalHigh: "20.0"
-      },
-      {
-        id: 2,
-        nameEn: "Red Blood Cells",
-        nameAr: "خلايا الدم الحمراء",
-        unit: "x10⁶/μL",
-        dataType: "numeric",
-        normalRangeMin: "6.5",
-        normalRangeMax: "12.0",
-        criticalLow: "4.0",
-        criticalHigh: "15.0"
-      },
-      {
-        id: 3,
-        nameEn: "Hemoglobin",
-        nameAr: "الهيموجلوبين",
-        unit: "g/dL",
-        dataType: "numeric",
-        normalRangeMin: "11.0",
-        normalRangeMax: "18.0",
-        criticalLow: "8.0",
-        criticalHigh: "22.0"
-      }
-    ],
-    isActive: true,
-    createdAt: "2024-01-01",
-    updatedAt: "2024-01-01"
-  },
-  {
-    id: "chemistry-template",
-    nameEn: "Blood Chemistry Panel",
-    nameAr: "فحص كيمياء الدم",
-    category: "Clinical Chemistry",
-    sampleType: "Serum",
-    methodology: "Automated",
-    turnaroundTime: "4 hours",
-    parametersCount: 8,
-    parameters: [
-      {
-        id: 4,
-        nameEn: "Glucose",
-        nameAr: "الجلوكوز",
-        unit: "mg/dL",
-        dataType: "numeric",
-        normalRangeMin: "75",
-        normalRangeMax: "115",
-        criticalLow: "40",
-        criticalHigh: "400"
-      },
-      {
-        id: 5,
-        nameEn: "Total Protein",
-        nameAr: "البروتين الكلي",
-        unit: "g/dL",
-        dataType: "numeric",
-        normalRangeMin: "5.2",
-        normalRangeMax: "7.9",
-        criticalLow: "3.0",
-        criticalHigh: "10.0"
-      }
-    ],
-    isActive: true,
-    createdAt: "2024-01-01",
-    updatedAt: "2024-01-01"
-  },
-  {
-    id: "liver-template",
-    nameEn: "Liver Function Panel",
-    nameAr: "فحص وظائف الكبد",
-    category: "Clinical Chemistry",
-    sampleType: "Serum",
-    methodology: "Automated",
-    turnaroundTime: "3 hours",
-    parametersCount: 6,
-    parameters: [
-      {
-        id: 6,
-        nameEn: "ALT",
-        nameAr: "ناقلة أمين الألانين",
-        unit: "U/L",
-        dataType: "numeric",
-        normalRangeMin: "7",
-        normalRangeMax: "56",
-        criticalLow: "0",
-        criticalHigh: "200"
-      },
-      {
-        id: 7,
-        nameEn: "AST",
-        nameAr: "ناقلة أمين الأسبارتات",
-        unit: "U/L",
-        dataType: "numeric",
-        normalRangeMin: "10",
-        normalRangeMax: "40",
-        criticalLow: "0",
-        criticalHigh: "150"
-      }
-    ],
-    isActive: true,
-    createdAt: "2024-01-01",
-    updatedAt: "2024-01-01"
-  },
-  {
-    id: "thyroid-template",
-    nameEn: "Thyroid Profile",
-    nameAr: "ملف الغدة الدرقية",
-    category: "Endocrinology",
-    sampleType: "Serum",
-    methodology: "Immunoassay",
-    turnaroundTime: "6 hours",
-    parametersCount: 5,
-    parameters: [
-      {
-        id: 8,
-        nameEn: "TSH",
-        nameAr: "الهرمون المحفز للغدة الدرقية",
-        unit: "mIU/L",
-        dataType: "numeric",
-        normalRangeMin: "0.27",
-        normalRangeMax: "4.20",
-        criticalLow: "0.01",
-        criticalHigh: "100"
-      },
-      {
-        id: 9,
-        nameEn: "T4",
-        nameAr: "الثيروكسين",
-        unit: "μg/dL",
-        dataType: "numeric",
-        normalRangeMin: "4.5",
-        normalRangeMax: "11.2",
-        criticalLow: "0.5",
-        criticalHigh: "25"
-      }
-    ],
-    isActive: true,
-    createdAt: "2024-01-01",
-    updatedAt: "2024-01-01"
-  }
-];
+import { Template, TemplateFilters } from "@/types/template";
+import { mockTemplates, getTemplateUsageStats } from "./template/templateData";
+import { TemplateCache } from "./template/templateCache";
+import { TemplateFilterService } from "./template/templateFilters";
+import { TemplateConverter } from "./template/templateConverter";
 
 class TemplateService {
   private templates: Template[] = mockTemplates;
-  private cache: Map<string, TemplateCacheEntry> = new Map();
-  private cacheTimeout = 5 * 60 * 1000; // 5 minutes
-
-  private getCacheKey(filters?: TemplateFilters): string {
-    if (!filters) return 'all';
-    return JSON.stringify(filters);
-  }
-
-  private isCacheValid(entry: TemplateCacheEntry): boolean {
-    return Date.now() - entry.timestamp < this.cacheTimeout;
-  }
-
-  private setCache(key: string, data: Template[], filters?: TemplateFilters): void {
-    this.cache.set(key, {
-      data: [...data],
-      timestamp: Date.now(),
-      filters
-    });
-  }
-
-  private getFromCache(key: string): Template[] | null {
-    const entry = this.cache.get(key);
-    if (entry && this.isCacheValid(entry)) {
-      return entry.data;
-    }
-    this.cache.delete(key);
-    return null;
-  }
+  private cache: TemplateCache = new TemplateCache();
 
   async getAllTemplates(): Promise<Template[]> {
-    const cacheKey = this.getCacheKey();
-    const cached = this.getFromCache(cacheKey);
+    const cacheKey = this.cache.getCacheKeyForFilters();
+    const cached = this.cache.getFromCache(cacheKey);
     if (cached) return cached;
 
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 300));
     const activeTemplates = this.templates.filter(template => template.isActive);
     
-    this.setCache(cacheKey, activeTemplates);
+    this.cache.setCache(cacheKey, activeTemplates);
     return activeTemplates;
   }
 
@@ -254,71 +33,35 @@ class TemplateService {
   }
 
   async searchTemplates(filters: TemplateFilters): Promise<Template[]> {
-    const cacheKey = this.getCacheKey(filters);
-    const cached = this.getFromCache(cacheKey);
+    const cacheKey = this.cache.getCacheKeyForFilters(filters);
+    const cached = this.cache.getFromCache(cacheKey);
     if (cached) return cached;
 
     await new Promise(resolve => setTimeout(resolve, 200));
     
-    let filteredTemplates = this.templates.filter(template => template.isActive);
+    const filteredTemplates = TemplateFilterService.applyFilters(this.templates, filters);
 
-    if (filters.category) {
-      filteredTemplates = filteredTemplates.filter(template => 
-        template.category.toLowerCase() === filters.category?.toLowerCase()
-      );
-    }
-
-    if (filters.sampleType) {
-      filteredTemplates = filteredTemplates.filter(template => 
-        template.sampleType.toLowerCase() === filters.sampleType?.toLowerCase()
-      );
-    }
-
-    if (filters.methodology) {
-      filteredTemplates = filteredTemplates.filter(template => 
-        template.methodology.toLowerCase() === filters.methodology?.toLowerCase()
-      );
-    }
-
-    if (filters.searchTerm) {
-      const searchLower = filters.searchTerm.toLowerCase();
-      filteredTemplates = filteredTemplates.filter(template => 
-        template.nameEn.toLowerCase().includes(searchLower) ||
-        template.nameAr.includes(filters.searchTerm!) ||
-        template.category.toLowerCase().includes(searchLower)
-      );
-    }
-
-    this.setCache(cacheKey, filteredTemplates, filters);
+    this.cache.setCache(cacheKey, filteredTemplates, filters);
     return filteredTemplates;
   }
 
   async getTemplateCategories(): Promise<string[]> {
     await new Promise(resolve => setTimeout(resolve, 100));
-    const categories = [...new Set(this.templates.map(template => template.category))];
-    return categories.sort();
+    return TemplateFilterService.extractCategories(this.templates);
   }
 
   async getSampleTypes(): Promise<string[]> {
     await new Promise(resolve => setTimeout(resolve, 100));
-    const sampleTypes = [...new Set(this.templates.map(template => template.sampleType))];
-    return sampleTypes.sort();
+    return TemplateFilterService.extractSampleTypes(this.templates);
   }
 
   async getMethodologies(): Promise<string[]> {
     await new Promise(resolve => setTimeout(resolve, 100));
-    const methodologies = [...new Set(this.templates.map(template => template.methodology))];
-    return methodologies.sort();
+    return TemplateFilterService.extractMethodologies(this.templates);
   }
 
   convertTemplateParametersToFormValues(template: Template) {
-    return template.parameters.map(param => ({
-      parameter: param.nameEn,
-      value: "",
-      unit: param.unit,
-      reference: `${param.normalRangeMin}-${param.normalRangeMax}`,
-      status: "normal" as const
-    }));
+    return TemplateConverter.convertTemplateParametersToFormValues(template);
   }
 
   // New methods for template synchronization
@@ -328,18 +71,13 @@ class TemplateService {
   }
 
   clearCache(): void {
-    this.cache.clear();
+    this.cache.clearCache();
   }
 
   getTemplateUsageStats(): { [templateId: string]: number } {
-    // Mock usage statistics - in real app this would come from analytics
-    return {
-      "cbc-template": 45,
-      "chemistry-template": 32,
-      "liver-template": 28,
-      "thyroid-template": 15
-    };
+    return getTemplateUsageStats();
   }
 }
 
 export const templateService = new TemplateService();
+export type { Template, TemplateFilters } from "@/types/template";

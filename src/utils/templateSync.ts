@@ -1,6 +1,5 @@
-
 import { centralTemplateService } from "@/services/centralTemplateService";
-import { Template } from "@/services/templateService";
+import { Template } from "@/types/template";
 
 export interface SampleTemplateData {
   sampleId: string;
