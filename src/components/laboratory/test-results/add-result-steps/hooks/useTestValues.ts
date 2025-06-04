@@ -2,6 +2,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { TestResultFormData } from "../../AddTestResultDialog";
 import { useTemplateIntegration } from "../../hooks/useTemplateIntegration";
+import { calculateStatus } from "../utils/statusUtils";
 import { Template } from "@/types/template";
 
 interface UseTestValuesProps {
@@ -107,6 +108,14 @@ export const useTestValues = ({ formData, updateFormData }: UseTestValuesProps) 
     if (actualIndex !== -1) {
       const updatedValues = [...formData.values];
       updatedValues[actualIndex] = { ...updatedValues[actualIndex], [field]: value };
+      
+      // Auto-calculate status when value field changes
+      if (field === 'value' && value && updatedValues[actualIndex].reference) {
+        const newStatus = calculateStatus(value, updatedValues[actualIndex].reference);
+        updatedValues[actualIndex].status = newStatus;
+        console.log(`Status updated for ${updatedValues[actualIndex].parameter}: ${value} -> ${newStatus}`);
+      }
+      
       updateFormData({ values: updatedValues });
     }
   }, [formData.values, updateFormData, selectedTemplateFilter, filteredValues]);
