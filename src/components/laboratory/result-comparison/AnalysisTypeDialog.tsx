@@ -1,8 +1,7 @@
-
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { TestTube, Heart, Droplets, Bug, Liver, Kidney, Zap, Shield } from "lucide-react";
+import { TestTube, Heart, Droplets, Bug, Activity, Stethoscope, Zap, Shield } from "lucide-react";
 
 interface AnalysisTypeDialogProps {
   isOpen: boolean;
@@ -47,7 +46,7 @@ const AnalysisTypeDialog = ({ isOpen, onClose, onSelect, horseName }: AnalysisTy
     },
     {
       name: "Liver Function Test",
-      icon: Liver,
+      icon: Activity,
       description: "Liver enzyme and function assessment",
       parameters: ["ALT", "AST", "GGT", "Bilirubin"],
       testsAvailable: 3,
@@ -55,7 +54,7 @@ const AnalysisTypeDialog = ({ isOpen, onClose, onSelect, horseName }: AnalysisTy
     },
     {
       name: "Kidney Function Test",
-      icon: Kidney,
+      icon: Stethoscope,
       description: "Renal function evaluation",
       parameters: ["BUN", "Creatinine", "Phosphorus"],
       testsAvailable: 3,
