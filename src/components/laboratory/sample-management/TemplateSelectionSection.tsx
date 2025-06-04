@@ -87,7 +87,7 @@ const TemplateSelectionSection = ({
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     checked={selectedTemplates.includes(template.id)}
-                    onChange={() => {}} // Handled by card click
+                    onCheckedChange={(checked) => onTemplateChange(template.id, checked as boolean)}
                     className="mt-1"
                   />
                   <div>
