@@ -2,6 +2,7 @@
 import { templateService, Template, TemplateFilters } from "@/services/templateService";
 import { TemplateStateManager } from "./templateState";
 import { TemplateFilterManager } from "./templateFilters";
+import { TemplateState } from "@/types/centralTemplateTypes";
 
 export class TemplateOperationsManager {
   constructor(
@@ -84,7 +85,7 @@ export class TemplateOperationsManager {
   }
 
   // Auto-search when filters change
-  handleFilterChange(filterType: keyof any, value: string): void {
+  handleFilterChange(filterType: keyof TemplateState['filters'], value: string): void {
     this.filterManager.setFilter(filterType, value);
     this.searchTemplates(this.filterManager.getActiveFilters());
   }

@@ -1,13 +1,15 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Clock, Beaker } from "lucide-react";
 import { TestResultFormData } from "../AddTestResultDialog";
 import { useTemplateIntegration } from "../hooks/useTemplateIntegration";
 import { templateSyncManager } from "@/utils/templateSync";
+import PreSelectedTemplatesDisplay from "./components/PreSelectedTemplatesDisplay";
+import { useState, useEffect } from "react";
+import { Template } from "@/types/template";
 
 interface TestResultStep1Props {
   formData: TestResultFormData;
@@ -15,7 +17,9 @@ interface TestResultStep1Props {
 }
 
 const TestResultStep1 = ({ formData, updateFormData }: TestResultStep1Props) => {
-  const { templates, loading, getTemplateById } = useTemplateIntegration();
+  const { getTemplateById } = useTemplateIntegration();
+  const [preSelectedTemplates, setPreSelectedTemplates] = useState<Template[]>([]);
+  const [templatesLoading, setTemplatesLoading] = useState(false);
 
   // Mock samples data - in real app this would come from an API
   const availableSamples = [
@@ -36,34 +40,56 @@ const TestResultStep1 = ({ formData, updateFormData }: TestResultStep1Props) => 
         clientEmail: sample.clientEmail
       });
 
-      // Try to load template data from sample
-      const templateData = await templateSyncManager.loadTemplatesForTestResult(sampleId);
-      if (templateData.success && templateData.templateIds.length > 0) {
-        // Auto-select the first template from the sample
-        const firstTemplateId = templateData.templateIds[0];
-        const template = getTemplateById(firstTemplateId);
-        if (template) {
+      // Load templates associated with this sample
+      setTemplatesLoading(true);
+      try {
+        const templateData = await templateSyncManager.loadTemplatesForTestResult(sampleId);
+        if (templateData.success && templateData.templateIds.length > 0) {
+          const templates = templateData.templateIds
+            .map(id => getTemplateById(id))
+            .filter((template): template is Template => template !== undefined);
+          
+          setPreSelectedTemplates(templates);
+          
+          // Update form data with template IDs and combined test type
+          const testType = templates.map(t => t.nameEn).join(", ");
           updateFormData({
-            testType: template.nameEn,
-            templateId: firstTemplateId
+            templateIds: templateData.templateIds,
+            testType: testType
           });
-          console.log(`Auto-loaded template ${template.nameEn} from sample ${sampleId}`);
+          
+          console.log(`Loaded ${templates.length} pre-selected templates for sample ${sampleId}`);
+        } else {
+          setPreSelectedTemplates([]);
+          updateFormData({
+            templateIds: [],
+            testType: ""
+          });
+          console.log(`No templates found for sample ${sampleId}`);
         }
+      } catch (error) {
+        console.error("Failed to load templates for sample:", error);
+        setPreSelectedTemplates([]);
+        updateFormData({
+          templateIds: [],
+          testType: ""
+        });
+      } finally {
+        setTemplatesLoading(false);
       }
     }
   };
 
-  const handleTemplateSelect = (templateId: string) => {
-    const template = getTemplateById(templateId);
-    if (template) {
+  // Clear templates when sample is deselected
+  useEffect(() => {
+    if (!formData.sampleId) {
+      setPreSelectedTemplates([]);
       updateFormData({
-        testType: template.nameEn,
-        templateId: templateId
+        templateIds: [],
+        testType: ""
       });
     }
-  };
-
-  const selectedTemplate = formData.templateId ? getTemplateById(formData.templateId) : null;
+  }, [formData.sampleId]);
 
   return (
     <div className="space-y-6">
@@ -115,75 +141,18 @@ const TestResultStep1 = ({ formData, updateFormData }: TestResultStep1Props) => 
         </CardContent>
       </Card>
 
+      {formData.sampleId && (
+        <PreSelectedTemplatesDisplay 
+          templates={preSelectedTemplates} 
+          loading={templatesLoading}
+        />
+      )}
+
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Beaker className="h-5 w-5" />
-            Test Template Selection
-          </CardTitle>
+          <CardTitle>Test Completion Details</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <Label htmlFor="template">Select Test Template</Label>
-            {loading ? (
-              <div className="text-center py-4 text-muted-foreground">Loading templates...</div>
-            ) : (
-              <Select value={formData.templateId} onValueChange={handleTemplateSelect}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose a test template" />
-                </SelectTrigger>
-                <SelectContent>
-                  {templates.map((template) => (
-                    <SelectItem key={template.id} value={template.id}>
-                      <div className="flex flex-col items-start">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{template.nameEn}</span>
-                          <Badge variant="outline" className="text-xs">
-                            {template.category}
-                          </Badge>
-                        </div>
-                        <span className="text-xs text-muted-foreground">{template.nameAr}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          </div>
-
-          {selectedTemplate && (
-            <Card className="bg-blue-50 border-blue-200">
-              <CardContent className="pt-4">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-semibold">{selectedTemplate.nameEn}</h4>
-                    <Badge>{selectedTemplate.category}</Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground" dir="rtl">{selectedTemplate.nameAr}</p>
-                  
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">Sample Type:</span>
-                      <span className="capitalize">{selectedTemplate.sampleType}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      <span>{selectedTemplate.turnaroundTime}h turnaround</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">Methodology:</span>
-                      <span className="capitalize">{selectedTemplate.methodology}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">Parameters:</span>
-                      <span>{selectedTemplate.parameters.length} configured</span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
+        <CardContent>
           <div>
             <Label htmlFor="completedDate">Completion Date</Label>
             <Input

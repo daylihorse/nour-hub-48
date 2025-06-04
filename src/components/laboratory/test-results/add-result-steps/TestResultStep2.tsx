@@ -14,7 +14,7 @@ interface TestResultStep2Props {
 
 const TestResultStep2 = ({ formData, updateFormData }: TestResultStep2Props) => {
   const {
-    selectedTemplate,
+    selectedTemplates,
     templateLoaded,
     loadTemplateParameters,
     addCustomValue,
@@ -22,13 +22,13 @@ const TestResultStep2 = ({ formData, updateFormData }: TestResultStep2Props) => 
     updateValue
   } = useTestValues({ formData, updateFormData });
 
-  if (!selectedTemplate) {
+  if (!formData.templateIds || formData.templateIds.length === 0) {
     return (
       <div className="space-y-6">
         <Card>
           <CardContent className="pt-6">
             <p className="text-center text-muted-foreground">
-              Please select a template in the previous step to continue.
+              Please select a sample with templates in the previous step to continue.
             </p>
           </CardContent>
         </Card>
@@ -36,19 +36,29 @@ const TestResultStep2 = ({ formData, updateFormData }: TestResultStep2Props) => 
     );
   }
 
+  const totalParameters = selectedTemplates.reduce((sum, template) => sum + template.parameters.length, 0);
+
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            Test Values for {selectedTemplate.nameEn}
-            <Badge variant="outline">{selectedTemplate.category}</Badge>
+            Test Values for Selected Templates
+            <div className="flex gap-2">
+              {selectedTemplates.map((template) => (
+                <Badge key={template.id} variant="outline">{template.category}</Badge>
+              ))}
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="text-sm text-muted-foreground">
+            Templates: {selectedTemplates.map(t => t.nameEn).join(", ")}
+          </div>
+
           <TemplateLoadingSection
             hasValues={formData.values.length > 0}
-            parameterCount={selectedTemplate.parameters.length}
+            parameterCount={totalParameters}
             onLoadTemplate={loadTemplateParameters}
           />
 
