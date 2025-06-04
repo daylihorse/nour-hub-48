@@ -12,14 +12,31 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
+import ViewTemplateDialog from "./dialogs/ViewTemplateDialog";
+import DeleteConfirmationDialog from "./dialogs/DeleteConfirmationDialog";
+
+interface Template {
+  id: string;
+  nameEn: string;
+  nameAr: string;
+  category: string;
+  parametersCount: number;
+  normalRanges: string;
+  lastModified: string;
+  status: string;
+  usageCount: number;
+}
 
 interface ResultTemplatesListProps {
   searchTerm: string;
 }
 
 const ResultTemplatesList = ({ searchTerm }: ResultTemplatesListProps) => {
-  // Mock data for result templates
-  const templates = [
+  const { toast } = useToast();
+  const [viewingTemplate, setViewingTemplate] = useState<Template | null>(null);
+  const [deletingTemplate, setDeletingTemplate] = useState<Template | null>(null);
+  const [templates, setTemplates] = useState<Template[]>([
     {
       id: "1",
       nameEn: "Complete Blood Count",
@@ -53,13 +70,63 @@ const ResultTemplatesList = ({ searchTerm }: ResultTemplatesListProps) => {
       status: "draft",
       usageCount: 0
     }
-  ];
+  ]);
 
   const filteredTemplates = templates.filter(template =>
     template.nameEn.toLowerCase().includes(searchTerm.toLowerCase()) ||
     template.nameAr.includes(searchTerm) ||
     template.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleViewTemplate = (template: Template) => {
+    setViewingTemplate(template);
+  };
+
+  const handleEditTemplate = (template: Template) => {
+    toast({
+      title: "Edit Template",
+      description: `Opening edit mode for "${template.nameEn}"`,
+    });
+    console.log("Edit template:", template);
+    // Here you would typically navigate to edit mode or open edit dialog
+  };
+
+  const handleDuplicateTemplate = (template: Template) => {
+    const duplicatedTemplate: Template = {
+      ...template,
+      id: `${template.id}-copy-${Date.now()}`,
+      nameEn: `${template.nameEn} (Copy)`,
+      nameAr: `${template.nameAr} (نسخة)`,
+      usageCount: 0,
+      lastModified: new Date().toISOString().split('T')[0],
+      status: "draft"
+    };
+
+    setTemplates(prev => [...prev, duplicatedTemplate]);
+    
+    toast({
+      title: "Template Duplicated",
+      description: `"${template.nameEn}" has been duplicated successfully.`,
+    });
+  };
+
+  const handleDeleteTemplate = (template: Template) => {
+    setDeletingTemplate(template);
+  };
+
+  const confirmDeleteTemplate = () => {
+    if (deletingTemplate) {
+      setTemplates(prev => prev.filter(t => t.id !== deletingTemplate.id));
+      
+      toast({
+        title: "Template Deleted",
+        description: `"${deletingTemplate.nameEn}" has been deleted successfully.`,
+        variant: "destructive",
+      });
+      
+      setDeletingTemplate(null);
+    }
+  };
 
   const getStatusBadge = (status: string) => {
     const statusMap = {
@@ -115,20 +182,23 @@ const ResultTemplatesList = ({ searchTerm }: ResultTemplatesListProps) => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleViewTemplate(template)}>
                       <Eye className="h-4 w-4 mr-2" />
                       View
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleEditTemplate(template)}>
                       <Edit className="h-4 w-4 mr-2" />
                       Edit
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleDuplicateTemplate(template)}>
                       <Copy className="h-4 w-4 mr-2" />
                       Duplicate
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-destructive">
+                    <DropdownMenuItem 
+                      className="text-destructive"
+                      onClick={() => handleDeleteTemplate(template)}
+                    >
                       <Trash2 className="h-4 w-4 mr-2" />
                       Delete
                     </DropdownMenuItem>
@@ -139,6 +209,19 @@ const ResultTemplatesList = ({ searchTerm }: ResultTemplatesListProps) => {
           ))}
         </TableBody>
       </Table>
+
+      <ViewTemplateDialog
+        template={viewingTemplate}
+        isOpen={!!viewingTemplate}
+        onClose={() => setViewingTemplate(null)}
+      />
+
+      <DeleteConfirmationDialog
+        isOpen={!!deletingTemplate}
+        onClose={() => setDeletingTemplate(null)}
+        onConfirm={confirmDeleteTemplate}
+        templateName={deletingTemplate?.nameEn || ""}
+      />
     </div>
   );
 };

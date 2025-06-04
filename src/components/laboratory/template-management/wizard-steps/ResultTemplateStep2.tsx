@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,8 +5,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Trash2, Settings } from "lucide-react";
+import { Plus, Trash2, Settings, Edit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import EditParameterDialog from "./components/EditParameterDialog";
+
+interface Parameter {
+  id: number;
+  nameEn: string;
+  nameAr: string;
+  unit: string;
+  dataType: string;
+  normalRangeMin: string;
+  normalRangeMax: string;
+  criticalLow: string;
+  criticalHigh: string;
+}
 
 interface ResultTemplateStep2Props {
   data: any;
@@ -25,6 +37,9 @@ const ResultTemplateStep2 = ({ data, onDataChange }: ResultTemplateStep2Props) =
     criticalLow: "",
     criticalHigh: ""
   });
+
+  const [editingParameter, setEditingParameter] = useState<Parameter | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const addParameter = () => {
     if (newParameter.nameEn && newParameter.nameAr) {
@@ -52,6 +67,30 @@ const ResultTemplateStep2 = ({ data, onDataChange }: ResultTemplateStep2Props) =
       ...data,
       parameters: updatedParameters
     });
+  };
+
+  const handleEditParameter = (parameter: Parameter) => {
+    setEditingParameter(parameter);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleSaveParameter = (updatedParameter: Parameter) => {
+    const updatedParameters = data.parameters?.map((param: Parameter) => 
+      param.id === updatedParameter.id ? updatedParameter : param
+    ) || [];
+    
+    onDataChange({
+      ...data,
+      parameters: updatedParameters
+    });
+    
+    setEditingParameter(null);
+    setIsEditDialogOpen(false);
+  };
+
+  const handleCloseEditDialog = () => {
+    setEditingParameter(null);
+    setIsEditDialogOpen(false);
   };
 
   return (
@@ -172,7 +211,7 @@ const ResultTemplateStep2 = ({ data, onDataChange }: ResultTemplateStep2Props) =
                   <TableHead>Type</TableHead>
                   <TableHead>Normal Range</TableHead>
                   <TableHead>Critical Values</TableHead>
-                  <TableHead className="w-[50px]"></TableHead>
+                  <TableHead className="w-[100px]">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -201,13 +240,22 @@ const ResultTemplateStep2 = ({ data, onDataChange }: ResultTemplateStep2Props) =
                       }
                     </TableCell>
                     <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeParameter(param.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <div className="flex gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEditParameter(param)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeParameter(param.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -220,6 +268,13 @@ const ResultTemplateStep2 = ({ data, onDataChange }: ResultTemplateStep2Props) =
           )}
         </CardContent>
       </Card>
+
+      <EditParameterDialog
+        parameter={editingParameter}
+        isOpen={isEditDialogOpen}
+        onClose={handleCloseEditDialog}
+        onSave={handleSaveParameter}
+      />
     </div>
   );
 };
