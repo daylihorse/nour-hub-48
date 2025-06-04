@@ -1,30 +1,25 @@
 
 import StatisticsOverview from "./dashboard/StatisticsOverview";
+import EnhancedQuickActions from "./dashboard/EnhancedQuickActions";
 import RecentActivity from "./dashboard/RecentActivity";
-import QuickActions from "./dashboard/QuickActions";
 import PerformanceMetrics from "./dashboard/PerformanceMetrics";
 
 const LaboratoryDashboard = () => {
   return (
     <div className="space-y-6">
-      {/* Statistics Overview */}
-      <StatisticsOverview />
-
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Activity - Takes 2 columns on large screens */}
-        <div className="lg:col-span-2">
-          <RecentActivity />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="lg:col-span-1">
+          <EnhancedQuickActions />
         </div>
-
-        {/* Quick Actions - Takes 1 column */}
-        <div>
-          <QuickActions />
+        <div className="lg:col-span-3">
+          <StatisticsOverview />
         </div>
       </div>
-
-      {/* Performance Metrics */}
-      <PerformanceMetrics />
+      
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <RecentActivity />
+        <PerformanceMetrics />
+      </div>
     </div>
   );
 };

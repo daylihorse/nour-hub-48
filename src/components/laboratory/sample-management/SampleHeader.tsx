@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Plus, Search, Filter } from "lucide-react";
-import AddSampleDialog from "./AddSampleDialog";
+import EnhancedAddSampleDialog from "./EnhancedAddSampleDialog";
 
 interface SampleHeaderProps {
   searchTerm: string;
@@ -51,7 +51,7 @@ const SampleHeader = ({ searchTerm, setSearchTerm, statusFilter, setStatusFilter
             Add Sample
           </Button>
         </DialogTrigger>
-        <AddSampleDialog isOpen={isAddDialogOpen} setIsOpen={setIsAddDialogOpen} />
+        <EnhancedAddSampleDialog isOpen={isAddDialogOpen} setIsOpen={setIsAddDialogOpen} />
       </Dialog>
     </div>
   );
