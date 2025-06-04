@@ -28,7 +28,11 @@ const HorseSelectionSection = ({ selectedHorse, onHorseSelect }: HorseSelectionS
 
   const handleHorseSelect = (value: string) => {
     console.log("Horse selected in HorseSelectionSection:", value);
-    onHorseSelect(value);
+    if (value === "__add_new__") {
+      handleAddNew();
+    } else {
+      onHorseSelect(value);
+    }
   };
 
   const handleCancel = () => {
@@ -40,6 +44,7 @@ const HorseSelectionSection = ({ selectedHorse, onHorseSelect }: HorseSelectionS
     console.log("Horse saved, closing add form");
     setShowAddHorse(false);
     // In a real app, this would save the horse and update the selection
+    // For now, we'll just close the form
   };
 
   return (

@@ -41,11 +41,7 @@ const SampleFormFields = ({
 
   const handlePersonSelect = (value: string) => {
     console.log("Person selected in SampleFormFields:", value);
-    if (value === "__add_new__") {
-      handleAddNewPerson();
-    } else {
-      onPersonSelect(value);
-    }
+    onPersonSelect(value);
   };
 
   return (

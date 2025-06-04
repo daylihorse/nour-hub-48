@@ -67,6 +67,11 @@ const EnhancedAddSampleDialog = ({ isOpen, setIsOpen }: EnhancedAddSampleDialogP
     setShowAddPerson(false);
   };
 
+  const handleHorseSelect = (value: string) => {
+    console.log("Horse selected in main dialog:", value);
+    setSelectedHorse(value);
+  };
+
   const handleSave = () => {
     console.log("Sample data:", {
       horse: selectedHorse,
@@ -90,7 +95,7 @@ const EnhancedAddSampleDialog = ({ isOpen, setIsOpen }: EnhancedAddSampleDialogP
         <div className="space-y-6">
           <HorseSelectionSection 
             selectedHorse={selectedHorse}
-            onHorseSelect={setSelectedHorse}
+            onHorseSelect={handleHorseSelect}
           />
 
           <RequiredAnalysisSection
