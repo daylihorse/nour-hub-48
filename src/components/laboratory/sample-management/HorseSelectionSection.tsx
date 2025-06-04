@@ -17,30 +17,33 @@ const HorseSelectionSection = ({ selectedHorse, onHorseSelect }: HorseSelectionS
     { value: "thunder", label: "Thunder" },
     { value: "bella", label: "Bella" },
     { value: "shadow", label: "Shadow" },
+    { value: "storm", label: "Storm" },
+    { value: "flash", label: "Flash" },
   ];
 
   const handleAddNew = () => {
-    console.log("Add new horse triggered");
+    console.log("Add new horse triggered in HorseSelectionSection");
     setShowAddHorse(true);
   };
 
   const handleHorseSelect = (value: string) => {
-    console.log("Horse selected:", value);
+    console.log("Horse selected in HorseSelectionSection:", value);
     onHorseSelect(value);
   };
 
   const handleCancel = () => {
+    console.log("Cancel add horse");
     setShowAddHorse(false);
   };
 
   const handleSaveHorse = () => {
-    // In a real app, this would save the horse and update the selection
     console.log("Horse saved, closing add form");
     setShowAddHorse(false);
+    // In a real app, this would save the horse and update the selection
   };
 
   return (
-    <div>
+    <div className="space-y-2">
       <Label>Horse *</Label>
       {!showAddHorse ? (
         <SearchableSelect

@@ -30,27 +30,32 @@ const SampleFormFields = ({
     { value: "john_doe", label: "John Doe" },
     { value: "jane_smith", label: "Jane Smith" },
     { value: "mike_johnson", label: "Mike Johnson" },
+    { value: "sarah_wilson", label: "Sarah Wilson" },
+    { value: "david_brown", label: "David Brown" },
   ];
 
   const handleAddNewPerson = () => {
-    console.log("Add new person triggered");
-    // This will trigger the add person dialog in the parent component
+    console.log("Add new person triggered in SampleFormFields");
     onPersonSelect("__add_new__");
   };
 
   const handlePersonSelect = (value: string) => {
-    console.log("Person selected:", value);
-    onPersonSelect(value);
+    console.log("Person selected in SampleFormFields:", value);
+    if (value === "__add_new__") {
+      handleAddNewPerson();
+    } else {
+      onPersonSelect(value);
+    }
   };
 
   return (
     <>
       {/* Person Who Brought Sample */}
-      <div>
+      <div className="space-y-2">
         <Label>Person Who Brought Sample</Label>
         <SearchableSelect
           options={personOptions}
-          value={personWhoBrought}
+          value={personWhoBrought === "__add_new__" ? "" : personWhoBrought}
           placeholder="Search person"
           onValueChange={handlePersonSelect}
           onAddNew={handleAddNewPerson}
@@ -59,7 +64,7 @@ const SampleFormFields = ({
       </div>
 
       {/* Sample Receipt Date */}
-      <div>
+      <div className="space-y-2">
         <Label>Sample Receipt Date *</Label>
         <DatePicker
           date={sampleReceiptDate}
@@ -69,7 +74,7 @@ const SampleFormFields = ({
       </div>
 
       {/* Priority */}
-      <div>
+      <div className="space-y-2">
         <Label>Priority</Label>
         <Select value={priority} onValueChange={onPriorityChange}>
           <SelectTrigger>
@@ -84,7 +89,7 @@ const SampleFormFields = ({
       </div>
 
       {/* Notes */}
-      <div>
+      <div className="space-y-2">
         <Label>Notes</Label>
         <Textarea 
           placeholder="Additional notes..." 

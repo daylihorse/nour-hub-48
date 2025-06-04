@@ -29,21 +29,31 @@ const SearchableSelect = ({
   addNewLabel = "Add New"
 }: SearchableSelectProps) => {
   const [open, setOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
-  const filteredOptions = options;
   const selectedOption = options.find((option) => option.value === value);
 
   const handleSelect = (selectedValue: string) => {
+    console.log("HandleSelect called with:", selectedValue);
     if (selectedValue === "__add_new__") {
+      console.log("Add new triggered");
       onAddNew?.();
     } else {
+      console.log("Setting value:", selectedValue);
       onValueChange(selectedValue === value ? "" : selectedValue);
     }
     setOpen(false);
   };
 
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    if (!newOpen) {
+      setSearchValue("");
+    }
+  };
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -55,37 +65,44 @@ const SearchableSelect = ({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0 bg-white border shadow-lg z-50">
-        <Command>
+      <PopoverContent className="w-full p-0 bg-white border border-gray-200 shadow-lg z-50" align="start">
+        <Command shouldFilter={false}>
           <CommandInput 
             placeholder={`Search ${placeholder.toLowerCase()}...`}
+            value={searchValue}
+            onValueChange={setSearchValue}
           />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
-              {filteredOptions.map((option) => (
-                <CommandItem
-                  key={option.value}
-                  value={option.value}
-                  onSelect={() => handleSelect(option.value)}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === option.value ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {option.label}
-                </CommandItem>
-              ))}
+              {options
+                .filter((option) =>
+                  option.label.toLowerCase().includes(searchValue.toLowerCase())
+                )
+                .map((option) => (
+                  <CommandItem
+                    key={option.value}
+                    value={option.value}
+                    onSelect={() => handleSelect(option.value)}
+                    className="cursor-pointer"
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        value === option.value ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    {option.label}
+                  </CommandItem>
+                ))}
               {onAddNew && (
                 <CommandItem
                   value="__add_new__"
                   onSelect={() => handleSelect("__add_new__")}
-                  className="border-t mt-1 pt-2"
+                  className="border-t mt-1 pt-2 cursor-pointer bg-blue-50 hover:bg-blue-100"
                 >
-                  <Plus className="mr-2 h-4 w-4" />
-                  <span className="font-medium text-primary">{addNewLabel}</span>
+                  <Plus className="mr-2 h-4 w-4 text-blue-600" />
+                  <span className="font-medium text-blue-600">{addNewLabel}</span>
                 </CommandItem>
               )}
             </CommandGroup>
