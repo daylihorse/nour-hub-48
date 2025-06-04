@@ -1,69 +1,72 @@
 
 import { useState } from "react";
-import SampleHeader from "./sample-management/SampleHeader";
+import EnhancedSampleHeader from "./sample-management/EnhancedSampleHeader";
 import SampleStats from "./sample-management/SampleStats";
-import SampleTable from "./sample-management/SampleTable";
+import EnhancedSampleTable from "./sample-management/EnhancedSampleTable";
+import { getEnhancedSamples, EnhancedSample } from "./sample-management/utils/enhancedMockData";
 
 const SampleManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState("all");
+  const [analysisFilter, setAnalysisFilter] = useState("all");
+  const [dateRangeFilter, setDateRangeFilter] = useState<{ start?: Date; end?: Date }>({});
 
-  // Mock sample data
-  const samples = [
-    {
-      id: "S001",
-      horseId: "H001",
-      horseName: "Thunder",
-      sampleType: "Blood",
-      collectionDate: "2024-06-01",
-      collectedBy: "Dr. Smith",
-      status: "collected",
-      priority: "routine",
-      notes: "Regular health check"
-    },
-    {
-      id: "S002",
-      horseId: "H002",
-      horseName: "Bella",
-      sampleType: "Urine",
-      collectionDate: "2024-06-02",
-      collectedBy: "Dr. Johnson",
-      status: "processing",
-      priority: "urgent",
-      notes: "Follow-up test"
-    },
-    {
-      id: "S003",
-      horseId: "H003",
-      horseName: "Shadow",
-      sampleType: "Fecal",
-      collectionDate: "2024-06-03",
-      collectedBy: "Dr. Brown",
-      status: "completed",
-      priority: "routine",
-      notes: "Parasite screening"
-    }
-  ];
+  const allSamples = getEnhancedSamples();
 
-  const filteredSamples = samples.filter(sample => {
-    const matchesSearch = sample.horseName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         sample.id.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredSamples = allSamples.filter((sample: EnhancedSample) => {
+    // Search filter
+    const matchesSearch = 
+      sample.horseName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      sample.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      sample.personWhoBrought.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      sample.collectedBy.toLowerCase().includes(searchTerm.toLowerCase());
+
+    // Status filter
     const matchesStatus = statusFilter === "all" || sample.status === statusFilter;
-    return matchesSearch && matchesStatus;
+
+    // Priority filter
+    const matchesPriority = priorityFilter === "all" || sample.priority === priorityFilter;
+
+    // Analysis filter
+    const matchesAnalysis = analysisFilter === "all" || 
+      sample.requiredAnalysis.some(analysis => analysis.includes(analysisFilter));
+
+    // Date range filter
+    let matchesDateRange = true;
+    if (dateRangeFilter.start || dateRangeFilter.end) {
+      const sampleDate = new Date(sample.collectionDate);
+      if (dateRangeFilter.start && sampleDate < dateRangeFilter.start) {
+        matchesDateRange = false;
+      }
+      if (dateRangeFilter.end && sampleDate > dateRangeFilter.end) {
+        matchesDateRange = false;
+      }
+    }
+
+    return matchesSearch && matchesStatus && matchesPriority && matchesAnalysis && matchesDateRange;
   });
 
   return (
     <div className="space-y-6">
-      <SampleHeader 
+      <EnhancedSampleHeader 
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         statusFilter={statusFilter}
         setStatusFilter={setStatusFilter}
+        priorityFilter={priorityFilter}
+        setPriorityFilter={setPriorityFilter}
+        dateRangeFilter={dateRangeFilter}
+        setDateRangeFilter={setDateRangeFilter}
+        analysisFilter={analysisFilter}
+        setAnalysisFilter={setAnalysisFilter}
+        totalSamples={allSamples.length}
+        filteredCount={filteredSamples.length}
       />
 
       <SampleStats />
 
-      <SampleTable samples={filteredSamples} />
+      <EnhancedSampleTable samples={filteredSamples} />
     </div>
   );
 };
