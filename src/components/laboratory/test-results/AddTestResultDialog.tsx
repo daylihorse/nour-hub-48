@@ -32,6 +32,7 @@ export interface TestResultFormData {
     unit: string;
     reference: string;
     status: 'normal' | 'high' | 'low';
+    templateId?: string; // Add templateId property
   }>;
   
   // Step 3: Results Analysis
