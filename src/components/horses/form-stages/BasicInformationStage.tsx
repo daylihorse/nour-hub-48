@@ -11,6 +11,8 @@ import { horseBreeds, horseColors } from "../form-components/constants/formOptio
 import EnhancedSelectWithAddNew from "../form-components/EnhancedSelectWithAddNew";
 import AddColorDialog from "../form-components/dialogs/AddColorDialog";
 import AddBreedDialog from "../form-components/dialogs/AddBreedDialog";
+import DynamicDatePicker from "../form-components/DynamicDatePicker";
+import { calculateAge } from "../utils/ageCalculation";
 
 const BasicInformationStage = () => {
   const form = useFormContext<HorseFormData>();
@@ -24,6 +26,7 @@ const BasicInformationStage = () => {
   const selectedAgeClass = form.watch("ageClass");
   const selectedAdultMaleType = form.watch("adultMaleType");
   const isPregnant = form.watch("isPregnant");
+  const birthDate = form.watch("birthDate");
 
   const handleAddColor = (newColor: { value: string; label: string; arabicLabel: string; description: string }) => {
     setCustomColors(prev => [...prev, newColor]);
@@ -115,7 +118,7 @@ const BasicInformationStage = () => {
           )}
         />
 
-        {/* Age Class Field - Conditional based on Gender */}
+        {/* Age Class Field - Conditional based on Gender - Moved right after Gender */}
         {selectedGender && (
           <FormField
             control={form.control}
@@ -268,33 +271,22 @@ const BasicInformationStage = () => {
           />
         )}
 
-        {/* Status Field */}
-        <FormField
-          control={form.control}
-          name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Status *</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-col space-y-2"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="active" id="status-active" />
-                    <Label htmlFor="status-active">Active</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="inactive" id="status-inactive" />
-                    <Label htmlFor="status-inactive">Inactive</Label>
-                  </div>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+        {/* Birth Date Field with Age Calculation */}
+        <div className="space-y-2">
+          <DynamicDatePicker
+            name="birthDate"
+            label="Birth Date"
+            placeholder="Select birth date"
+            maxDate={new Date()}
+            minDate={new Date("1990-01-01")}
+          />
+          {birthDate && (
+            <div className="text-sm text-muted-foreground mt-1">
+              <span className="font-medium">Calculated Age: </span>
+              {calculateAge(new Date(birthDate))}
+            </div>
           )}
-        />
+        </div>
 
         <EnhancedSelectWithAddNew
           name="color"

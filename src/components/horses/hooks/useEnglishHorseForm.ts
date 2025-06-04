@@ -96,7 +96,7 @@ export const useEnglishHorseForm = ({ onSave }: UseEnglishHorseFormProps) => {
     const requiredFields = currentStageData.fields.filter(field => {
       // Define required fields for each stage
       if (currentStageData.id === "basic") {
-        const basicRequiredFields = ["name", "breed", "gender", "color", "status"];
+        const basicRequiredFields = ["name", "breed", "gender", "color"];
         
         // Add conditional required fields based on gender selection
         if (formValues.gender) {
@@ -126,6 +126,9 @@ export const useEnglishHorseForm = ({ onSave }: UseEnglishHorseFormProps) => {
       }
       if (currentStageData.id === "health") {
         return ["healthStatus", "vaccinationStatus"].includes(field);
+      }
+      if (currentStageData.id === "review") {
+        return ["status"].includes(field);
       }
       return false;
     });
