@@ -41,14 +41,27 @@ const SearchableSelect = ({
   const handleSelect = (selectedValue: string) => {
     console.log("HandleSelect called with:", selectedValue);
     
-    if (selectedValue === "__add_new__") {
+    // Handle the transformed value from CommandItem
+    const actualValue = selectedValue.toLowerCase().replace(/\s+/g, '_');
+    
+    if (actualValue === "__add_new__" || selectedValue === "__add_new__") {
       console.log("Add new triggered");
       setOpen(false);
+      setSearchValue("");
       onAddNew?.();
     } else {
-      console.log("Setting value:", selectedValue);
-      onValueChange(selectedValue === value ? "" : selectedValue);
+      // Find the original option value by matching the label or value
+      const matchedOption = options.find(option => 
+        option.value === selectedValue || 
+        option.label.toLowerCase() === selectedValue.toLowerCase() ||
+        option.value === actualValue
+      );
+      
+      const valueToSet = matchedOption ? matchedOption.value : selectedValue;
+      console.log("Setting value:", valueToSet);
+      onValueChange(valueToSet === value ? "" : valueToSet);
       setOpen(false);
+      setSearchValue("");
     }
   };
 
@@ -72,7 +85,7 @@ const SearchableSelect = ({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 bg-white border border-gray-200 shadow-lg z-50" align="start">
+      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 bg-white border border-gray-200 shadow-lg z-[100]" align="start">
         <Command shouldFilter={false}>
           <CommandInput 
             placeholder={`Search ${placeholder.toLowerCase()}...`}
@@ -88,6 +101,7 @@ const SearchableSelect = ({
               {filteredOptions.map((option) => (
                 <CommandItem
                   key={option.value}
+                  value={option.value}
                   onSelect={() => handleSelect(option.value)}
                   className="cursor-pointer flex items-center"
                 >
@@ -102,6 +116,7 @@ const SearchableSelect = ({
               ))}
               {onAddNew && (
                 <CommandItem
+                  value="__add_new__"
                   onSelect={() => handleSelect("__add_new__")}
                   className="border-t mt-1 pt-2 cursor-pointer bg-blue-50 hover:bg-blue-100 flex items-center"
                 >

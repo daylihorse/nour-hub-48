@@ -76,7 +76,7 @@ const SampleFormFields = ({
           <SelectTrigger>
             <SelectValue placeholder="Select priority..." />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white z-[100]">
             <SelectItem value="routine">Routine</SelectItem>
             <SelectItem value="urgent">Urgent</SelectItem>
             <SelectItem value="critical">Critical</SelectItem>
