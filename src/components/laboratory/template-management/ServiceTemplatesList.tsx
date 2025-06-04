@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import DeleteConfirmationDialog from "./dialogs/DeleteConfirmationDialog";
+import EditServiceTemplateDialog from "./dialogs/EditServiceTemplateDialog";
 
 interface ServiceTemplate {
   id: string;
@@ -32,6 +32,7 @@ interface ServiceTemplatesListProps {
 
 const ServiceTemplatesList = ({ searchTerm }: ServiceTemplatesListProps) => {
   const { toast } = useToast();
+  const [editingTemplate, setEditingTemplate] = useState<ServiceTemplate | null>(null);
   const [deletingTemplate, setDeletingTemplate] = useState<ServiceTemplate | null>(null);
   const [templates, setTemplates] = useState<ServiceTemplate[]>([
     {
@@ -84,11 +85,18 @@ const ServiceTemplatesList = ({ searchTerm }: ServiceTemplatesListProps) => {
   };
 
   const handleEditTemplate = (template: ServiceTemplate) => {
+    setEditingTemplate(template);
+  };
+
+  const handleSaveTemplate = (updatedTemplate: ServiceTemplate) => {
+    setTemplates(prev => 
+      prev.map(t => t.id === updatedTemplate.id ? updatedTemplate : t)
+    );
+    
     toast({
-      title: "Edit Service Template",
-      description: `Opening edit mode for "${template.nameEn}"`,
+      title: "Service Template Updated",
+      description: `"${updatedTemplate.nameEn}" has been updated successfully.`,
     });
-    console.log("Edit service template:", template);
   };
 
   const handleDuplicateTemplate = (template: ServiceTemplate) => {
@@ -217,6 +225,13 @@ const ServiceTemplatesList = ({ searchTerm }: ServiceTemplatesListProps) => {
           </Card>
         ))}
       </div>
+
+      <EditServiceTemplateDialog
+        template={editingTemplate}
+        isOpen={!!editingTemplate}
+        onClose={() => setEditingTemplate(null)}
+        onSave={handleSaveTemplate}
+      />
 
       <DeleteConfirmationDialog
         isOpen={!!deletingTemplate}

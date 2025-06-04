@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,6 +14,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import ViewTemplateDialog from "./dialogs/ViewTemplateDialog";
 import DeleteConfirmationDialog from "./dialogs/DeleteConfirmationDialog";
+import EditResultTemplateDialog from "./dialogs/EditResultTemplateDialog";
 
 interface Template {
   id: string;
@@ -35,6 +35,7 @@ interface ResultTemplatesListProps {
 const ResultTemplatesList = ({ searchTerm }: ResultTemplatesListProps) => {
   const { toast } = useToast();
   const [viewingTemplate, setViewingTemplate] = useState<Template | null>(null);
+  const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
   const [deletingTemplate, setDeletingTemplate] = useState<Template | null>(null);
   const [templates, setTemplates] = useState<Template[]>([
     {
@@ -83,12 +84,21 @@ const ResultTemplatesList = ({ searchTerm }: ResultTemplatesListProps) => {
   };
 
   const handleEditTemplate = (template: Template) => {
+    setEditingTemplate(template);
+  };
+
+  const handleSaveTemplate = (updatedTemplate: Template) => {
+    setTemplates(prev => 
+      prev.map(t => t.id === updatedTemplate.id ? {
+        ...updatedTemplate,
+        lastModified: new Date().toISOString().split('T')[0]
+      } : t)
+    );
+    
     toast({
-      title: "Edit Template",
-      description: `Opening edit mode for "${template.nameEn}"`,
+      title: "Template Updated",
+      description: `"${updatedTemplate.nameEn}" has been updated successfully.`,
     });
-    console.log("Edit template:", template);
-    // Here you would typically navigate to edit mode or open edit dialog
   };
 
   const handleDuplicateTemplate = (template: Template) => {
@@ -214,6 +224,13 @@ const ResultTemplatesList = ({ searchTerm }: ResultTemplatesListProps) => {
         template={viewingTemplate}
         isOpen={!!viewingTemplate}
         onClose={() => setViewingTemplate(null)}
+      />
+
+      <EditResultTemplateDialog
+        template={editingTemplate}
+        isOpen={!!editingTemplate}
+        onClose={() => setEditingTemplate(null)}
+        onSave={handleSaveTemplate}
       />
 
       <DeleteConfirmationDialog
