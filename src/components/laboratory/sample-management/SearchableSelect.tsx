@@ -48,13 +48,8 @@ const SearchableSelect = ({
       return;
     }
 
-    // Find the matching option by value first, then by label
-    const matchedOption = options.find(option => 
-      option.value === selectedValue || 
-      option.label === selectedValue ||
-      option.value.toLowerCase() === selectedValue.toLowerCase() ||
-      option.label.toLowerCase() === selectedValue.toLowerCase()
-    );
+    // Direct value matching since we now use consistent values
+    const matchedOption = options.find(option => option.value === selectedValue);
 
     if (matchedOption) {
       console.log("Setting value:", matchedOption.value);
@@ -107,7 +102,7 @@ const SearchableSelect = ({
               {filteredOptions.map((option) => (
                 <CommandItem
                   key={option.value}
-                  value={option.label}
+                  value={option.value}
                   onSelect={() => handleSelect(option.value)}
                   className="cursor-pointer flex items-center"
                 >
