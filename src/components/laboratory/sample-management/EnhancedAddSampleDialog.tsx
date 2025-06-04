@@ -187,22 +187,11 @@ const EnhancedAddSampleDialog = ({ isOpen, setIsOpen }: EnhancedAddSampleDialogP
             onHorseSelect={handleHorseSelect}
           />
 
-          <RequiredAnalysisSection
-            selectedAnalysis={selectedAnalysis}
-            tubeStatus={tubeStatus}
-            rejectionReasons={rejectionReasons}
-            onAnalysisChange={handleAnalysisChange}
-            onTubeStatusChange={handleTubeStatusChange}
-            onRejectionReasonChange={handleRejectionReasonChange}
-          />
-
           {selectedHorse && (
-            <div className="p-4 border rounded-lg bg-blue-50">
-              <SampleTypeField
-                value={sampleType}
-                onValueChange={handleSampleTypeChange}
-              />
-            </div>
+            <SampleTypeField
+              value={sampleType}
+              onValueChange={handleSampleTypeChange}
+            />
           )}
 
           {sampleType === "retest" && selectedHorse && (
@@ -213,6 +202,15 @@ const EnhancedAddSampleDialog = ({ isOpen, setIsOpen }: EnhancedAddSampleDialogP
               onSampleSelect={setSelectedPreviousSample}
             />
           )}
+
+          <RequiredAnalysisSection
+            selectedAnalysis={selectedAnalysis}
+            tubeStatus={tubeStatus}
+            rejectionReasons={rejectionReasons}
+            onAnalysisChange={handleAnalysisChange}
+            onTubeStatusChange={handleTubeStatusChange}
+            onRejectionReasonChange={handleRejectionReasonChange}
+          />
 
           <SampleFormFields
             personWhoBrought={personWhoBrought}

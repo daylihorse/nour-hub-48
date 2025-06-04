@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import SearchableSelect from "./SearchableSelect";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import AddHorseSection from "./AddHorseSection";
 
 interface HorseSelectionSectionProps {
@@ -30,7 +30,11 @@ const HorseSelectionSection = ({ selectedHorse, onHorseSelect }: HorseSelectionS
 
   const handleHorseSelect = (value: string) => {
     console.log("Horse selected in HorseSelectionSection:", value);
-    onHorseSelect(value);
+    if (value === "__add_new__") {
+      handleAddNew();
+    } else {
+      onHorseSelect(value);
+    }
   };
 
   const handleCancel = () => {
@@ -49,14 +53,23 @@ const HorseSelectionSection = ({ selectedHorse, onHorseSelect }: HorseSelectionS
     <div className="space-y-2">
       <Label>Horse *</Label>
       {!showAddHorse ? (
-        <SearchableSelect
-          options={horseOptions}
-          value={selectedHorse}
-          placeholder="Select horse"
-          onValueChange={handleHorseSelect}
-          onAddNew={handleAddNew}
-          addNewLabel="Add New Horse"
-        />
+        <Select value={selectedHorse} onValueChange={handleHorseSelect}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select horse" />
+          </SelectTrigger>
+          <SelectContent className="bg-white z-[150]">
+            {horseOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+            <SelectItem value="__add_new__" className="border-t mt-1 pt-2 bg-blue-50 hover:bg-blue-100">
+              <div className="flex items-center gap-2 font-medium text-blue-600">
+                <span>+ Add New Horse</span>
+              </div>
+            </SelectItem>
+          </SelectContent>
+        </Select>
       ) : (
         <div className="space-y-4 p-4 border rounded-lg bg-gray-50">
           <div className="flex justify-between items-center">

@@ -3,7 +3,6 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { DatePicker } from "@/components/ui/date-picker";
-import SearchableSelect from "./SearchableSelect";
 
 interface SampleFormFieldsProps {
   personWhoBrought: string;
@@ -46,14 +45,23 @@ const SampleFormFields = ({
       {/* Person Who Brought Sample */}
       <div className="space-y-2">
         <Label>Person Who Brought Sample</Label>
-        <SearchableSelect
-          options={personOptions}
-          value={personWhoBrought}
-          placeholder="Search person"
-          onValueChange={handlePersonSelect}
-          onAddNew={() => onPersonSelect("__add_new__")}
-          addNewLabel="Add New Person"
-        />
+        <Select value={personWhoBrought} onValueChange={handlePersonSelect}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select person" />
+          </SelectTrigger>
+          <SelectContent className="bg-white z-[150]">
+            {personOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+            <SelectItem value="__add_new__" className="border-t mt-1 pt-2 bg-blue-50 hover:bg-blue-100">
+              <div className="flex items-center gap-2 font-medium text-blue-600">
+                <span>+ Add New Person</span>
+              </div>
+            </SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Sample Receipt Date */}
