@@ -29,7 +29,7 @@ const requiredAnalysisOptions = [
   { id: "hormones", label: "Hormones", needsTube: true }
 ];
 
-const rejectionReasons = [
+const rejectionReasonOptions = [
   "Insufficient sample volume",
   "Hemolyzed sample",
   "Clotted sample",
@@ -201,7 +201,7 @@ const EnhancedAddSampleDialog = ({ isOpen, setIsOpen }: EnhancedAddSampleDialogP
                             <SelectValue placeholder="Select reason..." />
                           </SelectTrigger>
                           <SelectContent>
-                            {rejectionReasons.map((reason) => (
+                            {rejectionReasonOptions.map((reason) => (
                               <SelectItem key={reason} value={reason} className="text-xs">
                                 {reason}
                               </SelectItem>
