@@ -5,6 +5,7 @@ import LaboratoryDashboard from "@/components/laboratory/LaboratoryDashboard";
 import SampleManagement from "@/components/laboratory/SampleManagement";
 import TestRequests from "@/components/laboratory/TestRequests";
 import TestResults from "@/components/laboratory/TestResults";
+import ResultComparison from "@/components/laboratory/ResultComparison";
 import EquipmentManagement from "@/components/laboratory/EquipmentManagement";
 import QualityControl from "@/components/laboratory/QualityControl";
 
@@ -19,11 +20,12 @@ const LaboratoryDepartment = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="samples">Sample Management</TabsTrigger>
           <TabsTrigger value="tests">Test Requests</TabsTrigger>
           <TabsTrigger value="results">Results</TabsTrigger>
+          <TabsTrigger value="comparison">Comparison</TabsTrigger>
           <TabsTrigger value="equipment">Equipment</TabsTrigger>
           <TabsTrigger value="quality">Quality Control</TabsTrigger>
         </TabsList>
@@ -42,6 +44,10 @@ const LaboratoryDepartment = () => {
         
         <TabsContent value="results" className="mt-6">
           <TestResults />
+        </TabsContent>
+        
+        <TabsContent value="comparison" className="mt-6">
+          <ResultComparison />
         </TabsContent>
         
         <TabsContent value="equipment" className="mt-6">
