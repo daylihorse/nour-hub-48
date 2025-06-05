@@ -1,3 +1,4 @@
+
 import { StoreProduct, StoreService as StoreServiceType, Sale, CartItem } from '@/types/store';
 
 class StoreManagementService {
@@ -50,6 +51,19 @@ class StoreManagementService {
       department: 'laboratory',
       stock: 30,
       images: ['🧪'],
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: 'prod_5',
+      name: 'Marketplace Special Item',
+      description: 'Exclusive marketplace product for testing',
+      price: 199.99,
+      category: 'Marketplace Exclusive',
+      department: 'marketplace',
+      stock: 10,
+      images: ['🏪'],
       isActive: true,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -120,22 +134,56 @@ class StoreManagementService {
       createdAt: new Date(),
       updatedAt: new Date(),
     },
+    {
+      id: 'serv_4',
+      name: 'Marketplace Consultation',
+      description: 'Expert guidance on marketplace operations and sales strategies',
+      price: 200.00,
+      category: 'Business Services',
+      department: 'marketplace',
+      duration: 90,
+      isActive: true,
+      availability: {
+        monday: true,
+        tuesday: true,
+        wednesday: true,
+        thursday: true,
+        friday: true,
+        saturday: true,
+        sunday: false,
+      },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
   ];
 
   private sales: Sale[] = [];
 
+  constructor() {
+    console.log('StoreManagementService initialized');
+    console.log('Products loaded:', this.products.length);
+    console.log('Services loaded:', this.services.length);
+  }
+
   // Product methods
   getProducts(department?: string): StoreProduct[] {
-    return department 
+    console.log('getProducts called with department:', department);
+    const result = department 
       ? this.products.filter(p => p.department === department && p.isActive)
       : this.products.filter(p => p.isActive);
+    console.log('Products returned:', result.length);
+    return result;
   }
 
   getProductById(id: string): StoreProduct | undefined {
-    return this.products.find(p => p.id === id);
+    console.log('getProductById called with id:', id);
+    const result = this.products.find(p => p.id === id);
+    console.log('Product found:', result ? result.name : 'Not found');
+    return result;
   }
 
   addProduct(product: Omit<StoreProduct, 'id' | 'createdAt' | 'updatedAt'>): StoreProduct {
+    console.log('addProduct called:', product.name);
     const newProduct: StoreProduct = {
       ...product,
       id: `prod_${Date.now()}`,
@@ -143,33 +191,46 @@ class StoreManagementService {
       updatedAt: new Date(),
     };
     this.products.push(newProduct);
+    console.log('Product added successfully:', newProduct.id);
     return newProduct;
   }
 
   updateProduct(id: string, updates: Partial<StoreProduct>): StoreProduct | null {
+    console.log('updateProduct called for id:', id);
     const index = this.products.findIndex(p => p.id === id);
-    if (index === -1) return null;
+    if (index === -1) {
+      console.log('Product not found for update:', id);
+      return null;
+    }
     
     this.products[index] = {
       ...this.products[index],
       ...updates,
       updatedAt: new Date(),
     };
+    console.log('Product updated successfully:', this.products[index].name);
     return this.products[index];
   }
 
   // Service methods
   getServices(department?: string): StoreServiceType[] {
-    return department
+    console.log('getServices called with department:', department);
+    const result = department
       ? this.services.filter(s => s.department === department && s.isActive)
       : this.services.filter(s => s.isActive);
+    console.log('Services returned:', result.length);
+    return result;
   }
 
   getServiceById(id: string): StoreServiceType | undefined {
-    return this.services.find(s => s.id === id);
+    console.log('getServiceById called with id:', id);
+    const result = this.services.find(s => s.id === id);
+    console.log('Service found:', result ? result.name : 'Not found');
+    return result;
   }
 
   addService(service: Omit<StoreServiceType, 'id' | 'createdAt' | 'updatedAt'>): StoreServiceType {
+    console.log('addService called:', service.name);
     const newService: StoreServiceType = {
       ...service,
       id: `serv_${Date.now()}`,
@@ -177,23 +238,31 @@ class StoreManagementService {
       updatedAt: new Date(),
     };
     this.services.push(newService);
+    console.log('Service added successfully:', newService.id);
     return newService;
   }
 
   updateService(id: string, updates: Partial<StoreServiceType>): StoreServiceType | null {
+    console.log('updateService called for id:', id);
     const index = this.services.findIndex(s => s.id === id);
-    if (index === -1) return null;
+    if (index === -1) {
+      console.log('Service not found for update:', id);
+      return null;
+    }
     
     this.services[index] = {
       ...this.services[index],
       ...updates,
       updatedAt: new Date(),
     };
+    console.log('Service updated successfully:', this.services[index].name);
     return this.services[index];
   }
 
   // Sales methods
   recordSale(sale: Omit<Sale, 'id' | 'saleDate'>): Sale {
+    console.log('recordSale called for department:', sale.department);
+    console.log('Sale items:', sale.items.length);
     const newSale: Sale = {
       ...sale,
       id: `sale_${Date.now()}`,
@@ -206,6 +275,7 @@ class StoreManagementService {
       if (item.type === 'product') {
         const product = this.getProductById(item.id);
         if (product) {
+          console.log(`Updating stock for ${product.name}: ${product.stock} -> ${product.stock - item.quantity}`);
           this.updateProduct(item.id, { 
             stock: product.stock - item.quantity 
           });
@@ -213,16 +283,21 @@ class StoreManagementService {
       }
     });
     
+    console.log('Sale recorded successfully:', newSale.id, 'Total:', newSale.total);
     return newSale;
   }
 
   getSales(department?: string): Sale[] {
-    return department
+    console.log('getSales called with department:', department);
+    const result = department
       ? this.sales.filter(s => s.department === department)
       : this.sales;
+    console.log('Sales returned:', result.length);
+    return result;
   }
 
   getSalesStats(department?: string) {
+    console.log('getSalesStats called with department:', department);
     const relevantSales = this.getSales(department);
     const today = new Date();
     const thisMonth = relevantSales.filter(s => 
@@ -230,12 +305,15 @@ class StoreManagementService {
       s.saleDate.getFullYear() === today.getFullYear()
     );
 
-    return {
+    const stats = {
       totalSales: relevantSales.reduce((sum, sale) => sum + sale.total, 0),
       monthlySales: thisMonth.reduce((sum, sale) => sum + sale.total, 0),
       totalTransactions: relevantSales.length,
       monthlyTransactions: thisMonth.length,
     };
+    
+    console.log('Sales stats:', stats);
+    return stats;
   }
 }
 

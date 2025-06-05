@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -17,14 +17,40 @@ interface MarketplaceViewProps {
 const MarketplaceView = ({ onAddToCart, showAddToCart = false }: MarketplaceViewProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Initialize component
+  useEffect(() => {
+    console.log('MarketplaceView component mounted');
+    console.log('Props - showAddToCart:', showAddToCart, 'onAddToCart:', !!onAddToCart);
+    
+    try {
+      // Test marketplace service
+      const items = marketplaceService.getAllMarketplaceItems();
+      console.log('Initial items loaded:', items.length);
+      setIsLoading(false);
+    } catch (err) {
+      console.error('Error initializing marketplace:', err);
+      setError('Failed to load marketplace items');
+      setIsLoading(false);
+    }
+  }, [showAddToCart, onAddToCart]);
 
   const filteredItems = marketplaceService.filterItems(searchTerm, categoryFilter);
   const availableCategories = marketplaceService.getAvailableCategories();
 
+  console.log('Rendering MarketplaceView with:', filteredItems.length, 'items');
+  console.log('Search term:', searchTerm, 'Category filter:', categoryFilter);
+
   const handleAddToCart = (item: StoreProduct | StoreService) => {
+    console.log('handleAddToCart called for:', item.name);
     if (onAddToCart) {
       const isProduct = 'stock' in item;
+      console.log('Adding to cart - Type:', isProduct ? 'product' : 'service');
       onAddToCart(item, isProduct ? 'product' : 'service');
+    } else {
+      console.warn('onAddToCart prop not provided');
     }
   };
 
@@ -42,6 +68,36 @@ const MarketplaceView = ({ onAddToCart, showAddToCart = false }: MarketplaceView
     return departmentNames[department] || department;
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-8">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading marketplace items...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <div className="text-red-500 mb-4">⚠️ Error</div>
+        <p className="text-muted-foreground">{error}</p>
+        <Button 
+          onClick={() => {
+            setError(null);
+            setIsLoading(true);
+            window.location.reload();
+          }}
+          className="mt-4"
+        >
+          Retry
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row gap-4">
@@ -50,11 +106,17 @@ const MarketplaceView = ({ onAddToCart, showAddToCart = false }: MarketplaceView
           <Input
             placeholder="Search products and services..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              console.log('Search term changed:', e.target.value);
+              setSearchTerm(e.target.value);
+            }}
             className="pl-10"
           />
         </div>
-        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+        <Select value={categoryFilter} onValueChange={(value) => {
+          console.log('Category filter changed:', value);
+          setCategoryFilter(value);
+        }}>
           <SelectTrigger className="w-full md:w-[200px]">
             <Filter className="h-4 w-4 mr-2" />
             <SelectValue placeholder="All Categories" />
@@ -134,9 +196,13 @@ const MarketplaceView = ({ onAddToCart, showAddToCart = false }: MarketplaceView
         })}
       </div>
 
-      {filteredItems.length === 0 && (
+      {filteredItems.length === 0 && !isLoading && (
         <div className="text-center py-8">
-          <p className="text-muted-foreground">No items found matching your criteria.</p>
+          <div className="text-4xl mb-4">🔍</div>
+          <p className="text-muted-foreground mb-2">No items found matching your criteria.</p>
+          <p className="text-sm text-muted-foreground">
+            Try adjusting your search or category filter.
+          </p>
         </div>
       )}
     </div>
