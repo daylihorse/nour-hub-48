@@ -1,15 +1,12 @@
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ShoppingCart, Plus, Minus, Trash2, CreditCard } from "lucide-react";
 import { storeService } from "@/services/storeService";
 import { CartItem, POSState, StoreProduct, StoreService } from "@/types/store";
 import { useToast } from "@/hooks/use-toast";
+import ProductServiceGrid from "./ProductServiceGrid";
+import CartSection from "./CartSection";
+import CheckoutSection from "./CheckoutSection";
 
 interface POSSystemProps {
   department: string;
@@ -25,7 +22,6 @@ const POSSystem = ({ department }: POSSystemProps) => {
 
   const products = storeService.getProducts(department);
   const services = storeService.getServices(department);
-  const allItems: (StoreProduct | StoreService)[] = [...products, ...services];
 
   const addToCart = (item: StoreProduct | StoreService, type: 'product' | 'service') => {
     const existingItem = posState.cart.find(cartItem => cartItem.id === item.id);
@@ -116,159 +112,39 @@ const POSSystem = ({ department }: POSSystemProps) => {
     });
   };
 
+  const handleStateChange = (updates: Partial<POSState>) => {
+    setPosState(prev => ({ ...prev, ...updates }));
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Products & Services */}
       <div className="lg:col-span-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Products & Services</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {allItems.map((item) => {
-                const isProduct = 'stock' in item;
-                
-                return (
-                  <div
-                    key={item.id}
-                    className="p-4 border rounded-lg cursor-pointer hover:bg-muted/50"
-                    onClick={() => addToCart(item, isProduct ? 'product' : 'service')}
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-medium">{item.name}</h3>
-                      <Badge variant={isProduct ? "default" : "secondary"}>
-                        {isProduct ? "Product" : "Service"}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-2">{item.description}</p>
-                    <div className="flex justify-between items-center">
-                      <span className="font-bold">${item.price.toFixed(2)}</span>
-                      {isProduct && (
-                        <span className="text-sm text-muted-foreground">
-                          Stock: {(item as StoreProduct).stock}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+        <ProductServiceGrid
+          products={products}
+          services={services}
+          onAddToCart={addToCart}
+        />
       </div>
 
       {/* Cart & Checkout */}
-      <div>
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ShoppingCart className="h-5 w-5" />
-              Cart ({posState.cart.length})
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Cart Items */}
-            <div className="space-y-2 max-h-64 overflow-y-auto">
-              {posState.cart.map((cartItem) => (
-                <div key={cartItem.id} className="flex items-center justify-between p-2 border rounded">
-                  <div className="flex-1">
-                    <p className="font-medium text-sm">{cartItem.item.name}</p>
-                    <p className="text-xs text-muted-foreground">${cartItem.item.price.toFixed(2)} each</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => updateQuantity(cartItem.id, cartItem.quantity - 1)}
-                    >
-                      <Minus className="h-3 w-3" />
-                    </Button>
-                    <span className="text-sm w-8 text-center">{cartItem.quantity}</span>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => updateQuantity(cartItem.id, cartItem.quantity + 1)}
-                    >
-                      <Plus className="h-3 w-3" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => removeFromCart(cartItem.id)}
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-              {posState.cart.length === 0 && (
-                <p className="text-center text-muted-foreground py-4">Cart is empty</p>
-              )}
-            </div>
-
-            <Separator />
-
-            {/* Customer Info */}
-            <div className="space-y-2">
-              <Input
-                placeholder="Customer Name (Optional)"
-                value={posState.customer?.name || ''}
-                onChange={(e) => setPosState(prev => ({
-                  ...prev,
-                  customer: { ...prev.customer, name: e.target.value, contact: prev.customer?.contact || '' }
-                }))}
-              />
-              <Input
-                placeholder="Customer Contact (Optional)"
-                value={posState.customer?.contact || ''}
-                onChange={(e) => setPosState(prev => ({
-                  ...prev,
-                  customer: { ...prev.customer, contact: e.target.value, name: prev.customer?.name || '' }
-                }))}
-              />
-            </div>
-
-            {/* Payment Method */}
-            <Select value={posState.paymentMethod} onValueChange={(value: any) => setPosState(prev => ({ ...prev, paymentMethod: value }))}>
-              <SelectTrigger>
-                <SelectValue placeholder="Payment Method" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="cash">Cash</SelectItem>
-                <SelectItem value="card">Card</SelectItem>
-                <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Separator />
-
-            {/* Totals */}
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span>Subtotal:</span>
-                <span>${getSubtotal().toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Tax (10%):</span>
-                <span>${getTax().toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between font-bold">
-                <span>Total:</span>
-                <span>${getTotal().toFixed(2)}</span>
-              </div>
-            </div>
-
-            <Button 
-              className="w-full" 
-              onClick={completeSale}
-              disabled={posState.cart.length === 0}
-            >
-              <CreditCard className="h-4 w-4 mr-2" />
-              Complete Sale
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="space-y-4">
+        <CartSection
+          cart={posState.cart}
+          onUpdateQuantity={updateQuantity}
+          onRemoveFromCart={removeFromCart}
+        />
+        
+        <Separator />
+        
+        <CheckoutSection
+          posState={posState}
+          subtotal={getSubtotal()}
+          tax={getTax()}
+          total={getTotal()}
+          onStateChange={handleStateChange}
+          onCompleteSale={completeSale}
+        />
       </div>
     </div>
   );
