@@ -7,55 +7,35 @@ import ClinicDashboard from "@/components/clinic/ClinicDashboard";
 import ClinicIntegrationPanel from "@/components/integration/ClinicIntegrationPanel";
 import ClinicHorseUpdatePanel from "@/components/integration/ClinicHorseUpdatePanel";
 import StoreManagement from "@/components/store/StoreManagement";
-import { 
-  Stethoscope, 
-  Calendar, 
-  FileText, 
-  Syringe, 
-  Scissors, 
-  Pill,
-  Activity,
-  Heart,
-  Users,
-  Store
-} from "lucide-react";
-
+import { Stethoscope, Calendar, FileText, Syringe, Scissors, Pill, Activity, Heart, Users, Store } from "lucide-react";
 const ClinicDepartment = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
-
-  const stats = [
-    {
-      title: "Today's Appointments",
-      value: "12",
-      icon: Calendar,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
-    },
-    {
-      title: "Active Patients",
-      value: "89",
-      icon: Heart,
-      color: "text-red-600",
-      bgColor: "bg-red-50",
-    },
-    {
-      title: "Pending Results",
-      value: "5",
-      icon: FileText,
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
-    },
-    {
-      title: "Emergency Cases",
-      value: "2",
-      icon: Activity,
-      color: "text-green-600",
-      bgColor: "bg-green-50",
-    },
-  ];
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+  const stats = [{
+    title: "Today's Appointments",
+    value: "12",
+    icon: Calendar,
+    color: "text-blue-600",
+    bgColor: "bg-blue-50"
+  }, {
+    title: "Active Patients",
+    value: "89",
+    icon: Heart,
+    color: "text-red-600",
+    bgColor: "bg-red-50"
+  }, {
+    title: "Pending Results",
+    value: "5",
+    icon: FileText,
+    color: "text-orange-600",
+    bgColor: "bg-orange-50"
+  }, {
+    title: "Emergency Cases",
+    value: "2",
+    icon: Activity,
+    color: "text-green-600",
+    bgColor: "bg-green-50"
+  }];
+  return <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header Section */}
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
@@ -85,9 +65,8 @@ const ClinicDepartment = () => {
           {/* Quick Stats */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {stats.map((stat, index) => {
-              const Icon = stat.icon;
-              return (
-                <Card key={index} className="border-none shadow-md hover:shadow-lg transition-all duration-200">
+            const Icon = stat.icon;
+            return <Card key={index} className="border-none shadow-md hover:shadow-lg transition-all duration-200">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
@@ -99,9 +78,8 @@ const ClinicDepartment = () => {
                       </div>
                     </div>
                   </CardContent>
-                </Card>
-              );
-            })}
+                </Card>;
+          })}
           </div>
         </div>
 
@@ -124,53 +102,32 @@ const ClinicDepartment = () => {
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="bg-slate-50 px-8 pt-6">
-              <TabsList className="grid w-full grid-cols-7 bg-slate-900 border border-slate-700 p-1.5 h-14 rounded-xl">
-                <TabsTrigger 
-                  value="dashboard" 
-                  className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2"
-                >
+              <TabsList className="grid w-full grid-cols-7 border border-slate-700 p-1.5 h-14 bg-[#d6a24b]/85 rounded-xl">
+                <TabsTrigger value="dashboard" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
                   <Activity className="h-4 w-4" />
                   Dashboard
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="appointments" 
-                  className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2"
-                >
+                <TabsTrigger value="appointments" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
                   Appointments
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="patients" 
-                  className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2"
-                >
+                <TabsTrigger value="patients" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
                   <FileText className="h-4 w-4" />
                   Patient Records
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="treatments" 
-                  className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2"
-                >
+                <TabsTrigger value="treatments" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
                   <Syringe className="h-4 w-4" />
                   Treatments
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="surgery" 
-                  className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2"
-                >
+                <TabsTrigger value="surgery" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
                   <Scissors className="h-4 w-4" />
                   Surgery
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="pharmacy" 
-                  className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2"
-                >
+                <TabsTrigger value="pharmacy" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
                   <Pill className="h-4 w-4" />
                   Pharmacy
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="store" 
-                  className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2"
-                >
+                <TabsTrigger value="store" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
                   <Store className="h-4 w-4" />
                   Store
                 </TabsTrigger>
@@ -299,8 +256,6 @@ const ClinicDepartment = () => {
           </Tabs>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default ClinicDepartment;
