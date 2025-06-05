@@ -1,4 +1,3 @@
-
 import { StoreProduct, StoreService as StoreServiceType, Sale, CartItem } from '@/types/store';
 
 class StoreManagementService {
@@ -29,6 +28,32 @@ class StoreManagementService {
       createdAt: new Date(),
       updatedAt: new Date(),
     },
+    {
+      id: 'prod_3',
+      name: 'Orniboral',
+      description: 'Veterinary medicine for respiratory health',
+      price: 45.00,
+      category: 'Medical Supplies',
+      department: 'clinic',
+      stock: 15,
+      images: ['💊'],
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: 'prod_4',
+      name: 'Laboratory Test Strips',
+      description: 'High-precision test strips for laboratory analysis',
+      price: 85.00,
+      category: 'Laboratory Equipment',
+      department: 'laboratory',
+      stock: 30,
+      images: ['🧪'],
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
   ];
 
   private services: StoreServiceType[] = [
@@ -40,6 +65,48 @@ class StoreManagementService {
       category: 'Veterinary Services',
       department: 'clinic',
       duration: 45,
+      isActive: true,
+      availability: {
+        monday: true,
+        tuesday: true,
+        wednesday: true,
+        thursday: true,
+        friday: true,
+        saturday: false,
+        sunday: false,
+      },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: 'serv_2',
+      name: 'Blood Test Analysis',
+      description: 'Comprehensive blood analysis with detailed report',
+      price: 75.00,
+      category: 'Laboratory Services',
+      department: 'laboratory',
+      duration: 30,
+      isActive: true,
+      availability: {
+        monday: true,
+        tuesday: true,
+        wednesday: true,
+        thursday: true,
+        friday: true,
+        saturday: true,
+        sunday: false,
+      },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: 'serv_3',
+      name: 'Inventory Consultation',
+      description: 'Professional consultation on inventory management and optimization',
+      price: 120.00,
+      category: 'Consultation Services',
+      department: 'inventory',
+      duration: 60,
       isActive: true,
       availability: {
         monday: true,
