@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BreedingDashboard from "./BreedingDashboard";
@@ -26,19 +25,79 @@ const BreedingManagement = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-12">
-          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-          <TabsTrigger value="stallions">Stallions</TabsTrigger>
-          <TabsTrigger value="mares">Mares</TabsTrigger>
-          <TabsTrigger value="breeding">Records</TabsTrigger>
-          <TabsTrigger value="pregnancies">Pregnancies</TabsTrigger>
-          <TabsTrigger value="foaling">Foaling</TabsTrigger>
-          <TabsTrigger value="genetics">Genetics</TabsTrigger>
-          <TabsTrigger value="planning">Planning</TabsTrigger>
-          <TabsTrigger value="contracts">Contracts</TabsTrigger>
-          <TabsTrigger value="cycles">Heat Cycles</TabsTrigger>
-          <TabsTrigger value="testing">Testing</TabsTrigger>
-          <TabsTrigger value="reports">Reports</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-12 bg-blue-50 border border-blue-200 p-1 h-10">
+          <TabsTrigger 
+            value="dashboard" 
+            className="text-blue-700 text-sm data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-sm font-medium transition-all duration-150"
+          >
+            Dashboard
+          </TabsTrigger>
+          <TabsTrigger 
+            value="stallions" 
+            className="text-blue-700 text-sm data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-sm font-medium transition-all duration-150"
+          >
+            Stallions
+          </TabsTrigger>
+          <TabsTrigger 
+            value="mares" 
+            className="text-blue-700 text-sm data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-sm font-medium transition-all duration-150"
+          >
+            Mares
+          </TabsTrigger>
+          <TabsTrigger 
+            value="breeding" 
+            className="text-blue-700 text-sm data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-sm font-medium transition-all duration-150"
+          >
+            Records
+          </TabsTrigger>
+          <TabsTrigger 
+            value="pregnancies" 
+            className="text-blue-700 text-sm data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-sm font-medium transition-all duration-150"
+          >
+            Pregnancies
+          </TabsTrigger>
+          <TabsTrigger 
+            value="foaling" 
+            className="text-blue-700 text-sm data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-sm font-medium transition-all duration-150"
+          >
+            Foaling
+          </TabsTrigger>
+          <TabsTrigger 
+            value="genetics" 
+            className="text-blue-700 text-sm data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-sm font-medium transition-all duration-150"
+          >
+            Genetics
+          </TabsTrigger>
+          <TabsTrigger 
+            value="planning" 
+            className="text-blue-700 text-sm data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-sm font-medium transition-all duration-150"
+          >
+            Planning
+          </TabsTrigger>
+          <TabsTrigger 
+            value="contracts" 
+            className="text-blue-700 text-sm data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-sm font-medium transition-all duration-150"
+          >
+            Contracts
+          </TabsTrigger>
+          <TabsTrigger 
+            value="cycles" 
+            className="text-blue-700 text-sm data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-sm font-medium transition-all duration-150"
+          >
+            Heat Cycles
+          </TabsTrigger>
+          <TabsTrigger 
+            value="testing" 
+            className="text-blue-700 text-sm data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-sm font-medium transition-all duration-150"
+          >
+            Testing
+          </TabsTrigger>
+          <TabsTrigger 
+            value="reports" 
+            className="text-blue-700 text-sm data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-sm font-medium transition-all duration-150"
+          >
+            Reports
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="dashboard" className="mt-6">

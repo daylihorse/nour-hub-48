@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import HorsesDashboard from "@/components/horses/HorsesDashboard";
@@ -16,14 +15,49 @@ const HorsesDepartment = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-7">
-          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-          <TabsTrigger value="horses">Horse Registry</TabsTrigger>
-          <TabsTrigger value="breeding">Breeding</TabsTrigger>
-          <TabsTrigger value="pedigree">Pedigree</TabsTrigger>
-          <TabsTrigger value="performance">Performance</TabsTrigger>
-          <TabsTrigger value="health">Health Records</TabsTrigger>
-          <TabsTrigger value="training">Training</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-7 bg-slate-900 border border-slate-700 p-1.5 h-12">
+          <TabsTrigger 
+            value="dashboard" 
+            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
+          >
+            Dashboard
+          </TabsTrigger>
+          <TabsTrigger 
+            value="horses" 
+            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
+          >
+            Horse Registry
+          </TabsTrigger>
+          <TabsTrigger 
+            value="breeding" 
+            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
+          >
+            Breeding
+          </TabsTrigger>
+          <TabsTrigger 
+            value="pedigree" 
+            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
+          >
+            Pedigree
+          </TabsTrigger>
+          <TabsTrigger 
+            value="performance" 
+            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
+          >
+            Performance
+          </TabsTrigger>
+          <TabsTrigger 
+            value="health" 
+            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
+          >
+            Health Records
+          </TabsTrigger>
+          <TabsTrigger 
+            value="training" 
+            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
+          >
+            Training
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="dashboard" className="mt-6">
