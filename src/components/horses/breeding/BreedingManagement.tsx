@@ -6,6 +6,7 @@ import StallionManagement from "./StallionManagement";
 import MareManagement from "./MareManagement";
 import BreedingRecords from "./BreedingRecords";
 import PregnancyManagement from "./PregnancyManagement";
+import FoalingManagement from "./FoalingManagement";
 
 const BreedingManagement = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -20,12 +21,13 @@ const BreedingManagement = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="stallions">Stallions</TabsTrigger>
           <TabsTrigger value="mares">Mares</TabsTrigger>
           <TabsTrigger value="breeding">Breeding Records</TabsTrigger>
           <TabsTrigger value="pregnancies">Pregnancies</TabsTrigger>
+          <TabsTrigger value="foaling">Foaling</TabsTrigger>
           <TabsTrigger value="reports">Reports</TabsTrigger>
         </TabsList>
         
@@ -47,6 +49,10 @@ const BreedingManagement = () => {
         
         <TabsContent value="pregnancies" className="mt-6">
           <PregnancyManagement />
+        </TabsContent>
+        
+        <TabsContent value="foaling" className="mt-6">
+          <FoalingManagement />
         </TabsContent>
         
         <TabsContent value="reports" className="mt-6">
