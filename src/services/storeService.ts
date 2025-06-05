@@ -1,7 +1,7 @@
 
-import { StoreProduct, StoreService, Sale, CartItem } from '@/types/store';
+import { StoreProduct, StoreService as StoreServiceType, Sale, CartItem } from '@/types/store';
 
-class StoreService {
+class StoreManagementService {
   private products: StoreProduct[] = [
     {
       id: 'prod_1',
@@ -31,7 +31,7 @@ class StoreService {
     },
   ];
 
-  private services: StoreService[] = [
+  private services: StoreServiceType[] = [
     {
       id: 'serv_1',
       name: 'Wound Stitching Service',
@@ -92,18 +92,18 @@ class StoreService {
   }
 
   // Service methods
-  getServices(department?: string): StoreService[] {
+  getServices(department?: string): StoreServiceType[] {
     return department
       ? this.services.filter(s => s.department === department && s.isActive)
       : this.services.filter(s => s.isActive);
   }
 
-  getServiceById(id: string): StoreService | undefined {
+  getServiceById(id: string): StoreServiceType | undefined {
     return this.services.find(s => s.id === id);
   }
 
-  addService(service: Omit<StoreService, 'id' | 'createdAt' | 'updatedAt'>): StoreService {
-    const newService: StoreService = {
+  addService(service: Omit<StoreServiceType, 'id' | 'createdAt' | 'updatedAt'>): StoreServiceType {
+    const newService: StoreServiceType = {
       ...service,
       id: `serv_${Date.now()}`,
       createdAt: new Date(),
@@ -113,7 +113,7 @@ class StoreService {
     return newService;
   }
 
-  updateService(id: string, updates: Partial<StoreService>): StoreService | null {
+  updateService(id: string, updates: Partial<StoreServiceType>): StoreServiceType | null {
     const index = this.services.findIndex(s => s.id === id);
     if (index === -1) return null;
     
@@ -172,4 +172,4 @@ class StoreService {
   }
 }
 
-export const storeService = new StoreService();
+export const storeService = new StoreManagementService();

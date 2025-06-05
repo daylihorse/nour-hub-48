@@ -25,7 +25,7 @@ const POSSystem = ({ department }: POSSystemProps) => {
 
   const products = storeService.getProducts(department);
   const services = storeService.getServices(department);
-  const allItems = [...products, ...services];
+  const allItems: (StoreProduct | StoreService)[] = [...products, ...services];
 
   const addToCart = (item: StoreProduct | StoreService, type: 'product' | 'service') => {
     const existingItem = posState.cart.find(cartItem => cartItem.id === item.id);
@@ -128,7 +128,6 @@ const POSSystem = ({ department }: POSSystemProps) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {allItems.map((item) => {
                 const isProduct = 'stock' in item;
-                const isService = 'duration' in item;
                 
                 return (
                   <div
