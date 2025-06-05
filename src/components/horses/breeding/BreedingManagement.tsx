@@ -5,6 +5,7 @@ import BreedingDashboard from "./BreedingDashboard";
 import StallionManagement from "./StallionManagement";
 import MareManagement from "./MareManagement";
 import BreedingRecords from "./BreedingRecords";
+import PregnancyManagement from "./PregnancyManagement";
 
 const BreedingManagement = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -45,10 +46,7 @@ const BreedingManagement = () => {
         </TabsContent>
         
         <TabsContent value="pregnancies" className="mt-6">
-          <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2">Pregnancy Tracking</h3>
-            <p className="text-muted-foreground">Monitor pregnancies and veterinary checkups</p>
-          </div>
+          <PregnancyManagement />
         </TabsContent>
         
         <TabsContent value="reports" className="mt-6">
