@@ -9,6 +9,8 @@ import PregnancyManagement from "./PregnancyManagement";
 import FoalingManagement from "./FoalingManagement";
 import GeneticAnalysis from "./analysis/GeneticAnalysis";
 import BreedingPlanner from "./planning/BreedingPlanner";
+import BreedingContractManagement from "./contracts/BreedingContractManagement";
+import MareHeatCycleTracking from "./cycles/MareHeatCycleTracking";
 
 const BreedingManagement = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -18,12 +20,12 @@ const BreedingManagement = () => {
       <div>
         <h1 className="text-3xl font-bold">Breeding & Reproduction</h1>
         <p className="text-muted-foreground">
-          Comprehensive breeding management with genetic analysis and strategic planning
+          Comprehensive breeding management with genetic analysis, strategic planning, and advanced tracking
         </p>
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-9">
+        <TabsList className="grid w-full grid-cols-11">
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="stallions">Stallions</TabsTrigger>
           <TabsTrigger value="mares">Mares</TabsTrigger>
@@ -32,6 +34,8 @@ const BreedingManagement = () => {
           <TabsTrigger value="foaling">Foaling</TabsTrigger>
           <TabsTrigger value="genetics">Genetics</TabsTrigger>
           <TabsTrigger value="planning">Planning</TabsTrigger>
+          <TabsTrigger value="contracts">Contracts</TabsTrigger>
+          <TabsTrigger value="cycles">Heat Cycles</TabsTrigger>
           <TabsTrigger value="reports">Reports</TabsTrigger>
         </TabsList>
         
@@ -65,6 +69,14 @@ const BreedingManagement = () => {
         
         <TabsContent value="planning" className="mt-6">
           <BreedingPlanner />
+        </TabsContent>
+        
+        <TabsContent value="contracts" className="mt-6">
+          <BreedingContractManagement />
+        </TabsContent>
+        
+        <TabsContent value="cycles" className="mt-6">
+          <MareHeatCycleTracking />
         </TabsContent>
         
         <TabsContent value="reports" className="mt-6">
