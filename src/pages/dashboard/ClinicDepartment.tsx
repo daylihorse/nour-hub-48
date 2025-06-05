@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import ClinicDashboard from "@/components/clinic/ClinicDashboard";
 import ClinicIntegrationPanel from "@/components/integration/ClinicIntegrationPanel";
 import ClinicHorseUpdatePanel from "@/components/integration/ClinicHorseUpdatePanel";
+import StoreManagement from "@/components/store/StoreManagement";
 import { 
   Stethoscope, 
   Calendar, 
@@ -16,7 +16,8 @@ import {
   Pill,
   Activity,
   Heart,
-  Users
+  Users,
+  Store
 } from "lucide-react";
 
 const ClinicDepartment = () => {
@@ -123,7 +124,7 @@ const ClinicDepartment = () => {
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="bg-slate-50 px-8 pt-6">
-              <TabsList className="grid w-full grid-cols-6 bg-slate-900 border border-slate-700 p-1.5 h-14 rounded-xl">
+              <TabsList className="grid w-full grid-cols-7 bg-slate-900 border border-slate-700 p-1.5 h-14 rounded-xl">
                 <TabsTrigger 
                   value="dashboard" 
                   className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2"
@@ -165,6 +166,13 @@ const ClinicDepartment = () => {
                 >
                   <Pill className="h-4 w-4" />
                   Pharmacy
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="store" 
+                  className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2"
+                >
+                  <Store className="h-4 w-4" />
+                  Store
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -282,6 +290,10 @@ const ClinicDepartment = () => {
                     </div>
                   </CardContent>
                 </Card>
+              </TabsContent>
+
+              <TabsContent value="store" className="mt-0">
+                <StoreManagement department="clinic" departmentName="Clinic" />
               </TabsContent>
             </div>
           </Tabs>
