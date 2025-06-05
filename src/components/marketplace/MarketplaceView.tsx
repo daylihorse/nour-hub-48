@@ -16,7 +16,7 @@ interface MarketplaceViewProps {
 
 const MarketplaceView = ({ onAddToCart, showAddToCart = false }: MarketplaceViewProps) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,7 +37,7 @@ const MarketplaceView = ({ onAddToCart, showAddToCart = false }: MarketplaceView
     }
   }, [showAddToCart, onAddToCart]);
 
-  const filteredItems = marketplaceService.filterItems(searchTerm, categoryFilter);
+  const filteredItems = marketplaceService.filterItems(searchTerm, categoryFilter === "all" ? "" : categoryFilter);
   const availableCategories = marketplaceService.getAvailableCategories();
 
   console.log('Rendering MarketplaceView with:', filteredItems.length, 'items');
@@ -122,7 +122,7 @@ const MarketplaceView = ({ onAddToCart, showAddToCart = false }: MarketplaceView
             <SelectValue placeholder="All Categories" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Categories</SelectItem>
+            <SelectItem value="all">All Categories</SelectItem>
             {availableCategories.map((category) => (
               <SelectItem key={category} value={category}>
                 {category}
