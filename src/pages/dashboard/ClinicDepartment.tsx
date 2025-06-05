@@ -107,7 +107,7 @@ const ClinicDepartment = () => {
                   <Activity className="h-4 w-4" />
                   Dashboard
                 </TabsTrigger>
-                <TabsTrigger value="appointments" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg transition-all duration-200 flex items-center gap-2 font-bold">
+                <TabsTrigger value="appointments" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
                   Appointments
                 </TabsTrigger>
