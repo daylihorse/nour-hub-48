@@ -11,6 +11,7 @@ import BreedingPlanner from "./planning/BreedingPlanner";
 import BreedingContractManagement from "./contracts/BreedingContractManagement";
 import MareHeatCycleTracking from "./cycles/MareHeatCycleTracking";
 import BreedingTestingHub from "./testing/BreedingTestingHub";
+import IntegrationStatusBar from "@/components/integration/IntegrationStatusBar";
 
 const BreedingManagement = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -23,6 +24,9 @@ const BreedingManagement = () => {
           Comprehensive breeding management with genetic analysis, strategic planning, and advanced tracking
         </p>
       </div>
+
+      {/* Integration Status Bar */}
+      <IntegrationStatusBar />
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-12 bg-blue-50 border border-blue-200 p-1 h-10">
