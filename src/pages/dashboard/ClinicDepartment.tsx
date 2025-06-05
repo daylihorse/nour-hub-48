@@ -1,7 +1,9 @@
+
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ClinicDashboard from "@/components/clinic/ClinicDashboard";
 import ClinicIntegrationPanel from "@/components/integration/ClinicIntegrationPanel";
+import ClinicHorseUpdatePanel from "@/components/integration/ClinicHorseUpdatePanel";
 
 const ClinicDepartment = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -13,8 +15,11 @@ const ClinicDepartment = () => {
         <p className="text-muted-foreground">Comprehensive veterinary care and patient management</p>
       </div>
 
-      {/* Integration Panel */}
-      <ClinicIntegrationPanel />
+      {/* Integration Panels */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <ClinicIntegrationPanel />
+        <ClinicHorseUpdatePanel />
+      </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-6">
