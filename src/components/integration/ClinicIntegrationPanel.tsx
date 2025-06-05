@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Horse, Heart, Baby, CheckCircle } from "lucide-react";
+import { Calendar, Activity, Heart, Baby, CheckCircle } from "lucide-react";
 import { useBreedingClinicIntegration } from "@/hooks/useIntegration";
 
 const ClinicIntegrationPanel = () => {
@@ -13,7 +13,7 @@ const ClinicIntegrationPanel = () => {
 
   const getIcon = (triggerType: string) => {
     switch (triggerType) {
-      case 'breeding_scheduled': return <Horse className="h-4 w-4" />;
+      case 'breeding_scheduled': return <Activity className="h-4 w-4" />;
       case 'pregnancy_confirmed': return <Heart className="h-4 w-4" />;
       case 'foaling_due': return <Baby className="h-4 w-4" />;
       default: return <Calendar className="h-4 w-4" />;
@@ -48,7 +48,7 @@ const ClinicIntegrationPanel = () => {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Horse className="h-5 w-5" />
+          <Activity className="h-5 w-5" />
           Breeding Department Integration
         </CardTitle>
       </CardHeader>
