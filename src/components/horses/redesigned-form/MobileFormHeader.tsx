@@ -3,13 +3,14 @@ import { useState } from "react";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, X, Check, Clock, Circle } from "lucide-react";
+import { Menu, X, Check, Clock, Circle, AlertCircle } from "lucide-react";
 import { formStages } from "../config/formStages";
 import { cn } from "@/lib/utils";
 
 interface MobileFormHeaderProps {
   currentStage: number;
   completedStages: Set<number>;
+  visitedStages: Set<number>;
   progress: number;
   onStageClick: (stageIndex: number) => void;
   onCancel: () => void;
@@ -17,7 +18,8 @@ interface MobileFormHeaderProps {
 
 const MobileFormHeader = ({ 
   currentStage, 
-  completedStages, 
+  completedStages,
+  visitedStages,
   progress, 
   onStageClick, 
   onCancel 
@@ -32,14 +34,17 @@ const MobileFormHeader = ({
     if (stageIndex === currentStage) {
       return <Clock className="h-4 w-4 text-white" />;
     }
+    if (visitedStages.has(stageIndex)) {
+      return <AlertCircle className="h-4 w-4 text-orange-500" />;
+    }
     return <Circle className="h-4 w-4 text-gray-400" />;
   };
 
   const getStageStatus = (stageIndex: number) => {
     if (completedStages.has(stageIndex)) return "completed";
     if (stageIndex === currentStage) return "current";
-    if (stageIndex < currentStage) return "available";
-    return "upcoming";
+    if (visitedStages.has(stageIndex)) return "visited";
+    return "unvisited";
   };
 
   return (
@@ -70,35 +75,36 @@ const MobileFormHeader = ({
 
                 {/* Mobile Menu Steps */}
                 <div className="flex-1 p-6 overflow-y-auto">
+                  <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-xs text-blue-800">
+                      <strong>Tip:</strong> Tap any step to navigate and preview required information.
+                    </p>
+                  </div>
+                  
                   <nav className="space-y-2">
                     {formStages.map((stage, index) => {
                       const status = getStageStatus(index);
-                      const isClickable = status === "completed" || status === "current" || status === "available";
                       
                       return (
                         <button
                           key={stage.id}
                           onClick={() => {
-                            if (isClickable) {
-                              onStageClick(index);
-                              setIsMenuOpen(false);
-                            }
+                            onStageClick(index);
+                            setIsMenuOpen(false);
                           }}
-                          disabled={!isClickable}
                           className={cn(
                             "w-full flex items-start gap-3 p-3 rounded-lg text-left transition-all duration-200",
                             status === "current" && "bg-blue-50 border border-blue-200",
                             status === "completed" && "bg-green-50 border border-green-200",
-                            status === "available" && "hover:bg-gray-50",
-                            status === "upcoming" && "opacity-50 cursor-not-allowed"
+                            status === "visited" && "bg-orange-50 border border-orange-200"
                           )}
                         >
                           <div className={cn(
                             "flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-0.5",
                             status === "completed" && "bg-green-500",
                             status === "current" && "bg-blue-500",
-                            status === "available" && "bg-gray-300",
-                            status === "upcoming" && "bg-gray-200"
+                            status === "visited" && "bg-orange-100 border border-orange-300",
+                            status === "unvisited" && "bg-gray-200"
                           )}>
                             {getStageIcon(index)}
                           </div>
@@ -109,6 +115,12 @@ const MobileFormHeader = ({
                               </span>
                               {stage.isRequired && (
                                 <span className="text-xs text-red-500">*</span>
+                              )}
+                              {status === "completed" && (
+                                <span className="text-xs text-green-600 font-medium">Complete</span>
+                              )}
+                              {status === "visited" && !completedStages.has(index) && (
+                                <span className="text-xs text-orange-600 font-medium">Review</span>
                               )}
                             </div>
                             <h3 className="font-medium text-sm">{stage.title}</h3>
@@ -129,6 +141,12 @@ const MobileFormHeader = ({
               </span>
               {currentStageData?.isRequired && (
                 <span className="text-xs text-red-500">*</span>
+              )}
+              {completedStages.has(currentStage) && (
+                <span className="text-xs text-green-600 font-medium">Complete</span>
+              )}
+              {visitedStages.has(currentStage) && !completedStages.has(currentStage) && (
+                <span className="text-xs text-orange-600 font-medium">Review</span>
               )}
             </div>
             <h2 className="font-semibold text-gray-900 text-sm leading-tight">

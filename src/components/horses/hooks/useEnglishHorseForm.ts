@@ -60,6 +60,7 @@ interface UseEnglishHorseFormProps {
 export const useEnglishHorseForm = ({ onSave }: UseEnglishHorseFormProps) => {
   const [currentStage, setCurrentStage] = useState(0);
   const [completedStages, setCompletedStages] = useState<Set<number>>(new Set());
+  const [visitedStages, setVisitedStages] = useState<Set<number>>(new Set([0])); // Track visited stages
 
   const form = useForm<HorseFormData>({
     resolver: zodResolver(horseFormSchema),
@@ -142,23 +143,29 @@ export const useEnglishHorseForm = ({ onSave }: UseEnglishHorseFormProps) => {
   const handleNext = () => {
     if (validateCurrentStage()) {
       setCompletedStages(prev => new Set([...prev, currentStage]));
-      if (currentStage < formStages.length - 1) {
-        setCurrentStage(currentStage + 1);
-      }
+    }
+    
+    if (currentStage < formStages.length - 1) {
+      const nextStage = currentStage + 1;
+      setCurrentStage(nextStage);
+      setVisitedStages(prev => new Set([...prev, nextStage]));
     }
   };
 
   const handlePrevious = () => {
     if (currentStage > 0) {
-      setCurrentStage(currentStage - 1);
+      const prevStage = currentStage - 1;
+      setCurrentStage(prevStage);
+      setVisitedStages(prev => new Set([...prev, prevStage]));
     }
   };
 
   const handleStageClick = (stageIndex: number) => {
-    // Allow clicking on any stage - free navigation
+    // Allow free navigation to any stage
     setCurrentStage(stageIndex);
+    setVisitedStages(prev => new Set([...prev, stageIndex]));
     
-    // If user navigates to a previous stage, validate current stage and mark as complete if valid
+    // Auto-validate and mark current stage as complete if valid when navigating away
     if (stageIndex !== currentStage && validateCurrentStage()) {
       setCompletedStages(prev => new Set([...prev, currentStage]));
     }
@@ -173,6 +180,7 @@ export const useEnglishHorseForm = ({ onSave }: UseEnglishHorseFormProps) => {
     form,
     currentStage,
     completedStages,
+    visitedStages,
     progress,
     handleNext,
     handlePrevious,

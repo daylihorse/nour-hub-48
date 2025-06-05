@@ -16,6 +16,7 @@ const RedesignedHorseForm = ({ onSave, onCancel }: RedesignedHorseFormProps) => 
     form,
     currentStage,
     completedStages,
+    visitedStages,
     progress,
     handleNext,
     handlePrevious,
@@ -32,6 +33,7 @@ const RedesignedHorseForm = ({ onSave, onCancel }: RedesignedHorseFormProps) => 
             <FormSidebar
               currentStage={currentStage}
               completedStages={completedStages}
+              visitedStages={visitedStages}
               progress={progress}
               onStageClick={handleStageClick}
               onCancel={onCancel}
@@ -43,6 +45,7 @@ const RedesignedHorseForm = ({ onSave, onCancel }: RedesignedHorseFormProps) => 
             <MobileFormHeader
               currentStage={currentStage}
               completedStages={completedStages}
+              visitedStages={visitedStages}
               progress={progress}
               onStageClick={handleStageClick}
               onCancel={onCancel}
