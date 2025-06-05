@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DNA, TrendingUp, Award, AlertTriangle, Heart, Zap } from "lucide-react";
+import { Dna, TrendingUp, Award, AlertTriangle, Heart, Zap } from "lucide-react";
 import GeneticMatchingScores from "./components/GeneticMatchingScores";
 import InbreedingAnalysis from "./components/InbreedingAnalysis";
 import TraitPredictions from "./components/TraitPredictions";
@@ -64,7 +63,7 @@ const GeneticAnalysis = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <DNA className="h-5 w-5 text-purple-500" />
+            <Dna className="h-5 w-5 text-purple-500" />
             Breeding Pair Selection
           </CardTitle>
         </CardHeader>
@@ -103,7 +102,7 @@ const GeneticAnalysis = () => {
           </div>
           <div className="flex justify-center mt-4">
             <Button disabled={!canAnalyze} className="flex items-center gap-2">
-              <DNA className="h-4 w-4" />
+              <Dna className="h-4 w-4" />
               Run Genetic Analysis
             </Button>
           </div>

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, CalendarDays, Clock, Plus, Target } from "lucide-react";
+import { BreedingEvent } from "@/types/breeding";
 import BreedingCalendar from "./components/BreedingCalendar";
 import SeasonalPlanning from "./components/SeasonalPlanning";
 import BreedingGoals from "./components/BreedingGoals";
@@ -13,7 +14,7 @@ import OptimalTimingAnalysis from "./components/OptimalTimingAnalysis";
 const BreedingPlanner = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  const upcomingEvents = [
+  const upcomingEvents: BreedingEvent[] = [
     {
       id: "1",
       type: "breeding",
@@ -35,6 +36,7 @@ const BreedingPlanner = () => {
       id: "3",
       type: "foaling",
       horse: "Luna",
+      date: "2024-03-15",
       expectedDate: "2024-03-15",
       status: "monitoring",
       daysRemaining: 54

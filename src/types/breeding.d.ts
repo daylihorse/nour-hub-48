@@ -35,6 +35,19 @@ export interface BreedingRecord {
   updatedAt: Date;
 }
 
+export interface BreedingEvent {
+  id: string;
+  type: 'breeding' | 'ultrasound' | 'foaling';
+  horse: string;
+  date: string;
+  status: 'scheduled' | 'confirmed' | 'monitoring' | 'completed';
+  mate?: string;
+  method?: 'natural' | 'artificial_insemination';
+  veterinarian?: string;
+  expectedDate?: string;
+  daysRemaining?: number;
+}
+
 export interface StallionRecord {
   id: string;
   horseId: string;

@@ -1,8 +1,7 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, DNA, Shield } from "lucide-react";
+import { TrendingUp, Dna, Shield } from "lucide-react";
 
 interface GeneticMatchingScoresProps {
   compatibilityScore: number;
@@ -56,7 +55,7 @@ const GeneticMatchingScores = ({
           <div>
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium flex items-center gap-2">
-                <DNA className="h-4 w-4 text-purple-500" />
+                <Dna className="h-4 w-4 text-purple-500" />
                 Genetic Diversity
               </span>
               <span className={`text-sm font-bold ${getScoreColor(geneticDiversity)}`}>
