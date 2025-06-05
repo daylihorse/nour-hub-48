@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BreedingDashboard from "./BreedingDashboard";
 import StallionManagement from "./StallionManagement";
 import MareManagement from "./MareManagement";
+import BreedingRecords from "./BreedingRecords";
 
 const BreedingManagement = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -40,10 +41,7 @@ const BreedingManagement = () => {
         </TabsContent>
         
         <TabsContent value="breeding" className="mt-6">
-          <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2">Breeding Records</h3>
-            <p className="text-muted-foreground">Track all breeding activities and outcomes</p>
-          </div>
+          <BreedingRecords />
         </TabsContent>
         
         <TabsContent value="pregnancies" className="mt-6">
