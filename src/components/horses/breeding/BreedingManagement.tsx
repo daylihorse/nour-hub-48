@@ -1,0 +1,67 @@
+
+import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import BreedingDashboard from "./BreedingDashboard";
+import StallionManagement from "./StallionManagement";
+import MareManagement from "./MareManagement";
+
+const BreedingManagement = () => {
+  const [activeTab, setActiveTab] = useState("dashboard");
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold">Breeding & Reproduction</h1>
+        <p className="text-muted-foreground">
+          Comprehensive breeding management for stallions, mares, and reproduction tracking
+        </p>
+      </div>
+      
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-6">
+          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+          <TabsTrigger value="stallions">Stallions</TabsTrigger>
+          <TabsTrigger value="mares">Mares</TabsTrigger>
+          <TabsTrigger value="breeding">Breeding Records</TabsTrigger>
+          <TabsTrigger value="pregnancies">Pregnancies</TabsTrigger>
+          <TabsTrigger value="reports">Reports</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="dashboard" className="mt-6">
+          <BreedingDashboard />
+        </TabsContent>
+        
+        <TabsContent value="stallions" className="mt-6">
+          <StallionManagement />
+        </TabsContent>
+        
+        <TabsContent value="mares" className="mt-6">
+          <MareManagement />
+        </TabsContent>
+        
+        <TabsContent value="breeding" className="mt-6">
+          <div className="text-center py-12">
+            <h3 className="text-lg font-semibold mb-2">Breeding Records</h3>
+            <p className="text-muted-foreground">Track all breeding activities and outcomes</p>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="pregnancies" className="mt-6">
+          <div className="text-center py-12">
+            <h3 className="text-lg font-semibold mb-2">Pregnancy Tracking</h3>
+            <p className="text-muted-foreground">Monitor pregnancies and veterinary checkups</p>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="reports" className="mt-6">
+          <div className="text-center py-12">
+            <h3 className="text-lg font-semibold mb-2">Breeding Reports</h3>
+            <p className="text-muted-foreground">Analytics and performance reports</p>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+};
+
+export default BreedingManagement;

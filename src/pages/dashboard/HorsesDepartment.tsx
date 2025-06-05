@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import HorsesDashboard from "@/components/horses/HorsesDashboard";
 import HorseManagement from "@/components/horses/HorseManagement";
+import BreedingManagement from "@/components/horses/breeding/BreedingManagement";
 
 const HorsesDepartment = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -15,13 +16,14 @@ const HorsesDepartment = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="horses">Horse Registry</TabsTrigger>
+          <TabsTrigger value="breeding">Breeding</TabsTrigger>
           <TabsTrigger value="pedigree">Pedigree</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
           <TabsTrigger value="health">Health Records</TabsTrigger>
-          <TabsTrigger value="breeding">Breeding</TabsTrigger>
+          <TabsTrigger value="training">Training</TabsTrigger>
         </TabsList>
         
         <TabsContent value="dashboard" className="mt-6">
@@ -30,6 +32,10 @@ const HorsesDepartment = () => {
         
         <TabsContent value="horses" className="mt-6">
           <HorseManagement />
+        </TabsContent>
+        
+        <TabsContent value="breeding" className="mt-6">
+          <BreedingManagement />
         </TabsContent>
         
         <TabsContent value="pedigree" className="mt-6">
@@ -53,10 +59,10 @@ const HorsesDepartment = () => {
           </div>
         </TabsContent>
         
-        <TabsContent value="breeding" className="mt-6">
+        <TabsContent value="training" className="mt-6">
           <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2">Breeding Management</h3>
-            <p className="text-muted-foreground">Breeding schedules and offspring tracking</p>
+            <h3 className="text-lg font-semibold mb-2">Training Management</h3>
+            <p className="text-muted-foreground">Training schedules and progress tracking</p>
           </div>
         </TabsContent>
       </Tabs>
