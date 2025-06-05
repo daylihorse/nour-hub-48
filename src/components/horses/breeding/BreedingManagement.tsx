@@ -11,6 +11,7 @@ import GeneticAnalysis from "./analysis/GeneticAnalysis";
 import BreedingPlanner from "./planning/BreedingPlanner";
 import BreedingContractManagement from "./contracts/BreedingContractManagement";
 import MareHeatCycleTracking from "./cycles/MareHeatCycleTracking";
+import BreedingTestingHub from "./testing/BreedingTestingHub";
 
 const BreedingManagement = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -25,7 +26,7 @@ const BreedingManagement = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-11">
+        <TabsList className="grid w-full grid-cols-12">
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="stallions">Stallions</TabsTrigger>
           <TabsTrigger value="mares">Mares</TabsTrigger>
@@ -36,6 +37,7 @@ const BreedingManagement = () => {
           <TabsTrigger value="planning">Planning</TabsTrigger>
           <TabsTrigger value="contracts">Contracts</TabsTrigger>
           <TabsTrigger value="cycles">Heat Cycles</TabsTrigger>
+          <TabsTrigger value="testing">Testing</TabsTrigger>
           <TabsTrigger value="reports">Reports</TabsTrigger>
         </TabsList>
         
@@ -77,6 +79,10 @@ const BreedingManagement = () => {
         
         <TabsContent value="cycles" className="mt-6">
           <MareHeatCycleTracking />
+        </TabsContent>
+        
+        <TabsContent value="testing" className="mt-6">
+          <BreedingTestingHub />
         </TabsContent>
         
         <TabsContent value="reports" className="mt-6">
