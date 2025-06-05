@@ -7,6 +7,8 @@ import MareManagement from "./MareManagement";
 import BreedingRecords from "./BreedingRecords";
 import PregnancyManagement from "./PregnancyManagement";
 import FoalingManagement from "./FoalingManagement";
+import GeneticAnalysis from "./analysis/GeneticAnalysis";
+import BreedingPlanner from "./planning/BreedingPlanner";
 
 const BreedingManagement = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -16,18 +18,20 @@ const BreedingManagement = () => {
       <div>
         <h1 className="text-3xl font-bold">Breeding & Reproduction</h1>
         <p className="text-muted-foreground">
-          Comprehensive breeding management for stallions, mares, and reproduction tracking
+          Comprehensive breeding management with genetic analysis and strategic planning
         </p>
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-9">
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="stallions">Stallions</TabsTrigger>
           <TabsTrigger value="mares">Mares</TabsTrigger>
-          <TabsTrigger value="breeding">Breeding Records</TabsTrigger>
+          <TabsTrigger value="breeding">Records</TabsTrigger>
           <TabsTrigger value="pregnancies">Pregnancies</TabsTrigger>
           <TabsTrigger value="foaling">Foaling</TabsTrigger>
+          <TabsTrigger value="genetics">Genetics</TabsTrigger>
+          <TabsTrigger value="planning">Planning</TabsTrigger>
           <TabsTrigger value="reports">Reports</TabsTrigger>
         </TabsList>
         
@@ -55,10 +59,18 @@ const BreedingManagement = () => {
           <FoalingManagement />
         </TabsContent>
         
+        <TabsContent value="genetics" className="mt-6">
+          <GeneticAnalysis />
+        </TabsContent>
+        
+        <TabsContent value="planning" className="mt-6">
+          <BreedingPlanner />
+        </TabsContent>
+        
         <TabsContent value="reports" className="mt-6">
           <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2">Breeding Reports</h3>
-            <p className="text-muted-foreground">Analytics and performance reports</p>
+            <h3 className="text-lg font-semibold mb-2">Breeding Reports & Analytics</h3>
+            <p className="text-muted-foreground">Comprehensive performance reports and breeding analytics</p>
           </div>
         </TabsContent>
       </Tabs>
