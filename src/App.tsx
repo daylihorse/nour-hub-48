@@ -27,6 +27,9 @@ import ClientsDepartment from "./pages/dashboard/ClientsDepartment";
 import ClientProfile from "./pages/dashboard/ClientProfile";
 import ClientForm from "./pages/dashboard/ClientForm";
 
+// Mare detail view import
+import MareDetailView from "./components/horses/breeding/mare-detail/MareDetailView";
+
 // Create a new QueryClient instance
 const queryClient = new QueryClient();
 
@@ -43,6 +46,7 @@ const App = () => {
               <Route path="/dashboard" element={<DashboardLayout />}>
                 <Route index element={<Dashboard />} />
                 <Route path="horses" element={<HorsesDepartment />} />
+                <Route path="horses/breeding/mares/:mareId" element={<MareDetailView />} />
                 <Route path="laboratory" element={<LaboratoryDepartment />} />
                 <Route path="clinic" element={<ClinicDepartment />} />
                 <Route path="finance" element={<FinanceDepartment />} />

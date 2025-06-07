@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Calendar, Baby, Heart } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Mare {
   id: string;
@@ -27,6 +28,8 @@ interface MareCardProps {
 }
 
 const MareCard = ({ mare }: MareCardProps) => {
+  const navigate = useNavigate();
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pregnant":
@@ -61,6 +64,23 @@ const MareCard = ({ mare }: MareCardProps) => {
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString();
+  };
+
+  const handleViewDetails = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate(`/dashboard/horses/breeding/mares/${mare.id}`);
+  };
+
+  const handleScheduleBreeding = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // TODO: Implement breeding scheduling functionality
+    console.log(`Schedule breeding for mare ${mare.horseName}`);
+  };
+
+  const handleCheckup = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // TODO: Implement checkup scheduling functionality
+    console.log(`Schedule checkup for mare ${mare.horseName}`);
   };
 
   return (
@@ -136,16 +156,16 @@ const MareCard = ({ mare }: MareCardProps) => {
 
         {/* Actions */}
         <div className="flex gap-2 pt-2">
-          <Button variant="outline" size="sm" className="flex-1">
+          <Button variant="outline" size="sm" className="flex-1" onClick={handleViewDetails}>
             View Details
           </Button>
           {mare.status === "open" && (
-            <Button size="sm" className="flex-1">
+            <Button size="sm" className="flex-1" onClick={handleScheduleBreeding}>
               Schedule Breeding
             </Button>
           )}
           {mare.status === "pregnant" && (
-            <Button variant="outline" size="sm" className="flex-1">
+            <Button variant="outline" size="sm" className="flex-1" onClick={handleCheckup}>
               Checkup
             </Button>
           )}

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Download, Heart, Shield, AlertTriangle } from "lucide-react";
+import { Plus, Search, Download, Heart, Activity } from "lucide-react";
 
 interface MareHealthRecordsTableProps {
   mareId: string;
@@ -18,106 +18,43 @@ const MareHealthRecordsTable = ({ mareId }: MareHealthRecordsTableProps) => {
   const healthRecords = [
     {
       id: "HR001",
-      date: "2024-01-15",
-      type: "Routine Checkup",
+      date: "2024-03-01",
+      type: "Pregnancy Checkup",
       veterinarian: "Dr. Sarah Ahmed",
-      findings: "Excellent overall health, pregnancy progressing normally",
-      treatment: "Continue prenatal vitamins",
-      medications: ["Prenatal Multi-Vitamin", "Calcium Supplement"],
-      nextVisit: "2024-02-15",
-      status: "Completed",
-      cost: "$150"
+      findings: "Healthy pregnancy progression",
+      treatment: "Prenatal vitamins",
+      nextAppointment: "2024-04-01",
+      status: "Normal"
     },
     {
-      id: "HR002", 
-      date: "2023-12-01",
+      id: "HR002",
+      date: "2024-01-15",
       type: "Vaccination",
       veterinarian: "Dr. Michael Roberts",
-      findings: "Pre-breeding vaccination protocol completed",
-      treatment: "Rhinopneumonitis, Influenza vaccines administered",
-      medications: ["Rhinopneumonitis Vaccine", "Influenza Vaccine"],
-      nextVisit: "2024-06-01",
-      status: "Completed",
-      cost: "$120"
+      findings: "Annual vaccinations administered",
+      treatment: "EHV, WNV, Tetanus vaccines",
+      nextAppointment: "2025-01-15",
+      status: "Completed"
     },
     {
       id: "HR003",
-      date: "2023-11-10", 
-      type: "Dental Care",
-      veterinarian: "Dr. James Wilson",
-      findings: "Minor dental issues corrected, teeth floated",
-      treatment: "Dental floating, minor corrections made",
-      medications: ["Sedative", "Pain Relief"],
-      nextVisit: "2024-05-10",
-      status: "Completed", 
-      cost: "$200"
-    },
-    {
-      id: "HR004",
-      date: "2023-10-01",
-      type: "Emergency",
+      date: "2023-12-10",
+      type: "Dental Checkup",
       veterinarian: "Dr. Sarah Ahmed",
-      findings: "Minor colic episode, resolved with treatment",
-      treatment: "IV fluids, anti-spasmodics administered",
-      medications: ["Banamine", "IV Fluids", "Probiotics"],
-      nextVisit: "2023-10-03",
-      status: "Resolved",
-      cost: "$350"
-    }
-  ];
-
-  // Mock vaccination records
-  const vaccinations = [
-    {
-      vaccine: "Rhinopneumonitis",
-      lastDate: "2023-12-01",
-      nextDue: "2024-06-01",
-      status: "Current"
-    },
-    {
-      vaccine: "Influenza", 
-      lastDate: "2023-12-01",
-      nextDue: "2024-06-01",
-      status: "Current"
-    },
-    {
-      vaccine: "Tetanus",
-      lastDate: "2023-06-15",
-      nextDue: "2024-06-15", 
-      status: "Current"
-    },
-    {
-      vaccine: "West Nile Virus",
-      lastDate: "2023-05-01",
-      nextDue: "2024-05-01",
-      status: "Due Soon"
+      findings: "Minor dental wear, no issues",
+      treatment: "Routine dental float",
+      nextAppointment: "2024-12-10",
+      status: "Normal"
     }
   ];
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "Completed": return "bg-green-500";
-      case "Resolved": return "bg-blue-500";
-      case "Pending": return "bg-orange-500";
-      case "Emergency": return "bg-red-500";
+      case "Normal": return "bg-green-500";
+      case "Completed": return "bg-blue-500";
+      case "Follow-up Required": return "bg-orange-500";
+      case "Urgent": return "bg-red-500";
       default: return "bg-gray-500";
-    }
-  };
-
-  const getVaccineStatusColor = (status: string) => {
-    switch (status) {
-      case "Current": return "bg-green-500";
-      case "Due Soon": return "bg-orange-500";
-      case "Overdue": return "bg-red-500";
-      default: return "bg-gray-500";
-    }
-  };
-
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case "Emergency": return <AlertTriangle className="h-4 w-4 text-red-500" />;
-      case "Vaccination": return <Shield className="h-4 w-4 text-blue-500" />;
-      default: return <Heart className="h-4 w-4 text-green-500" />;
     }
   };
 
@@ -160,72 +97,40 @@ const MareHealthRecordsTable = ({ mareId }: MareHealthRecordsTableProps) => {
         </CardContent>
       </Card>
 
-      {/* Health Status Overview */}
+      {/* Health Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="border-green-200 bg-green-50">
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">Excellent</div>
-            <p className="text-sm text-green-700">Overall Health</p>
+            <div className="text-2xl font-bold text-green-600">3</div>
+            <p className="text-sm text-green-700">Total Records</p>
           </CardContent>
         </Card>
         <Card className="border-blue-200 bg-blue-50">
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600">4</div>
-            <p className="text-sm text-blue-700">Records This Year</p>
+            <div className="text-2xl font-bold text-blue-600">1</div>
+            <p className="text-sm text-blue-700">Recent Checkups</p>
           </CardContent>
         </Card>
         <Card className="border-purple-200 bg-purple-50">
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-purple-600">Current</div>
+            <div className="text-2xl font-bold text-purple-600">2</div>
             <p className="text-sm text-purple-700">Vaccinations</p>
           </CardContent>
         </Card>
         <Card className="border-orange-200 bg-orange-50">
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-orange-600">1</div>
-            <p className="text-sm text-orange-700">Due Soon</p>
+            <div className="text-2xl font-bold text-orange-600">0</div>
+            <p className="text-sm text-orange-700">Pending Follow-ups</p>
           </CardContent>
         </Card>
       </div>
-
-      {/* Vaccination Status */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2 text-slate-700">
-            <Shield className="h-5 w-5" />
-            Vaccination Status
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {vaccinations.map((vaccine, index) => (
-              <div key={index} className="flex items-center justify-between p-3 border border-slate-200 rounded-lg">
-                <div>
-                  <p className="font-semibold">{vaccine.vaccine}</p>
-                  <p className="text-sm text-muted-foreground">
-                    Last: {new Date(vaccine.lastDate).toLocaleDateString()}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <Badge className={`${getVaccineStatusColor(vaccine.status)} text-white text-xs mb-1`}>
-                    {vaccine.status}
-                  </Badge>
-                  <p className="text-sm text-muted-foreground">
-                    Due: {new Date(vaccine.nextDue).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Health Records Table */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2 text-slate-700">
             <Heart className="h-5 w-5" />
-            Medical Records ({filteredRecords.length})
+            Medical History ({filteredRecords.length})
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -237,8 +142,8 @@ const MareHealthRecordsTable = ({ mareId }: MareHealthRecordsTableProps) => {
                   <TableHead className="font-semibold text-slate-700">Type</TableHead>
                   <TableHead className="font-semibold text-slate-700">Veterinarian</TableHead>
                   <TableHead className="font-semibold text-slate-700">Findings</TableHead>
+                  <TableHead className="font-semibold text-slate-700">Treatment</TableHead>
                   <TableHead className="font-semibold text-slate-700">Status</TableHead>
-                  <TableHead className="font-semibold text-slate-700">Cost</TableHead>
                   <TableHead className="font-semibold text-slate-700">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -250,18 +155,18 @@ const MareHealthRecordsTable = ({ mareId }: MareHealthRecordsTableProps) => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        {getTypeIcon(record.type)}
-                        <span className="text-sm">{record.type}</span>
+                        <Activity className="h-4 w-4 text-blue-500" />
+                        {record.type}
                       </div>
                     </TableCell>
                     <TableCell>{record.veterinarian}</TableCell>
                     <TableCell className="max-w-xs truncate">{record.findings}</TableCell>
+                    <TableCell className="max-w-xs truncate">{record.treatment}</TableCell>
                     <TableCell>
                       <Badge className={`${getStatusColor(record.status)} text-white text-xs`}>
                         {record.status}
                       </Badge>
                     </TableCell>
-                    <TableCell className="font-semibold">{record.cost}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
                         <Button variant="outline" size="sm">
@@ -276,48 +181,6 @@ const MareHealthRecordsTable = ({ mareId }: MareHealthRecordsTableProps) => {
                 ))}
               </TableBody>
             </Table>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Medications & Treatments */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg text-slate-700">Current Medications & Treatments</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card className="border-blue-200 bg-blue-50">
-              <CardContent className="p-4">
-                <h4 className="font-semibold text-blue-700 mb-3">Active Medications</h4>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Prenatal Multi-Vitamin</span>
-                    <Badge variant="outline" className="text-xs">Daily</Badge>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Calcium Supplement</span>
-                    <Badge variant="outline" className="text-xs">Daily</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="border-green-200 bg-green-50">
-              <CardContent className="p-4">
-                <h4 className="font-semibold text-green-700 mb-3">Upcoming Appointments</h4>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Routine Checkup</span>
-                    <span className="text-xs text-muted-foreground">Feb 15, 2024</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Dental Care</span>
-                    <span className="text-xs text-muted-foreground">May 10, 2024</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </CardContent>
       </Card>

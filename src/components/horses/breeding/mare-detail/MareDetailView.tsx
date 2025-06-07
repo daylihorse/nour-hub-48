@@ -18,7 +18,7 @@ const MareDetailView = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("basic-info");
 
-  // Mock mare data - in real app this would come from API
+  // Mock mare data - in real app this would come from API based on mareId
   const mare = {
     id: mareId,
     name: "Luna Belle",
@@ -54,6 +54,10 @@ const MareDetailView = () => {
     }
   };
 
+  const handleBackToMares = () => {
+    navigate("/dashboard/horses", { state: { activeTab: "breeding" } });
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -62,7 +66,7 @@ const MareDetailView = () => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => navigate(-1)}
+            onClick={handleBackToMares}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -158,27 +162,27 @@ const MareDetailView = () => {
         </TabsList>
 
         <TabsContent value="basic-info" className="mt-6">
-          <MareBasicInfoTable mareId={mare.id} />
+          <MareBasicInfoTable mareId={mare.id || ""} />
         </TabsContent>
 
         <TabsContent value="breeding-history" className="mt-6">
-          <MareBreedingHistoryTable mareId={mare.id} />
+          <MareBreedingHistoryTable mareId={mare.id || ""} />
         </TabsContent>
 
         <TabsContent value="pregnancy" className="mt-6">
-          <MarePregnancyTable mareId={mare.id} />
+          <MarePregnancyTable mareId={mare.id || ""} />
         </TabsContent>
 
         <TabsContent value="foaling" className="mt-6">
-          <MareFoalingHistoryTable mareId={mare.id} />
+          <MareFoalingHistoryTable mareId={mare.id || ""} />
         </TabsContent>
 
         <TabsContent value="health" className="mt-6">
-          <MareHealthRecordsTable mareId={mare.id} />
+          <MareHealthRecordsTable mareId={mare.id || ""} />
         </TabsContent>
 
         <TabsContent value="heat-cycle" className="mt-6">
-          <MareHeatCycleTable mareId={mare.id} />
+          <MareHeatCycleTable mareId={mare.id || ""} />
         </TabsContent>
       </Tabs>
     </div>
