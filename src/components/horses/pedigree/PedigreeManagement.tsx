@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -66,6 +65,9 @@ const PedigreeManagement = () => {
     horse.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     horse.breed.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Find the selected horse data
+  const selectedHorseData = horses.find(horse => horse.id === selectedHorse);
 
   return (
     <div className="space-y-6">
@@ -255,8 +257,11 @@ const PedigreeManagement = () => {
             </Card>
 
             {/* Pedigree Tree */}
-            {selectedHorse ? (
-              <PedigreeTreeVisualization />
+            {selectedHorse && selectedHorseData ? (
+              <PedigreeTreeVisualization 
+                horseId={selectedHorse}
+                horseName={selectedHorseData.name}
+              />
             ) : (
               <Card>
                 <CardContent className="p-12 text-center">
