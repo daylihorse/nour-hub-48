@@ -3,7 +3,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Filter } from "lucide-react";
-import DocumentPaginationControls from "@/components/shared/DocumentPaginationControls";
 
 interface LaboratoryDocumentFiltersProps {
   searchTerm: string;
@@ -19,8 +18,6 @@ const LaboratoryDocumentFilters = ({
   setSearchTerm,
   selectedCategory,
   setSelectedCategory,
-  itemsPerPage,
-  onItemsPerPageChange,
 }: LaboratoryDocumentFiltersProps) => {
   const categories = [
     { value: "all", label: "All Documents" },
@@ -60,10 +57,6 @@ const LaboratoryDocumentFilters = ({
               <Filter className="h-4 w-4" />
               More Filters
             </Button>
-            <DocumentPaginationControls
-              itemsPerPage={itemsPerPage}
-              onItemsPerPageChange={onItemsPerPageChange}
-            />
           </div>
         </div>
       </CardContent>
