@@ -5,7 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, FileText, Download, Eye, Trash2, Search, FolderOpen } from "lucide-react";
+import { Upload, FileText, Search, FolderOpen } from "lucide-react";
+import { usePagination } from "@/hooks/usePagination";
+import DocumentCardActions from "@/components/shared/DocumentCardActions";
+import DocumentPagination from "@/components/shared/DocumentPagination";
 
 interface Document {
   id: string;
@@ -21,6 +24,7 @@ interface Document {
 const BreedingDocumentManager = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [itemsPerPage, setItemsPerPage] = useState(9);
 
   // Mock documents data
   const documents: Document[] = [
@@ -92,6 +96,16 @@ const BreedingDocumentManager = () => {
 
   const categories = ["all", ...new Set(documents.map(doc => doc.category))];
 
+  const {
+    currentPage,
+    totalPages,
+    paginatedItems: paginatedDocuments,
+    goToPage,
+  } = usePagination({
+    items: filteredDocuments,
+    itemsPerPage,
+  });
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -154,9 +168,9 @@ const BreedingDocumentManager = () => {
           <TabsTrigger value="categories">By Category</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="grid" className="mt-6">
+        <TabsContent value="grid" className="mt-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {filteredDocuments.map((doc) => (
+            {paginatedDocuments.map((doc) => (
               <Card key={doc.id} className="hover:shadow-lg transition-shadow">
                 <CardContent className="p-4">
                   <div className="space-y-3">
@@ -189,31 +203,28 @@ const BreedingDocumentManager = () => {
                       )}
                     </div>
 
-                    <div className="flex gap-1">
-                      <Button size="sm" variant="outline" className="flex-1">
-                        <Eye className="h-3 w-3 mr-1" />
-                        View
-                      </Button>
-                      <Button size="sm" variant="outline" className="flex-1">
-                        <Download className="h-3 w-3 mr-1" />
-                        Download
-                      </Button>
-                      <Button size="sm" variant="outline">
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    </div>
+                    <DocumentCardActions documentId={doc.id} documentName={doc.name} />
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
+
+          <DocumentPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            itemsPerPage={itemsPerPage}
+            totalItems={filteredDocuments.length}
+            onPageChange={goToPage}
+            onItemsPerPageChange={setItemsPerPage}
+          />
         </TabsContent>
 
         <TabsContent value="list" className="mt-6">
           <Card>
             <CardContent className="p-0">
               <div className="divide-y">
-                {filteredDocuments.map((doc) => (
+                {paginatedDocuments.map((doc) => (
                   <div key={doc.id} className="p-4 hover:bg-muted/50 transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -230,29 +241,28 @@ const BreedingDocumentManager = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Button size="sm" variant="outline">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          <Download className="h-4 w-4" />
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                      <DocumentCardActions documentId={doc.id} documentName={doc.name} />
                     </div>
                   </div>
                 ))}
               </div>
             </CardContent>
           </Card>
+
+          <DocumentPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            itemsPerPage={itemsPerPage}
+            totalItems={filteredDocuments.length}
+            onPageChange={goToPage}
+            onItemsPerPageChange={setItemsPerPage}
+          />
         </TabsContent>
 
         <TabsContent value="categories" className="mt-6">
           <div className="space-y-6">
             {categories.filter(cat => cat !== "all").map(category => {
-              const categoryDocs = documents.filter(doc => doc.category === category);
+              const categoryDocs = filteredDocuments.filter(doc => doc.category === category);
               return (
                 <Card key={category}>
                   <CardHeader>
@@ -270,14 +280,7 @@ const BreedingDocumentManager = () => {
                             <h5 className="font-medium text-sm truncate">{doc.name}</h5>
                             <p className="text-xs text-muted-foreground">{doc.size}</p>
                           </div>
-                          <div className="flex gap-1">
-                            <Button size="sm" variant="outline">
-                              <Eye className="h-3 w-3" />
-                            </Button>
-                            <Button size="sm" variant="outline">
-                              <Download className="h-3 w-3" />
-                            </Button>
-                          </div>
+                          <DocumentCardActions documentId={doc.id} documentName={doc.name} />
                         </div>
                       ))}
                     </div>

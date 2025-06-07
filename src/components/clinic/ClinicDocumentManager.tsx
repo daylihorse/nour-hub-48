@@ -4,7 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Upload, Search, Filter, Download, Eye } from "lucide-react";
+import { FileText, Upload, Search, Filter } from "lucide-react";
+import { usePagination } from "@/hooks/usePagination";
+import DocumentCardActions from "@/components/shared/DocumentCardActions";
+import DocumentPagination from "@/components/shared/DocumentPagination";
 
 interface Document {
   id: string;
@@ -19,6 +22,7 @@ interface Document {
 const ClinicDocumentManager = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [itemsPerPage, setItemsPerPage] = useState(9);
 
   // Mock documents data
   const documents: Document[] = [
@@ -63,6 +67,16 @@ const ClinicDocumentManager = () => {
     const matchesSearch = doc.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === "all" || doc.category === selectedCategory;
     return matchesSearch && matchesCategory;
+  });
+
+  const {
+    currentPage,
+    totalPages,
+    paginatedItems: paginatedDocuments,
+    goToPage,
+  } = usePagination({
+    items: filteredDocuments,
+    itemsPerPage,
   });
 
   return (
@@ -115,7 +129,7 @@ const ClinicDocumentManager = () => {
 
       {/* Documents Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredDocuments.map((doc) => (
+        {paginatedDocuments.map((doc) => (
           <Card key={doc.id} className="hover:shadow-lg transition-shadow">
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
@@ -145,20 +159,21 @@ const ClinicDocumentManager = () => {
                   <span>{doc.uploadDate}</span>
                 </div>
               </div>
-              <div className="flex gap-2 mt-4">
-                <Button variant="outline" size="sm" className="flex-1">
-                  <Eye className="h-4 w-4 mr-1" />
-                  View
-                </Button>
-                <Button variant="outline" size="sm" className="flex-1">
-                  <Download className="h-4 w-4 mr-1" />
-                  Download
-                </Button>
-              </div>
+              <DocumentCardActions documentId={doc.id} documentName={doc.name} />
             </CardContent>
           </Card>
         ))}
       </div>
+
+      {/* Pagination */}
+      <DocumentPagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        itemsPerPage={itemsPerPage}
+        totalItems={filteredDocuments.length}
+        onPageChange={goToPage}
+        onItemsPerPageChange={setItemsPerPage}
+      />
     </div>
   );
 };
