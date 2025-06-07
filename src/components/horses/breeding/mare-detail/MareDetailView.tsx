@@ -12,11 +12,22 @@ import MarePregnancyTable from "./tables/MarePregnancyTable";
 import MareFoalingHistoryTable from "./tables/MareFoalingHistoryTable";
 import MareHealthRecordsTable from "./tables/MareHealthRecordsTable";
 import MareHeatCycleTable from "./tables/MareHeatCycleTable";
+import ActionDialog from "./components/ActionDialog";
 
 const MareDetailView = () => {
   const { mareId } = useParams();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("basic-info");
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'table'>('table');
+  const [actionDialog, setActionDialog] = useState<{
+    isOpen: boolean;
+    type: 'checkup' | 'breeding' | 'health' | 'birth' | null;
+    title: string;
+  }>({
+    isOpen: false,
+    type: null,
+    title: ''
+  });
 
   // Mock mare data - in real app this would come from API based on mareId
   const mare = {
@@ -56,6 +67,14 @@ const MareDetailView = () => {
 
   const handleBackToMares = () => {
     navigate("/dashboard/horses", { state: { activeTab: "breeding" } });
+  };
+
+  const openActionDialog = (type: 'checkup' | 'breeding' | 'health' | 'birth', title: string) => {
+    setActionDialog({ isOpen: true, type, title });
+  };
+
+  const closeActionDialog = () => {
+    setActionDialog({ isOpen: false, type: null, title: '' });
   };
 
   return (
@@ -162,29 +181,62 @@ const MareDetailView = () => {
         </TabsList>
 
         <TabsContent value="basic-info" className="mt-6">
-          <MareBasicInfoTable mareId={mare.id || ""} />
+          <MareBasicInfoTable mareId={mare.id || ""} viewMode={viewMode} onViewModeChange={setViewMode} />
         </TabsContent>
 
         <TabsContent value="breeding-history" className="mt-6">
-          <MareBreedingHistoryTable mareId={mare.id || ""} />
+          <MareBreedingHistoryTable 
+            mareId={mare.id || ""} 
+            viewMode={viewMode} 
+            onViewModeChange={setViewMode}
+            onActionClick={openActionDialog}
+          />
         </TabsContent>
 
         <TabsContent value="pregnancy" className="mt-6">
-          <MarePregnancyTable mareId={mare.id || ""} />
+          <MarePregnancyTable 
+            mareId={mare.id || ""} 
+            viewMode={viewMode} 
+            onViewModeChange={setViewMode}
+            onActionClick={openActionDialog}
+          />
         </TabsContent>
 
         <TabsContent value="foaling" className="mt-6">
-          <MareFoalingHistoryTable mareId={mare.id || ""} />
+          <MareFoalingHistoryTable 
+            mareId={mare.id || ""} 
+            viewMode={viewMode} 
+            onViewModeChange={setViewMode}
+            onActionClick={openActionDialog}
+          />
         </TabsContent>
 
         <TabsContent value="health" className="mt-6">
-          <MareHealthRecordsTable mareId={mare.id || ""} />
+          <MareHealthRecordsTable 
+            mareId={mare.id || ""} 
+            viewMode={viewMode} 
+            onViewModeChange={setViewMode}
+            onActionClick={openActionDialog}
+          />
         </TabsContent>
 
         <TabsContent value="heat-cycle" className="mt-6">
-          <MareHeatCycleTable mareId={mare.id || ""} />
+          <MareHeatCycleTable 
+            mareId={mare.id || ""} 
+            viewMode={viewMode} 
+            onViewModeChange={setViewMode}
+            onActionClick={openActionDialog}
+          />
         </TabsContent>
       </Tabs>
+
+      {/* Action Dialog */}
+      <ActionDialog
+        isOpen={actionDialog.isOpen}
+        onClose={closeActionDialog}
+        actionType={actionDialog.type}
+        title={actionDialog.title}
+      />
     </div>
   );
 };

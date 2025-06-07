@@ -3,12 +3,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Edit, Calendar, Info } from "lucide-react";
+import ViewToggle from "../components/ViewToggle";
 
 interface MareBasicInfoTableProps {
   mareId: string;
+  viewMode: 'grid' | 'list' | 'table';
+  onViewModeChange: (mode: 'grid' | 'list' | 'table') => void;
 }
 
-const MareBasicInfoTable = ({ mareId }: MareBasicInfoTableProps) => {
+const MareBasicInfoTable = ({ mareId, viewMode, onViewModeChange }: MareBasicInfoTableProps) => {
   // Mock data - in real app this would come from API
   const basicInfo = {
     registrationNumber: "ARA-2018-0047",
@@ -74,13 +77,16 @@ const MareBasicInfoTable = ({ mareId }: MareBasicInfoTableProps) => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-slate-800">Basic Information</h2>
-        <Button className="bg-blue-500 hover:bg-blue-600 text-white flex items-center gap-2">
-          <Edit className="h-4 w-4" />
-          Edit Information
-        </Button>
+        <div className="flex items-center gap-4">
+          <ViewToggle currentView={viewMode} onViewChange={onViewModeChange} />
+          <Button className="bg-blue-500 hover:bg-blue-600 text-white flex items-center gap-2">
+            <Edit className="h-4 w-4" />
+            Edit Information
+          </Button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className={`grid ${viewMode === 'grid' ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'} gap-6`}>
         {infoSections.map((section, index) => (
           <Card key={index} className="border-slate-200 hover:shadow-md transition-shadow">
             <CardHeader className="pb-3">

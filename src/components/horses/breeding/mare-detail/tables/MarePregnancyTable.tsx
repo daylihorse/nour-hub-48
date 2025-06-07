@@ -3,13 +3,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Calendar, Baby, Heart, Activity } from "lucide-react";
+import { Calendar, Baby, Heart, Activity, Edit, View } from "lucide-react";
+import ViewToggle from "../components/ViewToggle";
 
 interface MarePregnancyTableProps {
   mareId: string;
+  viewMode: 'grid' | 'list' | 'table';
+  onViewModeChange: (mode: 'grid' | 'list' | 'table') => void;
+  onActionClick: (type: 'checkup' | 'breeding' | 'health' | 'birth', title: string) => void;
 }
 
-const MarePregnancyTable = ({ mareId }: MarePregnancyTableProps) => {
+const MarePregnancyTable = ({ mareId, viewMode, onViewModeChange, onActionClick }: MarePregnancyTableProps) => {
   // Mock pregnancy data
   const pregnancyData = {
     status: "Pregnant",
@@ -28,14 +32,32 @@ const MarePregnancyTable = ({ mareId }: MarePregnancyTableProps) => {
     return Math.round((pregnancyData.pregnancyDay / 340) * 100);
   };
 
+  const handleScheduleCheckup = () => {
+    onActionClick('checkup', 'Schedule Pregnancy Checkup');
+  };
+
+  const handleEditRecord = () => {
+    console.log('Edit pregnancy record for mare:', mareId);
+  };
+
+  const handleViewDetails = () => {
+    console.log('View pregnancy details for mare:', mareId);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-slate-800">Pregnancy Status</h2>
-        <Button className="bg-blue-500 hover:bg-blue-600 text-white flex items-center gap-2">
-          <Calendar className="h-4 w-4" />
-          Schedule Checkup
-        </Button>
+        <div className="flex items-center gap-4">
+          <ViewToggle currentView={viewMode} onViewChange={onViewModeChange} />
+          <Button 
+            className="bg-blue-500 hover:bg-blue-600 text-white flex items-center gap-2"
+            onClick={handleScheduleCheckup}
+          >
+            <Calendar className="h-4 w-4" />
+            Schedule Checkup
+          </Button>
+        </div>
       </div>
 
       {/* Pregnancy Progress Card */}
@@ -70,7 +92,7 @@ const MarePregnancyTable = ({ mareId }: MarePregnancyTableProps) => {
       </Card>
 
       {/* Pregnancy Details */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className={`grid ${viewMode === 'grid' ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'} gap-6`}>
         <Card className="border-slate-200">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2 text-slate-700">
@@ -91,6 +113,16 @@ const MarePregnancyTable = ({ mareId }: MarePregnancyTableProps) => {
               <div className="flex justify-between items-center py-2">
                 <span className="font-medium text-slate-600">Veterinarian:</span>
                 <span className="text-slate-800 font-semibold">{pregnancyData.veterinarian}</span>
+              </div>
+              <div className="flex gap-2 pt-3">
+                <Button variant="outline" size="sm" onClick={handleViewDetails} className="flex items-center gap-1">
+                  <View className="h-3 w-3" />
+                  View
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleEditRecord} className="flex items-center gap-1">
+                  <Edit className="h-3 w-3" />
+                  Edit
+                </Button>
               </div>
             </div>
           </CardContent>
@@ -117,6 +149,16 @@ const MarePregnancyTable = ({ mareId }: MarePregnancyTableProps) => {
                 <span className="font-medium text-slate-600">Complications:</span>
                 <Badge className="bg-green-500 text-white">{pregnancyData.complications}</Badge>
               </div>
+              <div className="flex gap-2 pt-3">
+                <Button variant="outline" size="sm" onClick={handleViewDetails} className="flex items-center gap-1">
+                  <View className="h-3 w-3" />
+                  View
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleEditRecord} className="flex items-center gap-1">
+                  <Edit className="h-3 w-3" />
+                  Edit
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -129,6 +171,12 @@ const MarePregnancyTable = ({ mareId }: MarePregnancyTableProps) => {
         </CardHeader>
         <CardContent>
           <p className="text-slate-700">{pregnancyData.notes}</p>
+          <div className="flex gap-2 pt-3">
+            <Button variant="outline" size="sm" onClick={handleEditRecord} className="flex items-center gap-1">
+              <Edit className="h-3 w-3" />
+              Edit Notes
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
