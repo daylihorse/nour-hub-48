@@ -1,6 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { calculateProgressPercentage, formatProgressText } from "../utils/breedingUtils";
 
 interface PregnancyItem {
   name: string;
@@ -22,14 +23,15 @@ const BreedingPregnancyProgress = ({ pregnancies }: BreedingPregnancyProgressPro
       <CardContent>
         <div className="space-y-4">
           {pregnancies.map((pregnancy) => {
-            const progressPercentage = Math.round((pregnancy.currentDay / pregnancy.totalDays) * 100);
+            const progressPercentage = calculateProgressPercentage(pregnancy.currentDay, pregnancy.totalDays);
+            const progressText = formatProgressText(pregnancy.currentDay, pregnancy.totalDays);
             
             return (
               <div key={pregnancy.name} className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">{pregnancy.name}</span>
                   <span className="text-sm text-muted-foreground">
-                    Day {pregnancy.currentDay}/{pregnancy.totalDays}
+                    {progressText}
                   </span>
                 </div>
                 <Progress value={progressPercentage} className="h-2" />

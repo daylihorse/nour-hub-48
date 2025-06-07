@@ -1,6 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, AlertCircle } from "lucide-react";
+import { BREEDING_STATUS } from "../constants/breedingConstants";
 
 interface ActivityItem {
   id: number;
@@ -17,9 +18,9 @@ interface BreedingRecentActivityProps {
 const BreedingRecentActivity = ({ activities }: BreedingRecentActivityProps) => {
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "success":
+      case BREEDING_STATUS.SUCCESS:
         return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case "pending":
+      case BREEDING_STATUS.PENDING:
         return <AlertCircle className="h-4 w-4 text-yellow-500" />;
       default:
         return <AlertCircle className="h-4 w-4 text-gray-500" />;

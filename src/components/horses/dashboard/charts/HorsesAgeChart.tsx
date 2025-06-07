@@ -1,7 +1,5 @@
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis } from "recharts";
+import ChartBarChart from "@/components/ui/charts/BarChart";
 
 const HorsesAgeChart = () => {
   const horsesByAge = [
@@ -12,21 +10,13 @@ const HorsesAgeChart = () => {
   ];
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Age Distribution</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ChartContainer config={{}} className="h-[300px]">
-          <BarChart data={horsesByAge}>
-            <XAxis dataKey="ageRange" />
-            <YAxis />
-            <ChartTooltip content={<ChartTooltipContent />} />
-            <Bar dataKey="count" fill="#8884d8" />
-          </BarChart>
-        </ChartContainer>
-      </CardContent>
-    </Card>
+    <ChartBarChart
+      title="Age Distribution"
+      data={horsesByAge}
+      dataKey="count"
+      xAxisKey="ageRange"
+      fill="#8884d8"
+    />
   );
 };
 

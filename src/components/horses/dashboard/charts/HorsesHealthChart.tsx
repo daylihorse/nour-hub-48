@@ -1,7 +1,5 @@
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { LineChart, Line, XAxis, YAxis } from "recharts";
+import ChartLineChart from "@/components/ui/charts/LineChart";
 
 const HorsesHealthChart = () => {
   const healthMetrics = [
@@ -19,24 +17,20 @@ const HorsesHealthChart = () => {
     checkup: { color: "#8884d8" },
   };
 
+  const lines = [
+    { dataKey: "healthy", stroke: "var(--color-healthy)", name: "Healthy" },
+    { dataKey: "treatment", stroke: "var(--color-treatment)", name: "In Treatment" },
+    { dataKey: "checkup", stroke: "var(--color-checkup)", name: "Scheduled Checkup" },
+  ];
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Health Status Tracking</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig} className="h-[300px]">
-          <LineChart data={healthMetrics}>
-            <XAxis dataKey="month" />
-            <YAxis />
-            <ChartTooltip content={<ChartTooltipContent />} />
-            <Line dataKey="healthy" stroke="var(--color-healthy)" name="Healthy" strokeWidth={2} />
-            <Line dataKey="treatment" stroke="var(--color-treatment)" name="In Treatment" strokeWidth={2} />
-            <Line dataKey="checkup" stroke="var(--color-checkup)" name="Scheduled Checkup" strokeWidth={2} />
-          </LineChart>
-        </ChartContainer>
-      </CardContent>
-    </Card>
+    <ChartLineChart
+      title="Health Status Tracking"
+      data={healthMetrics}
+      lines={lines}
+      xAxisKey="month"
+      config={chartConfig}
+    />
   );
 };
 

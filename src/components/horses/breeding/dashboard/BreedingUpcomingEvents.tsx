@@ -1,6 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { getPriorityColor } from "../utils/breedingUtils";
 
 interface EventItem {
   id: number;
@@ -16,19 +17,6 @@ interface BreedingUpcomingEventsProps {
 }
 
 const BreedingUpcomingEvents = ({ events }: BreedingUpcomingEventsProps) => {
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return "destructive";
-      case "medium":
-        return "default";
-      case "low":
-        return "secondary";
-      default:
-        return "default";
-    }
-  };
-
   return (
     <Card>
       <CardHeader>

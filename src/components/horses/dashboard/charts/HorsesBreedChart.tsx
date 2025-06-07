@@ -1,7 +1,5 @@
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { PieChart, Pie, Cell } from "recharts";
+import ChartPieChart from "@/components/ui/charts/PieChart";
 
 const HorsesBreedChart = () => {
   const breedDistribution = [
@@ -12,30 +10,12 @@ const HorsesBreedChart = () => {
   ];
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Breed Distribution</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ChartContainer config={{}} className="h-[300px]">
-          <PieChart>
-            <Pie
-              data={breedDistribution}
-              cx="50%"
-              cy="50%"
-              outerRadius={80}
-              dataKey="count"
-              label={({ breed, count }) => `${breed}: ${count}`}
-            >
-              {breedDistribution.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
-              ))}
-            </Pie>
-            <ChartTooltip content={<ChartTooltipContent />} />
-          </PieChart>
-        </ChartContainer>
-      </CardContent>
-    </Card>
+    <ChartPieChart
+      title="Breed Distribution"
+      data={breedDistribution}
+      dataKey="count"
+      labelKey="breed"
+    />
   );
 };
 
