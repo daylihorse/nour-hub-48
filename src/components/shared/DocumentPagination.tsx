@@ -1,4 +1,3 @@
-
 import {
   Pagination,
   PaginationContent,
@@ -53,7 +52,6 @@ const DocumentPagination = ({
         );
       }
     } else {
-      // Always show first page
       pages.push(
         <PaginationItem key={1}>
           <PaginationLink
@@ -77,7 +75,6 @@ const DocumentPagination = ({
         );
       }
 
-      // Show pages around current page
       for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
         pages.push(
           <PaginationItem key={i}>
@@ -103,7 +100,6 @@ const DocumentPagination = ({
         );
       }
 
-      // Always show last page
       if (totalPages > 1) {
         pages.push(
           <PaginationItem key={totalPages}>
@@ -129,24 +125,8 @@ const DocumentPagination = ({
     <Card>
       <CardContent className="p-4">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-muted-foreground">
-              Showing {startItem}-{endItem} of {totalItems} documents
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm">Cards per page:</span>
-              <select
-                value={itemsPerPage}
-                onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
-                className="px-2 py-1 border rounded text-sm"
-              >
-                <option value={6}>6</option>
-                <option value={9}>9</option>
-                <option value={12}>12</option>
-                <option value={18}>18</option>
-                <option value={24}>24</option>
-              </select>
-            </div>
+          <div className="text-sm text-muted-foreground">
+            Showing {startItem}-{endItem} of {totalItems} documents
           </div>
 
           {totalPages > 1 && (

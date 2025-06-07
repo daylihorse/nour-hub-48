@@ -42,7 +42,11 @@ const LaboratoryDocumentGrid = ({ documents }: LaboratoryDocumentGridProps) => {
                 <span>{doc.uploadDate}</span>
               </div>
             </div>
-            <DocumentCardActions documentId={doc.id} documentName={doc.name} />
+            <DocumentCardActions 
+              documentId={doc.id} 
+              documentName={doc.name}
+              document={doc}
+            />
           </CardContent>
         </Card>
       ))}

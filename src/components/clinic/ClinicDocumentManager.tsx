@@ -34,6 +34,8 @@ const ClinicDocumentManager = () => {
         setSearchTerm={setSearchTerm}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
+        itemsPerPage={itemsPerPage}
+        onItemsPerPageChange={setItemsPerPage}
       />
 
       <ClinicDocumentGrid documents={paginatedDocuments} />

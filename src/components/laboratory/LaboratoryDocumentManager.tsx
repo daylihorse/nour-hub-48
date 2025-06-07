@@ -34,6 +34,8 @@ const LaboratoryDocumentManager = () => {
         setSearchTerm={setSearchTerm}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
+        itemsPerPage={itemsPerPage}
+        onItemsPerPageChange={setItemsPerPage}
       />
 
       <LaboratoryDocumentGrid documents={paginatedDocuments} />
