@@ -1,4 +1,5 @@
 
+import { useNavigate } from "react-router-dom";
 import MareCard from "./MareCard";
 
 interface Mare {
@@ -23,10 +24,18 @@ interface MareGridProps {
 }
 
 const MareGrid = ({ mares }: MareGridProps) => {
+  const navigate = useNavigate();
+
+  const handleMareClick = (mareId: string) => {
+    navigate(`/dashboard/horses/breeding/mares/${mareId}`);
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {mares.map((mare) => (
-        <MareCard key={mare.id} mare={mare} />
+        <div key={mare.id} onClick={() => handleMareClick(mare.id)} className="cursor-pointer">
+          <MareCard mare={mare} />
+        </div>
       ))}
     </div>
   );
