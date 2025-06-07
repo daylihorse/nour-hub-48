@@ -1,8 +1,7 @@
 
-import MareHeader from "./components/MareHeader";
 import MareFilters from "./components/MareFilters";
 import MareStats from "./components/MareStats";
-import MareGrid from "./components/MareGrid";
+import MareTableContainer from "./components/MareTableContainer";
 import { useMareManagement } from "./hooks/useMareManagement";
 
 const MareManagement = () => {
@@ -14,8 +13,6 @@ const MareManagement = () => {
 
   return (
     <div className="space-y-6">
-      <MareHeader />
-      
       <MareFilters 
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -23,7 +20,7 @@ const MareManagement = () => {
 
       <MareStats />
 
-      <MareGrid mares={filteredMares} />
+      <MareTableContainer mares={filteredMares} />
     </div>
   );
 };
