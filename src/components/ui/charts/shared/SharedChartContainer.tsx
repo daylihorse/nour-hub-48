@@ -1,10 +1,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer } from "@/components/ui/chart";
+import { ReactElement, JSXElementConstructor } from "react";
 
 interface SharedChartContainerProps {
   title: string;
-  children: React.ReactNode;
+  children: ReactElement<any, string | JSXElementConstructor<any>>;
   config?: any;
   className?: string;
 }
