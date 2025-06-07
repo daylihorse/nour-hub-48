@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,8 +7,10 @@ import { Separator } from "@/components/ui/separator";
 import ClinicDashboard from "@/components/clinic/ClinicDashboard";
 import ClinicIntegrationPanel from "@/components/integration/ClinicIntegrationPanel";
 import ClinicHorseUpdatePanel from "@/components/integration/ClinicHorseUpdatePanel";
+import ClinicDocumentManager from "@/components/clinic/ClinicDocumentManager";
 import StoreManagement from "@/components/store/StoreManagement";
 import { Stethoscope, Calendar, FileText, Syringe, Scissors, Pill, Activity, Heart, Users, Store } from "lucide-react";
+
 const ClinicDepartment = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const stats = [{
@@ -35,6 +38,7 @@ const ClinicDepartment = () => {
     color: "text-green-600",
     bgColor: "bg-green-50"
   }];
+
   return <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header Section */}
@@ -102,7 +106,7 @@ const ClinicDepartment = () => {
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="bg-slate-50 px-8 pt-6">
-              <TabsList className="grid w-full grid-cols-7 border border-slate-700 p-1.5 h-14 bg-[#d6a24b]/85 rounded-xl">
+              <TabsList className="grid w-full grid-cols-8 border border-slate-700 p-1.5 h-14 bg-[#d6a24b]/85 rounded-xl">
                 <TabsTrigger value="dashboard" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
                   <Activity className="h-4 w-4" />
                   Dashboard
@@ -126,6 +130,10 @@ const ClinicDepartment = () => {
                 <TabsTrigger value="pharmacy" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
                   <Pill className="h-4 w-4" />
                   Pharmacy
+                </TabsTrigger>
+                <TabsTrigger value="documents" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Documents
                 </TabsTrigger>
                 <TabsTrigger value="store" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
                   <Store className="h-4 w-4" />
@@ -249,6 +257,10 @@ const ClinicDepartment = () => {
                 </Card>
               </TabsContent>
 
+              <TabsContent value="documents" className="mt-0">
+                <ClinicDocumentManager />
+              </TabsContent>
+
               <TabsContent value="store" className="mt-0">
                 <StoreManagement department="clinic" departmentName="Clinic" />
               </TabsContent>
@@ -258,4 +270,5 @@ const ClinicDepartment = () => {
       </div>
     </div>;
 };
+
 export default ClinicDepartment;

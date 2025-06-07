@@ -9,6 +9,7 @@ import ResultComparison from "@/components/laboratory/ResultComparison";
 import EquipmentManagement from "@/components/laboratory/EquipmentManagement";
 import QualityControl from "@/components/laboratory/QualityControl";
 import TemplateManagement from "@/components/laboratory/TemplateManagement";
+import LaboratoryDocumentManager from "@/components/laboratory/LaboratoryDocumentManager";
 import StoreManagement from "@/components/store/StoreManagement";
 import { Store } from "lucide-react";
 
@@ -23,7 +24,7 @@ const LaboratoryDepartment = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-9">
+        <TabsList className="grid w-full grid-cols-10">
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="samples">Sample Management</TabsTrigger>
           <TabsTrigger value="tests">Test Requests</TabsTrigger>
@@ -32,6 +33,7 @@ const LaboratoryDepartment = () => {
           <TabsTrigger value="equipment">Equipment</TabsTrigger>
           <TabsTrigger value="quality">Quality Control</TabsTrigger>
           <TabsTrigger value="templates">Templates</TabsTrigger>
+          <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="store" className="flex items-center gap-1">
             <Store className="h-3 w-3" />
             Store
@@ -68,6 +70,10 @@ const LaboratoryDepartment = () => {
         
         <TabsContent value="templates" className="mt-6">
           <TemplateManagement />
+        </TabsContent>
+
+        <TabsContent value="documents" className="mt-6">
+          <LaboratoryDocumentManager />
         </TabsContent>
 
         <TabsContent value="store" className="mt-6">

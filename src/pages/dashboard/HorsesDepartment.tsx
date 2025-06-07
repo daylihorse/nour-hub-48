@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import HorsesDashboard from "@/components/horses/HorsesDashboard";
 import HorseManagement from "@/components/horses/HorseManagement";
 import BreedingManagement from "@/components/horses/breeding/BreedingManagement";
+import PedigreeManagement from "@/components/horses/pedigree/PedigreeManagement";
 import IntegrationDashboard from "@/components/integration/IntegrationDashboard";
 import AutomationRulesPanel from "@/components/integration/AutomationRulesPanel";
 
@@ -103,10 +104,7 @@ const HorsesDepartment = () => {
         </TabsContent>
         
         <TabsContent value="pedigree" className="mt-6">
-          <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2">Pedigree Management</h3>
-            <p className="text-muted-foreground">Track lineage and breeding history</p>
-          </div>
+          <PedigreeManagement />
         </TabsContent>
         
         <TabsContent value="performance" className="mt-6">
