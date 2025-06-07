@@ -6,45 +6,72 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Search, Download, Heart, Activity } from "lucide-react";
+import ViewToggle from "../components/ViewToggle";
+import RecordCard from "../components/RecordCard";
+import RecordListItem from "../components/RecordListItem";
 
 interface MareHealthRecordsTableProps {
   mareId: string;
+  viewMode: 'grid' | 'list' | 'table';
+  onViewModeChange: (mode: 'grid' | 'list' | 'table') => void;
+  onActionClick: (type: 'checkup' | 'breeding' | 'health' | 'birth', title: string) => void;
 }
 
-const MareHealthRecordsTable = ({ mareId }: MareHealthRecordsTableProps) => {
+const MareHealthRecordsTable = ({ mareId, viewMode, onViewModeChange, onActionClick }: MareHealthRecordsTableProps) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Mock health records data
   const healthRecords = [
     {
       id: "HR001",
+      title: "Pregnancy Checkup",
       date: "2024-03-01",
       type: "Pregnancy Checkup",
       veterinarian: "Dr. Sarah Ahmed",
       findings: "Healthy pregnancy progression",
       treatment: "Prenatal vitamins",
       nextAppointment: "2024-04-01",
-      status: "Normal"
+      status: "Normal",
+      details: {
+        "Type": "Pregnancy Checkup",
+        "Veterinarian": "Dr. Sarah Ahmed",
+        "Treatment": "Prenatal vitamins",
+        "Next Appointment": "2024-04-01"
+      }
     },
     {
       id: "HR002",
+      title: "Annual Vaccination",
       date: "2024-01-15",
       type: "Vaccination",
       veterinarian: "Dr. Michael Roberts",
       findings: "Annual vaccinations administered",
       treatment: "EHV, WNV, Tetanus vaccines",
       nextAppointment: "2025-01-15",
-      status: "Completed"
+      status: "Completed",
+      details: {
+        "Type": "Vaccination",
+        "Veterinarian": "Dr. Michael Roberts",
+        "Treatment": "EHV, WNV, Tetanus vaccines",
+        "Next Appointment": "2025-01-15"
+      }
     },
     {
       id: "HR003",
+      title: "Dental Checkup",
       date: "2023-12-10",
       type: "Dental Checkup",
       veterinarian: "Dr. Sarah Ahmed",
       findings: "Minor dental wear, no issues",
       treatment: "Routine dental float",
       nextAppointment: "2024-12-10",
-      status: "Normal"
+      status: "Normal",
+      details: {
+        "Type": "Dental Checkup",
+        "Veterinarian": "Dr. Sarah Ahmed",
+        "Treatment": "Routine dental float",
+        "Next Appointment": "2024-12-10"
+      }
     }
   ];
 
@@ -64,19 +91,129 @@ const MareHealthRecordsTable = ({ mareId }: MareHealthRecordsTableProps) => {
     record.findings.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleAddHealthRecord = () => {
+    onActionClick('health', 'Add Health Record');
+  };
+
+  const handleEdit = () => {
+    console.log('Edit health record for mare:', mareId);
+  };
+
+  const handleView = () => {
+    console.log('View health record for mare:', mareId);
+  };
+
+  const renderContent = () => {
+    if (viewMode === 'table') {
+      return (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2 text-slate-700">
+              <Heart className="h-5 w-5" />
+              Medical History ({filteredRecords.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="font-semibold text-slate-700">Date</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Type</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Veterinarian</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Findings</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Treatment</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Status</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredRecords.map((record) => (
+                    <TableRow key={record.id} className="hover:bg-slate-50">
+                      <TableCell className="font-medium">
+                        {new Date(record.date).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Activity className="h-4 w-4 text-blue-500" />
+                          {record.type}
+                        </div>
+                      </TableCell>
+                      <TableCell>{record.veterinarian}</TableCell>
+                      <TableCell className="max-w-xs truncate">{record.findings}</TableCell>
+                      <TableCell className="max-w-xs truncate">{record.treatment}</TableCell>
+                      <TableCell>
+                        <Badge className={`${getStatusColor(record.status)} text-white text-xs`}>
+                          {record.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={handleView}>
+                            View
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={handleEdit}>
+                            Edit
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    if (viewMode === 'grid') {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredRecords.map((record) => (
+            <RecordCard
+              key={record.id}
+              record={record}
+              onEdit={handleEdit}
+              onView={handleView}
+            />
+          ))}
+        </div>
+      );
+    }
+
+    return (
+      <Card>
+        <CardContent className="p-0">
+          {filteredRecords.map((record) => (
+            <RecordListItem
+              key={record.id}
+              record={record}
+              onEdit={handleEdit}
+              onView={handleView}
+            />
+          ))}
+        </CardContent>
+      </Card>
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-slate-800">Health Records</h2>
-        <div className="flex gap-3">
-          <Button variant="outline" className="flex items-center gap-2">
-            <Download className="h-4 w-4" />
-            Export Records
-          </Button>
-          <Button className="bg-blue-500 hover:bg-blue-600 text-white flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            Add Health Record
-          </Button>
+        <div className="flex items-center gap-4">
+          <ViewToggle currentView={viewMode} onViewChange={onViewModeChange} />
+          <div className="flex gap-3">
+            <Button variant="outline" className="flex items-center gap-2">
+              <Download className="h-4 w-4" />
+              Export Records
+            </Button>
+            <Button onClick={handleAddHealthRecord} className="bg-blue-500 hover:bg-blue-600 text-white flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              Add Health Record
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -125,65 +262,8 @@ const MareHealthRecordsTable = ({ mareId }: MareHealthRecordsTableProps) => {
         </Card>
       </div>
 
-      {/* Health Records Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2 text-slate-700">
-            <Heart className="h-5 w-5" />
-            Medical History ({filteredRecords.length})
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="font-semibold text-slate-700">Date</TableHead>
-                  <TableHead className="font-semibold text-slate-700">Type</TableHead>
-                  <TableHead className="font-semibold text-slate-700">Veterinarian</TableHead>
-                  <TableHead className="font-semibold text-slate-700">Findings</TableHead>
-                  <TableHead className="font-semibold text-slate-700">Treatment</TableHead>
-                  <TableHead className="font-semibold text-slate-700">Status</TableHead>
-                  <TableHead className="font-semibold text-slate-700">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredRecords.map((record) => (
-                  <TableRow key={record.id} className="hover:bg-slate-50">
-                    <TableCell className="font-medium">
-                      {new Date(record.date).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Activity className="h-4 w-4 text-blue-500" />
-                        {record.type}
-                      </div>
-                    </TableCell>
-                    <TableCell>{record.veterinarian}</TableCell>
-                    <TableCell className="max-w-xs truncate">{record.findings}</TableCell>
-                    <TableCell className="max-w-xs truncate">{record.treatment}</TableCell>
-                    <TableCell>
-                      <Badge className={`${getStatusColor(record.status)} text-white text-xs`}>
-                        {record.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
-                          View
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          Edit
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Health Records Content */}
+      {renderContent()}
     </div>
   );
 };

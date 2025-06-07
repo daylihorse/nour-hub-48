@@ -6,45 +6,78 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Search, Download, Calendar, Activity } from "lucide-react";
+import ViewToggle from "../components/ViewToggle";
+import RecordCard from "../components/RecordCard";
+import RecordListItem from "../components/RecordListItem";
 
 interface MareHeatCycleTableProps {
   mareId: string;
+  viewMode: 'grid' | 'list' | 'table';
+  onViewModeChange: (mode: 'grid' | 'list' | 'table') => void;
+  onActionClick: (type: 'checkup' | 'breeding' | 'health' | 'birth', title: string) => void;
 }
 
-const MareHeatCycleTable = ({ mareId }: MareHeatCycleTableProps) => {
+const MareHeatCycleTable = ({ mareId, viewMode, onViewModeChange, onActionClick }: MareHeatCycleTableProps) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Mock heat cycle data
   const heatCycles = [
     {
       id: "HC001",
+      title: "Heat Cycle - Strong Intensity",
       startDate: "2023-06-01",
+      date: "2023-06-01",
       endDate: "2023-06-07",
       duration: 6,
       intensity: "Strong",
       breedingWindow: "2023-06-03 - 2023-06-05",
       bred: true,
-      notes: "Optimal breeding window utilized"
+      status: "Completed",
+      notes: "Optimal breeding window utilized",
+      details: {
+        "Duration": "6 days",
+        "Intensity": "Strong",
+        "Breeding Window": "2023-06-03 - 2023-06-05",
+        "Bred": "Yes"
+      }
     },
     {
       id: "HC002",
+      title: "Heat Cycle - Moderate Intensity",
       startDate: "2023-04-15",
+      date: "2023-04-15",
       endDate: "2023-04-20",
       duration: 5,
       intensity: "Moderate",
       breedingWindow: "2023-04-17 - 2023-04-19",
       bred: false,
-      notes: "Mare not bred during this cycle"
+      status: "Completed",
+      notes: "Mare not bred during this cycle",
+      details: {
+        "Duration": "5 days",
+        "Intensity": "Moderate",
+        "Breeding Window": "2023-04-17 - 2023-04-19",
+        "Bred": "No"
+      }
     },
     {
       id: "HC003",
+      title: "Heat Cycle - Strong Intensity",
       startDate: "2023-03-01",
+      date: "2023-03-01",
       endDate: "2023-03-06",
       duration: 5,
       intensity: "Strong",
       breedingWindow: "2023-03-03 - 2023-03-05",
       bred: false,
-      notes: "Stallion not available during optimal window"
+      status: "Completed",
+      notes: "Stallion not available during optimal window",
+      details: {
+        "Duration": "5 days",
+        "Intensity": "Strong",
+        "Breeding Window": "2023-03-03 - 2023-03-05",
+        "Bred": "No"
+      }
     }
   ];
 
@@ -62,19 +95,135 @@ const MareHeatCycleTable = ({ mareId }: MareHeatCycleTableProps) => {
     cycle.notes.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleAddHeatCycle = () => {
+    onActionClick('checkup', 'Record Heat Cycle');
+  };
+
+  const handleEdit = () => {
+    console.log('Edit heat cycle record for mare:', mareId);
+  };
+
+  const handleView = () => {
+    console.log('View heat cycle record for mare:', mareId);
+  };
+
+  const renderContent = () => {
+    if (viewMode === 'table') {
+      return (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2 text-slate-700">
+              <Calendar className="h-5 w-5" />
+              Heat Cycle History ({filteredCycles.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="font-semibold text-slate-700">Start Date</TableHead>
+                    <TableHead className="font-semibold text-slate-700">End Date</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Duration</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Intensity</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Breeding Window</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Bred</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredCycles.map((cycle) => (
+                    <TableRow key={cycle.id} className="hover:bg-slate-50">
+                      <TableCell className="font-medium">
+                        {new Date(cycle.startDate).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        {new Date(cycle.endDate).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Activity className="h-4 w-4 text-blue-500" />
+                          {cycle.duration} days
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={`${getIntensityColor(cycle.intensity)} text-white text-xs`}>
+                          {cycle.intensity}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-sm">{cycle.breedingWindow}</TableCell>
+                      <TableCell>
+                        <Badge className={cycle.bred ? "bg-green-500" : "bg-gray-500"} variant="outline">
+                          {cycle.bred ? "Yes" : "No"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={handleView}>
+                            View
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={handleEdit}>
+                            Edit
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    if (viewMode === 'grid') {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredCycles.map((record) => (
+            <RecordCard
+              key={record.id}
+              record={record}
+              onEdit={handleEdit}
+              onView={handleView}
+            />
+          ))}
+        </div>
+      );
+    }
+
+    return (
+      <Card>
+        <CardContent className="p-0">
+          {filteredCycles.map((record) => (
+            <RecordListItem
+              key={record.id}
+              record={record}
+              onEdit={handleEdit}
+              onView={handleView}
+            />
+          ))}
+        </CardContent>
+      </Card>
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-slate-800">Heat Cycle Tracking</h2>
-        <div className="flex gap-3">
-          <Button variant="outline" className="flex items-center gap-2">
-            <Download className="h-4 w-4" />
-            Export Data
-          </Button>
-          <Button className="bg-blue-500 hover:bg-blue-600 text-white flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            Record Heat Cycle
-          </Button>
+        <div className="flex items-center gap-4">
+          <ViewToggle currentView={viewMode} onViewChange={onViewModeChange} />
+          <div className="flex gap-3">
+            <Button variant="outline" className="flex items-center gap-2">
+              <Download className="h-4 w-4" />
+              Export Data
+            </Button>
+            <Button onClick={handleAddHeatCycle} className="bg-blue-500 hover:bg-blue-600 text-white flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              Record Heat Cycle
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -123,71 +272,8 @@ const MareHeatCycleTable = ({ mareId }: MareHeatCycleTableProps) => {
         </Card>
       </div>
 
-      {/* Heat Cycles Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2 text-slate-700">
-            <Calendar className="h-5 w-5" />
-            Heat Cycle History ({filteredCycles.length})
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="font-semibold text-slate-700">Start Date</TableHead>
-                  <TableHead className="font-semibold text-slate-700">End Date</TableHead>
-                  <TableHead className="font-semibold text-slate-700">Duration</TableHead>
-                  <TableHead className="font-semibold text-slate-700">Intensity</TableHead>
-                  <TableHead className="font-semibold text-slate-700">Breeding Window</TableHead>
-                  <TableHead className="font-semibold text-slate-700">Bred</TableHead>
-                  <TableHead className="font-semibold text-slate-700">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredCycles.map((cycle) => (
-                  <TableRow key={cycle.id} className="hover:bg-slate-50">
-                    <TableCell className="font-medium">
-                      {new Date(cycle.startDate).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      {new Date(cycle.endDate).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Activity className="h-4 w-4 text-blue-500" />
-                        {cycle.duration} days
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={`${getIntensityColor(cycle.intensity)} text-white text-xs`}>
-                        {cycle.intensity}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-sm">{cycle.breedingWindow}</TableCell>
-                    <TableCell>
-                      <Badge className={cycle.bred ? "bg-green-500" : "bg-gray-500"} variant="outline">
-                        {cycle.bred ? "Yes" : "No"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
-                          View
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          Edit
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Heat Cycles Content */}
+      {renderContent()}
     </div>
   );
 };
