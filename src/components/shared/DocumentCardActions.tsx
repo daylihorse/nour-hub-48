@@ -20,7 +20,7 @@ interface DocumentCardActionsProps {
   };
 }
 
-const DocumentCardActions = ({ documentId, documentName, document }: DocumentCardActionsProps) => {
+const DocumentCardActions = ({ documentId, documentName, document: documentData }: DocumentCardActionsProps) => {
   const { toast } = useToast();
   const [showViewDialog, setShowViewDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -89,7 +89,7 @@ const DocumentCardActions = ({ documentId, documentName, document }: DocumentCar
       <ViewDocumentDialog
         isOpen={showViewDialog}
         onClose={() => setShowViewDialog(false)}
-        document={document || {
+        document={documentData || {
           id: documentId,
           name: documentName,
           type: 'Unknown',
