@@ -1,9 +1,16 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer } from "recharts";
 import { Heart, Activity, Calendar, Users, AlertTriangle, TrendingUp } from "lucide-react";
+import BreedingQuickAccess from "./breeding/BreedingQuickAccess";
+import BreedingFeaturesShowcase from "./breeding/BreedingFeaturesShowcase";
 
-const HorsesDashboard = () => {
+interface HorsesDashboardProps {
+  onNavigateToBreeding?: (tab: string) => void;
+}
+
+const HorsesDashboard = ({ onNavigateToBreeding }: HorsesDashboardProps) => {
   // Sample data for charts
   const horsesByAge = [
     { ageRange: "1-3 years", count: 12, color: "#8884d8" },
@@ -69,6 +76,12 @@ const HorsesDashboard = () => {
     checkup: { color: "#8884d8" },
   };
 
+  const handleNavigateToBreeding = (tab: string) => {
+    if (onNavigateToBreeding) {
+      onNavigateToBreeding(tab);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Key Metrics */}
@@ -88,6 +101,12 @@ const HorsesDashboard = () => {
           </Card>
         ))}
       </div>
+
+      {/* New Breeding Features Showcase */}
+      <BreedingFeaturesShowcase onNavigateToBreeding={handleNavigateToBreeding} />
+
+      {/* Breeding Quick Access */}
+      <BreedingQuickAccess onNavigateToBreeding={handleNavigateToBreeding} />
 
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -9,6 +9,21 @@ import AutomationRulesPanel from "@/components/integration/AutomationRulesPanel"
 
 const HorsesDepartment = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [breedingSubTab, setBreedingSubTab] = useState("dashboard");
+
+  const handleNavigateToBreeding = (tab: string) => {
+    setActiveTab("breeding");
+    // Map quick access IDs to breeding management tabs
+    const tabMapping: { [key: string]: string } = {
+      records: "breeding",
+      certificates: "breeding", // Note: Certificates are part of the documents tab
+      pedigree: "dashboard", // Using dashboard as it has pedigree overview
+      analytics: "analytics",
+      documents: "documents",
+      planning: "planning"
+    };
+    setBreedingSubTab(tabMapping[tab] || "dashboard");
+  };
 
   return (
     <div className="space-y-6">
@@ -76,7 +91,7 @@ const HorsesDepartment = () => {
         </TabsList>
         
         <TabsContent value="dashboard" className="mt-6">
-          <HorsesDashboard />
+          <HorsesDashboard onNavigateToBreeding={handleNavigateToBreeding} />
         </TabsContent>
         
         <TabsContent value="horses" className="mt-6">
@@ -84,7 +99,7 @@ const HorsesDepartment = () => {
         </TabsContent>
         
         <TabsContent value="breeding" className="mt-6">
-          <BreedingManagement />
+          <BreedingManagement initialTab={breedingSubTab} />
         </TabsContent>
         
         <TabsContent value="pedigree" className="mt-6">

@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BreedingDashboard from "./BreedingDashboard";
 import StallionManagement from "./StallionManagement";
@@ -16,8 +16,18 @@ import BreedingPerformanceAnalytics from "./analytics/BreedingPerformanceAnalyti
 import BreedingDocumentManager from "./documents/BreedingDocumentManager";
 import IntegrationStatusBar from "@/components/integration/IntegrationStatusBar";
 
-const BreedingManagement = () => {
-  const [activeTab, setActiveTab] = useState("dashboard");
+interface BreedingManagementProps {
+  initialTab?: string;
+}
+
+const BreedingManagement = ({ initialTab = "dashboard" }: BreedingManagementProps) => {
+  const [activeTab, setActiveTab] = useState(initialTab);
+
+  useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
 
   return (
     <div className="space-y-6">
