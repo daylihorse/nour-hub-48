@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -18,7 +17,7 @@ const MareDetailView = () => {
   const { mareId } = useParams();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("basic-info");
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'table'>('table');
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'table'>('grid');
   const [actionDialog, setActionDialog] = useState<{
     isOpen: boolean;
     type: 'checkup' | 'breeding' | 'health' | 'birth' | null;
