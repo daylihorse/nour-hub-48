@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BreedingDashboard from "./BreedingDashboard";
@@ -11,6 +12,8 @@ import BreedingPlanner from "./planning/BreedingPlanner";
 import BreedingContractManagement from "./contracts/BreedingContractManagement";
 import MareHeatCycleTracking from "./cycles/MareHeatCycleTracking";
 import BreedingTestingHub from "./testing/BreedingTestingHub";
+import BreedingPerformanceAnalytics from "./analytics/BreedingPerformanceAnalytics";
+import BreedingDocumentManager from "./documents/BreedingDocumentManager";
 import IntegrationStatusBar from "@/components/integration/IntegrationStatusBar";
 
 const BreedingManagement = () => {
@@ -91,16 +94,16 @@ const BreedingManagement = () => {
             Heat Cycles
           </TabsTrigger>
           <TabsTrigger 
-            value="testing" 
+            value="analytics" 
             className="text-blue-700 text-sm data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-sm font-medium transition-all duration-150"
           >
-            Testing
+            Analytics
           </TabsTrigger>
           <TabsTrigger 
-            value="reports" 
+            value="documents" 
             className="text-blue-700 text-sm data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-sm font-medium transition-all duration-150"
           >
-            Reports
+            Documents
           </TabsTrigger>
         </TabsList>
         
@@ -144,15 +147,12 @@ const BreedingManagement = () => {
           <MareHeatCycleTracking />
         </TabsContent>
         
-        <TabsContent value="testing" className="mt-6">
-          <BreedingTestingHub />
+        <TabsContent value="analytics" className="mt-6">
+          <BreedingPerformanceAnalytics />
         </TabsContent>
         
-        <TabsContent value="reports" className="mt-6">
-          <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2">Breeding Reports & Analytics</h3>
-            <p className="text-muted-foreground">Comprehensive performance reports and breeding analytics</p>
-          </div>
+        <TabsContent value="documents" className="mt-6">
+          <BreedingDocumentManager />
         </TabsContent>
       </Tabs>
     </div>
