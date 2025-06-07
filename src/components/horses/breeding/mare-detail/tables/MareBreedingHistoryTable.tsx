@@ -1,11 +1,10 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Download, Calendar, Horse } from "lucide-react";
+import { Plus, Search, Download, Calendar, Heart } from "lucide-react";
 
 interface MareBreedingHistoryTableProps {
   mareId: string;
@@ -174,7 +173,7 @@ const MareBreedingHistoryTable = ({ mareId }: MareBreedingHistoryTableProps) => 
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Horse className="h-4 w-4 text-blue-500" />
+                        <Heart className="h-4 w-4 text-blue-500" />
                         {record.stallion}
                       </div>
                     </TableCell>
