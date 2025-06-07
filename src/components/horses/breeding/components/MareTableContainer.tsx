@@ -26,9 +26,10 @@ interface Mare {
 
 interface MareTableContainerProps {
   mares: Mare[];
+  onEditMare?: (mareId: string) => void;
 }
 
-const MareTableContainer = ({ mares }: MareTableContainerProps) => {
+const MareTableContainer = ({ mares, onEditMare }: MareTableContainerProps) => {
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'table'>('grid');
 
   const handleAddMare = () => {
@@ -41,16 +42,33 @@ const MareTableContainer = ({ mares }: MareTableContainerProps) => {
     // TODO: Implement export functionality
   };
 
+  const handleScheduleCheckup = (mareId: string) => {
+    console.log('Schedule checkup for mare:', mareId);
+    // TODO: Implement checkup scheduling
+  };
+
+  const handleViewMedicalRecords = (mareId: string) => {
+    console.log('View medical records for mare:', mareId);
+    // TODO: Implement medical records view
+  };
+
   const renderContent = () => {
+    const commonProps = {
+      mares,
+      onEditMare,
+      onScheduleCheckup: handleScheduleCheckup,
+      onViewMedicalRecords: handleViewMedicalRecords,
+    };
+
     switch (viewMode) {
       case 'grid':
-        return <MareGridView mares={mares} />;
+        return <MareGridView {...commonProps} />;
       case 'list':
-        return <MareListView mares={mares} />;
+        return <MareListView {...commonProps} />;
       case 'table':
-        return <MareTableView mares={mares} />;
+        return <MareTableView {...commonProps} />;
       default:
-        return <MareGridView mares={mares} />;
+        return <MareGridView {...commonProps} />;
     }
   };
 

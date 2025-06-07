@@ -1,11 +1,28 @@
 
 import { useState } from "react";
 
+interface Mare {
+  id: string;
+  horseId: string;
+  horseName: string;
+  status: string;
+  age: number;
+  breed: string;
+  totalFoals: number;
+  liveFoals: number;
+  lastBreedingDate: string | null;
+  expectedDueDate: string | null;
+  pregnancyDay: number;
+  nextHeat: string | null;
+  stallionName: string | null;
+  foalBirthDate?: string;
+}
+
 export const useMareManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Mock mare data
-  const mares = [
+  const [mares, setMares] = useState<Mare[]>([
     {
       id: "1",
       horseId: "M001",
@@ -67,17 +84,26 @@ export const useMareManagement = () => {
       stallionName: null,
       foalBirthDate: "2023-12-15",
     },
-  ];
+  ]);
 
   const filteredMares = mares.filter(mare =>
     mare.horseName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     mare.breed.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const updateMare = (updatedMare: Mare) => {
+    setMares(prevMares => 
+      prevMares.map(mare => 
+        mare.id === updatedMare.id ? updatedMare : mare
+      )
+    );
+  };
+
   return {
     searchTerm,
     setSearchTerm,
     mares,
     filteredMares,
+    updateMare,
   };
 };

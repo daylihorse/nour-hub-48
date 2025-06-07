@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,9 +23,17 @@ interface Mare {
 
 interface MareListViewProps {
   mares: Mare[];
+  onEditMare?: (mareId: string) => void;
+  onScheduleCheckup?: (mareId: string) => void;
+  onViewMedicalRecords?: (mareId: string) => void;
 }
 
-const MareListView = ({ mares }: MareListViewProps) => {
+const MareListView = ({ 
+  mares, 
+  onEditMare, 
+  onScheduleCheckup, 
+  onViewMedicalRecords 
+}: MareListViewProps) => {
   const navigate = useNavigate();
 
   const getStatusColor = (status: string) => {
@@ -54,18 +61,27 @@ const MareListView = ({ mares }: MareListViewProps) => {
   };
 
   const handleEditMare = (mareId: string) => {
-    console.log('Edit mare:', mareId);
-    // TODO: Implement edit functionality
+    if (onEditMare) {
+      onEditMare(mareId);
+    } else {
+      console.log('Edit mare:', mareId);
+    }
   };
 
   const handleScheduleCheckup = (mareId: string) => {
-    console.log('Schedule checkup for mare:', mareId);
-    // TODO: Implement checkup scheduling
+    if (onScheduleCheckup) {
+      onScheduleCheckup(mareId);
+    } else {
+      console.log('Schedule checkup for mare:', mareId);
+    }
   };
 
   const handleViewMedicalRecords = (mareId: string) => {
-    console.log('View medical records for mare:', mareId);
-    // TODO: Implement medical records view
+    if (onViewMedicalRecords) {
+      onViewMedicalRecords(mareId);
+    } else {
+      console.log('View medical records for mare:', mareId);
+    }
   };
 
   return (
