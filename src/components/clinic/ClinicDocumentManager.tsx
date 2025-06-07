@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ClinicDocumentHeader from "./documents/components/ClinicDocumentHeader";
 import ClinicDocumentFilters from "./documents/components/ClinicDocumentFilters";
@@ -9,6 +10,9 @@ import { mockClinicDocuments } from "./documents/data/mockDocuments";
 import { useClinicDocumentManagement } from "./documents/hooks/useClinicDocumentManagement";
 
 const ClinicDocumentManager = () => {
+  const [activeTab, setActiveTab] = useState("grid");
+  const [cardsPerRow, setCardsPerRow] = useState(3);
+
   const {
     searchTerm,
     setSearchTerm,
@@ -40,26 +44,22 @@ const ClinicDocumentManager = () => {
         onItemsPerPageChange={setItemsPerPage}
       />
 
-      <Tabs defaultValue="grid" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="flex justify-between items-center">
           <TabsList>
             <TabsTrigger value="grid">Grid View</TabsTrigger>
           </TabsList>
           
-          <div className="flex items-center gap-4">
-            <Tabs defaultValue="grid">
-              <TabsContent value="grid" className="m-0">
-                <DocumentPaginationControls
-                  itemsPerPage={itemsPerPage}
-                  onItemsPerPageChange={setItemsPerPage}
-                />
-              </TabsContent>
-            </Tabs>
-          </div>
+          {activeTab === "grid" && (
+            <DocumentPaginationControls
+              cardsPerRow={cardsPerRow}
+              onCardsPerRowChange={setCardsPerRow}
+            />
+          )}
         </div>
 
         <TabsContent value="grid" className="mt-6 space-y-6">
-          <ClinicDocumentGrid documents={paginatedDocuments} />
+          <ClinicDocumentGrid documents={paginatedDocuments} cardsPerRow={cardsPerRow} />
 
           <DocumentPagination
             currentPage={currentPage}

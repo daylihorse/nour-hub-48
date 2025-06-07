@@ -2,31 +2,31 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface DocumentPaginationControlsProps {
-  itemsPerPage: number;
-  onItemsPerPageChange: (itemsPerPage: number) => void;
+  cardsPerRow: number;
+  onCardsPerRowChange: (cardsPerRow: number) => void;
   label?: string;
-  options?: { value: string; label: string; itemsPerPage: number }[];
+  options?: { value: string; label: string; cardsPerRow: number }[];
 }
 
 const DocumentPaginationControls = ({
-  itemsPerPage,
-  onItemsPerPageChange,
+  cardsPerRow,
+  onCardsPerRowChange,
   label = "Cards per row:",
   options = [
-    { value: "2", label: "2", itemsPerPage: 6 },
-    { value: "3", label: "3", itemsPerPage: 9 },
-    { value: "4", label: "4", itemsPerPage: 12 }
+    { value: "2", label: "2", cardsPerRow: 2 },
+    { value: "3", label: "3", cardsPerRow: 3 },
+    { value: "4", label: "4", cardsPerRow: 4 }
   ]
 }: DocumentPaginationControlsProps) => {
   const getCurrentValue = () => {
-    const option = options.find(opt => opt.itemsPerPage === itemsPerPage);
+    const option = options.find(opt => opt.cardsPerRow === cardsPerRow);
     return option ? option.value : options[1].value; // default to "3"
   };
 
   const handleChange = (value: string) => {
     const option = options.find(opt => opt.value === value);
     if (option) {
-      onItemsPerPageChange(option.itemsPerPage);
+      onCardsPerRowChange(option.cardsPerRow);
     }
   };
 

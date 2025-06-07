@@ -7,11 +7,25 @@ import { LaboratoryDocument, getStatusColor } from "../types/documentTypes";
 
 interface LaboratoryDocumentGridProps {
   documents: LaboratoryDocument[];
+  cardsPerRow?: number;
 }
 
-const LaboratoryDocumentGrid = ({ documents }: LaboratoryDocumentGridProps) => {
+const LaboratoryDocumentGrid = ({ documents, cardsPerRow = 3 }: LaboratoryDocumentGridProps) => {
+  const getGridClasses = () => {
+    switch (cardsPerRow) {
+      case 2:
+        return "grid-cols-1 md:grid-cols-2";
+      case 3:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+      case 4:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+      default:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+    }
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className={`grid ${getGridClasses()} gap-6`}>
       {documents.map((doc) => (
         <Card key={doc.id} className="hover:shadow-lg transition-shadow">
           <CardHeader className="pb-3">

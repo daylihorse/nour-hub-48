@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DocumentHeader from "./components/DocumentHeader";
 import DocumentFilters from "./components/DocumentFilters";
@@ -11,6 +12,9 @@ import { useDocumentManagement } from "./hooks/useDocumentManagement";
 import { mockDocuments } from "./data/mockDocuments";
 
 const BreedingDocumentManager = () => {
+  const [activeTab, setActiveTab] = useState("grid");
+  const [cardsPerRow, setCardsPerRow] = useState(3);
+
   const {
     searchTerm,
     setSearchTerm,
@@ -41,7 +45,7 @@ const BreedingDocumentManager = () => {
         documents={mockDocuments}
       />
 
-      <Tabs defaultValue="grid" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="flex justify-between items-center">
           <TabsList>
             <TabsTrigger value="grid">Grid View</TabsTrigger>
@@ -49,20 +53,16 @@ const BreedingDocumentManager = () => {
             <TabsTrigger value="categories">By Category</TabsTrigger>
           </TabsList>
           
-          <div className="flex items-center gap-4">
-            <Tabs defaultValue="grid">
-              <TabsContent value="grid" className="m-0">
-                <DocumentPaginationControls
-                  itemsPerPage={itemsPerPage}
-                  onItemsPerPageChange={setItemsPerPage}
-                />
-              </TabsContent>
-            </Tabs>
-          </div>
+          {activeTab === "grid" && (
+            <DocumentPaginationControls
+              cardsPerRow={cardsPerRow}
+              onCardsPerRowChange={setCardsPerRow}
+            />
+          )}
         </div>
 
         <TabsContent value="grid" className="mt-6 space-y-6">
-          <DocumentGrid documents={paginatedDocuments} />
+          <DocumentGrid documents={paginatedDocuments} cardsPerRow={cardsPerRow} />
 
           <DocumentPagination
             currentPage={currentPage}
