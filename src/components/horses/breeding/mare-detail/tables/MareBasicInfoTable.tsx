@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Edit, Calendar, Info } from "lucide-react";
+import { Edit, Info } from "lucide-react";
 import ViewToggle from "../components/ViewToggle";
 import EditBasicInfoDialog from "../components/EditBasicInfoDialog";
 import BasicInfoTableView from "../components/BasicInfoTableView";
