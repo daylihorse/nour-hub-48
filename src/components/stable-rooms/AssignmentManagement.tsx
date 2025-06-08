@@ -5,14 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Plus, 
   Search, 
   Calendar, 
   User, 
   Building, 
   Clock,
-  DollarSign,
-  Filter
+  DollarSign
 } from "lucide-react";
 import {
   Table,
@@ -30,65 +28,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Assignment } from "@/types/stableRooms";
+import { useStableRoomsData } from "@/hooks/useStableRoomsData";
+import CreateAssignmentDialog from "./dialogs/CreateAssignmentDialog";
 
 const AssignmentManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterType, setFilterType] = useState<string>("all");
 
-  // Mock data
-  const assignments: Assignment[] = [
-    {
-      id: "1",
-      roomId: "1",
-      entityType: "horse",
-      entityId: "h1",
-      entityName: "Thunder",
-      assignedDate: new Date("2024-01-15"),
-      expectedVacate: new Date("2024-03-15"),
-      status: "active",
-      assignedBy: "John Smith",
-      notes: "Premium stall for breeding stallion",
-      cost: {
-        dailyRate: 50,
-        totalCost: 3000,
-        currency: "USD"
-      }
-    },
-    {
-      id: "2",
-      roomId: "3",
-      entityType: "supplies",
-      entityId: "s1",
-      entityName: "Horse Feed & Bedding",
-      assignedDate: new Date("2024-01-01"),
-      status: "active",
-      assignedBy: "Sarah Johnson",
-      notes: "Long-term storage for feed supplies",
-      cost: {
-        dailyRate: 25,
-        totalCost: 4575,
-        currency: "USD"
-      }
-    },
-    {
-      id: "3",
-      roomId: "2",
-      entityType: "horse",
-      entityId: "h2",
-      entityName: "Luna",
-      assignedDate: new Date("2024-01-10"),
-      actualVacate: new Date("2024-02-10"),
-      status: "completed",
-      assignedBy: "Mike Wilson",
-      notes: "Recovery period after medical procedure",
-      cost: {
-        dailyRate: 35,
-        totalCost: 1085,
-        currency: "USD"
-      }
-    }
-  ];
+  const { assignments, createAssignment, endAssignment, getAvailableRooms } = useStableRoomsData();
+  const availableRooms = getAvailableRooms();
 
   const filteredAssignments = assignments.filter(assignment => {
     const matchesSearch = assignment.entityName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -132,10 +81,14 @@ const AssignmentManagement = () => {
           <h2 className="text-2xl font-bold">Assignment Management</h2>
           <p className="text-muted-foreground">Track room assignments and occupancy history</p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Create Assignment
-        </Button>
+        <CreateAssignmentDialog 
+          onCreateAssignment={createAssignment}
+          availableRooms={availableRooms.map(room => ({ 
+            id: room.id, 
+            number: room.number, 
+            name: room.name 
+          }))}
+        />
       </div>
 
       {/* Summary Cards */}
@@ -185,7 +138,7 @@ const AssignmentManagement = () => {
               <div>
                 <p className="text-sm text-muted-foreground">Avg. Duration</p>
                 <p className="text-2xl font-bold">
-                  {Math.round(assignments.reduce((sum, a) => sum + calculateDuration(a.assignedDate, a.actualVacate), 0) / assignments.length)} days
+                  {assignments.length > 0 ? Math.round(assignments.reduce((sum, a) => sum + calculateDuration(a.assignedDate, a.actualVacate), 0) / assignments.length) : 0} days
                 </p>
               </div>
               <Clock className="h-5 w-5 text-muted-foreground" />
@@ -311,7 +264,11 @@ const AssignmentManagement = () => {
                         View
                       </Button>
                       {assignment.status === 'active' && (
-                        <Button size="sm" variant="outline">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => endAssignment(assignment.id)}
+                        >
                           End
                         </Button>
                       )}

@@ -5,15 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Plus, 
   Search, 
-  Filter, 
   Edit, 
   MapPin, 
   Users, 
   Wrench,
   DollarSign,
-  Building
+  Building,
+  Trash2
 } from "lucide-react";
 import {
   Select,
@@ -22,75 +21,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Room } from "@/types/stableRooms";
+import { useStableRoomsData } from "@/hooks/useStableRoomsData";
+import AddRoomDialog from "./dialogs/AddRoomDialog";
+import EditRoomDialog from "./dialogs/EditRoomDialog";
 
 const RoomManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [editingRoom, setEditingRoom] = useState<Room | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
-  // Mock data - in real implementation, this would come from a service
-  const rooms: Room[] = [
-    {
-      id: "1",
-      number: "A-01",
-      name: "Premium Stall Alpha",
-      type: "stall",
-      status: "occupied",
-      capacity: 1,
-      currentOccupancy: 1,
-      size: { length: 4, width: 4, unit: "m" },
-      location: { building: "Building A", section: "North Wing" },
-      features: ["Automatic waterer", "Rubber matting", "Hay feeder"],
-      amenities: ["Climate control", "CCTV"],
-      assignedTo: {
-        type: "horse",
-        entityId: "h1",
-        entityName: "Thunder",
-        assignedDate: new Date("2024-01-15")
-      },
-      pricing: { dailyRate: 50, monthlyRate: 1400, currency: "USD" },
-      createdAt: new Date("2024-01-01"),
-      updatedAt: new Date("2024-01-15")
-    },
-    {
-      id: "2",
-      number: "A-02",
-      name: "Standard Stall",
-      type: "stall",
-      status: "available",
-      capacity: 1,
-      currentOccupancy: 0,
-      size: { length: 3.5, width: 3.5, unit: "m" },
-      location: { building: "Building A", section: "North Wing" },
-      features: ["Manual waterer", "Straw bedding"],
-      amenities: [],
-      pricing: { dailyRate: 35, monthlyRate: 980, currency: "USD" },
-      createdAt: new Date("2024-01-01"),
-      updatedAt: new Date("2024-01-01")
-    },
-    {
-      id: "3",
-      number: "W-01",
-      name: "Feed Storage Warehouse",
-      type: "warehouse",
-      status: "occupied",
-      capacity: 100,
-      currentOccupancy: 75,
-      size: { length: 20, width: 15, height: 5, unit: "m" },
-      location: { building: "Warehouse Complex", section: "Central" },
-      features: ["Climate controlled", "Pest control", "Loading dock"],
-      amenities: ["Forklift access", "Inventory system"],
-      assignedTo: {
-        type: "supplies",
-        entityId: "s1",
-        entityName: "Horse Feed & Bedding",
-        assignedDate: new Date("2024-01-01")
-      },
-      createdAt: new Date("2024-01-01"),
-      updatedAt: new Date("2024-01-05")
-    }
-  ];
+  const { rooms, addRoom, updateRoom, deleteRoom, getRoomOccupancyStats } = useStableRoomsData();
 
   const filteredRooms = rooms.filter(room => {
     const matchesSearch = room.number.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -100,6 +54,8 @@ const RoomManagement = () => {
     
     return matchesSearch && matchesType && matchesStatus;
   });
+
+  const stats = getRoomOccupancyStats();
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -113,16 +69,16 @@ const RoomManagement = () => {
   };
 
   const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'stall':
-      case 'paddock':
-        return <Building className="h-4 w-4" />;
-      case 'warehouse':
-      case 'feed_storage':
-        return <Building className="h-4 w-4" />;
-      default:
-        return <Building className="h-4 w-4" />;
-    }
+    return <Building className="h-4 w-4" />;
+  };
+
+  const handleEditRoom = (room: Room) => {
+    setEditingRoom(room);
+    setEditDialogOpen(true);
+  };
+
+  const handleDeleteRoom = (roomId: string) => {
+    deleteRoom(roomId);
   };
 
   return (
@@ -133,10 +89,55 @@ const RoomManagement = () => {
           <h2 className="text-2xl font-bold">Room Management</h2>
           <p className="text-muted-foreground">Manage stalls, paddocks, and storage facilities</p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add New Room
-        </Button>
+        <AddRoomDialog onAddRoom={addRoom} />
+      </div>
+
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Total Rooms</p>
+                <p className="text-2xl font-bold">{stats.totalRooms}</p>
+              </div>
+              <Building className="h-5 w-5 text-muted-foreground" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Occupied</p>
+                <p className="text-2xl font-bold">{stats.occupiedRooms}</p>
+              </div>
+              <div className="w-3 h-3 rounded-full bg-blue-500" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Available</p>
+                <p className="text-2xl font-bold">{stats.availableRooms}</p>
+              </div>
+              <div className="w-3 h-3 rounded-full bg-green-500" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Occupancy Rate</p>
+                <p className="text-2xl font-bold">{stats.occupancyRate}%</p>
+              </div>
+              <Users className="h-5 w-5 text-muted-foreground" />
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Filters */}
@@ -251,13 +252,34 @@ const RoomManagement = () => {
 
               {/* Actions */}
               <div className="flex gap-2 pt-2">
-                <Button size="sm" variant="outline" className="flex-1">
+                <Button size="sm" variant="outline" className="flex-1" onClick={() => handleEditRoom(room)}>
                   <Edit className="mr-2 h-4 w-4" />
                   Edit
                 </Button>
                 <Button size="sm" variant="outline">
                   <Wrench className="h-4 w-4" />
                 </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button size="sm" variant="outline">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Room</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete room {room.number}? This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleDeleteRoom(room.id)}>
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </CardContent>
           </Card>
@@ -275,6 +297,14 @@ const RoomManagement = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* Edit Room Dialog */}
+      <EditRoomDialog
+        room={editingRoom}
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        onUpdateRoom={updateRoom}
+      />
     </div>
   );
 };
