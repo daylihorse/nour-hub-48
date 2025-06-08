@@ -1,5 +1,6 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import HorsesDashboard from "@/components/horses/HorsesDashboard";
 import HorseManagement from "@/components/horses/HorseManagement";
@@ -9,8 +10,22 @@ import IntegrationDashboard from "@/components/integration/IntegrationDashboard"
 import AutomationRulesPanel from "@/components/integration/AutomationRulesPanel";
 
 const HorsesDepartment = () => {
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [breedingSubTab, setBreedingSubTab] = useState("dashboard");
+
+  // Handle navigation state from other components
+  useEffect(() => {
+    if (location.state) {
+      const { activeTab: stateActiveTab, breedingSubTab: stateBreedingSubTab } = location.state;
+      if (stateActiveTab) {
+        setActiveTab(stateActiveTab);
+      }
+      if (stateBreedingSubTab) {
+        setBreedingSubTab(stateBreedingSubTab);
+      }
+    }
+  }, [location.state]);
 
   const handleNavigateToBreeding = (tab: string) => {
     setActiveTab("breeding");

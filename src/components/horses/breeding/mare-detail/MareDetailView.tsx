@@ -38,7 +38,13 @@ const MareDetailView = () => {
   };
 
   const handleBackToMares = () => {
-    navigate("/dashboard/horses", { state: { activeTab: "breeding" } });
+    // Navigate back to horses department and switch to breeding tab, then mares sub-tab
+    navigate("/dashboard/horses", { 
+      state: { 
+        activeTab: "breeding",
+        breedingSubTab: "mares"
+      } 
+    });
   };
 
   const openActionDialog = (type: 'checkup' | 'breeding' | 'health' | 'birth', title: string) => {
