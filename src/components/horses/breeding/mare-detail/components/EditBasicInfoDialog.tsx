@@ -2,11 +2,11 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
 import { Save, X } from "lucide-react";
+import IdentificationSection from "./form-sections/IdentificationSection";
+import PhysicalCharacteristicsSection from "./form-sections/PhysicalCharacteristicsSection";
+import PedigreeSection from "./form-sections/PedigreeSection";
+import OwnershipLocationSection from "./form-sections/OwnershipLocationSection";
 
 interface EditBasicInfoDialogProps {
   isOpen: boolean;
@@ -60,172 +60,25 @@ const EditBasicInfoDialog = ({ isOpen, onClose, mareId }: EditBasicInfoDialogPro
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Identification Section */}
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-lg font-medium mb-4">Identification</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="registrationNumber">Registration Number</Label>
-                  <Input
-                    id="registrationNumber"
-                    value={formData.registrationNumber}
-                    onChange={(e) => handleInputChange('registrationNumber', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="microchipId">Microchip ID</Label>
-                  <Input
-                    id="microchipId"
-                    value={formData.microchipId}
-                    onChange={(e) => handleInputChange('microchipId', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="passportNumber">Passport Number</Label>
-                  <Input
-                    id="passportNumber"
-                    value={formData.passportNumber}
-                    onChange={(e) => handleInputChange('passportNumber', e.target.value)}
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Physical Characteristics Section */}
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-lg font-medium mb-4">Physical Characteristics</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="birthDate">Birth Date</Label>
-                  <Input
-                    id="birthDate"
-                    type="date"
-                    value={formData.birthDate}
-                    onChange={(e) => handleInputChange('birthDate', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="color">Color</Label>
-                  <Select value={formData.color} onValueChange={(value) => handleInputChange('color', value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Bay">Bay</SelectItem>
-                      <SelectItem value="Chestnut">Chestnut</SelectItem>
-                      <SelectItem value="Black">Black</SelectItem>
-                      <SelectItem value="Grey">Grey</SelectItem>
-                      <SelectItem value="Brown">Brown</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="height">Height (hands)</Label>
-                  <Input
-                    id="height"
-                    value={formData.height}
-                    onChange={(e) => handleInputChange('height', e.target.value)}
-                    placeholder="15.2"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="weight">Weight (kg)</Label>
-                  <Input
-                    id="weight"
-                    value={formData.weight}
-                    onChange={(e) => handleInputChange('weight', e.target.value)}
-                    placeholder="450"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Pedigree Section */}
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-lg font-medium mb-4">Pedigree Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="sire">Sire</Label>
-                  <Input
-                    id="sire"
-                    value={formData.sire}
-                    onChange={(e) => handleInputChange('sire', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="dam">Dam</Label>
-                  <Input
-                    id="dam"
-                    value={formData.dam}
-                    onChange={(e) => handleInputChange('dam', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="bloodlineOrigin">Bloodline Origin</Label>
-                  <Input
-                    id="bloodlineOrigin"
-                    value={formData.bloodlineOrigin}
-                    onChange={(e) => handleInputChange('bloodlineOrigin', e.target.value)}
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Ownership & Location Section */}
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-lg font-medium mb-4">Ownership & Location</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="owner">Owner</Label>
-                  <Input
-                    id="owner"
-                    value={formData.owner}
-                    onChange={(e) => handleInputChange('owner', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="location">Current Location</Label>
-                  <Input
-                    id="location"
-                    value={formData.location}
-                    onChange={(e) => handleInputChange('location', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="insuranceValue">Insurance Value ($)</Label>
-                  <Input
-                    id="insuranceValue"
-                    value={formData.insuranceValue}
-                    onChange={(e) => handleInputChange('insuranceValue', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="acquisitionDate">Acquisition Date</Label>
-                  <Input
-                    id="acquisitionDate"
-                    type="date"
-                    value={formData.acquisitionDate}
-                    onChange={(e) => handleInputChange('acquisitionDate', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="acquisitionPrice">Acquisition Price ($)</Label>
-                  <Input
-                    id="acquisitionPrice"
-                    value={formData.acquisitionPrice}
-                    onChange={(e) => handleInputChange('acquisitionPrice', e.target.value)}
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <IdentificationSection 
+            formData={formData} 
+            onInputChange={handleInputChange} 
+          />
+          
+          <PhysicalCharacteristicsSection 
+            formData={formData} 
+            onInputChange={handleInputChange} 
+          />
+          
+          <PedigreeSection 
+            formData={formData} 
+            onInputChange={handleInputChange} 
+          />
+          
+          <OwnershipLocationSection 
+            formData={formData} 
+            onInputChange={handleInputChange} 
+          />
 
           {/* Action Buttons */}
           <div className="flex justify-end gap-3 pt-4 border-t">
