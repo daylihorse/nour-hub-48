@@ -82,7 +82,7 @@ const AddRoomDialog = ({ onAddRoom }: AddRoomDialogProps) => {
   };
 
   return (
-    <Dialog open={open} onValueChange={setOpen}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
