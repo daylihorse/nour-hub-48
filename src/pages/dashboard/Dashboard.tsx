@@ -16,7 +16,7 @@ import {
   MessageSquare,
   TrendingUp,
   AlertTriangle,
-  Pills
+  Pill
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -48,7 +48,7 @@ const Dashboard = () => {
     },
     {
       title: "Pharmacy",
-      icon: Pills,
+      icon: Pill,
       description: "Veterinary pharmacy, prescriptions, and medication management",
       link: "/dashboard/pharmacy",
       color: "bg-teal-500",
