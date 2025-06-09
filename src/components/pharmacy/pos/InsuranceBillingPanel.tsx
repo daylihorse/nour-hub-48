@@ -6,16 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { CartItem } from "@/types/store";
+import { Switch } from "@/components/ui/switch";
 import { PharmacyClient, InsuranceInfo } from "@/types/pharmacyPOS";
-import { 
-  Shield, 
-  CreditCard, 
-  CheckCircle, 
-  AlertTriangle,
-  FileText,
-  Calculator
-} from "lucide-react";
+import { CartItem } from "@/types/store";
+import { Shield, DollarSign, FileText, CheckCircle, AlertCircle } from "lucide-react";
 
 interface InsuranceBillingPanelProps {
   client?: PharmacyClient;
@@ -30,240 +24,227 @@ const InsuranceBillingPanel = ({
   onInsuranceUpdate, 
   onProcessClaim 
 }: InsuranceBillingPanelProps) => {
-  const [insuranceForm, setInsuranceForm] = useState<Partial<InsuranceInfo>>({
-    provider: client?.insuranceInfo?.provider || "",
-    policyNumber: client?.insuranceInfo?.policyNumber || "",
-    groupNumber: client?.insuranceInfo?.groupNumber || "",
-    copayAmount: client?.insuranceInfo?.copayAmount || 0,
-    coveragePercentage: client?.insuranceInfo?.coveragePercentage || 80,
-    deductibleMet: client?.insuranceInfo?.deductibleMet || false,
-    preAuthRequired: client?.insuranceInfo?.preAuthRequired || false,
-  });
+  const [insuranceInfo, setInsuranceInfo] = useState<InsuranceInfo>(
+    client?.insuranceInfo || {
+      provider: "",
+      policyNumber: "",
+      groupNumber: "",
+      copayAmount: 0,
+      deductibleMet: false,
+      coveragePercentage: 80,
+      preAuthRequired: false
+    }
+  );
 
-  const cartTotal = cart.reduce((sum, item) => sum + item.totalPrice, 0);
-  const insuranceCoverage = cartTotal * (insuranceForm.coveragePercentage || 0) / 100;
-  const patientResponsibility = cartTotal - insuranceCoverage + (insuranceForm.copayAmount || 0);
+  const [isEditingInsurance, setIsEditingInsurance] = useState(false);
+  const [claimStatus, setClaimStatus] = useState<'pending' | 'approved' | 'denied' | null>(null);
 
-  const handleFormChange = (field: keyof InsuranceInfo, value: any) => {
-    const updated = { ...insuranceForm, [field]: value };
-    setInsuranceForm(updated);
-    onInsuranceUpdate(updated as InsuranceInfo);
+  const subtotal = cart.reduce((sum, item) => sum + item.totalPrice, 0);
+  const coveredAmount = subtotal * (insuranceInfo.coveragePercentage / 100);
+  const patientAmount = subtotal - coveredAmount + (insuranceInfo.copayAmount || 0);
+
+  const handleInsuranceInfoChange = (field: keyof InsuranceInfo, value: any) => {
+    const updated = { ...insuranceInfo, [field]: value };
+    setInsuranceInfo(updated);
+    onInsuranceUpdate(updated);
   };
 
-  const handleProcessClaim = () => {
+  const handleSubmitClaim = async () => {
     if (!client || cart.length === 0) return;
 
     const claimData = {
       clientId: client.id,
-      insuranceInfo: insuranceForm,
+      clientName: client.name,
+      insuranceInfo,
       items: cart,
-      totalAmount: cartTotal,
-      coveredAmount: insuranceCoverage,
-      patientAmount: patientResponsibility,
+      subtotal,
+      coveredAmount,
+      patientAmount,
+      claimDate: new Date(),
+      status: 'pending'
     };
 
-    onProcessClaim(claimData);
+    setClaimStatus('pending');
+    
+    // Simulate claim processing
+    setTimeout(() => {
+      setClaimStatus('approved');
+      onProcessClaim(claimData);
+    }, 2000);
   };
 
   return (
     <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-semibold flex items-center gap-2">
-          <Shield className="h-5 w-5" />
-          Insurance Billing
-        </h3>
-        <p className="text-muted-foreground">
-          Process insurance claims and manage billing
-        </p>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="h-5 w-5" />
+            Insurance Billing
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {!client ? (
+            <div className="text-center py-8">
+              <Shield className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <p className="text-muted-foreground">Select a client to manage insurance billing</p>
+            </div>
+          ) : (
+            <>
+              <div className="flex justify-between items-center">
+                <h4 className="font-medium">Insurance Information - {client.name}</h4>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsEditingInsurance(!isEditingInsurance)}
+                >
+                  {isEditingInsurance ? "Save" : "Edit"}
+                </Button>
+              </div>
 
-      {!client && (
-        <Card>
-          <CardContent className="text-center py-8">
-            <Shield className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">
-              Please select a client to process insurance billing
-            </p>
-          </CardContent>
-        </Card>
-      )}
-
-      {client && (
-        <>
-          {/* Client Insurance Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                Insurance Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="provider">Insurance Provider</Label>
+                  <Label>Insurance Provider</Label>
                   <Input
-                    id="provider"
-                    value={insuranceForm.provider}
-                    onChange={(e) => handleFormChange('provider', e.target.value)}
-                    placeholder="Enter insurance provider"
+                    value={insuranceInfo.provider}
+                    onChange={(e) => handleInsuranceInfoChange('provider', e.target.value)}
+                    disabled={!isEditingInsurance}
+                    placeholder="Enter provider name"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="policy">Policy Number</Label>
+                  <Label>Policy Number</Label>
                   <Input
-                    id="policy"
-                    value={insuranceForm.policyNumber}
-                    onChange={(e) => handleFormChange('policyNumber', e.target.value)}
+                    value={insuranceInfo.policyNumber}
+                    onChange={(e) => handleInsuranceInfoChange('policyNumber', e.target.value)}
+                    disabled={!isEditingInsurance}
                     placeholder="Enter policy number"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="group">Group Number</Label>
+                  <Label>Group Number</Label>
                   <Input
-                    id="group"
-                    value={insuranceForm.groupNumber}
-                    onChange={(e) => handleFormChange('groupNumber', e.target.value)}
+                    value={insuranceInfo.groupNumber || ""}
+                    onChange={(e) => handleInsuranceInfoChange('groupNumber', e.target.value)}
+                    disabled={!isEditingInsurance}
                     placeholder="Enter group number"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="copay">Copay Amount ($)</Label>
+                  <Label>Coverage Percentage</Label>
                   <Input
-                    id="copay"
                     type="number"
-                    value={insuranceForm.copayAmount}
-                    onChange={(e) => handleFormChange('copayAmount', parseFloat(e.target.value) || 0)}
-                    placeholder="0.00"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="coverage">Coverage Percentage (%)</Label>
-                  <Input
-                    id="coverage"
-                    type="number"
-                    value={insuranceForm.coveragePercentage}
-                    onChange={(e) => handleFormChange('coveragePercentage', parseFloat(e.target.value) || 0)}
-                    placeholder="80"
+                    value={insuranceInfo.coveragePercentage}
+                    onChange={(e) => handleInsuranceInfoChange('coveragePercentage', parseInt(e.target.value))}
+                    disabled={!isEditingInsurance}
+                    min="0"
                     max="100"
                   />
                 </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={insuranceForm.deductibleMet}
-                    onChange={(e) => handleFormChange('deductibleMet', e.target.checked)}
-                  />
-                  <span className="text-sm">Deductible Met</span>
-                </label>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={insuranceForm.preAuthRequired}
-                    onChange={(e) => handleFormChange('preAuthRequired', e.target.checked)}
-                  />
-                  <span className="text-sm">Pre-authorization Required</span>
-                </label>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Coverage Calculation */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calculator className="h-5 w-5" />
-                Coverage Calculation
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {cart.length === 0 ? (
-                <p className="text-muted-foreground text-center py-4">
-                  Add items to cart to calculate coverage
-                </p>
-              ) : (
-                <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span>Total Amount:</span>
-                    <span>${cartTotal.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Insurance Coverage ({insuranceForm.coveragePercentage}%):</span>
-                    <span className="text-green-600">-${insuranceCoverage.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Copay:</span>
-                    <span>${(insuranceForm.copayAmount || 0).toFixed(2)}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between font-bold">
-                    <span>Patient Responsibility:</span>
-                    <span>${patientResponsibility.toFixed(2)}</span>
-                  </div>
-
-                  {insuranceForm.preAuthRequired && (
-                    <div className="p-3 bg-orange-50 border border-orange-200 rounded-md">
-                      <div className="flex items-center gap-2 text-orange-700">
-                        <AlertTriangle className="h-4 w-4" />
-                        <span className="text-sm font-medium">Pre-authorization Required</span>
-                      </div>
-                      <p className="text-sm text-orange-600">
-                        This claim requires pre-authorization before processing
-                      </p>
-                    </div>
-                  )}
-
-                  <Button 
-                    className="w-full" 
-                    onClick={handleProcessClaim}
-                    disabled={!insuranceForm.provider || !insuranceForm.policyNumber}
-                  >
-                    <CreditCard className="h-4 w-4 mr-2" />
-                    Process Insurance Claim
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Insurance Status */}
-          {client.insuranceInfo && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                  Current Insurance Status
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
                 <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-sm">Provider:</span>
-                    <Badge variant="outline">{client.insuranceInfo.provider}</Badge>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Policy:</span>
-                    <span className="text-sm font-mono">{client.insuranceInfo.policyNumber}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Coverage:</span>
-                    <span className="text-sm">{client.insuranceInfo.coveragePercentage}%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Deductible:</span>
-                    <Badge variant={client.insuranceInfo.deductibleMet ? "default" : "secondary"}>
-                      {client.insuranceInfo.deductibleMet ? "Met" : "Not Met"}
-                    </Badge>
-                  </div>
+                  <Label>Copay Amount</Label>
+                  <Input
+                    type="number"
+                    value={insuranceInfo.copayAmount || 0}
+                    onChange={(e) => handleInsuranceInfoChange('copayAmount', parseFloat(e.target.value))}
+                    disabled={!isEditingInsurance}
+                    min="0"
+                    step="0.01"
+                  />
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    checked={insuranceInfo.deductibleMet}
+                    onCheckedChange={(checked) => handleInsuranceInfoChange('deductibleMet', checked)}
+                    disabled={!isEditingInsurance}
+                  />
+                  <Label>Deductible Met</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    checked={insuranceInfo.preAuthRequired}
+                    onCheckedChange={(checked) => handleInsuranceInfoChange('preAuthRequired', checked)}
+                    disabled={!isEditingInsurance}
+                  />
+                  <Label>Pre-Authorization Required</Label>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-3">
+                <h4 className="font-medium flex items-center gap-2">
+                  <DollarSign className="h-4 w-4" />
+                  Billing Breakdown
+                </h4>
+                
+                {cart.length > 0 ? (
+                  <>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>Subtotal:</span>
+                        <span>${subtotal.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between text-green-600">
+                        <span>Insurance Coverage ({insuranceInfo.coveragePercentage}%):</span>
+                        <span>-${coveredAmount.toFixed(2)}</span>
+                      </div>
+                      {insuranceInfo.copayAmount && insuranceInfo.copayAmount > 0 && (
+                        <div className="flex justify-between">
+                          <span>Copay:</span>
+                          <span>${insuranceInfo.copayAmount.toFixed(2)}</span>
+                        </div>
+                      )}
+                      <Separator />
+                      <div className="flex justify-between font-medium">
+                        <span>Patient Responsibility:</span>
+                        <span>${patientAmount.toFixed(2)}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={handleSubmitClaim}
+                        disabled={!insuranceInfo.provider || !insuranceInfo.policyNumber || claimStatus === 'pending'}
+                        className="flex-1"
+                      >
+                        <FileText className="h-4 w-4 mr-2" />
+                        {claimStatus === 'pending' ? 'Processing...' : 'Submit Insurance Claim'}
+                      </Button>
+                    </div>
+
+                    {claimStatus && (
+                      <div className={`p-3 rounded-lg border ${
+                        claimStatus === 'approved' 
+                          ? 'border-green-200 bg-green-50' 
+                          : claimStatus === 'denied'
+                          ? 'border-red-200 bg-red-50'
+                          : 'border-yellow-200 bg-yellow-50'
+                      }`}>
+                        <div className="flex items-center gap-2">
+                          {claimStatus === 'approved' && <CheckCircle className="h-4 w-4 text-green-600" />}
+                          {claimStatus === 'denied' && <AlertCircle className="h-4 w-4 text-red-600" />}
+                          {claimStatus === 'pending' && <AlertCircle className="h-4 w-4 text-yellow-600" />}
+                          <span className="font-medium capitalize">{claimStatus}</span>
+                        </div>
+                        <p className="text-sm mt-1">
+                          {claimStatus === 'approved' && 'Insurance claim approved and submitted successfully.'}
+                          {claimStatus === 'denied' && 'Insurance claim was denied. Please review and resubmit.'}
+                          {claimStatus === 'pending' && 'Insurance claim is being processed...'}
+                        </p>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <p className="text-muted-foreground">Add items to cart to see billing breakdown</p>
+                )}
+              </div>
+            </>
           )}
-        </>
-      )}
+        </CardContent>
+      </Card>
     </div>
   );
 };
