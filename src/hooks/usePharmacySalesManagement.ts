@@ -40,7 +40,7 @@ export const usePharmacySalesManagement = () => {
         subtotal,
         tax,
         total,
-        paymentMethod: posState.paymentMethod,
+        paymentMethod: posState.paymentMethod as 'cash' | 'card' | 'bank_transfer',
         customerName: posState.client?.name,
         customerContact: posState.client?.email,
         saleDate: new Date(),
@@ -55,7 +55,14 @@ export const usePharmacySalesManagement = () => {
 
       // Process insurance claim if applicable
       if (posState.paymentMethod === 'insurance' && posState.insuranceInfo) {
-        await processInsuranceClaim(newSale, posState.insuranceInfo);
+        await processInsuranceClaim({
+          clientId: posState.client?.id,
+          insuranceInfo: posState.insuranceInfo,
+          items: posState.cart,
+          totalAmount: total,
+          coveredAmount: total * (posState.insuranceInfo.coveragePercentage / 100),
+          patientAmount: total - (total * (posState.insuranceInfo.coveragePercentage / 100)),
+        });
       }
 
       // Send pickup notification if it's a prescription
@@ -79,10 +86,9 @@ export const usePharmacySalesManagement = () => {
     }
   };
 
-  const processInsuranceClaim = async (sale: PharmacySale, insuranceInfo: any) => {
+  const processInsuranceClaim = async (claimData: any) => {
     // Mock insurance claim processing
-    console.log('Processing insurance claim for sale:', sale.id);
-    console.log('Insurance info:', insuranceInfo);
+    console.log('Processing insurance claim:', claimData);
     
     toast({
       title: "Insurance Claim Submitted",

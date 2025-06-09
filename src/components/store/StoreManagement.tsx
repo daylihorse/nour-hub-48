@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Package, Wrench, BarChart3, CreditCard, Pills } from "lucide-react";
+import { Plus, Package, Wrench, BarChart3, CreditCard, Pill } from "lucide-react";
 import StoreProductManagement from "./StoreProductManagement";
 import StoreServiceManagement from "./StoreServiceManagement";
 import StoreSalesReport from "./StoreSalesReport";
@@ -37,7 +37,7 @@ const StoreManagement = ({ department, departmentName }: StoreManagementProps) =
             Services
           </TabsTrigger>
           <TabsTrigger value="pos" className="flex items-center gap-2">
-            {isPharmacy ? <Pills className="h-4 w-4" /> : <CreditCard className="h-4 w-4" />}
+            {isPharmacy ? <Pill className="h-4 w-4" /> : <CreditCard className="h-4 w-4" />}
             {isPharmacy ? "Pharmacy POS" : "Point of Sale"}
           </TabsTrigger>
           <TabsTrigger value="reports" className="flex items-center gap-2">

@@ -83,7 +83,7 @@ export const usePharmacyCartManagement = () => {
 
   const validatePrescriptionItems = () => {
     const prescriptionItems = cart.filter(item => 
-      item.type === 'product' && (item.item as PharmacyItem).requiresPrescription
+      item.type === 'product' && (item.item as any).requiresPrescription
     );
     
     return prescriptionItems.length === 0 || prescriptionItems.every(item => {

@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { 
   ShoppingCart, 
   FileText, 
-  Pills, 
+  Pill, 
   Users,
   CreditCard,
   AlertTriangle,
@@ -76,6 +76,10 @@ const PharmacyPOSSystem = () => {
     }
   };
 
+  const handleProcessClaim = (claimData: any) => {
+    processInsuranceClaim(claimData);
+  };
+
   const getTotalItems = () => cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
@@ -121,7 +125,7 @@ const PharmacyPOSSystem = () => {
             Insurance
           </TabsTrigger>
           <TabsTrigger value="consultation" className="flex items-center gap-2">
-            <Pills className="h-4 w-4" />
+            <Pill className="h-4 w-4" />
             Consultation
           </TabsTrigger>
         </TabsList>
@@ -175,7 +179,7 @@ const PharmacyPOSSystem = () => {
             client={posState.client}
             cart={cart}
             onInsuranceUpdate={(insuranceInfo) => handleStateChange({ insuranceInfo })}
-            onProcessClaim={processInsuranceClaim}
+            onProcessClaim={handleProcessClaim}
           />
         </TabsContent>
 
@@ -183,7 +187,7 @@ const PharmacyPOSSystem = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Pills className="h-5 w-5" />
+                <Pill className="h-5 w-5" />
                 Pharmacy Consultation
               </CardTitle>
             </CardHeader>
