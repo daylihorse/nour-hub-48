@@ -1,5 +1,5 @@
 
-import { memo, useMemo, useCallback } from 'react';
+import { memo, useMemo, useCallback, useRef, useEffect } from 'react';
 
 // Memoization utility for expensive calculations
 export const createMemoizedCalculation = <T, R>(
