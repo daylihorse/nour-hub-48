@@ -105,9 +105,10 @@ const menuItems = [
 ];
 
 const DashboardSidebar = () => {
-  const { collapsed } = useSidebar();
+  const { state } = useSidebar();
   const location = useLocation();
   const currentPath = location.pathname;
+  const collapsed = state === "collapsed";
 
   const isActive = (path: string) => {
     if (path === "/dashboard") {
@@ -117,7 +118,7 @@ const DashboardSidebar = () => {
   };
 
   return (
-    <Sidebar className={collapsed ? "w-14" : "w-60"} collapsible>
+    <Sidebar className={collapsed ? "w-14" : "w-60"} collapsible="icon">
       {/* Header with notification dropdown */}
       <div className="p-4 border-b flex items-center justify-between">
         {!collapsed && (
