@@ -7,12 +7,12 @@ import { Outlet } from "react-router-dom";
 const DashboardLayout = () => {
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex flex-col w-full bg-background">
         {/* Global Header - Fixed at top */}
         <GlobalHeader />
         
         {/* Main Layout Container */}
-        <div className="flex flex-1 pt-14">
+        <div className="flex flex-1">
           {/* Sidebar */}
           <DashboardSidebar />
           
