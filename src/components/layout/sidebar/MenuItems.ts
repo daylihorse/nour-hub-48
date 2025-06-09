@@ -14,6 +14,7 @@ import {
   MessageSquare,
   Pill,
   BarChart3,
+  UserCheck,
   LucideIcon
 } from "lucide-react";
 
@@ -33,6 +34,11 @@ export const menuItems: MenuItem[] = [
     title: "Horses Department", 
     url: "/dashboard/horses", 
     icon: Rabbit 
+  },
+  { 
+    title: "Clients", 
+    url: "/dashboard/clients", 
+    icon: UserCheck 
   },
   { 
     title: "Laboratory", 
