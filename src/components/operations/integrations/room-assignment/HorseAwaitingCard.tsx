@@ -2,7 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Horse, MapPin, Clock } from "lucide-react";
+import { Heart, MapPin, Clock } from "lucide-react";
 
 interface HorseAwaitingCardProps {
   horse: {
@@ -23,7 +23,7 @@ const HorseAwaitingCard = ({ horse, recommendedRoom, onAssignRoom }: HorseAwaiti
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Horse className="h-5 w-5 text-blue-500" />
+            <Heart className="h-5 w-5 text-blue-500" />
             <div>
               <h4 className="font-medium">{horse.name}</h4>
               <p className="text-sm text-muted-foreground">

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Horse, Warehouse, DollarSign, Package, CreditCard } from "lucide-react";
+import { Heart, Warehouse, DollarSign, Package, CreditCard } from "lucide-react";
 
 interface RoomAssignmentDialogProps {
   isOpen: boolean;
@@ -66,7 +66,7 @@ const RoomAssignmentDialog = ({
                 {horses.map(horse => (
                   <SelectItem key={horse.id} value={horse.id}>
                     <div className="flex items-center gap-2">
-                      <Horse className="h-4 w-4" />
+                      <Heart className="h-4 w-4" />
                       {horse.name} ({horse.breed})
                     </div>
                   </SelectItem>
