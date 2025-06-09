@@ -5,6 +5,7 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   useSidebar,
 } from "@/components/ui/sidebar";
 import {
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/tooltip";
 import SidebarMenu from "./sidebar/SidebarMenu";
 import SidebarFooter from "./sidebar/SidebarFooter";
+import DashboardSidebarHeader from "./sidebar/DashboardSidebarHeader";
 
 const DashboardSidebar = () => {
   const { state } = useSidebar();
@@ -20,6 +22,10 @@ const DashboardSidebar = () => {
   return (
     <TooltipProvider>
       <Sidebar className={collapsed ? "w-16" : "w-64"} collapsible="icon">
+        <SidebarHeader>
+          <DashboardSidebarHeader />
+        </SidebarHeader>
+
         <SidebarContent className="overflow-y-auto">
           <SidebarGroup>
             <SidebarGroupLabel className={collapsed ? "sr-only" : ""}>

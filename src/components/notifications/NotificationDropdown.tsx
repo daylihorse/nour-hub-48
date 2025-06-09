@@ -10,10 +10,13 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { useNotifications } from '@/hooks/useNotifications';
 import NotificationPanel from './NotificationPanel';
+import { useSidebar } from '@/components/ui/sidebar';
 
 const NotificationDropdown = () => {
   const { counts } = useNotifications();
   const [isOpen, setIsOpen] = useState(false);
+  const { state } = useSidebar();
+  const collapsed = state === "collapsed";
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -55,6 +58,7 @@ const NotificationDropdown = () => {
         align="end" 
         className="w-96 p-0 bg-background border shadow-lg z-50"
         sideOffset={8}
+        side={collapsed ? "right" : "bottom"}
       >
         <NotificationPanel onClose={() => setIsOpen(false)} />
       </DropdownMenuContent>
