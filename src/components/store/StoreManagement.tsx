@@ -3,11 +3,12 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Package, Wrench, BarChart3, CreditCard } from "lucide-react";
+import { Plus, Package, Wrench, BarChart3, CreditCard, Pills } from "lucide-react";
 import StoreProductManagement from "./StoreProductManagement";
 import StoreServiceManagement from "./StoreServiceManagement";
 import StoreSalesReport from "./StoreSalesReport";
 import POSSystem from "../pos/POSSystem";
+import PharmacyPOSSystem from "../pharmacy/pos/PharmacyPOSSystem";
 
 interface StoreManagementProps {
   department: string;
@@ -16,6 +17,7 @@ interface StoreManagementProps {
 
 const StoreManagement = ({ department, departmentName }: StoreManagementProps) => {
   const [activeTab, setActiveTab] = useState("products");
+  const isPharmacy = department === "pharmacy";
 
   return (
     <div className="space-y-6">
@@ -35,8 +37,8 @@ const StoreManagement = ({ department, departmentName }: StoreManagementProps) =
             Services
           </TabsTrigger>
           <TabsTrigger value="pos" className="flex items-center gap-2">
-            <CreditCard className="h-4 w-4" />
-            Point of Sale
+            {isPharmacy ? <Pills className="h-4 w-4" /> : <CreditCard className="h-4 w-4" />}
+            {isPharmacy ? "Pharmacy POS" : "Point of Sale"}
           </TabsTrigger>
           <TabsTrigger value="reports" className="flex items-center gap-2">
             <BarChart3 className="h-4 w-4" />
@@ -53,7 +55,11 @@ const StoreManagement = ({ department, departmentName }: StoreManagementProps) =
         </TabsContent>
 
         <TabsContent value="pos" className="mt-6">
-          <POSSystem department={department} />
+          {isPharmacy ? (
+            <PharmacyPOSSystem />
+          ) : (
+            <POSSystem department={department} />
+          )}
         </TabsContent>
 
         <TabsContent value="reports" className="mt-6">
