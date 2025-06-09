@@ -1,162 +1,158 @@
 
-import { useLocation } from "react-router-dom";
-import { NavLink } from "react-router-dom";
-import {
-  House,
-  FlaskRound,
-  Hospital,
-  DollarSign,
-  Users,
-  Package,
-  ArrowRight,
-  ArrowLeft,
-  Dumbbell,
-  Warehouse,
-  Wrench,
-  User,
-  MessageSquare,
-  Store,
-  Home,
-  Settings,
-  Pill,
-} from "lucide-react";
-
+import { useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
-  SidebarHeader,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuItem,
   SidebarMenuButton,
+  SidebarMenuItem,
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
+import NotificationDropdown from "@/components/notifications/NotificationDropdown";
+import { 
+  Rabbit, 
+  FlaskRound, 
+  Hospital, 
+  DollarSign, 
+  Users, 
+  Package, 
+  ArrowRightLeft, 
+  Dumbbell, 
+  Warehouse, 
+  Wrench,
+  Store,
+  MessageSquare,
+  Pill,
+  BarChart3
+} from "lucide-react";
 
-// Explicit type definitions for icons
-type IconComponent = React.ComponentType<{ className?: string }>;
-type CustomIconRenderer = (props: { className?: string }) => React.ReactNode;
-
-// Department structure
-interface Department {
-  title: string;
-  path: string;
-  icon: IconComponent | CustomIconRenderer;
-}
-
-const departments: Department[] = [
-  { title: "Home", path: "/dashboard", icon: Home },
-  { title: "Unified Operations", path: "/dashboard/operations", icon: Settings },
-  { title: "Horses Department", path: "/dashboard/horses", icon: House },
-  { title: "Laboratory", path: "/dashboard/laboratory", icon: FlaskRound },
-  { title: "Clinic", path: "/dashboard/clinic", icon: Hospital },
-  { title: "Pharmacy", path: "/dashboard/pharmacy", icon: Pill },
-  { title: "Finance", path: "/dashboard/finance", icon: DollarSign },
-  { title: "Clients", path: "/dashboard/clients", icon: Users },
-  { title: "Messages", path: "/dashboard/messages", icon: MessageSquare },
-  { title: "HR Department", path: "/dashboard/hr", icon: Users },
-  { title: "Inventory", path: "/dashboard/inventory", icon: Package },
-  { title: "Marketplace", path: "/dashboard/marketplace", icon: Store },
+const menuItems = [
   { 
-    title: "Arrivals & Departures", 
-    path: "/dashboard/movements", 
-    icon: (props) => (
-      <div className="flex" {...props}>
-        <ArrowRight className="h-6 w-6 mr-1" />
-        <ArrowLeft className="h-6 w-6" />
-      </div>
-    )
+    title: "Dashboard", 
+    url: "/dashboard", 
+    icon: BarChart3 
   },
-  { title: "Training Center", path: "/dashboard/training", icon: Dumbbell },
-  { title: "Stable Rooms", path: "/dashboard/rooms", icon: Warehouse },
-  { title: "Maintenance", path: "/dashboard/maintenance", icon: Wrench },
+  { 
+    title: "Horses Department", 
+    url: "/dashboard/horses", 
+    icon: Rabbit 
+  },
+  { 
+    title: "Laboratory", 
+    url: "/dashboard/laboratory", 
+    icon: FlaskRound 
+  },
+  { 
+    title: "Clinic", 
+    url: "/dashboard/clinic", 
+    icon: Hospital 
+  },
+  { 
+    title: "Pharmacy", 
+    url: "/dashboard/pharmacy", 
+    icon: Pill 
+  },
+  { 
+    title: "Finance", 
+    url: "/dashboard/finance", 
+    icon: DollarSign 
+  },
+  { 
+    title: "HR Department", 
+    url: "/dashboard/hr", 
+    icon: Users 
+  },
+  { 
+    title: "Inventory", 
+    url: "/dashboard/inventory", 
+    icon: Package 
+  },
+  { 
+    title: "Marketplace", 
+    url: "/dashboard/marketplace", 
+    icon: Store 
+  },
+  { 
+    title: "Horse Movements", 
+    url: "/dashboard/movements", 
+    icon: ArrowRightLeft 
+  },
+  { 
+    title: "Training Center", 
+    url: "/dashboard/training", 
+    icon: Dumbbell 
+  },
+  { 
+    title: "Stable Rooms", 
+    url: "/dashboard/rooms", 
+    icon: Warehouse 
+  },
+  { 
+    title: "Maintenance", 
+    url: "/dashboard/maintenance", 
+    icon: Wrench 
+  },
+  { 
+    title: "Messages", 
+    url: "/dashboard/messages", 
+    icon: MessageSquare 
+  }
 ];
 
 const DashboardSidebar = () => {
-  const { state } = useSidebar();
+  const { collapsed } = useSidebar();
   const location = useLocation();
   const currentPath = location.pathname;
 
-  const isActive = (path: string) => currentPath.startsWith(path);
+  const isActive = (path: string) => {
+    if (path === "/dashboard") {
+      return currentPath === "/dashboard";
+    }
+    return currentPath.startsWith(path);
+  };
 
   return (
-    <Sidebar 
-      variant="sidebar" 
-      collapsible="icon"
-      className={state === "expanded" ? "w-64 shadow-md" : "w-[4rem] shadow-md"}
-    >
-      <SidebarHeader className="py-6 border-b border-sidebar-border">
-        <div className="flex items-center justify-between px-4">
-          {state === "expanded" && (
-            <h1 className="text-xl font-bold">Equus Manager</h1>
-          )}
-          <SidebarTrigger className="ml-auto" />
+    <Sidebar className={collapsed ? "w-14" : "w-60"} collapsible>
+      {/* Header with notification dropdown */}
+      <div className="p-4 border-b flex items-center justify-between">
+        {!collapsed && (
+          <h2 className="text-lg font-semibold">Stable Management</h2>
+        )}
+        <div className="flex items-center gap-2">
+          <NotificationDropdown />
+          <SidebarTrigger />
         </div>
-      </SidebarHeader>
+      </div>
 
-      <SidebarContent className="py-2">
+      <SidebarContent>
         <SidebarGroup>
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {departments.map((dept) => {
-                const active = isActive(dept.path);
-                
-                // Properly handle both icon types with explicit type checks
-                const renderIcon = () => {
-                  if (typeof dept.icon === 'function') {
-                    // Check if it's our custom renderer function by looking for React Component properties
-                    if (!('$$typeof' in dept.icon)) {
-                      // It's our custom renderer function
-                      return (dept.icon as CustomIconRenderer)({ className: "h-6 w-6" });
-                    } else {
-                      // It's a React component
-                      const IconComp = dept.icon as IconComponent;
-                      return <IconComp className="h-6 w-6" />;
-                    }
-                  } else {
-                    // For non-function icons (should be React components)
-                    const IconComp = dept.icon as IconComponent;
-                    return <IconComp className="h-6 w-6" />;
-                  }
-                };
-                
-                return (
-                  <SidebarMenuItem key={dept.path} className="px-3 py-1">
-                    <SidebarMenuButton 
-                      asChild 
-                      tooltip={state === "collapsed" ? dept.title : undefined}
-                      className="w-full"
+              {menuItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink
+                      to={item.url}
+                      className={({ isActive: navIsActive }) =>
+                        `flex items-center gap-2 ${
+                          navIsActive || isActive(item.url)
+                            ? "bg-muted text-primary font-medium"
+                            : "hover:bg-muted/50"
+                        }`
+                      }
                     >
-                      <NavLink 
-                        to={dept.path} 
-                        className={({ isActive }) => `
-                          flex items-center p-3 rounded-md font-medium transition-all duration-200
-                          ${isActive 
-                            ? 'bg-sidebar-accent text-sidebar-accent-foreground font-semibold' 
-                            : 'hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground'
-                          }
-                        `}
-                        end
-                      >
-                        <div className={`
-                          flex-shrink-0 transition-transform duration-200 mr-3
-                          ${active ? 'text-primary' : 'text-muted-foreground'}
-                          hover:scale-110
-                        `}>
-                          {renderIcon()}
-                        </div>
-                        
-                        {state === "expanded" && (
-                          <span className="flex-grow truncate">
-                            {dept.title}
-                          </span>
-                        )}
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
+                      <item.icon className="h-4 w-4" />
+                      {!collapsed && <span>{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
