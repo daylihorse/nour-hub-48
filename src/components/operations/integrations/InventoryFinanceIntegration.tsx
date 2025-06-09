@@ -4,154 +4,31 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Package, 
   DollarSign, 
-  TrendingUp, 
   AlertTriangle, 
-  CheckCircle,
   ShoppingCart,
-  FileText,
-  Calendar
+  FileText
 } from "lucide-react";
-
-interface InventoryItem {
-  id: string;
-  name: string;
-  category: string;
-  currentStock: number;
-  minimumStock: number;
-  unitCost: number;
-  totalValue: number;
-  supplier: string;
-  lastOrderDate: Date;
-  status: 'in_stock' | 'low_stock' | 'out_of_stock' | 'on_order';
-}
-
-interface PurchaseOrder {
-  id: string;
-  supplierId: string;
-  supplierName: string;
-  items: Array<{
-    itemId: string;
-    itemName: string;
-    quantity: number;
-    unitCost: number;
-    totalCost: number;
-  }>;
-  totalAmount: number;
-  status: 'draft' | 'sent' | 'approved' | 'delivered' | 'paid';
-  orderDate: Date;
-  expectedDelivery?: Date;
-  invoiceNumber?: string;
-}
+import { OperationsDataService } from "@/services/operations/operationsDataService";
+import { 
+  getInventoryStatusColor, 
+  getOrderStatusColor, 
+  calculateInventoryMetrics 
+} from "@/utils/operationsUtils";
 
 const InventoryFinanceIntegration = () => {
   const [selectedTab, setSelectedTab] = useState<'overview' | 'orders' | 'alerts'>('overview');
 
-  // Mock data
-  const inventoryItems: InventoryItem[] = [
-    {
-      id: '1',
-      name: 'Premium Horse Feed',
-      category: 'Feed',
-      currentStock: 15,
-      minimumStock: 50,
-      unitCost: 25.00,
-      totalValue: 375.00,
-      supplier: 'Feed Co.',
-      lastOrderDate: new Date('2024-01-15'),
-      status: 'low_stock'
-    },
-    {
-      id: '2',
-      name: 'Veterinary Syringes',
-      category: 'Medical',
-      currentStock: 0,
-      minimumStock: 100,
-      unitCost: 0.50,
-      totalValue: 0,
-      supplier: 'MedSupply Inc.',
-      lastOrderDate: new Date('2024-01-10'),
-      status: 'out_of_stock'
-    },
-    {
-      id: '3',
-      name: 'Grooming Brushes',
-      category: 'Equipment',
-      currentStock: 25,
-      minimumStock: 10,
-      unitCost: 15.00,
-      totalValue: 375.00,
-      supplier: 'Equine Tools',
-      lastOrderDate: new Date('2024-01-20'),
-      status: 'in_stock'
-    }
-  ];
+  // Use centralized data service
+  const inventoryItems = OperationsDataService.getMockInventoryItems();
+  const purchaseOrders = OperationsDataService.getMockPurchaseOrders();
 
-  const purchaseOrders: PurchaseOrder[] = [
-    {
-      id: 'PO-001',
-      supplierId: '1',
-      supplierName: 'Feed Co.',
-      items: [
-        {
-          itemId: '1',
-          itemName: 'Premium Horse Feed',
-          quantity: 100,
-          unitCost: 25.00,
-          totalCost: 2500.00
-        }
-      ],
-      totalAmount: 2500.00,
-      status: 'sent',
-      orderDate: new Date('2024-01-25'),
-      expectedDelivery: new Date('2024-02-01')
-    },
-    {
-      id: 'PO-002',
-      supplierId: '2',
-      supplierName: 'MedSupply Inc.',
-      items: [
-        {
-          itemId: '2',
-          itemName: 'Veterinary Syringes',
-          quantity: 500,
-          unitCost: 0.50,
-          totalCost: 250.00
-        }
-      ],
-      totalAmount: 250.00,
-      status: 'approved',
-      orderDate: new Date('2024-01-26'),
-      expectedDelivery: new Date('2024-01-30')
-    }
-  ];
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'in_stock': return 'text-green-600 bg-green-50';
-      case 'low_stock': return 'text-yellow-600 bg-yellow-50';
-      case 'out_of_stock': return 'text-red-600 bg-red-50';
-      case 'on_order': return 'text-blue-600 bg-blue-50';
-      default: return 'text-gray-600 bg-gray-50';
-    }
-  };
-
-  const getOrderStatusColor = (status: string) => {
-    switch (status) {
-      case 'delivered': return 'text-green-600 bg-green-50';
-      case 'approved': return 'text-blue-600 bg-blue-50';
-      case 'sent': return 'text-purple-600 bg-purple-50';
-      case 'paid': return 'text-green-600 bg-green-50';
-      default: return 'text-gray-600 bg-gray-50';
-    }
-  };
-
-  const totalInventoryValue = inventoryItems.reduce((sum, item) => sum + item.totalValue, 0);
-  const lowStockItems = inventoryItems.filter(item => item.status === 'low_stock' || item.status === 'out_of_stock');
+  const { totalValue, lowStockCount } = calculateInventoryMetrics(inventoryItems);
+  const lowStockItems = inventoryItems.filter(item => 
+    item.status === 'low_stock' || item.status === 'out_of_stock'
+  );
   const pendingOrderValue = purchaseOrders
     .filter(order => order.status !== 'paid')
     .reduce((sum, order) => sum + order.totalAmount, 0);
@@ -181,7 +58,7 @@ const InventoryFinanceIntegration = () => {
               <Package className="h-5 w-5 text-blue-500" />
               <div>
                 <p className="text-sm text-muted-foreground">Total Inventory Value</p>
-                <p className="text-xl font-bold">${totalInventoryValue.toFixed(2)}</p>
+                <p className="text-xl font-bold">${totalValue.toFixed(2)}</p>
               </div>
             </div>
           </CardContent>
@@ -193,7 +70,7 @@ const InventoryFinanceIntegration = () => {
               <AlertTriangle className="h-5 w-5 text-red-500" />
               <div>
                 <p className="text-sm text-muted-foreground">Low Stock Items</p>
-                <p className="text-xl font-bold">{lowStockItems.length}</p>
+                <p className="text-xl font-bold">{lowStockCount}</p>
               </div>
             </div>
           </CardContent>
@@ -276,7 +153,7 @@ const InventoryFinanceIntegration = () => {
                     <TableCell>${item.unitCost.toFixed(2)}</TableCell>
                     <TableCell>${item.totalValue.toFixed(2)}</TableCell>
                     <TableCell>
-                      <Badge className={getStatusColor(item.status)}>
+                      <Badge className={getInventoryStatusColor(item.status)}>
                         {item.status.replace('_', ' ')}
                       </Badge>
                     </TableCell>
