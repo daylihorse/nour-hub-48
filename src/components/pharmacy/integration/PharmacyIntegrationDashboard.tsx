@@ -8,10 +8,10 @@ import {
   CheckCircle,
   Clock,
   AlertTriangle,
-  Sync,
+  RefreshCw,
   Hospital,
   FlaskRound,
-  Horse
+  Zap
 } from "lucide-react";
 
 const PharmacyIntegrationDashboard = () => {
@@ -55,7 +55,7 @@ const PharmacyIntegrationDashboard = () => {
   const getTypeIcon = (type: string) => {
     switch (type) {
       case "clinic": return <Hospital className="h-4 w-4" />;
-      case "horse": return <Horse className="h-4 w-4" />;
+      case "horse": return <Zap className="h-4 w-4" />;
       case "laboratory": return <FlaskRound className="h-4 w-4" />;
       default: return <Activity className="h-4 w-4" />;
     }
@@ -90,7 +90,7 @@ const PharmacyIntegrationDashboard = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Horse className="h-5 w-5 text-green-500" />
+              <Zap className="h-5 w-5 text-green-500" />
               <div>
                 <p className="text-sm text-muted-foreground">Horse Records Sync</p>
                 <p className="text-2xl font-bold">{integrationStats.horseRecordsSync}</p>
@@ -114,7 +114,7 @@ const PharmacyIntegrationDashboard = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Sync className="h-5 w-5 text-orange-500" />
+              <RefreshCw className="h-5 w-5 text-orange-500" />
               <div>
                 <p className="text-sm text-muted-foreground">Pending Sync</p>
                 <p className="text-2xl font-bold">{integrationStats.pendingSync}</p>
@@ -181,7 +181,7 @@ const PharmacyIntegrationDashboard = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Horse className="h-5 w-5 text-green-500" />
+              <Zap className="h-5 w-5 text-green-500" />
               Horse Records
             </CardTitle>
           </CardHeader>

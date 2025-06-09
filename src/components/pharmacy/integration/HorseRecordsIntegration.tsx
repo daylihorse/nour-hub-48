@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
-  Horse,
+  Zap,
   Search,
-  Sync,
+  RefreshCw,
   CheckCircle,
   Clock,
   AlertTriangle,
@@ -112,13 +112,13 @@ const HorseRecordsIntegration = () => {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2">
-            <Horse className="h-6 w-6 text-green-500" />
+            <Zap className="h-6 w-6 text-green-500" />
             Horse Records Integration
           </h2>
           <p className="text-muted-foreground">Sync medication records with horse profiles</p>
         </div>
         <Button>
-          <Sync className="h-4 w-4 mr-2" />
+          <RefreshCw className="h-4 w-4 mr-2" />
           Sync All Records
         </Button>
       </div>
@@ -159,7 +159,7 @@ const HorseRecordsIntegration = () => {
               <div className="flex justify-between items-start">
                 <div>
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <Horse className="h-5 w-5" />
+                    <Zap className="h-5 w-5" />
                     {record.horseName}
                     <span className="text-sm text-muted-foreground">({record.horseId})</span>
                   </CardTitle>
@@ -249,12 +249,12 @@ const HorseRecordsIntegration = () => {
                   </Button>
                   {record.syncStatus !== "synced" && (
                     <Button size="sm">
-                      <Sync className="h-3 w-3 mr-1" />
+                      <RefreshCw className="h-3 w-3 mr-1" />
                       Sync Now
                     </Button>
                   )}
                   <Button variant="outline" size="sm">
-                    <Horse className="h-3 w-3 mr-1" />
+                    <Zap className="h-3 w-3 mr-1" />
                     Open Horse Profile
                   </Button>
                 </div>
@@ -267,7 +267,7 @@ const HorseRecordsIntegration = () => {
       {filteredRecords.length === 0 && (
         <Card>
           <CardContent className="text-center py-8">
-            <Horse className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+            <Zap className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <p className="text-muted-foreground">No horse records found matching your filters.</p>
           </CardContent>
         </Card>

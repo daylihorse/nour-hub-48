@@ -22,7 +22,7 @@ import {
   Home,
   Network,
   Hospital,
-  Horse,
+  Zap,
   FlaskRound
 } from "lucide-react";
 
@@ -71,7 +71,7 @@ const PharmacyDepartment = () => {
             Clinic Sync
           </TabsTrigger>
           <TabsTrigger value="horse-records" className="flex items-center gap-2">
-            <Horse className="h-4 w-4" />
+            <Zap className="h-4 w-4" />
             Horse Records
           </TabsTrigger>
           <TabsTrigger value="lab-orders" className="flex items-center gap-2">
