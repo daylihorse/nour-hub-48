@@ -11,35 +11,35 @@ import {
   ShoppingCart,
   FileText
 } from "lucide-react";
-import { OperationsDataService } from "@/services/operations/operationsDataService";
+import { useOperationsData } from "@/hooks/useOperationsData";
+import { useInventoryManagement } from "@/hooks/useInventoryManagement";
 import { 
   getInventoryStatusColor, 
-  getOrderStatusColor, 
-  calculateInventoryMetrics 
+  getOrderStatusColor
 } from "@/utils/operationsUtils";
 
 const InventoryFinanceIntegration = () => {
   const [selectedTab, setSelectedTab] = useState<'overview' | 'orders' | 'alerts'>('overview');
+  const { inventoryItems, purchaseOrders, isLoading } = useOperationsData();
+  
+  const {
+    filteredItems,
+    lowStockItems,
+    metrics,
+    pendingOrderValue,
+    createAutomaticOrder
+  } = useInventoryManagement({ inventoryItems, purchaseOrders });
 
-  // Use centralized data service
-  const inventoryItems = OperationsDataService.getMockInventoryItems();
-  const purchaseOrders = OperationsDataService.getMockPurchaseOrders();
-
-  const { totalValue, lowStockCount } = calculateInventoryMetrics(inventoryItems);
-  const lowStockItems = inventoryItems.filter(item => 
-    item.status === 'low_stock' || item.status === 'out_of_stock'
-  );
-  const pendingOrderValue = purchaseOrders
-    .filter(order => order.status !== 'paid')
-    .reduce((sum, order) => sum + order.totalAmount, 0);
-
-  const createAutomaticOrder = (itemId: string) => {
-    const item = inventoryItems.find(i => i.id === itemId);
-    if (item) {
-      console.log(`Creating automatic order for ${item.name}`);
-      // This would integrate with the actual ordering system
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/3 mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -58,7 +58,7 @@ const InventoryFinanceIntegration = () => {
               <Package className="h-5 w-5 text-blue-500" />
               <div>
                 <p className="text-sm text-muted-foreground">Total Inventory Value</p>
-                <p className="text-xl font-bold">${totalValue.toFixed(2)}</p>
+                <p className="text-xl font-bold">${metrics.totalValue.toFixed(2)}</p>
               </div>
             </div>
           </CardContent>
@@ -70,7 +70,7 @@ const InventoryFinanceIntegration = () => {
               <AlertTriangle className="h-5 w-5 text-red-500" />
               <div>
                 <p className="text-sm text-muted-foreground">Low Stock Items</p>
-                <p className="text-xl font-bold">{lowStockCount}</p>
+                <p className="text-xl font-bold">{metrics.lowStockCount}</p>
               </div>
             </div>
           </CardContent>
@@ -144,7 +144,7 @@ const InventoryFinanceIntegration = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {inventoryItems.map((item) => (
+                {filteredItems.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell className="font-medium">{item.name}</TableCell>
                     <TableCell>{item.category}</TableCell>
