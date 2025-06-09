@@ -19,7 +19,6 @@ import {
   AlertTriangle
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import UnifiedOperationsDashboard from "@/components/operations/UnifiedOperationsDashboard";
 
 const Dashboard = () => {
   const departments = [
@@ -125,11 +124,11 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8">
-      {/* Header without unified operations button */}
+      {/* Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold">Horse Management Dashboard</h1>
-          <p className="text-muted-foreground">Manage all aspects of your equestrian operation</p>
+          <h1 className="text-3xl font-bold">Stable Modules</h1>
+          <p className="text-muted-foreground">Access specialized modules for comprehensive stable management</p>
         </div>
         <div className="flex gap-2">
           {totalAlerts > 0 && (
@@ -217,23 +216,6 @@ const Dashboard = () => {
           </Link>
         ))}
       </div>
-
-      {/* Integrated Operations Preview */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>Cross-Department Operations</span>
-            <Link to="/dashboard/operations">
-              <Button variant="outline" size="sm">
-                View Full Operations
-              </Button>
-            </Link>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <UnifiedOperationsDashboard />
-        </CardContent>
-      </Card>
     </div>
   );
 };
