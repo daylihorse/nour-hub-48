@@ -15,13 +15,28 @@ import {
   Info
 } from "lucide-react";
 
+interface DosageInfo {
+  min: number;
+  max: number;
+  unit: string;
+  frequency: string;
+  maxDuration?: string;
+}
+
+interface MedicationInfo {
+  name: string;
+  dosages: Record<string, DosageInfo>;
+  warnings: string[];
+  contraindications: string[];
+}
+
 const DosageCalculator = () => {
   const [selectedMedication, setSelectedMedication] = useState("");
   const [horseWeight, setHorseWeight] = useState("");
   const [indication, setIndication] = useState("");
   const [calculatedDose, setCalculatedDose] = useState<any>(null);
 
-  const medications = [
+  const medications: MedicationInfo[] = [
     {
       name: "Penicillin Injectable",
       dosages: {
