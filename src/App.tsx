@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -33,6 +32,8 @@ import MareDetailView from "./components/horses/breeding/mare-detail/MareDetailV
 // Create a new QueryClient instance
 const queryClient = new QueryClient();
 
+import UnifiedOperations from "./pages/dashboard/UnifiedOperations";
+
 const App = () => {
   return (
     <React.StrictMode>
@@ -45,6 +46,7 @@ const App = () => {
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<DashboardLayout />}>
                 <Route index element={<Dashboard />} />
+                <Route path="operations" element={<UnifiedOperations />} />
                 <Route path="horses" element={<HorsesDepartment />} />
                 <Route path="horses/breeding/mares/:mareId" element={<MareDetailView />} />
                 <Route path="laboratory" element={<LaboratoryDepartment />} />
