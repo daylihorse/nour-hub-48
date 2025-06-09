@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -10,7 +9,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 import {
@@ -19,7 +17,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import NotificationDropdown from "@/components/notifications/NotificationDropdown";
 import { 
   Rabbit, 
   FlaskRound, 
@@ -126,23 +123,6 @@ const DashboardSidebar = () => {
   return (
     <TooltipProvider>
       <Sidebar className={collapsed ? "w-16" : "w-64"} collapsible="icon">
-        {/* Fixed Header */}
-        <div className="sticky top-0 z-50 bg-sidebar border-b border-sidebar-border">
-          <div className="p-4 flex items-center justify-between">
-            {!collapsed && (
-              <h2 className="text-lg font-semibold text-sidebar-foreground">
-                Stable Management
-              </h2>
-            )}
-            <div className="flex items-center gap-2">
-              <div className="flex items-center justify-center">
-                <NotificationDropdown />
-              </div>
-              <SidebarTrigger className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors" />
-            </div>
-          </div>
-        </div>
-
         <SidebarContent className="overflow-y-auto">
           <SidebarGroup>
             <SidebarGroupLabel className={collapsed ? "sr-only" : ""}>
