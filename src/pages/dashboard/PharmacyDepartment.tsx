@@ -8,6 +8,10 @@ import PharmacyTransactions from "@/components/pharmacy/PharmacyTransactions";
 import PharmacyReports from "@/components/pharmacy/PharmacyReports";
 import SupplierManagement from "@/components/pharmacy/SupplierManagement";
 import StoreManagement from "@/components/store/StoreManagement";
+import PharmacyIntegrationDashboard from "@/components/pharmacy/integration/PharmacyIntegrationDashboard";
+import ClinicPharmacyIntegration from "@/components/pharmacy/integration/ClinicPharmacyIntegration";
+import HorseRecordsIntegration from "@/components/pharmacy/integration/HorseRecordsIntegration";
+import LaboratoryIntegration from "@/components/pharmacy/integration/LaboratoryIntegration";
 import { 
   BarChart3, 
   Package, 
@@ -15,7 +19,11 @@ import {
   CreditCard, 
   Users, 
   Store,
-  Home
+  Home,
+  Network,
+  Hospital,
+  Horse,
+  FlaskRound
 } from "lucide-react";
 
 const PharmacyDepartment = () => {
@@ -29,7 +37,7 @@ const PharmacyDepartment = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-11">
           <TabsTrigger value="dashboard" className="flex items-center gap-2">
             <Home className="h-4 w-4" />
             Dashboard
@@ -53,6 +61,22 @@ const PharmacyDepartment = () => {
           <TabsTrigger value="store" className="flex items-center gap-2">
             <Store className="h-4 w-4" />
             Store & POS
+          </TabsTrigger>
+          <TabsTrigger value="integration" className="flex items-center gap-2">
+            <Network className="h-4 w-4" />
+            Integration
+          </TabsTrigger>
+          <TabsTrigger value="clinic-sync" className="flex items-center gap-2">
+            <Hospital className="h-4 w-4" />
+            Clinic Sync
+          </TabsTrigger>
+          <TabsTrigger value="horse-records" className="flex items-center gap-2">
+            <Horse className="h-4 w-4" />
+            Horse Records
+          </TabsTrigger>
+          <TabsTrigger value="lab-orders" className="flex items-center gap-2">
+            <FlaskRound className="h-4 w-4" />
+            Lab Orders
           </TabsTrigger>
           <TabsTrigger value="reports" className="flex items-center gap-2">
             <BarChart3 className="h-4 w-4" />
@@ -82,6 +106,22 @@ const PharmacyDepartment = () => {
         
         <TabsContent value="store" className="mt-6">
           <StoreManagement department="pharmacy" departmentName="Pharmacy" />
+        </TabsContent>
+        
+        <TabsContent value="integration" className="mt-6">
+          <PharmacyIntegrationDashboard />
+        </TabsContent>
+        
+        <TabsContent value="clinic-sync" className="mt-6">
+          <ClinicPharmacyIntegration />
+        </TabsContent>
+        
+        <TabsContent value="horse-records" className="mt-6">
+          <HorseRecordsIntegration />
+        </TabsContent>
+        
+        <TabsContent value="lab-orders" className="mt-6">
+          <LaboratoryIntegration />
         </TabsContent>
         
         <TabsContent value="reports" className="mt-6">

@@ -4,90 +4,145 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
+  Package, 
   Plus, 
   Search, 
-  Filter, 
-  Package, 
+  Filter,
   AlertTriangle,
   Calendar,
-  DollarSign
+  Edit,
+  Eye,
+  Truck
 } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const PharmacyInventory = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [stockFilter, setStockFilter] = useState("all");
 
-  // Mock data - in real implementation, this would come from API
+  // Mock inventory data
   const inventoryItems = [
     {
-      id: "1",
+      id: "PI001",
       name: "Penicillin Injectable",
-      genericName: "Penicillin G",
+      genericName: "Penicillin G Procaine",
+      brandName: "Pen-G",
       category: "antibiotic",
       dosageForm: "injection",
-      strength: "300,000 IU/ml",
-      currentStock: 5,
+      strength: "300,000",
+      unit: "IU/ml",
+      currentStock: 15,
       minimumStock: 20,
-      expiryDate: "2024-06-15",
-      batchNumber: "BT001",
-      unitCost: 15.50,
-      sellingPrice: 23.25,
+      maximumStock: 100,
+      expiryDate: "2024-12-15",
+      batchNumber: "PEN2024001",
+      supplier: "VetMed Pharmaceuticals",
+      unitCost: 12.50,
+      sellingPrice: 18.75,
+      location: "Cold Storage A-1",
       requiresPrescription: true,
-      status: "low_stock"
+      controlledSubstance: false,
+      storageRequirements: "Refrigerate 2-8°C"
     },
     {
-      id: "2", 
+      id: "PI002",
       name: "Banamine Paste",
       genericName: "Flunixin Meglumine",
+      brandName: "Banamine",
       category: "anti_inflammatory",
-      dosageForm: "paste",
-      strength: "1.5mg/ml",
-      currentStock: 8,
-      minimumStock: 25,
-      expiryDate: "2024-12-30",
-      batchNumber: "BT002",
-      unitCost: 8.75,
-      sellingPrice: 13.50,
+      dosageForm: "liquid",
+      strength: "1500",
+      unit: "mg/tube",
+      currentStock: 25,
+      minimumStock: 15,
+      maximumStock: 75,
+      expiryDate: "2025-06-20",
+      batchNumber: "BAN2024005",
+      supplier: "Merck Animal Health",
+      unitCost: 8.25,
+      sellingPrice: 14.50,
+      location: "Shelf B-3",
       requiresPrescription: true,
-      status: "low_stock"
+      controlledSubstance: false,
+      storageRequirements: "Room temperature"
     },
     {
-      id: "3",
+      id: "PI003",
       name: "Vitamin E & Selenium",
-      genericName: "Tocopherol/Selenium",
+      genericName: "Vitamin E & Selenium",
+      brandName: "E-Se",
       category: "vitamin",
       dosageForm: "injection",
-      strength: "50mg/1mg per ml",
-      currentStock: 45,
-      minimumStock: 20,
-      expiryDate: "2025-03-15",
-      batchNumber: "BT003",
-      unitCost: 12.00,
-      sellingPrice: 18.00,
+      strength: "50",
+      unit: "mg/ml",
+      currentStock: 8,
+      minimumStock: 25,
+      maximumStock: 100,
+      expiryDate: "2024-09-30",
+      batchNumber: "VIT2024012",
+      supplier: "Animal Health Solutions",
+      unitCost: 15.75,
+      sellingPrice: 24.00,
+      location: "Refrigerator C-2",
       requiresPrescription: false,
-      status: "in_stock"
+      controlledSubstance: false,
+      storageRequirements: "Refrigerate 2-8°C"
+    },
+    {
+      id: "PI004",
+      name: "Dexamethasone",
+      genericName: "Dexamethasone Sodium Phosphate",
+      brandName: "Azium",
+      category: "anti_inflammatory",
+      dosageForm: "injection",
+      strength: "2",
+      unit: "mg/ml",
+      currentStock: 30,
+      minimumStock: 20,
+      maximumStock: 80,
+      expiryDate: "2025-03-15",
+      batchNumber: "DEX2024008",
+      supplier: "Zoetis",
+      unitCost: 22.50,
+      sellingPrice: 35.00,
+      location: "Shelf A-5",
+      requiresPrescription: true,
+      controlledSubstance: false,
+      storageRequirements: "Room temperature, protect from light"
     }
   ];
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'in_stock': return 'default';
-      case 'low_stock': return 'destructive';
-      case 'out_of_stock': return 'secondary';
-      default: return 'default';
-    }
+  const getStockStatus = (current: number, minimum: number) => {
+    if (current === 0) return { status: "out_of_stock", color: "bg-red-500", text: "Out of Stock" };
+    if (current <= minimum) return { status: "low_stock", color: "bg-orange-500", text: "Low Stock" };
+    return { status: "in_stock", color: "bg-green-500", text: "In Stock" };
+  };
+
+  const isExpiringSoon = (expiryDate: string) => {
+    const expiry = new Date(expiryDate);
+    const today = new Date();
+    const daysUntilExpiry = Math.ceil((expiry.getTime() - today.getTime()) / (1000 * 3600 * 24));
+    return daysUntilExpiry <= 90; // Within 3 months
   };
 
   const filteredItems = inventoryItems.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.genericName.toLowerCase().includes(searchTerm.toLowerCase());
+                         item.genericName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         item.brandName?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = categoryFilter === 'all' || item.category === categoryFilter;
-    const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
     
-    return matchesSearch && matchesCategory && matchesStatus;
+    let matchesStock = true;
+    if (stockFilter === 'low_stock') {
+      matchesStock = item.currentStock <= item.minimumStock;
+    } else if (stockFilter === 'out_of_stock') {
+      matchesStock = item.currentStock === 0;
+    } else if (stockFilter === 'expiring_soon') {
+      matchesStock = isExpiringSoon(item.expiryDate);
+    }
+    
+    return matchesSearch && matchesCategory && matchesStock;
   });
 
   return (
@@ -96,12 +151,18 @@ const PharmacyInventory = () => {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold">Pharmacy Inventory</h2>
-          <p className="text-muted-foreground">Manage pharmaceutical inventory and stock levels</p>
+          <p className="text-muted-foreground">Manage pharmaceutical stock and supplies</p>
         </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Medication
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline">
+            <Truck className="h-4 w-4 mr-2" />
+            Receive Stock
+          </Button>
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Item
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -131,106 +192,126 @@ const PharmacyInventory = () => {
                 <SelectItem value="other">Other</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <Select value={stockFilter} onValueChange={setStockFilter}>
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="Stock Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="in_stock">In Stock</SelectItem>
+                <SelectItem value="all">All Items</SelectItem>
                 <SelectItem value="low_stock">Low Stock</SelectItem>
                 <SelectItem value="out_of_stock">Out of Stock</SelectItem>
+                <SelectItem value="expiring_soon">Expiring Soon</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </CardContent>
       </Card>
 
-      {/* Inventory Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {filteredItems.map((item) => (
-          <Card key={item.id} className="relative">
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="text-lg">{item.name}</CardTitle>
-                  <p className="text-sm text-muted-foreground">{item.genericName}</p>
-                  <Badge variant="outline" className="mt-1">
-                    {item.category.replace('_', ' ')}
-                  </Badge>
+      {/* Inventory Items */}
+      <div className="space-y-4">
+        {filteredItems.map((item) => {
+          const stockStatus = getStockStatus(item.currentStock, item.minimumStock);
+          const expiringSoon = isExpiringSoon(item.expiryDate);
+          
+          return (
+            <Card key={item.id}>
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="text-lg">{item.name}</CardTitle>
+                    <div className="text-sm text-muted-foreground space-y-1">
+                      <p>Generic: {item.genericName}</p>
+                      {item.brandName && <p>Brand: {item.brandName}</p>}
+                      <p>Strength: {item.strength} {item.unit}</p>
+                    </div>
+                  </div>
+                  <div className="text-right space-y-2">
+                    <Badge className={`${stockStatus.color} text-white`}>
+                      {stockStatus.text}
+                    </Badge>
+                    {expiringSoon && (
+                      <Badge variant="outline" className="block text-orange-700 border-orange-300">
+                        <Calendar className="h-3 w-3 mr-1" />
+                        Expires Soon
+                      </Badge>
+                    )}
+                  </div>
                 </div>
-                <Badge variant={getStatusColor(item.status)}>
-                  {item.status.replace('_', ' ')}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex justify-between text-sm">
-                  <span>Form:</span>
-                  <span className="font-medium">{item.dosageForm}</span>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                  <div>
+                    <p className="text-sm font-medium">Current Stock</p>
+                    <p className="text-xl font-bold">{item.currentStock}</p>
+                    <p className="text-xs text-muted-foreground">Min: {item.minimumStock} | Max: {item.maximumStock}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Pricing</p>
+                    <p className="text-sm">Cost: ${item.unitCost}</p>
+                    <p className="text-sm">Price: ${item.sellingPrice}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Expiry Date</p>
+                    <p className="text-sm">{item.expiryDate}</p>
+                    <p className="text-xs text-muted-foreground">Batch: {item.batchNumber}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Location</p>
+                    <p className="text-sm">{item.location}</p>
+                    <p className="text-xs text-muted-foreground">Supplier: {item.supplier}</p>
+                  </div>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span>Strength:</span>
-                  <span className="font-medium">{item.strength}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Current Stock:</span>
-                  <span className={`font-medium ${item.currentStock <= item.minimumStock ? 'text-red-600' : ''}`}>
-                    {item.currentStock}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Min Stock:</span>
-                  <span className="font-medium">{item.minimumStock}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Expires:</span>
-                  <span className="font-medium">{item.expiryDate}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Batch:</span>
-                  <span className="font-medium">{item.batchNumber}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Selling Price:</span>
-                  <span className="font-medium">${item.sellingPrice}</span>
-                </div>
-                
-                {item.requiresPrescription && (
-                  <Badge variant="secondary" className="w-full justify-center">
-                    Prescription Required
-                  </Badge>
-                )}
 
-                {item.currentStock <= item.minimumStock && (
-                  <div className="flex items-center gap-2 p-2 bg-red-50 border border-red-200 rounded-md">
-                    <AlertTriangle className="h-4 w-4 text-red-500" />
-                    <span className="text-sm text-red-700">Low stock alert</span>
+                <div className="flex justify-between items-center pt-4 border-t">
+                  <div className="flex gap-2">
+                    {item.requiresPrescription && (
+                      <Badge variant="outline">Prescription Required</Badge>
+                    )}
+                    {item.controlledSubstance && (
+                      <Badge variant="outline" className="text-red-700 border-red-300">
+                        Controlled Substance
+                      </Badge>
+                    )}
+                    <Badge variant="outline" className="capitalize">
+                      {item.category.replace('_', ' ')}
+                    </Badge>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm">
+                      <Eye className="h-3 w-3 mr-1" />
+                      View
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <Edit className="h-3 w-3 mr-1" />
+                      Edit
+                    </Button>
+                    {item.currentStock <= item.minimumStock && (
+                      <Button size="sm">
+                        <Package className="h-3 w-3 mr-1" />
+                        Reorder
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                {item.storageRequirements && (
+                  <div className="mt-3 p-2 bg-blue-50 rounded-md">
+                    <p className="text-xs text-blue-700">
+                      <strong>Storage:</strong> {item.storageRequirements}
+                    </p>
                   </div>
                 )}
-
-                <div className="flex gap-2 pt-2">
-                  <Button variant="outline" size="sm" className="flex-1">
-                    <Package className="h-3 w-3 mr-1" />
-                    Restock
-                  </Button>
-                  <Button variant="outline" size="sm" className="flex-1">
-                    <DollarSign className="h-3 w-3 mr-1" />
-                    Sell
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       {filteredItems.length === 0 && (
         <Card>
           <CardContent className="text-center py-8">
             <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">No medications found matching your filters.</p>
+            <p className="text-muted-foreground">No inventory items found matching your filters.</p>
           </CardContent>
         </Card>
       )}
