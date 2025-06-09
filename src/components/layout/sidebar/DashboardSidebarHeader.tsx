@@ -7,23 +7,25 @@ const DashboardSidebarHeader = () => {
   const collapsed = state === "collapsed";
 
   return (
-    <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
-      {/* Left side - Sidebar Toggle and Title */}
-      <div className="flex items-center gap-3 min-w-0 flex-1">
+    <div className="flex flex-col items-center p-4 border-b border-sidebar-border gap-3">
+      {/* Top - Sidebar Toggle */}
+      <div className="flex items-center justify-center w-full">
         <SidebarTrigger className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors" />
-        {!collapsed && (
-          <div className="min-w-0 flex-1">
-            <h1 className="text-lg font-semibold text-sidebar-foreground truncate">
-              Stable Management System
-            </h1>
-          </div>
-        )}
       </div>
 
-      {/* Right side - Notifications */}
-      <div className="flex items-center">
+      {/* Bottom - Notification Bell */}
+      <div className="flex items-center justify-center w-full">
         <NotificationDropdown />
       </div>
+
+      {/* Title - Only shown when expanded */}
+      {!collapsed && (
+        <div className="w-full text-center">
+          <h1 className="text-lg font-semibold text-sidebar-foreground truncate">
+            Stable Management System
+          </h1>
+        </div>
+      )}
     </div>
   );
 };
