@@ -39,51 +39,33 @@ import {
 } from "lucide-react";
 
 const PharmacyDepartment = () => {
-  const [activeTab, setActiveTab] = useState("dashboard");
-
-  // Grouped tab configurations for better organization
-  const tabGroups = [
-    {
-      title: "Core Operations",
-      tabs: [
-        { value: "dashboard", label: "Dashboard", icon: Home, color: "text-blue-500" },
-        { value: "inventory", label: "Inventory", icon: Package, color: "text-green-500" },
-        { value: "prescriptions", label: "Prescriptions", icon: FileText, color: "text-orange-500" },
-        { value: "transactions", label: "Transactions", icon: CreditCard, color: "text-purple-500" },
-      ]
-    },
-    {
-      title: "Clinical Tools",
-      tabs: [
-        { value: "drug-checker", label: "Drug Checker", icon: Zap, color: "text-red-500" },
-        { value: "dosage-calc", label: "Dosage Calc", icon: Calculator, color: "text-indigo-500" },
-        { value: "protocols", label: "Protocols", icon: Stethoscope, color: "text-pink-500" },
-        { value: "alerts", label: "Alerts", icon: Bell, color: "text-yellow-500" },
-      ]
-    },
-    {
-      title: "Management & POS",
-      tabs: [
-        { value: "suppliers", label: "Suppliers", icon: Users, color: "text-cyan-500" },
-        { value: "store", label: "Store & POS", icon: Store, color: "text-emerald-500" },
-      ]
-    },
-    {
-      title: "Compliance & Tracking",
-      tabs: [
-        { value: "compliance", label: "Compliance", icon: Shield, color: "text-blue-600" },
-        { value: "dea-tracking", label: "DEA Tracking", icon: AlertTriangle, color: "text-red-600" },
-      ]
-    },
-    {
-      title: "Integration & Reports",
-      tabs: [
-        { value: "integration", label: "Integration", icon: Network, color: "text-slate-500" },
-        { value: "clinic-sync", label: "Clinic Sync", icon: Hospital, color: "text-teal-500" },
-        { value: "horse-records", label: "Horse Records", icon: Zap, color: "text-amber-500" },
-        { value: "reports", label: "Reports", icon: BarChart3, color: "text-violet-500" },
-      ]
-    }
+  // All tab configurations in a single array for the horizontal navigation
+  const tabConfigs = [
+    // Core Operations
+    { value: "dashboard", label: "Dashboard", icon: Home, color: "text-blue-500" },
+    { value: "inventory", label: "Inventory", icon: Package, color: "text-green-500" },
+    { value: "prescriptions", label: "Prescriptions", icon: FileText, color: "text-orange-500" },
+    { value: "transactions", label: "Transactions", icon: CreditCard, color: "text-purple-500" },
+    
+    // Clinical Tools
+    { value: "drug-checker", label: "Drug Checker", icon: Zap, color: "text-red-500" },
+    { value: "dosage-calc", label: "Dosage Calc", icon: Calculator, color: "text-indigo-500" },
+    { value: "protocols", label: "Protocols", icon: Stethoscope, color: "text-pink-500" },
+    { value: "alerts", label: "Alerts", icon: Bell, color: "text-yellow-500" },
+    
+    // Management & POS
+    { value: "suppliers", label: "Suppliers", icon: Users, color: "text-cyan-500" },
+    { value: "store", label: "Store & POS", icon: Store, color: "text-emerald-500" },
+    
+    // Compliance & Tracking
+    { value: "compliance", label: "Compliance", icon: Shield, color: "text-blue-600" },
+    { value: "dea-tracking", label: "DEA Tracking", icon: AlertTriangle, color: "text-red-600" },
+    
+    // Integration & Reports
+    { value: "integration", label: "Integration", icon: Network, color: "text-slate-500" },
+    { value: "clinic-sync", label: "Clinic Sync", icon: Hospital, color: "text-teal-500" },
+    { value: "horse-records", label: "Horse Records", icon: Zap, color: "text-amber-500" },
+    { value: "reports", label: "Reports", icon: BarChart3, color: "text-violet-500" },
   ];
 
   return (
@@ -93,58 +75,86 @@ const PharmacyDepartment = () => {
         <p className="text-muted-foreground">Comprehensive pharmacy management and prescription services</p>
       </div>
       
-      {/* Tab Groups Layout */}
-      <div className="space-y-4">
-        {tabGroups.map((group, groupIndex) => (
-          <Card key={groupIndex} className="overflow-hidden">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {group.title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                {group.tabs.map((tab) => (
-                  <button
-                    key={tab.value}
-                    onClick={() => setActiveTab(tab.value)}
-                    className={`
-                      flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all
-                      ${activeTab === tab.value 
-                        ? 'bg-primary text-primary-foreground shadow-sm' 
-                        : 'hover:bg-muted text-muted-foreground hover:text-foreground'
-                      }
-                    `}
-                  >
-                    <tab.icon className={`h-4 w-4 ${activeTab === tab.value ? 'text-primary-foreground' : tab.color}`} />
-                    <span className="hidden sm:inline">{tab.label}</span>
-                  </button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <Tabs defaultValue="dashboard" className="w-full">
+        <TabsList className="grid w-full grid-cols-8 lg:grid-cols-16 h-auto p-1 bg-muted">
+          {tabConfigs.map((tab) => (
+            <TabsTrigger
+              key={tab.value}
+              value={tab.value}
+              className="flex flex-col items-center gap-1 p-2 h-auto text-xs data-[state=active]:bg-background data-[state=active]:text-foreground"
+            >
+              <tab.icon className={`h-4 w-4 ${tab.color}`} />
+              <span className="hidden sm:inline text-center leading-tight">{tab.label}</span>
+            </TabsTrigger>
+          ))}
+        </TabsList>
 
-      {/* Tab Content */}
-      <div className="mt-6">
-        {activeTab === "dashboard" && <PharmacyDashboard />}
-        {activeTab === "inventory" && <PharmacyInventory />}
-        {activeTab === "prescriptions" && <PrescriptionManagement />}
-        {activeTab === "transactions" && <PharmacyTransactions />}
-        {activeTab === "suppliers" && <SupplierManagement />}
-        {activeTab === "store" && <StoreManagement department="pharmacy" departmentName="Pharmacy" />}
-        {activeTab === "compliance" && <ComplianceDashboard />}
-        {activeTab === "dea-tracking" && <DEATracking />}
-        {activeTab === "drug-checker" && <DrugInteractionChecker />}
-        {activeTab === "dosage-calc" && <DosageCalculator />}
-        {activeTab === "protocols" && <TreatmentProtocols />}
-        {activeTab === "alerts" && <AutomatedAlerts />}
-        {activeTab === "integration" && <PharmacyIntegrationDashboard />}
-        {activeTab === "clinic-sync" && <ClinicPharmacyIntegration />}
-        {activeTab === "horse-records" && <HorseRecordsIntegration />}
-        {activeTab === "reports" && <PharmacyReports />}
-      </div>
+        <div className="mt-6">
+          <TabsContent value="dashboard" className="mt-0">
+            <PharmacyDashboard />
+          </TabsContent>
+          
+          <TabsContent value="inventory" className="mt-0">
+            <PharmacyInventory />
+          </TabsContent>
+          
+          <TabsContent value="prescriptions" className="mt-0">
+            <PrescriptionManagement />
+          </TabsContent>
+          
+          <TabsContent value="transactions" className="mt-0">
+            <PharmacyTransactions />
+          </TabsContent>
+          
+          <TabsContent value="drug-checker" className="mt-0">
+            <DrugInteractionChecker />
+          </TabsContent>
+          
+          <TabsContent value="dosage-calc" className="mt-0">
+            <DosageCalculator />
+          </TabsContent>
+          
+          <TabsContent value="protocols" className="mt-0">
+            <TreatmentProtocols />
+          </TabsContent>
+          
+          <TabsContent value="alerts" className="mt-0">
+            <AutomatedAlerts />
+          </TabsContent>
+          
+          <TabsContent value="suppliers" className="mt-0">
+            <SupplierManagement />
+          </TabsContent>
+          
+          <TabsContent value="store" className="mt-0">
+            <StoreManagement department="pharmacy" departmentName="Pharmacy" />
+          </TabsContent>
+          
+          <TabsContent value="compliance" className="mt-0">
+            <ComplianceDashboard />
+          </TabsContent>
+          
+          <TabsContent value="dea-tracking" className="mt-0">
+            <DEATracking />
+          </TabsContent>
+          
+          <TabsContent value="integration" className="mt-0">
+            <PharmacyIntegrationDashboard />
+          </TabsContent>
+          
+          <TabsContent value="clinic-sync" className="mt-0">
+            <ClinicPharmacyIntegration />
+          </TabsContent>
+          
+          <TabsContent value="horse-records" className="mt-0">
+            <HorseRecordsIntegration />
+          </TabsContent>
+          
+          <TabsContent value="reports" className="mt-0">
+            <PharmacyReports />
+          </TabsContent>
+        </div>
+      </Tabs>
     </div>
   );
 };
