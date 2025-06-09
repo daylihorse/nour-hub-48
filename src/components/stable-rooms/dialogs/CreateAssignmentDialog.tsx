@@ -1,6 +1,13 @@
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogOverlay, DialogPortal } from "@/components/ui/dialog";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogDescription,
+  DialogTrigger 
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Plus, Calendar as CalendarIcon, X, UserPlus } from "lucide-react";
+import { Plus, Calendar as CalendarIcon, UserPlus } from "lucide-react";
 import { format } from "date-fns";
 import { Assignment } from "@/types/stableRooms";
 
@@ -69,184 +76,171 @@ const CreateAssignmentDialog = ({ onCreateAssignment, availableRooms }: CreateAs
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <Button onClick={() => setOpen(true)}>
-        <Plus className="mr-2 h-4 w-4" />
-        Create Assignment
-      </Button>
-      <DialogPortal>
-        <DialogOverlay />
-        <DialogContent className="max-w-lg p-0 gap-0">
-          {/* Custom Header */}
-          <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground p-6 rounded-t-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary-foreground/20 rounded-lg">
-                  <UserPlus className="h-5 w-5" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-semibold">Create New Assignment</h2>
-                  <p className="text-sm opacity-90">Assign a room to an entity</p>
-                </div>
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setOpen(false)}
-                className="text-primary-foreground hover:bg-primary-foreground/20 h-8 w-8"
-              >
-                <X className="h-4 w-4" />
-                <span className="sr-only">Close</span>
-              </Button>
+      <DialogTrigger asChild>
+        <Button>
+          <Plus className="mr-2 h-4 w-4" />
+          Create Assignment
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-lg">
+        <DialogHeader className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground p-6 -mx-6 -mt-6 mb-6 rounded-t-lg">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary-foreground/20 rounded-lg">
+              <UserPlus className="h-5 w-5" />
+            </div>
+            <div>
+              <DialogTitle className="text-lg font-semibold text-primary-foreground">
+                Create New Assignment
+              </DialogTitle>
+              <DialogDescription className="text-sm opacity-90 text-primary-foreground">
+                Assign a room to an entity
+              </DialogDescription>
             </div>
           </div>
+        </DialogHeader>
 
-          {/* Form Content */}
-          <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="roomId">Room *</Label>
+            <Select value={formData.roomId} onValueChange={(value) => setFormData({...formData, roomId: value})} required>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a room" />
+              </SelectTrigger>
+              <SelectContent>
+                {availableRooms.map(room => (
+                  <SelectItem key={room.id} value={room.id}>
+                    {room.number} - {room.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label htmlFor="entityType">Assignment Type</Label>
+            <Select value={formData.entityType} onValueChange={(value: Assignment['entityType']) => setFormData({...formData, entityType: value})}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="horse">Horse</SelectItem>
+                <SelectItem value="equipment">Equipment</SelectItem>
+                <SelectItem value="supplies">Supplies</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="roomId">Room *</Label>
-              <Select value={formData.roomId} onValueChange={(value) => setFormData({...formData, roomId: value})} required>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a room" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableRooms.map(room => (
-                    <SelectItem key={room.id} value={room.id}>
-                      {room.number} - {room.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="entityType">Assignment Type</Label>
-              <Select value={formData.entityType} onValueChange={(value: Assignment['entityType']) => setFormData({...formData, entityType: value})}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="horse">Horse</SelectItem>
-                  <SelectItem value="equipment">Equipment</SelectItem>
-                  <SelectItem value="supplies">Supplies</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="entityId">Entity ID *</Label>
-                <Input
-                  id="entityId"
-                  value={formData.entityId}
-                  onChange={(e) => setFormData({...formData, entityId: e.target.value})}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="entityName">Entity Name *</Label>
-                <Input
-                  id="entityName"
-                  value={formData.entityName}
-                  onChange={(e) => setFormData({...formData, entityName: e.target.value})}
-                  required
-                />
-              </div>
-            </div>
-
-            <div>
-              <Label>Assigned Date *</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-start text-left font-normal">
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {format(assignedDate, "PPP")}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={assignedDate}
-                    onSelect={(date) => date && setAssignedDate(date)}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <div>
-              <Label>Expected Vacate Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-start text-left font-normal">
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {expectedVacate ? format(expectedVacate, "PPP") : "Select date (optional)"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={expectedVacate}
-                    onSelect={setExpectedVacate}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <div>
-              <Label htmlFor="assignedBy">Assigned By *</Label>
+              <Label htmlFor="entityId">Entity ID *</Label>
               <Input
-                id="assignedBy"
-                value={formData.assignedBy}
-                onChange={(e) => setFormData({...formData, assignedBy: e.target.value})}
+                id="entityId"
+                value={formData.entityId}
+                onChange={(e) => setFormData({...formData, entityId: e.target.value})}
                 required
               />
             </div>
-
             <div>
-              <Label htmlFor="dailyRate">Daily Rate ($)</Label>
+              <Label htmlFor="entityName">Entity Name *</Label>
               <Input
-                id="dailyRate"
-                type="number"
-                step="0.01"
-                value={formData.dailyRate}
-                onChange={(e) => setFormData({...formData, dailyRate: parseFloat(e.target.value)})}
+                id="entityName"
+                value={formData.entityName}
+                onChange={(e) => setFormData({...formData, entityName: e.target.value})}
+                required
               />
             </div>
+          </div>
 
-            <div>
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea
-                id="notes"
-                value={formData.notes}
-                onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                placeholder="Any additional notes about this assignment"
-              />
-            </div>
+          <div>
+            <Label>Assigned Date *</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {format(assignedDate, "PPP")}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={assignedDate}
+                  onSelect={(date) => date && setAssignedDate(date)}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
 
-            {/* Custom Footer */}
-            <div className="border-t pt-6 mt-6 -mx-6 px-6 bg-muted/30">
-              <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => setOpen(false)}
-                  className="sm:w-auto"
-                >
-                  Cancel
+          <div>
+            <Label>Expected Vacate Date</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {expectedVacate ? format(expectedVacate, "PPP") : "Select date (optional)"}
                 </Button>
-                <Button 
-                  type="submit"
-                  className="sm:w-auto bg-primary hover:bg-primary/90"
-                >
-                  <UserPlus className="mr-2 h-4 w-4" />
-                  Create Assignment
-                </Button>
-              </div>
-            </div>
-          </form>
-        </DialogContent>
-      </DialogPortal>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={expectedVacate}
+                  onSelect={setExpectedVacate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <div>
+            <Label htmlFor="assignedBy">Assigned By *</Label>
+            <Input
+              id="assignedBy"
+              value={formData.assignedBy}
+              onChange={(e) => setFormData({...formData, assignedBy: e.target.value})}
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="dailyRate">Daily Rate ($)</Label>
+            <Input
+              id="dailyRate"
+              type="number"
+              step="0.01"
+              value={formData.dailyRate}
+              onChange={(e) => setFormData({...formData, dailyRate: parseFloat(e.target.value)})}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="notes">Notes</Label>
+            <Textarea
+              id="notes"
+              value={formData.notes}
+              onChange={(e) => setFormData({...formData, notes: e.target.value})}
+              placeholder="Any additional notes about this assignment"
+            />
+          </div>
+
+          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-6 border-t">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => setOpen(false)}
+              className="sm:w-auto"
+            >
+              Cancel
+            </Button>
+            <Button 
+              type="submit"
+              className="sm:w-auto"
+            >
+              <UserPlus className="mr-2 h-4 w-4" />
+              Create Assignment
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
     </Dialog>
   );
 };
