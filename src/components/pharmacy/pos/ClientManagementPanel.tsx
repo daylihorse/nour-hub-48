@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -30,6 +29,9 @@ const ClientManagementPanel = ({
       email: "john.doe@email.com",
       phone: "555-0123",
       address: "123 Main St, Anytown",
+      type: "Horse Owner",
+      status: "Active",
+      createdAt: "2024-01-01T00:00:00Z",
       pickupNotifications: true,
       insuranceInfo: {
         provider: "Equine Insurance Co.",
@@ -62,6 +64,9 @@ const ClientManagementPanel = ({
       email: "jane.smith@email.com",
       phone: "555-0456",
       address: "456 Oak Ave, Somewhere",
+      type: "Horse Owner",
+      status: "Active",
+      createdAt: "2024-01-02T00:00:00Z",
       pickupNotifications: false,
       allergies: [],
       currentMedications: [],

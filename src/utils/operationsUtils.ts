@@ -1,4 +1,3 @@
-
 import { WorkflowStep, OperationAlert, InventoryItem } from "@/types/operations";
 
 export const calculateWorkflowProgress = (steps: WorkflowStep[]): number => {
@@ -20,6 +19,36 @@ export const getPriorityColor = (priority: string): string => {
       return 'border-blue-500 bg-blue-50';
     default:
       return 'border-gray-300 bg-gray-50';
+  }
+};
+
+export const getInventoryStatusColor = (status: string): string => {
+  switch (status) {
+    case 'in_stock':
+      return 'border-green-500 bg-green-50 text-green-700';
+    case 'low_stock':
+      return 'border-orange-500 bg-orange-50 text-orange-700';
+    case 'out_of_stock':
+      return 'border-red-500 bg-red-50 text-red-700';
+    case 'on_order':
+      return 'border-blue-500 bg-blue-50 text-blue-700';
+    default:
+      return 'border-gray-300 bg-gray-50 text-gray-700';
+  }
+};
+
+export const getOrderStatusColor = (status: string): string => {
+  switch (status) {
+    case 'delivered':
+      return 'border-green-500 bg-green-50 text-green-700';
+    case 'approved':
+      return 'border-blue-500 bg-blue-50 text-blue-700';
+    case 'sent':
+      return 'border-yellow-500 bg-yellow-50 text-yellow-700';
+    case 'pending':
+      return 'border-orange-500 bg-orange-50 text-orange-700';
+    default:
+      return 'border-gray-300 bg-gray-50 text-gray-700';
   }
 };
 

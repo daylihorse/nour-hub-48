@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -96,6 +95,9 @@ const PrescriptionSalesWorkflow = ({ onAddToCart, onStateChange, posState }: Pre
         name: prescription.clientName,
         email: `${prescription.clientName.toLowerCase().replace(' ', '.')}@email.com`,
         phone: "555-0123",
+        type: "Horse Owner",
+        status: "Active",
+        createdAt: "2024-01-01T00:00:00Z",
         pickupNotifications: true
       }
     });
