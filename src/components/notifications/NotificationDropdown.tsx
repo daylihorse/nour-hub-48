@@ -18,20 +18,37 @@ const NotificationDropdown = () => {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="relative">
-          {counts.unread > 0 ? (
-            <BellDot className="h-5 w-5" />
-          ) : (
-            <Bell className="h-5 w-5" />
-          )}
-          {counts.unread > 0 && (
-            <Badge 
-              variant="destructive" 
-              className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-            >
-              {counts.unread > 99 ? '99+' : counts.unread}
-            </Badge>
-          )}
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="
+            relative w-10 h-10 p-0 
+            hover:bg-sidebar-accent hover:text-sidebar-accent-foreground 
+            transition-colors duration-200 
+            flex items-center justify-center
+          "
+        >
+          <div className="relative flex items-center justify-center">
+            {counts.unread > 0 ? (
+              <BellDot className="h-5 w-5" />
+            ) : (
+              <Bell className="h-5 w-5" />
+            )}
+            {counts.unread > 0 && (
+              <Badge 
+                variant="destructive" 
+                className="
+                  absolute -top-2 -right-2 h-5 w-5 
+                  rounded-full p-0 
+                  flex items-center justify-center 
+                  text-xs font-bold
+                  animate-pulse
+                "
+              >
+                {counts.unread > 99 ? '99+' : counts.unread}
+              </Badge>
+            )}
+          </div>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent 

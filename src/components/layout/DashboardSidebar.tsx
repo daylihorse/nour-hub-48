@@ -13,6 +13,12 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import NotificationDropdown from "@/components/notifications/NotificationDropdown";
 import { 
   Rabbit, 
@@ -118,47 +124,101 @@ const DashboardSidebar = () => {
   };
 
   return (
-    <Sidebar className={collapsed ? "w-14" : "w-60"} collapsible="icon">
-      {/* Header with notification dropdown */}
-      <div className="p-4 border-b flex items-center justify-between">
-        {!collapsed && (
-          <h2 className="text-lg font-semibold">Stable Management</h2>
-        )}
-        <div className="flex items-center gap-2">
-          <NotificationDropdown />
-          <SidebarTrigger />
+    <TooltipProvider>
+      <Sidebar className={collapsed ? "w-16" : "w-64"} collapsible="icon">
+        {/* Fixed Header */}
+        <div className="sticky top-0 z-50 bg-sidebar border-b border-sidebar-border">
+          <div className="p-4 flex items-center justify-between">
+            {!collapsed && (
+              <h2 className="text-lg font-semibold text-sidebar-foreground">
+                Stable Management
+              </h2>
+            )}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center">
+                <NotificationDropdown />
+              </div>
+              <SidebarTrigger className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors" />
+            </div>
+          </div>
         </div>
-      </div>
 
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      className={({ isActive: navIsActive }) =>
-                        `flex items-center gap-2 ${
-                          navIsActive || isActive(item.url)
-                            ? "bg-muted text-primary font-medium"
-                            : "hover:bg-muted/50"
-                        }`
-                      }
+        <SidebarContent className="overflow-y-auto">
+          <SidebarGroup>
+            <SidebarGroupLabel className={collapsed ? "sr-only" : ""}>
+              Navigation
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu className="space-y-1">
+                {menuItems.map((item) => {
+                  const isItemActive = isActive(item.url);
+                  
+                  const menuButton = (
+                    <SidebarMenuButton 
+                      asChild
+                      className={`
+                        group relative transition-all duration-200 ease-in-out
+                        ${collapsed ? 'justify-center p-3' : 'justify-start p-3'}
+                        ${isItemActive 
+                          ? 'bg-primary text-primary-foreground font-medium shadow-sm' 
+                          : 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+                        }
+                      `}
                     >
-                      <item.icon className="h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
+                      <NavLink
+                        to={item.url}
+                        className="flex items-center gap-3 w-full"
+                      >
+                        <item.icon className={`
+                          transition-all duration-200 flex-shrink-0
+                          ${collapsed ? 'h-6 w-6' : 'h-5 w-5'}
+                          ${isItemActive ? 'scale-110' : 'group-hover:scale-105'}
+                        `} />
+                        {!collapsed && (
+                          <span className="truncate text-sm font-medium">
+                            {item.title}
+                          </span>
+                        )}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  );
+
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      {collapsed ? (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            {menuButton}
+                          </TooltipTrigger>
+                          <TooltipContent 
+                            side="right" 
+                            className="font-medium bg-popover text-popover-foreground border shadow-md"
+                            sideOffset={8}
+                          >
+                            {item.title}
+                          </TooltipContent>
+                        </Tooltip>
+                      ) : (
+                        menuButton
+                      )}
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+
+        {/* Footer */}
+        {!collapsed && (
+          <div className="sticky bottom-0 bg-sidebar border-t border-sidebar-border p-4">
+            <p className="text-xs text-sidebar-foreground/60 text-center">
+              Stable Management System
+            </p>
+          </div>
+        )}
+      </Sidebar>
+    </TooltipProvider>
   );
 };
 
