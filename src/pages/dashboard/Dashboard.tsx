@@ -15,7 +15,6 @@ import {
   Wrench,
   Store,
   MessageSquare,
-  Settings,
   TrendingUp,
   AlertTriangle
 } from "lucide-react";
@@ -126,19 +125,13 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8">
-      {/* Header with unified operations view toggle */}
+      {/* Header without unified operations button */}
       <div className="flex justify-between items-start">
         <div>
           <h1 className="text-3xl font-bold">Horse Management Dashboard</h1>
           <p className="text-muted-foreground">Manage all aspects of your equestrian operation</p>
         </div>
         <div className="flex gap-2">
-          <Link to="/dashboard/operations">
-            <Button variant="outline" className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
-              Unified Operations
-            </Button>
-          </Link>
           {totalAlerts > 0 && (
             <Button variant="destructive" className="flex items-center gap-2">
               <AlertTriangle className="h-4 w-4" />

@@ -1,6 +1,9 @@
 
 import UnifiedOperationsDashboard from "@/components/operations/UnifiedOperationsDashboard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 import HorseArrivalWorkflow from "@/components/operations/workflows/HorseArrivalWorkflow";
 import InventoryFinanceIntegration from "@/components/operations/integrations/InventoryFinanceIntegration";
 import RoomAssignmentIntegration from "@/components/operations/integrations/RoomAssignmentIntegration";
@@ -8,6 +11,20 @@ import RoomAssignmentIntegration from "@/components/operations/integrations/Room
 const UnifiedOperations = () => {
   return (
     <div className="space-y-6">
+      {/* Header with Back to Dashboard button */}
+      <div className="flex items-center gap-4">
+        <Link to="/dashboard">
+          <Button variant="outline" size="sm" className="flex items-center gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Dashboard
+          </Button>
+        </Link>
+        <div>
+          <h1 className="text-3xl font-bold">Unified Operations</h1>
+          <p className="text-muted-foreground">Comprehensive facility management and cross-departmental operations</p>
+        </div>
+      </div>
+
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="overview">Operations Overview</TabsTrigger>
