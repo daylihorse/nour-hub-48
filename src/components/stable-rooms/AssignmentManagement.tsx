@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,7 +33,7 @@ import { useStableRoomsData } from "@/hooks/useStableRoomsData";
 import { useToast } from "@/hooks/use-toast";
 import CreateAssignmentDialog from "./dialogs/CreateAssignmentDialog";
 import ViewAssignmentDialog from "./dialogs/ViewAssignmentDialog";
-import EndAssignmentDialog from "./dialogs/EndAssignmentDialog";
+import EnhancedEndAssignmentDialog from "./dialogs/EnhancedEndAssignmentDialog";
 
 const AssignmentManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -101,12 +100,24 @@ const AssignmentManagement = () => {
     actualVacate: Date; 
     finalCost?: number; 
     notes?: string;
+    terminationReason: string;
+    terminationCategory: string;
+    checklistItems: Record<string, boolean>;
+    documents: string[];
+    movementRecord?: any;
   }) => {
     try {
       await endAssignment(assignmentId);
+      
+      // If movement record should be created, integrate with Arrivals & Departures
+      if (endData.movementRecord) {
+        console.log('Creating movement record:', endData.movementRecord);
+        // TODO: Integrate with movement system
+      }
+      
       toast({
-        title: "Assignment Ended",
-        description: "Assignment has been successfully completed."
+        title: "Assignment Terminated",
+        description: "Assignment has been successfully completed with enhanced procedures."
       });
     } catch (error) {
       toast({
@@ -345,8 +356,8 @@ const AssignmentManagement = () => {
         roomNumber={selectedAssignment ? getRoomNumber(selectedAssignment.roomId) : undefined}
       />
 
-      {/* End Assignment Dialog */}
-      <EndAssignmentDialog
+      {/* Enhanced End Assignment Dialog */}
+      <EnhancedEndAssignmentDialog
         assignment={selectedAssignment}
         open={endDialogOpen}
         onOpenChange={setEndDialogOpen}
