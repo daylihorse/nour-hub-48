@@ -81,10 +81,10 @@ const PharmacyDepartment = () => {
             <TabsTrigger
               key={tab.value}
               value={tab.value}
-              className="flex flex-col items-center gap-1 p-2 h-auto text-xs data-[state=active]:bg-background data-[state=active]:text-foreground"
+              className="flex flex-col items-center gap-1 p-2 h-auto text-xs data-[state=active]:bg-background data-[state=active]:text-foreground transition-all duration-200 data-[state=active]:scale-110 data-[state=active]:*:first-child:h-5 data-[state=active]:*:first-child:w-5 data-[state=active]:text-sm"
             >
-              <tab.icon className={`h-4 w-4 ${tab.color}`} />
-              <span className="hidden sm:inline text-center leading-tight">{tab.label}</span>
+              <tab.icon className={`h-4 w-4 ${tab.color} transition-all duration-200`} />
+              <span className="hidden sm:inline text-center leading-tight transition-all duration-200">{tab.label}</span>
             </TabsTrigger>
           ))}
         </TabsList>
