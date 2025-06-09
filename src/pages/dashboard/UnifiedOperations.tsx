@@ -21,7 +21,6 @@ const UnifiedOperations = () => {
         </Link>
         <div>
           <h1 className="text-3xl font-bold">Unified Operations</h1>
-          <p className="text-muted-foreground">Comprehensive facility management and cross-departmental operations</p>
         </div>
       </div>
 
