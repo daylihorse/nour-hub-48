@@ -1,52 +1,29 @@
 
 import { useState } from 'react';
-
-export interface OperationAlert {
-  id: string;
-  type: string;
-  priority: string;
-  message: string;
-  department: string;
-  createdAt: Date;
-}
-
-export interface InventoryItem {
-  id: string;
-  name: string;
-  category: string;
-  currentStock: number;
-  minimumStock: number;
-  unitCost: number;
-  supplier: string;
-  status: 'in_stock' | 'low_stock' | 'out_of_stock' | 'on_order';
-  totalValue: number;
-}
-
-export interface PurchaseOrder {
-  id: string;
-  supplierName: string;
-  orderDate: Date;
-  expectedDelivery?: Date;
-  status: 'pending' | 'approved' | 'sent' | 'delivered';
-  totalAmount: number;
-  items: {
-    itemName: string;
-    quantity: number;
-    totalCost: number;
-  }[];
-}
+import { OperationAlert, InventoryItem, PurchaseOrder, OperationsStats } from '@/types/operations';
 
 export const useOperationsData = () => {
   const [isLoading] = useState(false);
+  const [error] = useState<string | null>(null);
   
   const mockAlerts: OperationAlert[] = [
     {
       id: 'alert_001',
-      type: 'equipment',
+      type: 'inventory',
       priority: 'high',
+      title: 'Low Stock Alert',
       message: 'Training equipment allocation required',
-      department: 'Training',
-      createdAt: new Date()
+      timestamp: new Date(),
+      actionRequired: true
+    },
+    {
+      id: 'alert_002',
+      type: 'horse',
+      priority: 'medium',
+      title: 'Horse Assignment',
+      message: 'Horse #H003 requires room assignment',
+      timestamp: new Date(),
+      actionRequired: true
     }
   ];
 
@@ -58,33 +35,62 @@ export const useOperationsData = () => {
       currentStock: 5,
       minimumStock: 10,
       unitCost: 500,
+      totalValue: 2500,
       supplier: 'Equestrian Supply Co.',
-      status: 'low_stock',
-      totalValue: 2500
+      lastOrderDate: new Date('2024-01-15'),
+      status: 'low_stock'
+    },
+    {
+      id: 'inv_002',
+      name: 'Horse Feed',
+      category: 'Feed',
+      currentStock: 50,
+      minimumStock: 30,
+      unitCost: 25,
+      totalValue: 1250,
+      supplier: 'Feed Solutions Inc.',
+      lastOrderDate: new Date('2024-01-20'),
+      status: 'in_stock'
     }
   ];
 
   const mockPurchaseOrders: PurchaseOrder[] = [
     {
       id: 'po_001',
+      supplierId: 'supplier_001',
       supplierName: 'Training Equipment Ltd.',
-      orderDate: new Date(),
-      status: 'pending',
-      totalAmount: 1500,
       items: [
         {
+          itemId: 'item_001',
           itemName: 'Training Cones',
           quantity: 20,
+          unitCost: 15,
           totalCost: 300
         }
-      ]
+      ],
+      totalAmount: 1500,
+      status: 'sent',
+      orderDate: new Date(),
+      expectedDelivery: new Date('2024-02-15')
     }
   ];
+
+  const stats: OperationsStats = {
+    activeHorses: 25,
+    occupiedRooms: 18,
+    pendingMovements: 3,
+    lowStockItems: mockInventoryItems.filter(item => item.status === 'low_stock').length,
+    pendingLabTests: 7,
+    scheduledAppointments: 12,
+    outstandingInvoices: 4
+  };
 
   return {
     alerts: mockAlerts,
     inventoryItems: mockInventoryItems,
     purchaseOrders: mockPurchaseOrders,
-    isLoading
+    stats,
+    isLoading,
+    error
   };
 };
