@@ -25,17 +25,21 @@ const NotificationDropdown = () => {
           variant="ghost" 
           size="sm" 
           className="
-            relative w-10 h-10 p-0 
+            relative h-10 w-10 p-0 
             hover:bg-sidebar-accent hover:text-sidebar-accent-foreground 
-            transition-colors duration-200 
+            transition-all duration-300 ease-in-out
+            hover:scale-110 active:scale-95
             flex items-center justify-center
+            rounded-lg border border-sidebar-border/20
+            shadow-sm hover:shadow-md
+            group
           "
         >
           <div className="relative flex items-center justify-center">
             {counts.unread > 0 ? (
-              <BellDot className="h-5 w-5" />
+              <BellDot className="h-6 w-6 transition-transform duration-200 group-hover:rotate-12" />
             ) : (
-              <Bell className="h-5 w-5" />
+              <Bell className="h-6 w-6 transition-transform duration-200 group-hover:rotate-12" />
             )}
             {counts.unread > 0 && (
               <Badge 
@@ -46,6 +50,8 @@ const NotificationDropdown = () => {
                   flex items-center justify-center 
                   text-xs font-bold
                   animate-pulse
+                  shadow-lg
+                  border-2 border-sidebar
                 "
               >
                 {counts.unread > 99 ? '99+' : counts.unread}

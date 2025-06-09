@@ -12,7 +12,15 @@ const DashboardSidebarHeader = () => {
     }`}>
       {/* Sidebar Toggle */}
       <div className="flex items-center justify-center">
-        <SidebarTrigger className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors" />
+        <SidebarTrigger className="
+          h-10 w-10 p-0 
+          hover:bg-sidebar-accent hover:text-sidebar-accent-foreground 
+          transition-all duration-300 ease-in-out
+          hover:scale-110 active:scale-95
+          rounded-lg border border-sidebar-border/20
+          shadow-sm hover:shadow-md
+          [&_svg]:h-5 [&_svg]:w-5
+        " />
       </div>
 
       {/* Notification Bell */}
