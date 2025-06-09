@@ -12,6 +12,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import HorsesDepartment from "./pages/dashboard/HorsesDepartment";
 import LaboratoryDepartment from "./pages/dashboard/LaboratoryDepartment";
 import ClinicDepartment from "./pages/dashboard/ClinicDepartment";
+import PharmacyDepartment from "./pages/dashboard/PharmacyDepartment";
 import FinanceDepartment from "./pages/dashboard/FinanceDepartment";
 import HRDepartment from "./pages/dashboard/HRDepartment";
 import InventoryManagement from "./pages/dashboard/InventoryManagement";
@@ -52,6 +53,7 @@ const App = () => {
                 <Route path="horses/breeding/mares/:mareId" element={<MareDetailView />} />
                 <Route path="laboratory" element={<LaboratoryDepartment />} />
                 <Route path="clinic" element={<ClinicDepartment />} />
+                <Route path="pharmacy" element={<PharmacyDepartment />} />
                 <Route path="finance" element={<FinanceDepartment />} />
                 <Route path="hr" element={<HRDepartment />} />
                 <Route path="inventory" element={<InventoryManagement />} />

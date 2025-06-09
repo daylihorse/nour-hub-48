@@ -1,4 +1,3 @@
-
 import { useLocation } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import {
@@ -18,6 +17,7 @@ import {
   Store,
   Home,
   Settings,
+  Pills,
 } from "lucide-react";
 
 import {
@@ -50,6 +50,7 @@ const departments: Department[] = [
   { title: "Horses Department", path: "/dashboard/horses", icon: House },
   { title: "Laboratory", path: "/dashboard/laboratory", icon: FlaskRound },
   { title: "Clinic", path: "/dashboard/clinic", icon: Hospital },
+  { title: "Pharmacy", path: "/dashboard/pharmacy", icon: Pills },
   { title: "Finance", path: "/dashboard/finance", icon: DollarSign },
   { title: "Clients", path: "/dashboard/clients", icon: Users },
   { title: "Messages", path: "/dashboard/messages", icon: MessageSquare },

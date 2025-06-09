@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +15,8 @@ import {
   Store,
   MessageSquare,
   TrendingUp,
-  AlertTriangle
+  AlertTriangle,
+  Pills
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -45,6 +45,14 @@ const Dashboard = () => {
       link: "/dashboard/clinic",
       color: "bg-red-500",
       alerts: 2
+    },
+    {
+      title: "Pharmacy",
+      icon: Pills,
+      description: "Veterinary pharmacy, prescriptions, and medication management",
+      link: "/dashboard/pharmacy",
+      color: "bg-teal-500",
+      alerts: 8
     },
     {
       title: "Finance",
