@@ -10,7 +10,9 @@ import {
   User, 
   Building, 
   Clock,
-  DollarSign
+  DollarSign,
+  Eye,
+  Square
 } from "lucide-react";
 import {
   Table,
@@ -29,14 +31,21 @@ import {
 } from "@/components/ui/select";
 import { Assignment } from "@/types/stableRooms";
 import { useStableRoomsData } from "@/hooks/useStableRoomsData";
+import { useToast } from "@/hooks/use-toast";
 import CreateAssignmentDialog from "./dialogs/CreateAssignmentDialog";
+import ViewAssignmentDialog from "./dialogs/ViewAssignmentDialog";
+import EndAssignmentDialog from "./dialogs/EndAssignmentDialog";
 
 const AssignmentManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterType, setFilterType] = useState<string>("all");
+  const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [endDialogOpen, setEndDialogOpen] = useState(false);
 
-  const { assignments, createAssignment, endAssignment, getAvailableRooms } = useStableRoomsData();
+  const { assignments, rooms, createAssignment, endAssignment, getAvailableRooms } = useStableRoomsData();
+  const { toast } = useToast();
   const availableRooms = getAvailableRooms();
 
   const filteredAssignments = assignments.filter(assignment => {
@@ -71,6 +80,42 @@ const AssignmentManagement = () => {
     const diffTime = Math.abs(endDate.getTime() - start.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
+  };
+
+  const getRoomNumber = (roomId: string) => {
+    const room = rooms.find(r => r.id === roomId);
+    return room ? room.number : roomId;
+  };
+
+  const handleViewAssignment = (assignment: Assignment) => {
+    setSelectedAssignment(assignment);
+    setViewDialogOpen(true);
+  };
+
+  const handleEndAssignment = (assignment: Assignment) => {
+    setSelectedAssignment(assignment);
+    setEndDialogOpen(true);
+  };
+
+  const handleEndAssignmentSubmit = async (assignmentId: string, endData: { 
+    actualVacate: Date; 
+    finalCost?: number; 
+    notes?: string;
+  }) => {
+    try {
+      await endAssignment(assignmentId);
+      toast({
+        title: "Assignment Ended",
+        description: "Assignment has been successfully completed."
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to end assignment. Please try again.",
+        variant: "destructive"
+      });
+      throw error;
+    }
   };
 
   return (
@@ -222,7 +267,7 @@ const AssignmentManagement = () => {
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Building className="h-4 w-4 text-muted-foreground" />
-                      {assignment.roomId}
+                      {getRoomNumber(assignment.roomId)}
                     </div>
                   </TableCell>
                   <TableCell>
@@ -260,15 +305,21 @@ const AssignmentManagement = () => {
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleViewAssignment(assignment)}
+                      >
+                        <Eye className="h-4 w-4 mr-1" />
                         View
                       </Button>
                       {assignment.status === 'active' && (
                         <Button 
                           size="sm" 
                           variant="outline"
-                          onClick={() => endAssignment(assignment.id)}
+                          onClick={() => handleEndAssignment(assignment)}
                         >
+                          <Square className="h-4 w-4 mr-1" />
                           End
                         </Button>
                       )}
@@ -285,6 +336,23 @@ const AssignmentManagement = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* View Assignment Dialog */}
+      <ViewAssignmentDialog
+        assignment={selectedAssignment}
+        open={viewDialogOpen}
+        onOpenChange={setViewDialogOpen}
+        roomNumber={selectedAssignment ? getRoomNumber(selectedAssignment.roomId) : undefined}
+      />
+
+      {/* End Assignment Dialog */}
+      <EndAssignmentDialog
+        assignment={selectedAssignment}
+        open={endDialogOpen}
+        onOpenChange={setEndDialogOpen}
+        onEndAssignment={handleEndAssignmentSubmit}
+        roomNumber={selectedAssignment ? getRoomNumber(selectedAssignment.roomId) : undefined}
+      />
     </div>
   );
 };
