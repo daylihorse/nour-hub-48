@@ -2,62 +2,70 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Rabbit } from "lucide-react";
-import { HorseAwaitingAssignment } from "@/hooks/useRoomAssignment";
-import { Room } from "@/types/stableRooms";
+import { Horse, MapPin, Clock } from "lucide-react";
 
 interface HorseAwaitingCardProps {
-  horse: HorseAwaitingAssignment;
-  recommendedRoom?: Room | null;
-  onAssignRoom: (horseId: string, recommendedRoomId?: string) => void;
+  horse: {
+    id: string;
+    name: string;
+    breed: string;
+    age: number;
+    specialNeeds: string[];
+    currentLocation: string;
+  };
+  recommendedRoom: any;
+  onAssignRoom: (horseId: string, roomId?: string) => void;
 }
 
 const HorseAwaitingCard = ({ horse, recommendedRoom, onAssignRoom }: HorseAwaitingCardProps) => {
   return (
     <Card>
       <CardContent className="p-4">
-        <div className="flex items-start justify-between">
-          <div className="flex items-start gap-3">
-            <Rabbit className="h-5 w-5 text-blue-500 mt-1" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Horse className="h-5 w-5 text-blue-500" />
             <div>
               <h4 className="font-medium">{horse.name}</h4>
-              <p className="text-sm text-muted-foreground">Owner: {horse.owner}</p>
               <p className="text-sm text-muted-foreground">
-                Arrival: {horse.arrivalDate.toLocaleDateString()}
+                {horse.breed} • {horse.age} years old
               </p>
-              <div className="flex gap-1 mt-2">
-                {horse.specialRequirements.map(req => (
-                  <Badge key={req} variant="outline" className="text-xs">
-                    {req.replace('_', ' ')}
-                  </Badge>
-                ))}
-                <Badge 
-                  variant={horse.priority === 'high' ? 'destructive' : 'secondary'}
-                  className="text-xs"
-                >
-                  {horse.priority} priority
-                </Badge>
+              <div className="flex items-center gap-1 mt-1">
+                <MapPin className="h-3 w-3 text-muted-foreground" />
+                <span className="text-xs text-muted-foreground">{horse.currentLocation}</span>
               </div>
             </div>
           </div>
-
-          <div className="text-right">
-            {recommendedRoom && (
-              <div className="p-3 bg-green-50 rounded-lg mb-2">
-                <p className="text-sm font-medium text-green-800">
-                  Recommended: {recommendedRoom.number}
-                </p>
-                <p className="text-xs text-green-600">
-                  ${recommendedRoom.pricing?.dailyRate}/day
-                </p>
+          
+          <div className="flex items-center gap-2">
+            {horse.specialNeeds.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {horse.specialNeeds.slice(0, 2).map(need => (
+                  <Badge key={need} variant="outline" className="text-xs">
+                    {need.replace('_', ' ')}
+                  </Badge>
+                ))}
+                {horse.specialNeeds.length > 2 && (
+                  <Badge variant="outline" className="text-xs">
+                    +{horse.specialNeeds.length - 2}
+                  </Badge>
+                )}
               </div>
             )}
-            <Button 
-              size="sm" 
-              onClick={() => onAssignRoom(horse.id, recommendedRoom?.id)}
-            >
-              Assign Room
-            </Button>
+            
+            <div className="text-right">
+              {recommendedRoom && (
+                <p className="text-xs text-muted-foreground mb-1">
+                  Recommended: {recommendedRoom.name}
+                </p>
+              )}
+              <Button 
+                size="sm"
+                onClick={() => onAssignRoom(horse.id, recommendedRoom?.id)}
+              >
+                <Clock className="h-3 w-3 mr-1" />
+                Assign Room
+              </Button>
+            </div>
           </div>
         </div>
       </CardContent>

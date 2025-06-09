@@ -1,159 +1,103 @@
 
-import { useState, useMemo } from 'react';
-import { Room } from '@/types/stableRooms';
+import { useState, useEffect, useMemo } from 'react';
 
-export interface HorseAwaitingAssignment {
-  id: string;
-  name: string;
-  type: string;
-  owner: string;
-  arrivalDate: Date;
-  specialRequirements: string[];
-  priority: 'low' | 'normal' | 'high' | 'critical';
-}
-
-export interface UseRoomAssignmentReturn {
-  availableRooms: Room[];
-  awaitingAssignment: HorseAwaitingAssignment[];
-  selectedRoom: string;
-  setSelectedRoom: (roomId: string) => void;
-  selectedHorse: string;
-  setSelectedHorse: (horseId: string) => void;
-  getRecommendedRoom: (horseId: string) => Room | null;
-  calculateCosts: (roomId: string, duration?: number) => {
-    daily: number;
-    monthly: number;
-    estimated: number;
-  };
-  assignRoom: (roomId: string, horseId: string) => void;
-  setupSuppliesForRoom: (roomId: string, horseId: string) => void;
-  createBillingAccount: (roomId: string, horseId: string) => void;
-}
-
-const mockAvailableRooms: Room[] = [
+// Mock data for room assignment functionality
+const mockRooms = [
   {
-    id: '1',
-    number: 'A101',
-    name: 'Premium Stall A101',
-    type: 'stall',
-    status: 'available',
+    id: 'room_1',
+    name: 'Stable A1',
+    type: 'standard',
     capacity: 1,
-    currentOccupancy: 0,
-    size: { length: 12, width: 12, unit: 'ft' },
-    location: { building: 'Building A', section: 'North Wing' },
-    features: ['climate_controlled', 'automatic_waterer', 'premium_bedding'],
-    amenities: ['hay_rack', 'feed_bin', 'salt_lick_holder'],
-    pricing: { dailyRate: 50, monthlyRate: 1200, currency: 'USD' },
-    createdAt: new Date(),
-    updatedAt: new Date()
+    status: 'available',
+    pricing: { dailyRate: 150, weeklyRate: 1000, monthlyRate: 4000 },
+    amenities: ['water', 'hay_feeder', 'exercise_yard'],
+    size: 'large'
   },
   {
-    id: '2',
-    number: 'B205',
-    name: 'Standard Stall B205',
-    type: 'stall',
-    status: 'available',
+    id: 'room_2',
+    name: 'Stable B2',
+    type: 'premium',
     capacity: 1,
-    currentOccupancy: 0,
-    size: { length: 10, width: 10, unit: 'ft' },
-    location: { building: 'Building B', section: 'South Wing' },
-    features: ['natural_ventilation', 'automatic_waterer'],
-    amenities: ['hay_rack', 'feed_bin'],
-    pricing: { dailyRate: 35, monthlyRate: 850, currency: 'USD' },
-    createdAt: new Date(),
-    updatedAt: new Date()
-  },
-  {
-    id: '3',
-    number: 'C301',
-    name: 'Medical Stall C301',
-    type: 'quarantine',
     status: 'available',
-    capacity: 1,
-    currentOccupancy: 0,
-    size: { length: 14, width: 12, unit: 'ft' },
-    location: { building: 'Medical Center', section: 'Isolation Wing' },
-    features: ['medical_equipment', 'isolation_ventilation', 'monitoring_cameras'],
-    amenities: ['medical_feed_system', 'emergency_alert'],
-    pricing: { dailyRate: 75, monthlyRate: 1800, currency: 'USD' },
-    createdAt: new Date(),
-    updatedAt: new Date()
+    pricing: { dailyRate: 250, weeklyRate: 1500, monthlyRate: 6000 },
+    amenities: ['water', 'hay_feeder', 'exercise_yard', 'climate_control'],
+    size: 'extra_large'
   }
 ];
 
-const mockAwaitingAssignment: HorseAwaitingAssignment[] = [
+const mockHorses = [
   {
-    id: '1',
+    id: 'horse_1',
     name: 'Thunder',
-    type: 'horse',
-    owner: 'John Smith',
-    arrivalDate: new Date('2024-01-28'),
-    specialRequirements: ['medical_monitoring', 'premium_feed'],
-    priority: 'high'
+    breed: 'Arabian',
+    age: 5,
+    specialNeeds: ['daily_exercise', 'special_diet'],
+    currentLocation: 'transport'
   },
   {
-    id: '2',
+    id: 'horse_2',
     name: 'Lightning',
-    type: 'horse',
-    owner: 'Sarah Johnson',
-    arrivalDate: new Date('2024-01-29'),
-    specialRequirements: ['standard_care'],
-    priority: 'normal'
+    breed: 'Thoroughbred', 
+    age: 3,
+    specialNeeds: ['medical_monitoring'],
+    currentLocation: 'transport'
   }
 ];
 
-export const useRoomAssignment = (): UseRoomAssignmentReturn => {
-  const [selectedRoom, setSelectedRoom] = useState<string>('');
-  const [selectedHorse, setSelectedHorse] = useState<string>('');
-  const [availableRooms] = useState<Room[]>(mockAvailableRooms);
-  const [awaitingAssignment] = useState<HorseAwaitingAssignment[]>(mockAwaitingAssignment);
+export const useRoomAssignment = () => {
+  const [availableRooms, setAvailableRooms] = useState(mockRooms);
+  const [awaitingAssignment, setAwaitingAssignment] = useState(mockHorses);
+  const [selectedRoom, setSelectedRoom] = useState('');
+  const [selectedHorse, setSelectedHorse] = useState('');
 
   const getRecommendedRoom = (horseId: string) => {
     const horse = awaitingAssignment.find(h => h.id === horseId);
     if (!horse) return null;
 
-    if (horse.specialRequirements.includes('medical_monitoring')) {
-      return availableRooms.find(r => r.type === 'quarantine') || null;
-    }
-    if (horse.specialRequirements.includes('premium_feed')) {
-      return availableRooms.find(r => r.features.includes('climate_controlled')) || null;
-    }
-    return availableRooms.find(r => r.type === 'stall' && r.status === 'available') || null;
+    // Simple recommendation logic based on horse needs
+    const recommendedRoom = availableRooms.find(room => {
+      if (horse.specialNeeds.includes('medical_monitoring')) {
+        return room.amenities.includes('climate_control');
+      }
+      return room.status === 'available';
+    });
+
+    return recommendedRoom || availableRooms[0];
   };
 
-  const calculateCosts = (roomId: string, duration: number = 30) => {
+  const calculateCosts = (roomId: string, duration: number, period: 'daily' | 'weekly' | 'monthly') => {
     const room = availableRooms.find(r => r.id === roomId);
-    if (!room?.pricing) return { daily: 0, monthly: 0, estimated: 0 };
-    
-    return {
-      daily: room.pricing.dailyRate,
-      monthly: room.pricing.monthlyRate,
-      estimated: room.pricing.dailyRate * duration
-    };
+    if (!room) return 0;
+
+    const rate = room.pricing[`${period}Rate`];
+    return rate * duration;
   };
 
   const assignRoom = (roomId: string, horseId: string) => {
-    const horse = awaitingAssignment.find(h => h.id === horseId);
-    const room = availableRooms.find(r => r.id === roomId);
+    console.log(`Assigning room ${roomId} to horse ${horseId}`);
+    // Update room status
+    setAvailableRooms(prev => 
+      prev.map(room => 
+        room.id === roomId 
+          ? { ...room, status: 'occupied' as const }
+          : room
+      )
+    );
     
-    if (horse && room) {
-      console.log(`Assigning ${horse.name} to room ${room.number}`);
-      // In a real implementation, this would call an API
-    }
+    // Remove horse from awaiting list
+    setAwaitingAssignment(prev => 
+      prev.filter(horse => horse.id !== horseId)
+    );
   };
 
-  const setupSuppliesForRoom = (roomId: string, horseId: string) => {
-    const horse = awaitingAssignment.find(h => h.id === horseId);
-    const room = availableRooms.find(r => r.id === roomId);
-    
-    console.log(`Setting up supplies for ${horse?.name} in room ${room?.number}`);
-    // This would integrate with inventory system to allocate supplies
+  const setupSuppliesForRoom = (roomId: string) => {
+    console.log(`Setting up supplies for room ${roomId}`);
+    return Promise.resolve();
   };
 
-  const createBillingAccount = (roomId: string, horseId: string) => {
-    const costs = calculateCosts(roomId);
-    console.log(`Creating billing account with daily rate: $${costs.daily}`);
-    // This would integrate with finance system
+  const createBillingAccount = (horseId: string, roomId: string) => {
+    console.log(`Creating billing account for horse ${horseId} in room ${roomId}`);
+    return Promise.resolve();
   };
 
   return {
