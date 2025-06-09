@@ -1,78 +1,90 @@
 
-import { useState, useEffect, useMemo } from 'react';
-import { OperationsDataService } from '@/services/operations/operationsDataService';
-import { 
-  OperationAlert, 
-  OperationsStats, 
-  InventoryItem, 
-  PurchaseOrder 
-} from '@/types/operations';
+import { useState } from 'react';
 
-export interface UseOperationsDataReturn {
-  alerts: OperationAlert[];
-  stats: OperationsStats;
-  inventoryItems: InventoryItem[];
-  purchaseOrders: PurchaseOrder[];
-  isLoading: boolean;
-  error: string | null;
-  refetch: () => void;
+export interface OperationAlert {
+  id: string;
+  type: string;
+  priority: string;
+  message: string;
+  department: string;
+  createdAt: Date;
 }
 
-export const useOperationsData = (): UseOperationsDataReturn => {
-  const [alerts, setAlerts] = useState<OperationAlert[]>([]);
-  const [stats, setStats] = useState<OperationsStats | null>(null);
-  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
-  const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrder[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export interface InventoryItem {
+  id: string;
+  name: string;
+  category: string;
+  currentStock: number;
+  minimumStock: number;
+  unitCost: number;
+  supplier: string;
+  status: 'in_stock' | 'low_stock' | 'out_of_stock' | 'on_order';
+  totalValue: number;
+}
 
-  const fetchData = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
+export interface PurchaseOrder {
+  id: string;
+  supplierName: string;
+  orderDate: Date;
+  expectedDelivery?: Date;
+  status: 'pending' | 'approved' | 'sent' | 'delivered';
+  totalAmount: number;
+  items: {
+    itemName: string;
+    quantity: number;
+    totalCost: number;
+  }[];
+}
 
-      // Simulate API calls with small delays for realism
-      const [alertsData, statsData, inventoryData, ordersData] = await Promise.all([
-        Promise.resolve(OperationsDataService.getMockAlerts()),
-        Promise.resolve(OperationsDataService.getMockOperationsStats()),
-        Promise.resolve(OperationsDataService.getMockInventoryItems()),
-        Promise.resolve(OperationsDataService.getMockPurchaseOrders())
-      ]);
-
-      setAlerts(alertsData);
-      setStats(statsData);
-      setInventoryItems(inventoryData);
-      setPurchaseOrders(ordersData);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch operations data');
-    } finally {
-      setIsLoading(false);
+export const useOperationsData = () => {
+  const [isLoading] = useState(false);
+  
+  const mockAlerts: OperationAlert[] = [
+    {
+      id: 'alert_001',
+      type: 'equipment',
+      priority: 'high',
+      message: 'Training equipment allocation required',
+      department: 'Training',
+      createdAt: new Date()
     }
-  };
+  ];
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const mockInventoryItems: InventoryItem[] = [
+    {
+      id: 'inv_001',
+      name: 'Training Saddle',
+      category: 'Equipment',
+      currentStock: 5,
+      minimumStock: 10,
+      unitCost: 500,
+      supplier: 'Equestrian Supply Co.',
+      status: 'low_stock',
+      totalValue: 2500
+    }
+  ];
 
-  const refetch = () => {
-    fetchData();
-  };
+  const mockPurchaseOrders: PurchaseOrder[] = [
+    {
+      id: 'po_001',
+      supplierName: 'Training Equipment Ltd.',
+      orderDate: new Date(),
+      status: 'pending',
+      totalAmount: 1500,
+      items: [
+        {
+          itemName: 'Training Cones',
+          quantity: 20,
+          totalCost: 300
+        }
+      ]
+    }
+  ];
 
   return {
-    alerts,
-    stats: stats || {
-      activeHorses: 0,
-      occupiedRooms: 0,
-      pendingMovements: 0,
-      lowStockItems: 0,
-      pendingLabTests: 0,
-      scheduledAppointments: 0,
-      outstandingInvoices: 0
-    },
-    inventoryItems,
-    purchaseOrders,
-    isLoading,
-    error,
-    refetch
+    alerts: mockAlerts,
+    inventoryItems: mockInventoryItems,
+    purchaseOrders: mockPurchaseOrders,
+    isLoading
   };
 };
