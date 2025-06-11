@@ -1,37 +1,38 @@
 
-import { ReactNode } from 'react';
+import React from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { UserRole } from '@/types/tenant';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { ShieldAlert } from 'lucide-react';
 
 interface PermissionGuardProps {
-  children: ReactNode;
-  permission?: string;
-  role?: UserRole;
-  fallback?: ReactNode;
-  requireAll?: boolean;
+  children: React.ReactNode;
+  permission: string;
+  fallback?: React.ReactNode;
 }
 
 const PermissionGuard = ({ 
   children, 
   permission, 
-  role, 
-  fallback = null,
-  requireAll = false 
+  fallback 
 }: PermissionGuardProps) => {
-  const { hasPermission, hasRole } = useAuth();
-
-  const hasPermissionAccess = permission ? hasPermission(permission) : true;
-  const hasRoleAccess = role ? hasRole(role) : true;
-
-  const hasAccess = requireAll 
-    ? hasPermissionAccess && hasRoleAccess
-    : hasPermissionAccess || hasRoleAccess;
-
-  if (!hasAccess) {
+  const { hasPermission } = useAuth();
+  
+  if (hasPermission(permission)) {
+    return <>{children}</>;
+  }
+  
+  if (fallback) {
     return <>{fallback}</>;
   }
-
-  return <>{children}</>;
+  
+  return (
+    <Alert variant="destructive" className="my-4">
+      <ShieldAlert className="h-4 w-4" />
+      <AlertDescription>
+        You don't have permission to access this feature.
+      </AlertDescription>
+    </Alert>
+  );
 };
 
 export default PermissionGuard;

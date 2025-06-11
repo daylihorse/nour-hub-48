@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 
@@ -39,10 +39,10 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Welcome to EquiSense</CardTitle>
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl font-bold">Welcome to EquiSense</CardTitle>
           <CardDescription>
             Sign in to your account to continue
           </CardDescription>
@@ -80,6 +80,11 @@ const LoginForm = () => {
             </Button>
           </form>
         </CardContent>
+        <CardFooter className="flex justify-center">
+          <p className="text-sm text-muted-foreground">
+            Don't have an account? Contact your administrator.
+          </p>
+        </CardFooter>
       </Card>
     </div>
   );
