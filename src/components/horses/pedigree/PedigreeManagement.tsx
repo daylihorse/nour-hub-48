@@ -1,10 +1,15 @@
+
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, Plus, GitBranch, FileText, BarChart3 } from "lucide-react";
+import { GitBranch, FileText, BarChart3, Award, Dna } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import PedigreeHeader from "./components/PedigreeHeader";
+import AddHorseDialog from "./components/AddHorseDialog";
+import PedigreeGridView from "./components/PedigreeGridView";
+import PedigreeListView from "./components/PedigreeListView";
 import PedigreeTreeVisualization from "../breeding/pedigree/PedigreeTreeVisualization";
 
 interface Horse {
@@ -17,14 +22,18 @@ interface Horse {
   dam?: string;
   offspring: number;
   pedigreeComplete: boolean;
+  achievements?: string[];
 }
 
 const PedigreeManagement = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
   const [searchTerm, setSearchTerm] = useState("");
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'table'>('grid');
   const [selectedHorse, setSelectedHorse] = useState<string | null>(null);
+  const [showAddDialog, setShowAddDialog] = useState(false);
 
-  // Mock horses data
+  // Enhanced mock horses data
   const horses: Horse[] = [
     {
       id: "1",
@@ -35,7 +44,8 @@ const PedigreeManagement = () => {
       sire: "Lightning Bolt",
       dam: "Storm Cloud",
       offspring: 12,
-      pedigreeComplete: true
+      pedigreeComplete: true,
+      achievements: ["Regional Champion", "Best Bloodline"]
     },
     {
       id: "2",
@@ -46,7 +56,8 @@ const PedigreeManagement = () => {
       sire: "Desert King",
       dam: "Moon Dancer",
       offspring: 8,
-      pedigreeComplete: true
+      pedigreeComplete: true,
+      achievements: ["Top Producer", "Excellence Award"]
     },
     {
       id: "3",
@@ -57,28 +68,73 @@ const PedigreeManagement = () => {
       sire: "Sunrise Glory",
       dam: "Golden Queen",
       offspring: 3,
-      pedigreeComplete: false
+      pedigreeComplete: false,
+      achievements: ["Young Horse Champion"]
+    },
+    {
+      id: "4",
+      name: "Royal Prince",
+      breed: "Arabian",
+      gender: "stallion",
+      birthDate: "2017-11-08",
+      sire: "King's Glory",
+      dam: "Royal Lady",
+      offspring: 18,
+      pedigreeComplete: true,
+      achievements: ["National Champion", "Hall of Fame", "Top Sire"]
     }
   ];
 
   const filteredHorses = horses.filter(horse =>
     horse.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    horse.breed.toLowerCase().includes(searchTerm.toLowerCase())
+    horse.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (horse.sire && horse.sire.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (horse.dam && horse.dam.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  // Find the selected horse data
   const selectedHorseData = horses.find(horse => horse.id === selectedHorse);
+
+  const handleAddNewHorse = () => {
+    navigate('/dashboard/horses', { 
+      state: { 
+        activeTab: 'horses',
+        showAddForm: true 
+      } 
+    });
+  };
+
+  const handleSelectExistingHorse = (horseId: string) => {
+    console.log('Adding existing horse to pedigree system:', horseId);
+    // TODO: Implement adding existing horse to pedigree system
+  };
+
+  const handleViewPedigree = (horseId: string) => {
+    setSelectedHorse(horseId);
+    setActiveTab("tree");
+  };
+
+  const handleEditHorse = (horseId: string) => {
+    console.log('Edit horse:', horseId);
+    // TODO: Implement horse editing
+  };
+
+  const handleGenerateCertificate = (horseId: string) => {
+    console.log('Generate certificate for horse:', horseId);
+    // TODO: Implement certificate generation
+  };
+
+  const handleExport = () => {
+    console.log('Export pedigree data');
+    // TODO: Implement export functionality
+  };
+
+  const handleFilter = () => {
+    console.log('Open filter dialog');
+    // TODO: Implement filter dialog
+  };
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold">Pedigree Management</h1>
-        <p className="text-muted-foreground">
-          Comprehensive lineage tracking and breeding history analysis
-        </p>
-      </div>
-
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -90,34 +146,15 @@ const PedigreeManagement = () => {
 
         <TabsContent value="overview" className="mt-6">
           <div className="space-y-6">
-            {/* Search and Filters */}
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <div className="flex-1">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                      <Input
-                        placeholder="Search horses by name or breed..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" className="flex items-center gap-2">
-                      <Filter className="h-4 w-4" />
-                      Filters
-                    </Button>
-                    <Button className="flex items-center gap-2">
-                      <Plus className="h-4 w-4" />
-                      Add Horse
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <PedigreeHeader
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+              viewMode={viewMode}
+              onViewModeChange={setViewMode}
+              onAddHorse={() => setShowAddDialog(true)}
+              onExport={handleExport}
+              onFilter={handleFilter}
+            />
 
             {/* Statistics Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -164,7 +201,7 @@ const PedigreeManagement = () => {
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center gap-3">
-                    <GitBranch className="h-8 w-8 text-orange-600" />
+                    <Award className="h-8 w-8 text-orange-600" />
                     <div>
                       <p className="text-sm text-muted-foreground">Total Offspring</p>
                       <p className="text-2xl font-bold">
@@ -176,54 +213,22 @@ const PedigreeManagement = () => {
               </Card>
             </div>
 
-            {/* Horses List */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredHorses.map((horse) => (
-                <Card key={horse.id} className="hover:shadow-lg transition-shadow cursor-pointer"
-                      onClick={() => setSelectedHorse(horse.id)}>
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg">{horse.name}</CardTitle>
-                      <Badge variant={horse.pedigreeComplete ? 'default' : 'secondary'}>
-                        {horse.pedigreeComplete ? 'Complete' : 'Incomplete'}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Breed:</span>
-                        <span>{horse.breed}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Gender:</span>
-                        <span className="capitalize">{horse.gender}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Birth Date:</span>
-                        <span>{horse.birthDate}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Offspring:</span>
-                        <span>{horse.offspring}</span>
-                      </div>
-                      {horse.sire && (
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Sire:</span>
-                          <span>{horse.sire}</span>
-                        </div>
-                      )}
-                      {horse.dam && (
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Dam:</span>
-                          <span>{horse.dam}</span>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            {/* Horses Display */}
+            {viewMode === 'grid' ? (
+              <PedigreeGridView
+                horses={filteredHorses}
+                onViewPedigree={handleViewPedigree}
+                onEditHorse={handleEditHorse}
+                onGenerateCertificate={handleGenerateCertificate}
+              />
+            ) : (
+              <PedigreeListView
+                horses={filteredHorses}
+                onViewPedigree={handleViewPedigree}
+                onEditHorse={handleEditHorse}
+                onGenerateCertificate={handleGenerateCertificate}
+              />
+            )}
           </div>
         </TabsContent>
 
@@ -278,40 +283,85 @@ const PedigreeManagement = () => {
 
         <TabsContent value="lineage" className="mt-6">
           <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Dna className="h-5 w-5" />
+                Lineage Analysis
+              </CardTitle>
+            </CardHeader>
             <CardContent className="p-12 text-center">
               <BarChart3 className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Lineage Analysis</h3>
-              <p className="text-muted-foreground">
-                Advanced lineage analysis and genetic tracking tools
+              <h3 className="text-lg font-semibold mb-2">Advanced Lineage Analysis</h3>
+              <p className="text-muted-foreground mb-4">
+                Genetic diversity analysis, inbreeding coefficients, and lineage strength metrics
               </p>
+              <Button>
+                Run Analysis
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="certificates" className="mt-6">
           <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Pedigree Certificates
+              </CardTitle>
+            </CardHeader>
             <CardContent className="p-12 text-center">
               <FileText className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Pedigree Certificates</h3>
-              <p className="text-muted-foreground">
-                Generate and manage official pedigree certificates
+              <h3 className="text-lg font-semibold mb-2">Generate Pedigree Certificates</h3>
+              <p className="text-muted-foreground mb-4">
+                Create official pedigree certificates for registration and breeding purposes
               </p>
+              <div className="flex gap-3 justify-center">
+                <Button>
+                  Generate Certificate
+                </Button>
+                <Button variant="outline">
+                  View Templates
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="reports" className="mt-6">
           <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5" />
+                Pedigree Reports
+              </CardTitle>
+            </CardHeader>
             <CardContent className="p-12 text-center">
               <BarChart3 className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Pedigree Reports</h3>
-              <p className="text-muted-foreground">
-                Comprehensive reports and analytics on lineage data
+              <h3 className="text-lg font-semibold mb-2">Comprehensive Pedigree Reports</h3>
+              <p className="text-muted-foreground mb-4">
+                Detailed analytics on bloodlines, breeding success rates, and genetic diversity
               </p>
+              <div className="flex gap-3 justify-center">
+                <Button>
+                  Generate Report
+                </Button>
+                <Button variant="outline">
+                  Export Data
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Add Horse Dialog */}
+      <AddHorseDialog
+        open={showAddDialog}
+        onOpenChange={setShowAddDialog}
+        onAddNew={handleAddNewHorse}
+        onSelectExisting={handleSelectExistingHorse}
+      />
     </div>
   );
 };
