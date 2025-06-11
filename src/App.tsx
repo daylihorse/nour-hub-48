@@ -40,6 +40,9 @@ import OnboardingEntry from "./pages/onboarding/OnboardingEntry";
 import AuthGuard from "./components/auth/AuthGuard";
 import { AuthProvider } from "./components/auth/AuthProvider";
 
+// Tenant Settings import
+import TenantSettings from "./pages/dashboard/TenantSettings";
+
 // Create a new QueryClient instance
 const queryClient = new QueryClient();
 
@@ -87,6 +90,7 @@ const App = () => {
                   <Route path="rooms" element={<StableRooms />} />
                   <Route path="maintenance" element={<MaintenanceDepartment />} />
                   <Route path="messages" element={<MessagesDepartment />} />
+                  <Route path="settings" element={<TenantSettings />} />
                   
                   {/* Client Management Routes */}
                   <Route path="clients" element={<ClientsDepartment />} />

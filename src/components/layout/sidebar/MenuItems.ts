@@ -15,6 +15,7 @@ import {
   Pill,
   BarChart3,
   UserCheck,
+  Settings,
   LucideIcon
 } from "lucide-react";
 
@@ -99,5 +100,10 @@ export const menuItems: MenuItem[] = [
     title: "Messages", 
     url: "/dashboard/messages", 
     icon: MessageSquare 
+  },
+  {
+    title: "Settings",
+    url: "/dashboard/settings",
+    icon: Settings
   }
 ];

@@ -11,8 +11,11 @@ import {
   MapPin,
   Phone,
   Mail,
-  Globe
+  Globe,
+  CheckSquare
 } from "lucide-react";
+import SubscriptionTierInfo from "./SubscriptionTierInfo";
+import FeatureMatrix from "./FeatureMatrix";
 
 const TenantDashboard = () => {
   const { currentTenant, user } = useAuth();
@@ -110,14 +113,20 @@ const TenantDashboard = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Building2 className="h-5 w-5 text-purple-500" />
+              <CheckSquare className="h-5 w-5 text-purple-500" />
               <div>
-                <p className="text-sm text-muted-foreground">Features</p>
+                <p className="text-sm text-muted-foreground">Active Features</p>
                 <p className="text-lg font-semibold">{enabledFeatures.length}</p>
               </div>
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Subscription and Features */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <SubscriptionTierInfo />
+        <FeatureMatrix />
       </div>
 
       {/* Tenant Details */}
@@ -185,11 +194,14 @@ const TenantDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
-              {enabledFeatures.map((feature) => (
-                <Badge key={feature} variant="secondary">
-                  {feature.charAt(0).toUpperCase() + feature.slice(1)}
-                </Badge>
-              ))}
+              {enabledFeatures.map((featureId) => {
+                const { name } = useTenantFeatures().getFeatureDefinition(featureId) || { name: featureId };
+                return (
+                  <Badge key={featureId} variant="secondary">
+                    {name}
+                  </Badge>
+                );
+              })}
             </div>
           </CardContent>
         </Card>

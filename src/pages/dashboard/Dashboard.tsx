@@ -19,14 +19,37 @@ import {
   TrendingUp,
   AlertTriangle,
   Pill,
-  UserCheck
+  UserCheck,
+  Lock
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTenantFeatures } from "@/hooks/useTenantFeatures";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+
+// Feature to Icon mapping
+const featureIcons: Record<string, any> = {
+  horses: Rabbit,
+  laboratory: FlaskRound,
+  clinic: Hospital,
+  pharmacy: Pill,
+  finance: DollarSign,
+  hr: Users,
+  inventory: Package,
+  marketplace: Store,
+  training: Dumbbell,
+  rooms: Warehouse,
+  maintenance: Wrench,
+  messages: MessageSquare,
+};
 
 const Dashboard = () => {
-  const { isFeatureEnabled } = useTenantFeatures();
+  const { 
+    isFeatureEnabled, 
+    getFeatureDefinition,
+    getAvailableFeatures 
+  } = useTenantFeatures();
 
+  // Define departments with their corresponding features
   const departments = [
     {
       title: "Horses Department",
@@ -160,8 +183,71 @@ const Dashboard = () => {
   const availableDepartments = departments.filter(dept => 
     !dept.feature || isFeatureEnabled(dept.feature)
   );
-
+  
+  // Calculate alerts only for available departments
   const totalAlerts = availableDepartments.reduce((sum, dept) => sum + dept.alerts, 0);
+
+  // Generate department cards with feature access control
+  const renderDepartmentCard = (dept: any) => {
+    // Determine if feature is available (by subscription) but not enabled
+    const isAvailable = dept.feature ? getAvailableFeatures().some(f => f.id === dept.feature) : true;
+    const isEnabled = !dept.feature || isFeatureEnabled(dept.feature);
+    
+    if (!isAvailable) {
+      // Don't show unavailable features at all
+      return null;
+    }
+    
+    const cardContent = (
+      <Card className={`h-full transition-all duration-200 ${isEnabled ? 'hover:shadow-lg hover:scale-105' : 'opacity-60'}`}>
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between mb-3">
+            <div className={`w-12 h-12 rounded-lg ${dept.color} flex items-center justify-center ${isEnabled ? 'group-hover:scale-110 transition-transform duration-200' : ''}`}>
+              <dept.icon className="h-6 w-6 text-white" />
+            </div>
+            {dept.alerts > 0 && isEnabled && (
+              <Badge variant="destructive" className="text-xs">
+                {dept.alerts}
+              </Badge>
+            )}
+            {!isEnabled && (
+              <Badge variant="outline" className="text-xs bg-muted">
+                Disabled
+              </Badge>
+            )}
+          </div>
+          <CardTitle className="text-lg">{dept.title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">{dept.description}</p>
+        </CardContent>
+      </Card>
+    );
+    
+    if (!isEnabled) {
+      return (
+        <Tooltip key={dept.title}>
+          <TooltipTrigger asChild>
+            <div className="cursor-not-allowed">
+              {cardContent}
+            </div>
+          </TooltipTrigger>
+          <TooltipContent side="top">
+            <div className="flex items-center gap-2 p-1">
+              <Lock className="h-4 w-4" />
+              <span>This feature is disabled in your tenant settings</span>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      );
+    }
+    
+    return (
+      <Link key={dept.title} to={dept.link} className="group">
+        {cardContent}
+      </Link>
+    );
+  };
 
   return (
     <div className="space-y-8">
@@ -239,28 +325,7 @@ const Dashboard = () => {
         
         {/* Department Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {availableDepartments.map((dept) => (
-            <Link key={dept.title} to={dept.link} className="group">
-              <Card className="h-full transition-all duration-200 hover:shadow-lg hover:scale-105">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className={`w-12 h-12 rounded-lg ${dept.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
-                      <dept.icon className="h-6 w-6 text-white" />
-                    </div>
-                    {dept.alerts > 0 && (
-                      <Badge variant="destructive" className="text-xs">
-                        {dept.alerts}
-                      </Badge>
-                    )}
-                  </div>
-                  <CardTitle className="text-lg">{dept.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{dept.description}</p>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
+          {departments.map(renderDepartmentCard)}
         </div>
       </div>
     </div>
