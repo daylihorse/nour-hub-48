@@ -52,8 +52,9 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
 
   const logout = async () => {
     if (accessMode === 'public') {
-      // In public mode, logout just clears the mode
-      console.log('Logout not required in public mode');
+      // In public mode, logout doesn't need to call auth service
+      // Navigation will be handled by the calling component
+      console.log('Logout from public mode');
       return;
     }
     

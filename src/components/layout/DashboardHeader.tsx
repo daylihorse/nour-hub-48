@@ -2,18 +2,42 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import TenantSwitcher from "@/components/auth/TenantSwitcher";
+import DemoAccountSwitcher from "@/components/auth/DemoAccountSwitcher";
 import { useAuth } from "@/hooks/useAuth";
+import { useAccessMode } from "@/contexts/AccessModeContext";
 import { LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const DashboardHeader = () => {
   const { logout, user } = useAuth();
+  const { isDemoMode, isPublicMode } = useAccessMode();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
       await logout();
+      // Navigate to marketplace page after logout
+      navigate('/');
     } catch (error) {
       console.error('Logout error:', error);
+      // Still navigate even if logout fails
+      navigate('/');
     }
+  };
+
+  const renderSwitcher = () => {
+    if (isPublicMode) {
+      // In public mode, don't show any switcher
+      return null;
+    }
+    
+    if (isDemoMode) {
+      // In demo mode, show demo account switcher
+      return <DemoAccountSwitcher />;
+    }
+    
+    // In regular auth mode, show tenant switcher
+    return <TenantSwitcher />;
   };
 
   return (
@@ -29,9 +53,9 @@ const DashboardHeader = () => {
           </div>
         </div>
 
-        {/* Center - Tenant Switcher */}
+        {/* Center - Appropriate Switcher */}
         <div className="flex-1 flex justify-center max-w-xs mx-4">
-          <TenantSwitcher />
+          {renderSwitcher()}
         </div>
 
         {/* Right side - User menu */}
