@@ -70,4 +70,5 @@ export interface MaintenanceRecord {
   notes?: string;
   nextMaintenanceDate?: Date;
   createdAt: Date;
+  updatedAt: Date;
 }
