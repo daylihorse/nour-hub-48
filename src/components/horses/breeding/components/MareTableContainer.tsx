@@ -10,23 +10,7 @@ import MareTableView from "./MareTableView";
 import AddMareDialog from "../AddMareDialog";
 import VetCheckupDialog from "../VetCheckupDialog";
 import MedicalRecordsDialog from "../MedicalRecordsDialog";
-
-interface Mare {
-  id: string;
-  horseId: string;
-  horseName: string;
-  status: string;
-  age: number;
-  breed: string;
-  totalFoals: number;
-  liveFoals: number;
-  lastBreedingDate: string | null;
-  expectedDueDate: string | null;
-  pregnancyDay: number;
-  nextHeat: string | null;
-  stallionName: string | null;
-  foalBirthDate?: string;
-}
+import { Mare } from "@/types/breeding/mare";
 
 interface MareTableContainerProps {
   mares: Mare[];
