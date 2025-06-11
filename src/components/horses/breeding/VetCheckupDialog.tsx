@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/date-picker";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Stethoscope } from "lucide-react";
+import { Stethoscope, Plus } from "lucide-react";
 
 interface VetCheckupDialogProps {
   open: boolean;
@@ -25,12 +25,16 @@ const VetCheckupDialog = ({ open, onOpenChange, pregnancyId }: VetCheckupDialogP
     nextCheckupDate: undefined as Date | undefined,
     veterinarian: "",
   });
+  const [showAddVet, setShowAddVet] = useState(false);
+  const [newVetName, setNewVetName] = useState("");
 
   const checkupTypes = [
     { value: "routine", label: "Routine Checkup" },
     { value: "emergency", label: "Emergency" },
     { value: "ultrasound", label: "Ultrasound" },
     { value: "vaccination", label: "Vaccination" },
+    { value: "dental", label: "Dental Checkup" },
+    { value: "breeding", label: "Breeding Examination" },
   ];
 
   const veterinarians = [
@@ -38,7 +42,16 @@ const VetCheckupDialog = ({ open, onOpenChange, pregnancyId }: VetCheckupDialogP
     "Dr. Johnson",
     "Dr. Brown", 
     "Dr. Davis",
+    "Dr. Wilson",
   ];
+
+  const handleAddVeterinarian = () => {
+    if (newVetName.trim()) {
+      setFormData({...formData, veterinarian: newVetName.trim()});
+      setNewVetName("");
+      setShowAddVet(false);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,7 +70,7 @@ const VetCheckupDialog = ({ open, onOpenChange, pregnancyId }: VetCheckupDialogP
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Stethoscope className="h-5 w-5" />
@@ -65,7 +78,7 @@ const VetCheckupDialog = ({ open, onOpenChange, pregnancyId }: VetCheckupDialogP
           </DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {pregnancyId && (
             <Card>
               <CardHeader>
@@ -79,20 +92,21 @@ const VetCheckupDialog = ({ open, onOpenChange, pregnancyId }: VetCheckupDialogP
             </Card>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Checkup Date */}
             <div className="space-y-2">
-              <Label>Checkup Date</Label>
+              <Label>Checkup Date *</Label>
               <DatePicker
                 date={formData.date}
                 onDateChange={(date) => setFormData({...formData, date})}
                 placeholder="Select checkup date"
+                disabled={(date) => date < new Date()}
               />
             </div>
 
             {/* Checkup Type */}
             <div className="space-y-2">
-              <Label htmlFor="type">Checkup Type</Label>
+              <Label htmlFor="type">Checkup Type *</Label>
               <Select 
                 value={formData.type} 
                 onValueChange={(value) => setFormData({...formData, type: value})}
@@ -100,7 +114,7 @@ const VetCheckupDialog = ({ open, onOpenChange, pregnancyId }: VetCheckupDialogP
                 <SelectTrigger>
                   <SelectValue placeholder="Select checkup type" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white z-50">
                   {checkupTypes.map((type) => (
                     <SelectItem key={type.value} value={type.value}>
                       {type.label}
@@ -109,26 +123,51 @@ const VetCheckupDialog = ({ open, onOpenChange, pregnancyId }: VetCheckupDialogP
                 </SelectContent>
               </Select>
             </div>
+          </div>
 
-            {/* Veterinarian */}
-            <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="veterinarian">Veterinarian</Label>
+          {/* Veterinarian */}
+          <div className="space-y-2">
+            <Label htmlFor="veterinarian">Veterinarian *</Label>
+            {!showAddVet ? (
               <Select 
                 value={formData.veterinarian} 
-                onValueChange={(value) => setFormData({...formData, veterinarian: value})}
+                onValueChange={(value) => {
+                  if (value === "__add_new__") {
+                    setShowAddVet(true);
+                  } else {
+                    setFormData({...formData, veterinarian: value});
+                  }
+                }}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select veterinarian" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white z-50">
                   {veterinarians.map((vet) => (
                     <SelectItem key={vet} value={vet}>
                       {vet}
                     </SelectItem>
                   ))}
+                  <SelectItem value="__add_new__" className="border-t mt-1 pt-2">
+                    <div className="flex items-center gap-2 font-medium text-primary">
+                      <Plus className="h-4 w-4" />
+                      <span>Add New Veterinarian</span>
+                    </div>
+                  </SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            ) : (
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Enter veterinarian name"
+                  value={newVetName}
+                  onChange={(e) => setNewVetName(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAddVeterinarian()}
+                />
+                <Button type="button" onClick={handleAddVeterinarian}>Add</Button>
+                <Button type="button" variant="outline" onClick={() => setShowAddVet(false)}>Cancel</Button>
+              </div>
+            )}
           </div>
 
           {/* Findings */}
@@ -139,7 +178,8 @@ const VetCheckupDialog = ({ open, onOpenChange, pregnancyId }: VetCheckupDialogP
               placeholder="Enter checkup findings..."
               value={formData.findings}
               onChange={(e) => setFormData({...formData, findings: e.target.value})}
-              rows={3}
+              rows={4}
+              className="resize-none"
             />
           </div>
 
@@ -151,7 +191,8 @@ const VetCheckupDialog = ({ open, onOpenChange, pregnancyId }: VetCheckupDialogP
               placeholder="Enter recommendations..."
               value={formData.recommendations}
               onChange={(e) => setFormData({...formData, recommendations: e.target.value})}
-              rows={2}
+              rows={3}
+              className="resize-none"
             />
           </div>
 
@@ -162,15 +203,19 @@ const VetCheckupDialog = ({ open, onOpenChange, pregnancyId }: VetCheckupDialogP
               date={formData.nextCheckupDate}
               onDateChange={(date) => setFormData({...formData, nextCheckupDate: date})}
               placeholder="Select next checkup date"
+              disabled={(date) => date <= new Date()}
             />
           </div>
 
           {/* Form Actions */}
-          <div className="flex justify-end gap-2 pt-4">
+          <div className="flex justify-end gap-3 pt-4 border-t">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit">
+            <Button 
+              type="submit"
+              disabled={!formData.date || !formData.type || !formData.veterinarian}
+            >
               Schedule Checkup
             </Button>
           </div>
