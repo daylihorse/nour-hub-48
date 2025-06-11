@@ -5,7 +5,7 @@ class PublicDemoService {
   createPublicUser(): User {
     const publicUser: User = {
       id: 'public-user-id',
-      email: 'demo@equitech.com',
+      email: 'demo@dailyhorse.com',
       firstName: 'Demo',
       lastName: 'User',
       createdAt: new Date(),

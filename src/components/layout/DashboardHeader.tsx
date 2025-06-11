@@ -23,14 +23,14 @@ const DashboardHeader = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-brown">
       <div className="flex h-16 items-center px-4">
         {/* Left side with sidebar trigger */}
         <div className="flex items-center gap-3">
-          <SidebarTrigger className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors" />
+          <SidebarTrigger className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-all duration-200 hover:shadow-brown" />
           <div className="hidden lg:block">
             <h1 className="text-lg font-semibold text-foreground">
-              EquiSense Dashboard
+              Dayli Horse Dashboard
             </h1>
           </div>
         </div>
@@ -49,7 +49,7 @@ const DashboardHeader = () => {
             variant="ghost" 
             size="sm"
             onClick={handleLogout}
-            className="gap-2 h-10"
+            className="gap-2 h-10 hover:bg-brown-100 hover:text-brown-800 transition-all duration-200 hover:shadow-brown"
           >
             <LogOut className="h-4 w-4" />
             <span className="hidden sm:inline">Logout</span>

@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,18 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				brown: {
+					50: 'hsl(30, 20%, 96%)',
+					100: 'hsl(30, 15%, 90%)',
+					200: 'hsl(30, 20%, 82%)',
+					300: 'hsl(28, 40%, 75%)',
+					400: 'hsl(28, 40%, 65%)',
+					500: 'hsl(25, 47%, 35%)',
+					600: 'hsl(25, 47%, 30%)',
+					700: 'hsl(25, 47%, 25%)',
+					800: 'hsl(25, 47%, 20%)',
+					900: 'hsl(25, 47%, 15%)',
 				}
 			},
 			borderRadius: {
@@ -84,11 +97,26 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'gentle-pulse': {
+					'0%, 100%': {
+						transform: 'scale(1)',
+						boxShadow: '0 4px 14px 0 hsla(25, 47%, 35%, 0.15)'
+					},
+					'50%': {
+						transform: 'scale(1.02)',
+						boxShadow: '0 10px 25px -3px hsla(25, 47%, 35%, 0.2)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'gentle-pulse': 'gentle-pulse 2s ease-in-out infinite'
+			},
+			boxShadow: {
+				'brown': '0 4px 14px 0 hsla(25, 47%, 35%, 0.15)',
+				'brown-lg': '0 10px 25px -3px hsla(25, 47%, 35%, 0.2), 0 4px 6px -2px hsla(25, 47%, 35%, 0.1)',
 			}
 		}
 	},

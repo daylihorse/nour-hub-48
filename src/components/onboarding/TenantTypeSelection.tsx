@@ -30,7 +30,7 @@ const TenantTypeSelection = () => {
       features: ['Horse Management', 'Breeding Records', 'Training Programs', 'Facility Management'],
       setupTime: '15 minutes',
       popular: true,
-      color: 'bg-blue-500'
+      color: 'bg-brown-gradient'
     },
     {
       type: 'clinic' as TenantType,
@@ -40,7 +40,7 @@ const TenantTypeSelection = () => {
       features: ['Appointment Scheduling', 'Medical Records', 'Prescription Management', 'Client Portal'],
       setupTime: '20 minutes',
       popular: false,
-      color: 'bg-green-500'
+      color: 'bg-brown-gradient'
     },
     {
       type: 'laboratory' as TenantType,
@@ -50,7 +50,7 @@ const TenantTypeSelection = () => {
       features: ['Sample Management', 'Test Results', 'Quality Control', 'Equipment Tracking'],
       setupTime: '25 minutes',
       popular: false,
-      color: 'bg-purple-500'
+      color: 'bg-brown-gradient'
     },
     {
       type: 'hospital' as TenantType,
@@ -60,7 +60,7 @@ const TenantTypeSelection = () => {
       features: ['Emergency Management', 'Surgical Scheduling', 'ICU Monitoring', 'Staff Coordination'],
       setupTime: '30 minutes',
       popular: false,
-      color: 'bg-red-500'
+      color: 'bg-brown-gradient'
     },
     {
       type: 'marketplace' as TenantType,
@@ -70,7 +70,7 @@ const TenantTypeSelection = () => {
       features: ['Product Listings', 'Payment Processing', 'Buyer/Seller Matching', 'Transaction Management'],
       setupTime: '10 minutes',
       popular: false,
-      color: 'bg-pink-500'
+      color: 'bg-brown-gradient'
     },
     {
       type: 'enterprise' as TenantType,
@@ -80,7 +80,7 @@ const TenantTypeSelection = () => {
       features: ['Multi-Location', 'Advanced Analytics', 'Custom Integrations', 'White Label'],
       setupTime: '45 minutes',
       popular: false,
-      color: 'bg-orange-500'
+      color: 'bg-brown-gradient'
     }
   ];
 
@@ -95,37 +95,37 @@ const TenantTypeSelection = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-brown-gradient-light">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <Button variant="outline" onClick={handleBack} className="flex items-center gap-2">
+          <Button variant="outline" onClick={handleBack} className="flex items-center gap-2 border-brown-primary text-brown-primary hover:bg-brown-50">
             <ArrowLeft className="h-4 w-4" />
             Back to Marketplace
           </Button>
           <div className="flex items-center gap-2">
-            <Building2 className="h-6 w-6 text-blue-600" />
-            <span className="text-xl font-bold text-gray-900">EquiSense Setup</span>
+            <Building2 className="h-6 w-6 text-brown-primary" />
+            <span className="text-xl font-bold text-brown-primary">Dayli Horse Setup</span>
           </div>
         </div>
 
         {/* Progress */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+            <div className="w-8 h-8 bg-brown-600 text-white rounded-full flex items-center justify-center text-sm font-semibold shadow-brown">
               1
             </div>
-            <div className="w-16 h-1 bg-gray-200"></div>
-            <div className="w-8 h-8 bg-gray-200 text-gray-400 rounded-full flex items-center justify-center text-sm font-semibold">
+            <div className="w-16 h-1 bg-brown-200"></div>
+            <div className="w-8 h-8 bg-brown-200 text-brown-400 rounded-full flex items-center justify-center text-sm font-semibold">
               2
             </div>
-            <div className="w-16 h-1 bg-gray-200"></div>
-            <div className="w-8 h-8 bg-gray-200 text-gray-400 rounded-full flex items-center justify-center text-sm font-semibold">
+            <div className="w-16 h-1 bg-brown-200"></div>
+            <div className="w-8 h-8 bg-brown-200 text-brown-400 rounded-full flex items-center justify-center text-sm font-semibold">
               3
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Choose Your Business Type</h1>
-          <p className="text-gray-600">Select the option that best describes your equine business</p>
+          <h1 className="text-3xl font-bold text-brown-900 mb-2">Choose Your Business Type</h1>
+          <p className="text-brown-600">Select the option that best describes your equine business</p>
         </div>
 
         {/* Tenant Type Grid */}
@@ -133,42 +133,42 @@ const TenantTypeSelection = () => {
           {tenantTypes.map((tenant) => (
             <Card 
               key={tenant.type}
-              className={`relative cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 ${
-                selectedType === tenant.type ? 'ring-2 ring-blue-500 shadow-xl' : ''
-              } ${tenant.popular ? 'border-2 border-blue-500' : ''}`}
+              className={`relative cursor-pointer transition-all duration-300 hover:shadow-brown-lg hover:scale-105 ${
+                selectedType === tenant.type ? 'ring-2 ring-brown-500 shadow-brown-lg' : 'shadow-brown'
+              } ${tenant.popular ? 'border-2 border-brown-500' : ''}`}
               onClick={() => setSelectedType(tenant.type)}
             >
               {tenant.popular && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-blue-500 text-white px-4 py-1">
+                  <Badge className="bg-brown-500 text-white px-4 py-1 shadow-brown">
                     <Star className="h-3 w-3 mr-1" />
                     Most Popular
                   </Badge>
                 </div>
               )}
               <CardHeader>
-                <div className={`w-12 h-12 rounded-lg ${tenant.color} flex items-center justify-center mb-4`}>
+                <div className={`w-12 h-12 rounded-lg ${tenant.color} flex items-center justify-center mb-4 shadow-brown`}>
                   <tenant.icon className="h-6 w-6 text-white" />
                 </div>
-                <CardTitle className="text-lg">{tenant.title}</CardTitle>
-                <p className="text-sm text-gray-600">{tenant.description}</p>
+                <CardTitle className="text-lg text-brown-900">{tenant.title}</CardTitle>
+                <p className="text-sm text-brown-600">{tenant.description}</p>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 mb-4">
                   {tenant.features.slice(0, 3).map((feature) => (
                     <div key={feature} className="flex items-center gap-2">
-                      <CheckCircle className="h-3 w-3 text-green-500" />
-                      <span className="text-xs">{feature}</span>
+                      <CheckCircle className="h-3 w-3 text-brown-500" />
+                      <span className="text-xs text-brown-700">{feature}</span>
                     </div>
                   ))}
                   {tenant.features.length > 3 && (
-                    <p className="text-xs text-gray-500">+{tenant.features.length - 3} more features</p>
+                    <p className="text-xs text-brown-500">+{tenant.features.length - 3} more features</p>
                   )}
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">Setup time: {tenant.setupTime}</span>
+                  <span className="text-sm text-brown-500">Setup time: {tenant.setupTime}</span>
                   {selectedType === tenant.type && (
-                    <CheckCircle className="h-5 w-5 text-blue-600" />
+                    <CheckCircle className="h-5 w-5 text-brown-600" />
                   )}
                 </div>
               </CardContent>
@@ -182,7 +182,7 @@ const TenantTypeSelection = () => {
             size="lg" 
             onClick={handleContinue}
             disabled={!selectedType}
-            className="bg-blue-600 hover:bg-blue-700 px-8"
+            className="bg-brown-600 hover:bg-brown-700 px-8 shadow-brown-lg transition-all duration-200 hover:shadow-brown"
           >
             Continue Setup
             <ArrowRight className="h-5 w-5 ml-2" />
