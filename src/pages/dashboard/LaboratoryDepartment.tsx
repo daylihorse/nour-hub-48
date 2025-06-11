@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import LaboratoryDashboard from "@/components/laboratory/LaboratoryDashboard";
+import LaboratoryOverview from "@/components/laboratory/LaboratoryOverview";
 import SampleManagement from "@/components/laboratory/SampleManagement";
 import TestRequests from "@/components/laboratory/TestRequests";
 import TestResults from "@/components/laboratory/TestResults";
@@ -14,7 +14,7 @@ import StoreManagement from "@/components/store/StoreManagement";
 import { Store } from "lucide-react";
 
 const LaboratoryDepartment = () => {
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeTab, setActiveTab] = useState("overview");
 
   return (
     <div className="space-y-6">
@@ -25,7 +25,7 @@ const LaboratoryDepartment = () => {
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-10">
-          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+          <TabsTrigger value="overview">Lab Overview</TabsTrigger>
           <TabsTrigger value="samples">Sample Management</TabsTrigger>
           <TabsTrigger value="tests">Test Requests</TabsTrigger>
           <TabsTrigger value="results">Results</TabsTrigger>
@@ -40,8 +40,8 @@ const LaboratoryDepartment = () => {
           </TabsTrigger>
         </TabsList>
         
-        <TabsContent value="dashboard" className="mt-6">
-          <LaboratoryDashboard />
+        <TabsContent value="overview" className="mt-6">
+          <LaboratoryOverview />
         </TabsContent>
         
         <TabsContent value="samples" className="mt-6">
