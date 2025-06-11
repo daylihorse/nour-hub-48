@@ -1,7 +1,6 @@
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import TenantSwitcher from "@/components/auth/TenantSwitcher";
-import NotificationDropdown from "@/components/notifications/NotificationDropdown";
 
 const DashboardHeader = () => {
   return (
@@ -22,9 +21,9 @@ const DashboardHeader = () => {
           <TenantSwitcher />
         </div>
 
-        {/* Right side actions */}
+        {/* Right side - empty for future additions */}
         <div className="ml-auto flex items-center gap-2">
-          <NotificationDropdown />
+          {/* Space for future header actions */}
         </div>
       </div>
     </header>

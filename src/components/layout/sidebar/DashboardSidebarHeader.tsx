@@ -1,7 +1,6 @@
 
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import NotificationDropdown from "@/components/notifications/NotificationDropdown";
-import TenantSwitcher from "@/components/auth/TenantSwitcher";
 
 const DashboardSidebarHeader = () => {
   const { state } = useSidebar();
@@ -9,7 +8,7 @@ const DashboardSidebarHeader = () => {
 
   return (
     <div className={`flex flex-col p-4 border-b border-sidebar-border gap-3`}>
-      {/* Top row with toggle and notification */}
+      {/* Centered content when collapsed, spaced when expanded */}
       <div className={`flex items-center ${
         collapsed ? 'flex-col justify-center gap-2' : 'justify-between'
       }`}>
@@ -31,13 +30,6 @@ const DashboardSidebarHeader = () => {
           <NotificationDropdown />
         </div>
       </div>
-
-      {/* Tenant Switcher */}
-      {!collapsed && (
-        <div className="w-full">
-          <TenantSwitcher />
-        </div>
-      )}
     </div>
   );
 };
