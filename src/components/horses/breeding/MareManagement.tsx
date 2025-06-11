@@ -5,23 +5,7 @@ import MareStats from "./components/MareStats";
 import MareTableContainer from "./components/MareTableContainer";
 import EditMareDialog from "./components/EditMareDialog";
 import { useMareManagement } from "./hooks/useMareManagement";
-
-interface Mare {
-  id: string;
-  horseId: string;
-  horseName: string;
-  status: string;
-  age: number;
-  breed: string;
-  totalFoals: number;
-  liveFoals: number;
-  lastBreedingDate: string | null;
-  expectedDueDate: string | null;
-  pregnancyDay: number;
-  nextHeat: string | null;
-  stallionName: string | null;
-  foalBirthDate?: string;
-}
+import { Mare } from "@/types/breeding/mare";
 
 const MareManagement = () => {
   const {

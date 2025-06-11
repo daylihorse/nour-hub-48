@@ -1,23 +1,7 @@
 
 import { useNavigate } from "react-router-dom";
 import MareCard from "./MareCard";
-
-interface Mare {
-  id: string;
-  horseId: string;
-  horseName: string;
-  status: string;
-  age: number;
-  breed: string;
-  totalFoals: number;
-  liveFoals: number;
-  lastBreedingDate: string | null;
-  expectedDueDate: string | null;
-  pregnancyDay: number;
-  nextHeat: string | null;
-  stallionName: string | null;
-  foalBirthDate?: string;
-}
+import { Mare } from "@/types/breeding/mare";
 
 interface MareGridProps {
   mares: Mare[];
