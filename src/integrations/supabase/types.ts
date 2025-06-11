@@ -48,6 +48,7 @@ export type Database = {
           role: string
           status: string
           tenant_id: string
+          updated_at: string | null
           user_id: string
         }
         Insert: {
@@ -58,6 +59,7 @@ export type Database = {
           role: string
           status?: string
           tenant_id: string
+          updated_at?: string | null
           user_id: string
         }
         Update: {
@@ -68,6 +70,7 @@ export type Database = {
           role?: string
           status?: string
           tenant_id?: string
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: [
@@ -130,6 +133,15 @@ export type Database = {
     Functions: {
       ensure_all_sample_tenant_associations: {
         Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      ensure_user_profile_exists: {
+        Args: {
+          p_user_id: string
+          p_email: string
+          p_first_name?: string
+          p_last_name?: string
+        }
         Returns: undefined
       }
       get_user_tenant_access: {

@@ -37,6 +37,12 @@ export const authService = {
     }
 
     console.log('Sign up successful:', data.user?.email);
+    
+    // Immediately ensure profile exists for the new user
+    if (data.user && !error) {
+      await this.ensureUserProfile(data.user, metadata);
+    }
+    
     return { data, error };
   },
 
@@ -67,6 +73,30 @@ export const authService = {
     return user;
   },
 
+  async ensureUserProfile(user: any, metadata?: any) {
+    console.log('Ensuring user profile exists for:', user.email);
+    
+    try {
+      const firstName = metadata?.first_name || user.user_metadata?.first_name || '';
+      const lastName = metadata?.last_name || user.user_metadata?.last_name || '';
+      
+      const { error } = await supabase.rpc('ensure_user_profile_exists', {
+        p_user_id: user.id,
+        p_email: user.email,
+        p_first_name: firstName,
+        p_last_name: lastName
+      });
+      
+      if (error) {
+        console.error('Error ensuring user profile:', error);
+      } else {
+        console.log('User profile ensured for:', user.email);
+      }
+    } catch (error) {
+      console.error('Exception ensuring user profile:', error);
+    }
+  },
+
   async createSampleUserIfNotExists(email: string, password: string, firstName: string, lastName: string) {
     console.log('Creating sample user if not exists:', email);
     
@@ -76,7 +106,8 @@ export const authService = {
       if (!error && data.user) {
         console.log('Sample user already exists and can sign in:', email);
         
-        // Ensure tenant associations exist for this user
+        // Ensure profile and tenant associations exist
+        await this.ensureUserProfile(data.user, { first_name: firstName, last_name: lastName });
         await this.ensureTenantAssociations(email);
         
         return { data, error: null };
@@ -99,10 +130,10 @@ export const authService = {
       
       console.log('Sample user created successfully:', email);
       
-      // Give the profile trigger some time to execute, then ensure tenant associations
+      // Wait a moment then ensure tenant associations
       setTimeout(async () => {
         await this.ensureTenantAssociations(email);
-      }, 1000);
+      }, 1500);
       
       return { data, error };
     } catch (createError) {

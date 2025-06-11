@@ -35,11 +35,11 @@ export const useAuthState = () => {
       console.error(`Error loading user data (attempt ${retryCount + 1}):`, error);
       
       // Retry logic for newly created users (profile might not exist yet)
-      if (retryCount < 2) {
-        console.log(`Retrying user data load in ${(retryCount + 1) * 1000}ms...`);
+      if (retryCount < 3) {
+        console.log(`Retrying user data load in ${(retryCount + 1) * 1500}ms...`);
         setTimeout(() => {
           loadUserData(supabaseUser, retryCount + 1);
-        }, (retryCount + 1) * 1000);
+        }, (retryCount + 1) * 1500);
         return;
       }
       
