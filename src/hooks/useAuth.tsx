@@ -1,7 +1,6 @@
-
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { AuthContext, User, Tenant, TenantUser } from '@/types/tenant';
+import { AuthContext, User, Tenant, TenantUser, TenantSettings, TenantMetadata } from '@/types/tenant';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 const AuthContextProvider = createContext<AuthContext | null>(null);
@@ -75,6 +74,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         lastLoginAt: tu.last_login_at ? new Date(tu.last_login_at) : undefined,
       }));
 
+      // Create default settings and metadata with proper typing
+      const defaultSettings: TenantSettings = {
+        timezone: 'UTC',
+        currency: 'USD',
+        language: 'en',
+        features: {
+          horses: true,
+          laboratory: true,
+          clinic: true,
+          pharmacy: true,
+          marketplace: true,
+          finance: true,
+          hr: true,
+          inventory: true,
+          training: true,
+          rooms: true,
+          maintenance: true,
+          messages: true,
+        }
+      };
+
+      const defaultMetadata: TenantMetadata = {};
+
       const transformedTenants: Tenant[] = tenants.map(t => ({
         id: t.id,
         name: t.name,
@@ -83,8 +105,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         status: t.status as any,
         createdAt: new Date(t.created_at),
         updatedAt: new Date(t.updated_at),
-        settings: t.settings || {},
-        metadata: t.metadata || {},
+        settings: (typeof t.settings === 'object' && t.settings !== null) 
+          ? { ...defaultSettings, ...t.settings as Partial<TenantSettings> }
+          : defaultSettings,
+        metadata: (typeof t.metadata === 'object' && t.metadata !== null) 
+          ? { ...defaultMetadata, ...t.metadata as Partial<TenantMetadata> }
+          : defaultMetadata,
       }));
 
       const transformedUser: User = {
