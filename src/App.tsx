@@ -38,7 +38,7 @@ import OnboardingEntry from "./pages/onboarding/OnboardingEntry";
 
 // Auth components
 import AuthGuard from "./components/auth/AuthGuard";
-import { AuthProvider } from "./hooks/useAuth";
+import { AuthProvider } from "./components/auth/AuthProvider";
 
 // Create a new QueryClient instance
 const queryClient = new QueryClient();

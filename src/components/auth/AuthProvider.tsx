@@ -1,19 +1,10 @@
 
-import { createContext, useContext, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { AuthContext } from '@/types/tenant';
 import { authService } from '@/services/auth/authService';
 import { useAuthState } from '@/hooks/auth/useAuthState';
 import { usePermissions } from '@/hooks/auth/usePermissions';
-
-const AuthContextProvider = createContext<AuthContext | null>(null);
-
-export const useAuth = () => {
-  const context = useContext(AuthContextProvider);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+import { AuthContextProvider } from '@/contexts/AuthContext';
 
 interface AuthProviderProps {
   children: ReactNode;
