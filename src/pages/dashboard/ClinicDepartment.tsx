@@ -1,42 +1,52 @@
+
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import ClinicDashboard from "@/components/clinic/ClinicDashboard";
+import ClinicOverview from "@/components/clinic/ClinicDashboard";
 import ClinicIntegrationPanel from "@/components/integration/ClinicIntegrationPanel";
 import ClinicHorseUpdatePanel from "@/components/integration/ClinicHorseUpdatePanel";
 import ClinicDocumentManager from "@/components/clinic/ClinicDocumentManager";
 import StoreManagement from "@/components/store/StoreManagement";
 import { Stethoscope, Calendar, FileText, Syringe, Scissors, Pill, Activity, Heart, Users, Store } from "lucide-react";
+
 const ClinicDepartment = () => {
-  const [activeTab, setActiveTab] = useState("dashboard");
-  const stats = [{
-    title: "Today's Appointments",
-    value: "12",
-    icon: Calendar,
-    color: "text-blue-600",
-    bgColor: "bg-blue-50"
-  }, {
-    title: "Active Patients",
-    value: "89",
-    icon: Heart,
-    color: "text-red-600",
-    bgColor: "bg-red-50"
-  }, {
-    title: "Pending Results",
-    value: "5",
-    icon: FileText,
-    color: "text-orange-600",
-    bgColor: "bg-orange-50"
-  }, {
-    title: "Emergency Cases",
-    value: "2",
-    icon: Activity,
-    color: "text-green-600",
-    bgColor: "bg-green-50"
-  }];
-  return <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+  const [activeTab, setActiveTab] = useState("overview");
+
+  const stats = [
+    {
+      title: "Today's Appointments",
+      value: "12",
+      icon: Calendar,
+      color: "text-blue-600",
+      bgColor: "bg-blue-50"
+    },
+    {
+      title: "Active Patients",
+      value: "89",
+      icon: Heart,
+      color: "text-red-600",
+      bgColor: "bg-red-50"
+    },
+    {
+      title: "Pending Results",
+      value: "5",
+      icon: FileText,
+      color: "text-orange-600",
+      bgColor: "bg-orange-50"
+    },
+    {
+      title: "Emergency Cases",
+      value: "2",
+      icon: Activity,
+      color: "text-green-600",
+      bgColor: "bg-green-50"
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header Section */}
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
@@ -66,8 +76,9 @@ const ClinicDepartment = () => {
           {/* Quick Stats */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {stats.map((stat, index) => {
-            const Icon = stat.icon;
-            return <Card key={index} className="border-none shadow-md hover:shadow-lg transition-all duration-200">
+              const Icon = stat.icon;
+              return (
+                <Card key={index} className="border-none shadow-md hover:shadow-lg transition-all duration-200">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
@@ -79,12 +90,13 @@ const ClinicDepartment = () => {
                       </div>
                     </div>
                   </CardContent>
-                </Card>;
-          })}
+                </Card>
+              );
+            })}
           </div>
         </div>
 
-        {/* Integration Dashboard */}
+        {/* Integration Panel */}
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-slate-900 mb-2">Department Integration</h2>
@@ -104,9 +116,9 @@ const ClinicDepartment = () => {
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="bg-slate-50 px-8 pt-6">
               <TabsList className="border-2 border-dashed border-black-200 bg-gradient-to-br from-blue-50 to-purple-50">
-                <TabsTrigger value="dashboard" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
+                <TabsTrigger value="overview" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
                   <Activity className="h-4 w-4" />
-                  Dashboard
+                  Overview
                 </TabsTrigger>
                 <TabsTrigger value="appointments" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
@@ -140,8 +152,8 @@ const ClinicDepartment = () => {
             </div>
             
             <div className="p-8">
-              <TabsContent value="dashboard" className="mt-0">
-                <ClinicDashboard />
+              <TabsContent value="overview" className="mt-0">
+                <ClinicOverview />
               </TabsContent>
               
               <TabsContent value="appointments" className="mt-0">
@@ -265,6 +277,8 @@ const ClinicDepartment = () => {
           </Tabs>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default ClinicDepartment;

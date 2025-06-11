@@ -46,7 +46,7 @@ const DashboardHeader = () => {
           <SidebarTrigger className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-all duration-200 hover:shadow-brown" />
           <div className="hidden lg:block">
             <h1 className="text-lg font-semibold text-foreground">
-              Dayli Horse Dashboard
+              Dayli Horse Overview
             </h1>
           </div>
         </div>

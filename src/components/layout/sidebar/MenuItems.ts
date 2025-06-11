@@ -27,7 +27,7 @@ export interface MenuItem {
 
 export const menuItems: MenuItem[] = [
   { 
-    title: "Dashboard", 
+    title: "Overview", 
     url: "/dashboard", 
     icon: BarChart3 
   },

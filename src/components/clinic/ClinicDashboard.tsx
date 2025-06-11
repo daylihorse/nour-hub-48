@@ -1,10 +1,9 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell, LineChart, Line, AreaChart, Area } from "recharts";
 import { Stethoscope, Calendar, Heart, AlertTriangle, TrendingUp, Activity, Clock, CheckCircle } from "lucide-react";
 
-const ClinicDashboard = () => {
+const ClinicOverview = () => {
   // Sample data for charts
   const appointmentData = [
     { month: "Jan", routine: 45, emergency: 12, surgery: 8, wellness: 32 },
@@ -265,4 +264,4 @@ const ClinicDashboard = () => {
   );
 };
 
-export default ClinicDashboard;
+export default ClinicOverview;
