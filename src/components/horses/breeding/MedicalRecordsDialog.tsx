@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,8 @@ import VetCheckupDialog from "./VetCheckupDialog";
 import ScheduleAppointmentDialog from "./ScheduleAppointmentDialog";
 import AddMedicationDialog from "./AddMedicationDialog";
 import UltrasoundDialog from "./UltrasoundDialog";
+import { useRecords } from "./records/RecordsProvider";
+import { getRecordStatusColor, getRecordTypeLabel } from "./records/utils/recordUtils";
 
 interface MedicalRecordsDialogProps {
   open: boolean;
@@ -18,6 +21,7 @@ interface MedicalRecordsDialogProps {
 }
 
 const MedicalRecordsDialog = ({ open, onOpenChange, mareId, mareName }: MedicalRecordsDialogProps) => {
+  const { getRecordsByHorse, records } = useRecords();
   const [activeTab, setActiveTab] = useState("records");
   
   // Dialog states
@@ -26,79 +30,21 @@ const MedicalRecordsDialog = ({ open, onOpenChange, mareId, mareName }: MedicalR
   const [medicationDialog, setMedicationDialog] = useState(false);
   const [ultrasoundDialog, setUltrasoundDialog] = useState(false);
 
-  // Mock medical records data
-  const medicalRecords = [
-    {
-      id: "1",
-      date: "2024-01-15",
-      type: "Ultrasound",
-      veterinarian: "Dr. Smith",
-      findings: "Pregnancy confirmed at 45 days",
-      status: "normal"
-    },
-    {
-      id: "2", 
-      date: "2024-01-01",
-      type: "Routine Checkup",
-      veterinarian: "Dr. Johnson",
-      findings: "Good overall health, ready for breeding",
-      status: "normal"
-    },
-    {
-      id: "3",
-      date: "2023-12-15",
-      type: "Vaccination",
-      veterinarian: "Dr. Brown",
-      findings: "Annual vaccinations completed",
-      status: "completed"
-    }
-  ];
-
-  const upcomingAppointments = [
-    {
-      id: "1",
-      date: "2024-02-15",
-      type: "Ultrasound Follow-up",
-      veterinarian: "Dr. Smith",
-      status: "scheduled"
-    },
-    {
-      id: "2",
-      date: "2024-03-01", 
-      type: "Pregnancy Check",
-      veterinarian: "Dr. Johnson",
-      status: "scheduled"
-    }
-  ];
-
-  const medications = [
-    {
-      id: "1",
-      name: "Prenatal Vitamins",
-      dosage: "2 tablets daily",
-      startDate: "2024-01-01",
-      endDate: "2024-04-01",
-      status: "active"
-    },
-    {
-      id: "2",
-      name: "Folic Acid",
-      dosage: "1 tablet daily", 
-      startDate: "2024-01-15",
-      endDate: "2024-03-15",
-      status: "active"
-    }
-  ];
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "normal": return "bg-green-100 text-green-800";
-      case "completed": return "bg-blue-100 text-blue-800";
-      case "scheduled": return "bg-yellow-100 text-yellow-800";
-      case "active": return "bg-purple-100 text-purple-800";
-      default: return "bg-gray-100 text-gray-800";
-    }
-  };
+  // Get records for this horse
+  const horseRecords = mareId ? getRecordsByHorse(mareId) : [];
+  
+  // Filter records by type
+  const medicalRecords = horseRecords.filter(record => 
+    ['veterinary_checkup', 'ultrasound', 'health_assessment'].includes(record.type)
+  );
+  
+  const appointments = horseRecords.filter(record => 
+    record.type === 'appointment' && record.status === 'scheduled'
+  );
+  
+  const medications = horseRecords.filter(record => 
+    record.type === 'medication' && ['scheduled', 'in_progress'].includes(record.status)
+  );
 
   return (
     <>
@@ -135,30 +81,42 @@ const MedicalRecordsDialog = ({ open, onOpenChange, mareId, mareName }: MedicalR
               </div>
               
               <div className="space-y-3">
-                {medicalRecords.map((record) => (
-                  <Card key={record.id}>
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Stethoscope className="h-4 w-4" />
-                            <h4 className="font-semibold">{record.type}</h4>
-                            <Badge className={getStatusColor(record.status)}>
-                              {record.status}
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-1">
-                            Date: {new Date(record.date).toLocaleDateString()}
-                          </p>
-                          <p className="text-sm text-muted-foreground mb-2">
-                            Veterinarian: {record.veterinarian}
-                          </p>
-                          <p className="text-sm">{record.findings}</p>
-                        </div>
-                      </div>
+                {medicalRecords.length === 0 ? (
+                  <Card>
+                    <CardContent className="p-6 text-center">
+                      <p className="text-muted-foreground">No medical records found for this horse.</p>
                     </CardContent>
                   </Card>
-                ))}
+                ) : (
+                  medicalRecords.map((record) => (
+                    <Card key={record.id}>
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Stethoscope className="h-4 w-4" />
+                              <h4 className="font-semibold">{record.title}</h4>
+                              <Badge className={getRecordStatusColor(record.status)}>
+                                {record.status}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-1">
+                              Date: {record.scheduledDate?.toLocaleDateString() || record.createdAt.toLocaleDateString()}
+                            </p>
+                            {record.veterinarian && (
+                              <p className="text-sm text-muted-foreground mb-2">
+                                Veterinarian: {record.veterinarian}
+                              </p>
+                            )}
+                            {record.description && (
+                              <p className="text-sm">{record.description}</p>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
               </div>
             </TabsContent>
 
@@ -172,26 +130,39 @@ const MedicalRecordsDialog = ({ open, onOpenChange, mareId, mareName }: MedicalR
               </div>
               
               <div className="space-y-3">
-                {upcomingAppointments.map((appointment) => (
-                  <Card key={appointment.id}>
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <Calendar className="h-4 w-4" />
-                            <h4 className="font-semibold">{appointment.type}</h4>
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            {new Date(appointment.date).toLocaleDateString()} - {appointment.veterinarian}
-                          </p>
-                        </div>
-                        <Badge className={getStatusColor(appointment.status)}>
-                          {appointment.status}
-                        </Badge>
-                      </div>
+                {appointments.length === 0 ? (
+                  <Card>
+                    <CardContent className="p-6 text-center">
+                      <p className="text-muted-foreground">No upcoming appointments for this horse.</p>
                     </CardContent>
                   </Card>
-                ))}
+                ) : (
+                  appointments.map((appointment) => (
+                    <Card key={appointment.id}>
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <div className="flex items-center gap-2 mb-1">
+                              <Calendar className="h-4 w-4" />
+                              <h4 className="font-semibold">{appointment.title}</h4>
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              {appointment.scheduledDate?.toLocaleDateString()} - {appointment.assignedTo || 'Unassigned'}
+                            </p>
+                            {appointment.location && (
+                              <p className="text-sm text-muted-foreground">
+                                Location: {appointment.location}
+                              </p>
+                            )}
+                          </div>
+                          <Badge className={getRecordStatusColor(appointment.status)}>
+                            {appointment.status}
+                          </Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
               </div>
             </TabsContent>
 
@@ -205,29 +176,44 @@ const MedicalRecordsDialog = ({ open, onOpenChange, mareId, mareName }: MedicalR
               </div>
               
               <div className="space-y-3">
-                {medications.map((medication) => (
-                  <Card key={medication.id}>
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <Pill className="h-4 w-4" />
-                            <h4 className="font-semibold">{medication.name}</h4>
-                            <Badge className={getStatusColor(medication.status)}>
-                              {medication.status}
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            Dosage: {medication.dosage}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            Duration: {new Date(medication.startDate).toLocaleDateString()} - {new Date(medication.endDate).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
+                {medications.length === 0 ? (
+                  <Card>
+                    <CardContent className="p-6 text-center">
+                      <p className="text-muted-foreground">No current medications for this horse.</p>
                     </CardContent>
                   </Card>
-                ))}
+                ) : (
+                  medications.map((medication) => (
+                    <Card key={medication.id}>
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <div className="flex items-center gap-2 mb-1">
+                              <Pill className="h-4 w-4" />
+                              <h4 className="font-semibold">{medication.title}</h4>
+                              <Badge className={getRecordStatusColor(medication.status)}>
+                                {medication.status}
+                              </Badge>
+                            </div>
+                            {medication.description && (
+                              <p className="text-sm text-muted-foreground mb-1">
+                                {medication.description}
+                              </p>
+                            )}
+                            <p className="text-sm text-muted-foreground">
+                              Started: {medication.scheduledDate?.toLocaleDateString() || medication.createdAt.toLocaleDateString()}
+                            </p>
+                            {medication.dueDate && (
+                              <p className="text-sm text-muted-foreground">
+                                Ends: {medication.dueDate.toLocaleDateString()}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
               </div>
             </TabsContent>
 
@@ -242,9 +228,10 @@ const MedicalRecordsDialog = ({ open, onOpenChange, mareId, mareName }: MedicalR
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm">Overall health: <span className="font-semibold text-green-600">Good</span></p>
-                    <p className="text-sm">Pregnancy status: <span className="font-semibold text-blue-600">Pregnant (Day 60)</span></p>
-                    <p className="text-sm">Last checkup: <span className="font-semibold">Jan 15, 2024</span></p>
+                    <p className="text-sm">Total Records: <span className="font-semibold">{horseRecords.length}</span></p>
+                    <p className="text-sm">Medical Records: <span className="font-semibold">{medicalRecords.length}</span></p>
+                    <p className="text-sm">Active Medications: <span className="font-semibold">{medications.length}</span></p>
+                    <p className="text-sm">Upcoming Appointments: <span className="font-semibold">{appointments.length}</span></p>
                   </CardContent>
                 </Card>
                 
@@ -252,13 +239,27 @@ const MedicalRecordsDialog = ({ open, onOpenChange, mareId, mareName }: MedicalR
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-base">
                       <Calendar className="h-4 w-4" />
-                      Next Actions
+                      Recent Activity
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm">Next appointment: <span className="font-semibold">Feb 15, 2024</span></p>
-                    <p className="text-sm">Medication review: <span className="font-semibold">Feb 1, 2024</span></p>
-                    <p className="text-sm">Expected foaling: <span className="font-semibold text-purple-600">Apr 15, 2024</span></p>
+                    {horseRecords.length > 0 ? (
+                      <div className="space-y-2">
+                        {horseRecords
+                          .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+                          .slice(0, 3)
+                          .map((record) => (
+                            <div key={record.id} className="text-sm">
+                              <span className="font-medium">{getRecordTypeLabel(record.type)}</span>
+                              <span className="text-muted-foreground ml-2">
+                                {record.updatedAt.toLocaleDateString()}
+                              </span>
+                            </div>
+                          ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">No recent activity</p>
+                    )}
                   </CardContent>
                 </Card>
               </div>
@@ -278,6 +279,8 @@ const MedicalRecordsDialog = ({ open, onOpenChange, mareId, mareName }: MedicalR
         open={vetCheckupDialog}
         onOpenChange={setVetCheckupDialog}
         pregnancyId={null}
+        horseId={mareId}
+        horseName={mareName}
       />
 
       <ScheduleAppointmentDialog
@@ -298,6 +301,8 @@ const MedicalRecordsDialog = ({ open, onOpenChange, mareId, mareName }: MedicalR
         open={ultrasoundDialog}
         onOpenChange={setUltrasoundDialog}
         pregnancyId={null}
+        horseId={mareId}
+        horseName={mareName}
       />
     </>
   );

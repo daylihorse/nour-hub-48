@@ -1,14 +1,15 @@
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/date-picker";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Plus, Clock } from "lucide-react";
+import BaseRecordDialog from "./records/BaseRecordDialog";
+import { useRecords } from "./records/RecordsProvider";
+import { AppointmentRecord } from "@/types/breeding/unified-records";
+import { generateRecordId } from "./records/utils/recordUtils";
 
 interface ScheduleAppointmentDialogProps {
   open: boolean;
@@ -17,7 +18,14 @@ interface ScheduleAppointmentDialogProps {
   mareName?: string;
 }
 
-const ScheduleAppointmentDialog = ({ open, onOpenChange, mareId, mareName }: ScheduleAppointmentDialogProps) => {
+const ScheduleAppointmentDialog = ({ 
+  open, 
+  onOpenChange, 
+  mareId = "default-horse-id", 
+  mareName = "Mare"
+}: ScheduleAppointmentDialogProps) => {
+  const { addRecord } = useRecords();
+  
   const [formData, setFormData] = useState({
     date: undefined as Date | undefined,
     time: "",
@@ -81,10 +89,39 @@ const ScheduleAppointmentDialog = ({ open, onOpenChange, mareId, mareName }: Sch
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Appointment data:", { mareId, mareName, ...formData });
+  const handleSubmit = () => {
+    if (!formData.date || !formData.time || !formData.type || !formData.duration || !formData.provider) {
+      return;
+    }
+
+    // Combine date and time
+    const [hours, minutes] = formData.time.split(':').map(Number);
+    const scheduledDateTime = new Date(formData.date);
+    scheduledDateTime.setHours(hours, minutes, 0, 0);
+
+    const newRecord: AppointmentRecord = {
+      id: generateRecordId('appointment'),
+      type: 'appointment',
+      title: `${appointmentTypes.find(t => t.value === formData.type)?.label || 'Appointment'}`,
+      description: formData.notes || undefined,
+      status: 'scheduled',
+      priority: 'medium',
+      horseId: mareId || "default-horse-id",
+      horseName: mareName || "Mare",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      scheduledDate: scheduledDateTime,
+      createdBy: "current-user",
+      location: formData.location || undefined,
+      appointmentType: formData.type,
+      duration: parseInt(formData.duration),
+      provider: formData.provider,
+      reminderBefore: parseInt(formData.reminderBefore),
+    };
+
+    addRecord(newRecord);
     onOpenChange(false);
+    
     // Reset form
     setFormData({
       date: undefined,
@@ -98,212 +135,187 @@ const ScheduleAppointmentDialog = ({ open, onOpenChange, mareId, mareName }: Sch
     });
   };
 
+  const isFormValid = formData.date && formData.time && formData.type && formData.duration && formData.provider;
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
-            Schedule Appointment
-          </DialogTitle>
-        </DialogHeader>
-        
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {mareId && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm">Horse Information</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Mare: {mareName || `ID: ${mareId}`}
-                </p>
-              </CardContent>
-            </Card>
-          )}
+    <BaseRecordDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Schedule Appointment"
+      icon={<Calendar className="h-5 w-5" />}
+      horseId={mareId}
+      horseName={mareName}
+      onSubmit={handleSubmit}
+      submitLabel="Schedule Appointment"
+      isSubmitDisabled={!isFormValid}
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Appointment Date */}
+        <div className="space-y-2">
+          <Label>Appointment Date *</Label>
+          <DatePicker
+            date={formData.date}
+            onDateChange={(date) => setFormData({...formData, date})}
+            placeholder="Select appointment date"
+            disabled={(date) => date < new Date()}
+          />
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Appointment Date */}
-            <div className="space-y-2">
-              <Label>Appointment Date *</Label>
-              <DatePicker
-                date={formData.date}
-                onDateChange={(date) => setFormData({...formData, date})}
-                placeholder="Select appointment date"
-                disabled={(date) => date < new Date()}
-              />
-            </div>
+        {/* Appointment Time */}
+        <div className="space-y-2">
+          <Label htmlFor="time">Time *</Label>
+          <Select 
+            value={formData.time} 
+            onValueChange={(value) => setFormData({...formData, time: value})}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select time" />
+            </SelectTrigger>
+            <SelectContent className="bg-white z-50 max-h-48 overflow-y-auto">
+              {timeSlots.map((time) => (
+                <SelectItem key={time} value={time}>
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-3 w-3" />
+                    {time}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-            {/* Appointment Time */}
-            <div className="space-y-2">
-              <Label htmlFor="time">Time *</Label>
-              <Select 
-                value={formData.time} 
-                onValueChange={(value) => setFormData({...formData, time: value})}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select time" />
-                </SelectTrigger>
-                <SelectContent className="bg-white z-50 max-h-48 overflow-y-auto">
-                  {timeSlots.map((time) => (
-                    <SelectItem key={time} value={time}>
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-3 w-3" />
-                        {time}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+        {/* Appointment Type */}
+        <div className="space-y-2">
+          <Label htmlFor="type">Appointment Type *</Label>
+          <Select 
+            value={formData.type} 
+            onValueChange={(value) => setFormData({...formData, type: value})}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select appointment type" />
+            </SelectTrigger>
+            <SelectContent className="bg-white z-50">
+              {appointmentTypes.map((type) => (
+                <SelectItem key={type.value} value={type.value}>
+                  {type.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-            {/* Appointment Type */}
-            <div className="space-y-2">
-              <Label htmlFor="type">Appointment Type *</Label>
-              <Select 
-                value={formData.type} 
-                onValueChange={(value) => setFormData({...formData, type: value})}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select appointment type" />
-                </SelectTrigger>
-                <SelectContent className="bg-white z-50">
-                  {appointmentTypes.map((type) => (
-                    <SelectItem key={type.value} value={type.value}>
-                      {type.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+        {/* Duration */}
+        <div className="space-y-2">
+          <Label htmlFor="duration">Duration *</Label>
+          <Select 
+            value={formData.duration} 
+            onValueChange={(value) => setFormData({...formData, duration: value})}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select duration" />
+            </SelectTrigger>
+            <SelectContent className="bg-white z-50">
+              {durations.map((duration) => (
+                <SelectItem key={duration.value} value={duration.value}>
+                  {duration.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
-            {/* Duration */}
-            <div className="space-y-2">
-              <Label htmlFor="duration">Duration *</Label>
-              <Select 
-                value={formData.duration} 
-                onValueChange={(value) => setFormData({...formData, duration: value})}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select duration" />
-                </SelectTrigger>
-                <SelectContent className="bg-white z-50">
-                  {durations.map((duration) => (
-                    <SelectItem key={duration.value} value={duration.value}>
-                      {duration.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Service Provider */}
-          <div className="space-y-2">
-            <Label htmlFor="provider">Service Provider *</Label>
-            {!showAddProvider ? (
-              <Select 
-                value={formData.provider} 
-                onValueChange={(value) => {
-                  if (value === "__add_new__") {
-                    setShowAddProvider(true);
-                  } else {
-                    setFormData({...formData, provider: value});
-                  }
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select service provider" />
-                </SelectTrigger>
-                <SelectContent className="bg-white z-50">
-                  {providers.map((provider) => (
-                    <SelectItem key={provider} value={provider}>
-                      {provider}
-                    </SelectItem>
-                  ))}
-                  <SelectItem value="__add_new__" className="border-t mt-1 pt-2">
-                    <div className="flex items-center gap-2 font-medium text-primary">
-                      <Plus className="h-4 w-4" />
-                      <span>Add New Provider</span>
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            ) : (
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Enter provider name"
-                  value={newProviderName}
-                  onChange={(e) => setNewProviderName(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAddProvider()}
-                />
-                <Button type="button" onClick={handleAddProvider}>Add</Button>
-                <Button type="button" variant="outline" onClick={() => setShowAddProvider(false)}>Cancel</Button>
-              </div>
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Location */}
-            <div className="space-y-2">
-              <Label htmlFor="location">Location</Label>
-              <Input
-                id="location"
-                placeholder="Enter location"
-                value={formData.location}
-                onChange={(e) => setFormData({...formData, location: e.target.value})}
-              />
-            </div>
-
-            {/* Reminder */}
-            <div className="space-y-2">
-              <Label htmlFor="reminderBefore">Reminder</Label>
-              <Select 
-                value={formData.reminderBefore} 
-                onValueChange={(value) => setFormData({...formData, reminderBefore: value})}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-white z-50">
-                  {reminderOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Notes */}
-          <div className="space-y-2">
-            <Label htmlFor="notes">Notes</Label>
-            <Textarea
-              id="notes"
-              placeholder="Enter any additional notes..."
-              value={formData.notes}
-              onChange={(e) => setFormData({...formData, notes: e.target.value})}
-              rows={3}
-              className="resize-none"
+      {/* Service Provider */}
+      <div className="space-y-2">
+        <Label htmlFor="provider">Service Provider *</Label>
+        {!showAddProvider ? (
+          <Select 
+            value={formData.provider} 
+            onValueChange={(value) => {
+              if (value === "__add_new__") {
+                setShowAddProvider(true);
+              } else {
+                setFormData({...formData, provider: value});
+              }
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select service provider" />
+            </SelectTrigger>
+            <SelectContent className="bg-white z-50">
+              {providers.map((provider) => (
+                <SelectItem key={provider} value={provider}>
+                  {provider}
+                </SelectItem>
+              ))}
+              <SelectItem value="__add_new__" className="border-t mt-1 pt-2">
+                <div className="flex items-center gap-2 font-medium text-primary">
+                  <Plus className="h-4 w-4" />
+                  <span>Add New Provider</span>
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        ) : (
+          <div className="flex gap-2">
+            <Input
+              placeholder="Enter provider name"
+              value={newProviderName}
+              onChange={(e) => setNewProviderName(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleAddProvider()}
             />
+            <button type="button" onClick={handleAddProvider} className="px-3 py-2 bg-primary text-white rounded">Add</button>
+            <button type="button" onClick={() => setShowAddProvider(false)} className="px-3 py-2 border rounded">Cancel</button>
           </div>
+        )}
+      </div>
 
-          {/* Form Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button 
-              type="submit"
-              disabled={!formData.date || !formData.time || !formData.type || !formData.duration || !formData.provider}
-            >
-              Schedule Appointment
-            </Button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Location */}
+        <div className="space-y-2">
+          <Label htmlFor="location">Location</Label>
+          <Input
+            id="location"
+            placeholder="Enter location"
+            value={formData.location}
+            onChange={(e) => setFormData({...formData, location: e.target.value})}
+          />
+        </div>
+
+        {/* Reminder */}
+        <div className="space-y-2">
+          <Label htmlFor="reminderBefore">Reminder</Label>
+          <Select 
+            value={formData.reminderBefore} 
+            onValueChange={(value) => setFormData({...formData, reminderBefore: value})}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-white z-50">
+              {reminderOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Notes */}
+      <div className="space-y-2">
+        <Label htmlFor="notes">Notes</Label>
+        <Textarea
+          id="notes"
+          placeholder="Enter any additional notes..."
+          value={formData.notes}
+          onChange={(e) => setFormData({...formData, notes: e.target.value})}
+          rows={3}
+          className="resize-none"
+        />
+      </div>
+    </BaseRecordDialog>
   );
 };
 
