@@ -1,11 +1,15 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Download, Plus } from "lucide-react";
 import MareViewToggle from "./MareViewToggle";
 import MareGridView from "./MareGridView";
 import MareListView from "./MareListView";
 import MareTableView from "./MareTableView";
+import AddMareDialog from "../AddMareDialog";
+import VetCheckupDialog from "../VetCheckupDialog";
+import MedicalRecordsDialog from "../MedicalRecordsDialog";
 
 interface Mare {
   id: string;
@@ -30,11 +34,38 @@ interface MareTableContainerProps {
 }
 
 const MareTableContainer = ({ mares, onEditMare }: MareTableContainerProps) => {
+  const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'table'>('grid');
+  
+  // Dialog states
+  const [addMareDialog, setAddMareDialog] = useState(false);
+  const [vetCheckupDialog, setVetCheckupDialog] = useState<{
+    open: boolean;
+    pregnancyId: string | null;
+  }>({ open: false, pregnancyId: null });
+  const [medicalRecordsDialog, setMedicalRecordsDialog] = useState<{
+    open: boolean;
+    mareId: string | null;
+    mareName?: string;
+  }>({ open: false, mareId: null, mareName: undefined });
 
   const handleAddMare = () => {
-    console.log('Add new mare');
-    // TODO: Implement add mare functionality
+    setAddMareDialog(true);
+  };
+
+  const handleAddNewMare = () => {
+    // Navigate to horse registration
+    navigate('/dashboard/horses', { 
+      state: { 
+        activeTab: 'horses',
+        showAddForm: true 
+      } 
+    });
+  };
+
+  const handleSelectExistingMare = (mareId: string) => {
+    console.log('Adding existing mare to breeding program:', mareId);
+    // TODO: Implement adding existing mare to breeding program
   };
 
   const handleExport = () => {
@@ -43,13 +74,29 @@ const MareTableContainer = ({ mares, onEditMare }: MareTableContainerProps) => {
   };
 
   const handleScheduleCheckup = (mareId: string) => {
-    console.log('Schedule checkup for mare:', mareId);
-    // TODO: Implement checkup scheduling
+    const mare = mares.find(m => m.id === mareId);
+    if (mare && mare.status === 'pregnant') {
+      // For pregnant mares, use pregnancy ID (mock)
+      setVetCheckupDialog({
+        open: true,
+        pregnancyId: `PREG_${mareId}`
+      });
+    } else {
+      // For non-pregnant mares, open general checkup
+      setVetCheckupDialog({
+        open: true,
+        pregnancyId: null
+      });
+    }
   };
 
   const handleViewMedicalRecords = (mareId: string) => {
-    console.log('View medical records for mare:', mareId);
-    // TODO: Implement medical records view
+    const mare = mares.find(m => m.id === mareId);
+    setMedicalRecordsDialog({
+      open: true,
+      mareId,
+      mareName: mare?.horseName
+    });
   };
 
   const renderContent = () => {
@@ -94,6 +141,27 @@ const MareTableContainer = ({ mares, onEditMare }: MareTableContainerProps) => {
 
       {/* Mare content based on view mode */}
       {renderContent()}
+
+      {/* Dialogs */}
+      <AddMareDialog
+        open={addMareDialog}
+        onOpenChange={setAddMareDialog}
+        onAddNewMare={handleAddNewMare}
+        onSelectExistingMare={handleSelectExistingMare}
+      />
+
+      <VetCheckupDialog
+        open={vetCheckupDialog.open}
+        onOpenChange={(open) => setVetCheckupDialog({ open, pregnancyId: null })}
+        pregnancyId={vetCheckupDialog.pregnancyId}
+      />
+
+      <MedicalRecordsDialog
+        open={medicalRecordsDialog.open}
+        onOpenChange={(open) => setMedicalRecordsDialog({ open: false, mareId: null, mareName: undefined })}
+        mareId={medicalRecordsDialog.mareId}
+        mareName={medicalRecordsDialog.mareName}
+      />
     </div>
   );
 };

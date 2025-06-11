@@ -1,5 +1,6 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Search, Filter } from "lucide-react";
@@ -9,9 +10,17 @@ import { HorseFormData } from "@/types/horse";
 import { useToast } from "@/hooks/use-toast";
 
 const HorseManagement = () => {
+  const location = useLocation();
   const [showAddForm, setShowAddForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
+
+  // Handle navigation state from breeding management
+  useEffect(() => {
+    if (location.state?.showAddForm) {
+      setShowAddForm(true);
+    }
+  }, [location.state]);
 
   console.log("HorseManagement rendering, showAddForm:", showAddForm);
 
@@ -42,7 +51,7 @@ const HorseManagement = () => {
       
       toast({
         title: "Success!",
-        description: `${data.name} has been registered successfully.`,
+        description: `${data.name} has been registered successfully and added to the breeding program.`,
       });
       
       setShowAddForm(false);
