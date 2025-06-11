@@ -77,17 +77,27 @@ export const useAuthState = () => {
     }
   };
 
-  // Function to handle demo account switching
-  const switchDemoAccount = (account: any) => {
+  // Function to handle demo account switching - this is the key fix
+  const switchDemoAccount = async (account: any) => {
     if (accessMode === 'demo') {
-      const tenant = publicDemoService.createTenantFromDemoAccount(account);
-      const user = publicDemoService.createUserFromDemoAccount(account, tenant);
-      
-      setUser(user);
-      setCurrentTenant(tenant);
-      setAvailableTenants([tenant]);
-      
-      console.log('Switched to demo account:', account.tenantName);
+      setIsLoading(true);
+      try {
+        const tenant = publicDemoService.createTenantFromDemoAccount(account);
+        const user = publicDemoService.createUserFromDemoAccount(account, tenant);
+        
+        // Update state synchronously
+        setUser(user);
+        setCurrentTenant(tenant);
+        setAvailableTenants([tenant]);
+        
+        console.log('Demo account switched successfully:', account.tenantName);
+        return Promise.resolve(); // Return resolved promise
+      } catch (error) {
+        console.error('Demo account switch error:', error);
+        throw error;
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 

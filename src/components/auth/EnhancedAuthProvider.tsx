@@ -7,7 +7,6 @@ import { usePublicAuthState } from '@/hooks/auth/usePublicAuthState';
 import { usePermissions } from '@/hooks/auth/usePermissions';
 import { AuthContextProvider } from '@/contexts/AuthContext';
 import { useAccessMode } from '@/contexts/AccessModeContext';
-import { publicDemoService } from '@/services/auth/publicDemoService';
 
 interface EnhancedAuthProviderProps {
   children: ReactNode;
@@ -28,6 +27,7 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
     isLoading,
     switchTenant,
     setIsLoading,
+    switchDemoAccount: authSwitchDemoAccount,
   } = accessMode === 'public' ? publicAuth : regularAuth;
 
   const { hasPermission, hasRole } = usePermissions(user, currentTenant);
@@ -71,24 +71,22 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
   const switchDemoAccount = async (account: any) => {
     console.log('Switching to demo account:', account);
     
-    setIsLoading(true);
     try {
-      // Set to demo mode
+      // Set to demo mode first
       setAccessMode('demo');
       
-      // Create tenant and user from account data
-      const tenant = publicDemoService.createTenantFromDemoAccount(account);
-      const user = publicDemoService.createUserFromDemoAccount(account, tenant);
+      // Wait a bit for the access mode to propagate
+      await new Promise(resolve => setTimeout(resolve, 50));
       
-      // Update auth state directly (this will be handled by the auth hooks)
-      // The actual state update will happen through the auth state hooks
-      console.log('Demo account switch completed for:', account.tenantName);
+      // Use the auth hook's switchDemoAccount function
+      if (authSwitchDemoAccount) {
+        await authSwitchDemoAccount(account);
+        console.log('Demo account switch completed for:', account.tenantName);
+      }
       
     } catch (error) {
       console.error('Demo account switch error:', error);
       throw error;
-    } finally {
-      setIsLoading(false);
     }
   };
 
