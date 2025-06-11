@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +9,7 @@ import PedigreeHeader from "./components/PedigreeHeader";
 import AddHorseDialog from "./components/AddHorseDialog";
 import PedigreeGridView from "./components/PedigreeGridView";
 import PedigreeListView from "./components/PedigreeListView";
+import PedigreeTableView from "./components/PedigreeTableView";
 import PedigreeTreeVisualization from "../breeding/pedigree/PedigreeTreeVisualization";
 
 interface Horse {
@@ -105,7 +105,6 @@ const PedigreeManagement = () => {
 
   const handleSelectExistingHorse = (horseId: string) => {
     console.log('Adding existing horse to pedigree system:', horseId);
-    // TODO: Implement adding existing horse to pedigree system
   };
 
   const handleViewPedigree = (horseId: string) => {
@@ -115,22 +114,59 @@ const PedigreeManagement = () => {
 
   const handleEditHorse = (horseId: string) => {
     console.log('Edit horse:', horseId);
-    // TODO: Implement horse editing
   };
 
   const handleGenerateCertificate = (horseId: string) => {
     console.log('Generate certificate for horse:', horseId);
-    // TODO: Implement certificate generation
   };
 
   const handleExport = () => {
     console.log('Export pedigree data');
-    // TODO: Implement export functionality
   };
 
   const handleFilter = () => {
     console.log('Open filter dialog');
-    // TODO: Implement filter dialog
+  };
+
+  const renderHorsesView = () => {
+    switch (viewMode) {
+      case 'grid':
+        return (
+          <PedigreeGridView
+            horses={filteredHorses}
+            onViewPedigree={handleViewPedigree}
+            onEditHorse={handleEditHorse}
+            onGenerateCertificate={handleGenerateCertificate}
+          />
+        );
+      case 'list':
+        return (
+          <PedigreeListView
+            horses={filteredHorses}
+            onViewPedigree={handleViewPedigree}
+            onEditHorse={handleEditHorse}
+            onGenerateCertificate={handleGenerateCertificate}
+          />
+        );
+      case 'table':
+        return (
+          <PedigreeTableView
+            horses={filteredHorses}
+            onViewPedigree={handleViewPedigree}
+            onEditHorse={handleEditHorse}
+            onGenerateCertificate={handleGenerateCertificate}
+          />
+        );
+      default:
+        return (
+          <PedigreeGridView
+            horses={filteredHorses}
+            onViewPedigree={handleViewPedigree}
+            onEditHorse={handleEditHorse}
+            onGenerateCertificate={handleGenerateCertificate}
+          />
+        );
+    }
   };
 
   return (
@@ -214,21 +250,7 @@ const PedigreeManagement = () => {
             </div>
 
             {/* Horses Display */}
-            {viewMode === 'grid' ? (
-              <PedigreeGridView
-                horses={filteredHorses}
-                onViewPedigree={handleViewPedigree}
-                onEditHorse={handleEditHorse}
-                onGenerateCertificate={handleGenerateCertificate}
-              />
-            ) : (
-              <PedigreeListView
-                horses={filteredHorses}
-                onViewPedigree={handleViewPedigree}
-                onEditHorse={handleEditHorse}
-                onGenerateCertificate={handleGenerateCertificate}
-              />
-            )}
+            {renderHorsesView()}
           </div>
         </TabsContent>
 

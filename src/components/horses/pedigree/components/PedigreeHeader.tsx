@@ -2,7 +2,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search, Filter, Plus, Download, Grid2x2, List } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Search, Filter, Plus, Download, Grid2X2, List, Table } from "lucide-react";
 
 interface PedigreeHeaderProps {
   searchTerm: string;
@@ -63,7 +64,7 @@ const PedigreeHeader = ({
                 onClick={() => onViewModeChange('grid')}
                 className="h-8 w-8 p-0"
               >
-                <Grid2x2 className="h-4 w-4" />
+                <Grid2X2 className="h-4 w-4" />
               </Button>
               <Button
                 variant={viewMode === 'list' ? 'default' : 'ghost'}
@@ -72,6 +73,14 @@ const PedigreeHeader = ({
                 className="h-8 w-8 p-0"
               >
                 <List className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === 'table' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => onViewModeChange('table')}
+                className="h-8 w-8 p-0"
+              >
+                <Table className="h-4 w-4" />
               </Button>
             </div>
 
