@@ -1,10 +1,26 @@
 
+import { useRecordSearch } from "../hooks/useRecordSearch";
+import { useRecordActions } from "../hooks/useRecordActions";
+import RecordHeader from "../components/RecordHeader";
+import RecordSearch from "../components/RecordSearch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Calendar, Baby, Heart, Activity, Edit, View } from "lucide-react";
-import ViewToggle from "../components/ViewToggle";
+import { Calendar, Baby, Activity } from "lucide-react";
+
+// Mock pregnancy data
+const mockPregnancyRecords = [
+  {
+    id: "1",
+    title: "Current Pregnancy",
+    stallion: "Thunder Storm",
+    breedingDate: "2023-07-20",
+    expectedDueDate: "2024-04-15",
+    pregnancyDay: 280,
+    status: "Active",
+    lastCheckup: "2024-01-10",
+    veterinarian: "Dr. Sarah Wilson"
+  }
+];
 
 interface MarePregnancyTableProps {
   mareId: string;
@@ -14,171 +30,81 @@ interface MarePregnancyTableProps {
 }
 
 const MarePregnancyTable = ({ mareId, viewMode, onViewModeChange, onActionClick }: MarePregnancyTableProps) => {
-  // Mock pregnancy data
-  const pregnancyData = {
-    status: "Pregnant",
-    pregnancyDay: 280,
-    expectedDueDate: "2024-04-15",
-    stallionName: "Thunder Storm",
-    breedingDate: "2023-07-20",
-    lastCheckup: "2024-03-01",
-    nextCheckup: "2024-04-01",
-    veterinarian: "Dr. Sarah Ahmed",
-    complications: "None",
-    notes: "Pregnancy progressing normally, mare is healthy and active."
-  };
+  const { searchTerm, setSearchTerm, filteredRecords } = useRecordSearch({
+    records: mockPregnancyRecords,
+    searchFields: ['stallion', 'veterinarian', 'status']
+  });
 
-  const calculateProgress = () => {
-    return Math.round((pregnancyData.pregnancyDay / 340) * 100);
-  };
+  const { handleAddRecord } = useRecordActions({
+    mareId,
+    onActionClick
+  });
 
-  const handleScheduleCheckup = () => {
-    onActionClick('checkup', 'Schedule Pregnancy Checkup');
-  };
-
-  const handleEditRecord = () => {
-    console.log('Edit pregnancy record for mare:', mareId);
-  };
-
-  const handleViewDetails = () => {
-    console.log('View pregnancy details for mare:', mareId);
+  const handleAddPregnancy = () => {
+    handleAddRecord('checkup', 'Record Pregnancy');
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-slate-800">Pregnancy Status</h2>
-        <div className="flex items-center gap-4">
-          <ViewToggle currentView={viewMode} onViewChange={onViewModeChange} />
-          <Button 
-            className="bg-blue-500 hover:bg-blue-600 text-white flex items-center gap-2"
-            onClick={handleScheduleCheckup}
-          >
-            <Calendar className="h-4 w-4" />
-            Schedule Checkup
-          </Button>
-        </div>
+      <RecordHeader
+        title="Pregnancy Records"
+        viewMode={viewMode}
+        onViewModeChange={onViewModeChange}
+        onAddRecord={handleAddPregnancy}
+        addButtonText="Add Pregnancy Record"
+        exportLabel="Export"
+      />
+
+      <RecordSearch
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        placeholder="Search by stallion, veterinarian, or status..."
+      />
+
+      <div className="space-y-4">
+        {filteredRecords.map((record) => (
+          <Card key={record.id}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Baby className="h-5 w-5 text-blue-500" />
+                {record.title}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Activity className="h-4 w-4 text-purple-500" />
+                    <span className="text-sm">Stallion: {record.stallion}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4 text-green-500" />
+                    <span className="text-sm">Breeding Date: {new Date(record.breedingDate).toLocaleDateString()}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4 text-blue-500" />
+                    <span className="text-sm">Expected Due: {new Date(record.expectedDueDate).toLocaleDateString()}</span>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div>
+                    <span className="text-sm text-muted-foreground">Pregnancy Day: </span>
+                    <Badge variant="outline">{record.pregnancyDay}</Badge>
+                  </div>
+                  <div>
+                    <span className="text-sm text-muted-foreground">Status: </span>
+                    <Badge className="bg-blue-500">{record.status}</Badge>
+                  </div>
+                  <div className="text-sm">
+                    <span className="text-muted-foreground">Veterinarian: </span>
+                    {record.veterinarian}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
-
-      {/* Pregnancy Progress Card */}
-      <Card className="border-blue-200 bg-blue-50">
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2 text-slate-700">
-            <Baby className="h-5 w-5" />
-            Current Pregnancy Progress
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-lg font-medium">Day {pregnancyData.pregnancyDay} of 340</span>
-              <Badge className="bg-blue-500 text-white">
-                {pregnancyData.status}
-              </Badge>
-            </div>
-            <Progress value={calculateProgress()} className="h-3" />
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="text-muted-foreground">Expected Due Date:</span>
-                <p className="font-semibold">{new Date(pregnancyData.expectedDueDate).toLocaleDateString()}</p>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Days Remaining:</span>
-                <p className="font-semibold">{340 - pregnancyData.pregnancyDay} days</p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Pregnancy Details */}
-      <div className={`grid ${viewMode === 'grid' ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'} gap-6`}>
-        <Card className="border-slate-200">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2 text-slate-700">
-              <Heart className="h-5 w-5" />
-              Breeding Information
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                <span className="font-medium text-slate-600">Stallion:</span>
-                <span className="text-slate-800 font-semibold">{pregnancyData.stallionName}</span>
-              </div>
-              <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                <span className="font-medium text-slate-600">Breeding Date:</span>
-                <span className="text-slate-800 font-semibold">{new Date(pregnancyData.breedingDate).toLocaleDateString()}</span>
-              </div>
-              <div className="flex justify-between items-center py-2">
-                <span className="font-medium text-slate-600">Veterinarian:</span>
-                <span className="text-slate-800 font-semibold">{pregnancyData.veterinarian}</span>
-              </div>
-              <div className="flex gap-2 pt-3">
-                <Button variant="outline" size="sm" onClick={handleViewDetails} className="flex items-center gap-1">
-                  <View className="h-3 w-3" />
-                  View
-                </Button>
-                <Button variant="outline" size="sm" onClick={handleEditRecord} className="flex items-center gap-1">
-                  <Edit className="h-3 w-3" />
-                  Edit
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-200">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2 text-slate-700">
-              <Activity className="h-5 w-5" />
-              Health Monitoring
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                <span className="font-medium text-slate-600">Last Checkup:</span>
-                <span className="text-slate-800 font-semibold">{new Date(pregnancyData.lastCheckup).toLocaleDateString()}</span>
-              </div>
-              <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                <span className="font-medium text-slate-600">Next Checkup:</span>
-                <span className="text-slate-800 font-semibold">{new Date(pregnancyData.nextCheckup).toLocaleDateString()}</span>
-              </div>
-              <div className="flex justify-between items-center py-2">
-                <span className="font-medium text-slate-600">Complications:</span>
-                <Badge className="bg-green-500 text-white">{pregnancyData.complications}</Badge>
-              </div>
-              <div className="flex gap-2 pt-3">
-                <Button variant="outline" size="sm" onClick={handleViewDetails} className="flex items-center gap-1">
-                  <View className="h-3 w-3" />
-                  View
-                </Button>
-                <Button variant="outline" size="sm" onClick={handleEditRecord} className="flex items-center gap-1">
-                  <Edit className="h-3 w-3" />
-                  Edit
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Notes Section */}
-      <Card className="border-slate-200">
-        <CardHeader>
-          <CardTitle className="text-lg text-slate-700">Pregnancy Notes</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-slate-700">{pregnancyData.notes}</p>
-          <div className="flex gap-2 pt-3">
-            <Button variant="outline" size="sm" onClick={handleEditRecord} className="flex items-center gap-1">
-              <Edit className="h-3 w-3" />
-              Edit Notes
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };

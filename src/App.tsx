@@ -42,6 +42,9 @@ import EnhancedAuthGuard from "./components/auth/EnhancedAuthGuard";
 import { EnhancedAuthProvider } from "./components/auth/EnhancedAuthProvider";
 import { AccessModeProvider } from "./contexts/AccessModeContext";
 
+// Mare Provider import
+import { MareProvider } from "./contexts/MareContext";
+
 // Tenant Settings import
 import TenantSettings from "./pages/dashboard/TenantSettings";
 
@@ -60,51 +63,53 @@ const App = () => {
           <BrowserRouter>
             <AccessModeProvider>
               <EnhancedAuthProvider>
-                <Routes>
-                  {/* Public marketplace landing page */}
-                  <Route path="/" element={<PublicMarketplace />} />
-                  
-                  {/* Login page */}
-                  <Route path="/login" element={<Login />} />
-                  
-                  {/* Onboarding flow */}
-                  <Route path="/onboarding" element={<OnboardingEntry />} />
-                  <Route path="/onboarding/:tenantType" element={<OnboardingEntry />} />
-                  
-                  {/* Protected dashboard routes - now with enhanced auth guard */}
-                  <Route path="/dashboard" element={
-                    <EnhancedAuthGuard>
-                      <DashboardLayout />
-                    </EnhancedAuthGuard>
-                  }>
-                    <Route index element={<Dashboard />} />
-                    <Route path="operations" element={<UnifiedOperations />} />
-                    <Route path="horses" element={<HorsesDepartment />} />
-                    <Route path="horses/breeding/mares/:mareId" element={<MareDetailView />} />
-                    <Route path="paddocks" element={<Paddocks />} />
-                    <Route path="laboratory" element={<LaboratoryDepartment />} />
-                    <Route path="clinic" element={<ClinicDepartment />} />
-                    <Route path="pharmacy" element={<PharmacyDepartment />} />
-                    <Route path="finance" element={<FinanceDepartment />} />
-                    <Route path="hr" element={<HRDepartment />} />
-                    <Route path="inventory" element={<InventoryManagement />} />
-                    <Route path="marketplace" element={<MarketplaceDepartment />} />
-                    <Route path="movements" element={<HorseMovements />} />
-                    <Route path="training" element={<TrainingCenter />} />
-                    <Route path="rooms" element={<StableRooms />} />
-                    <Route path="maintenance" element={<MaintenanceDepartment />} />
-                    <Route path="messages" element={<MessagesDepartment />} />
-                    <Route path="settings" element={<TenantSettings />} />
+                <MareProvider>
+                  <Routes>
+                    {/* Public marketplace landing page */}
+                    <Route path="/" element={<PublicMarketplace />} />
                     
-                    {/* Client Management Routes */}
-                    <Route path="clients" element={<ClientsDepartment />} />
-                    <Route path="clients/:id" element={<ClientProfile />} />
-                    <Route path="clients/new" element={<ClientForm />} />
-                    <Route path="clients/:id/edit" element={<ClientForm />} />
-                  </Route>
-                  
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
+                    {/* Login page */}
+                    <Route path="/login" element={<Login />} />
+                    
+                    {/* Onboarding flow */}
+                    <Route path="/onboarding" element={<OnboardingEntry />} />
+                    <Route path="/onboarding/:tenantType" element={<OnboardingEntry />} />
+                    
+                    {/* Protected dashboard routes - now with enhanced auth guard */}
+                    <Route path="/dashboard" element={
+                      <EnhancedAuthGuard>
+                        <DashboardLayout />
+                      </EnhancedAuthGuard>
+                    }>
+                      <Route index element={<Dashboard />} />
+                      <Route path="operations" element={<UnifiedOperations />} />
+                      <Route path="horses" element={<HorsesDepartment />} />
+                      <Route path="horses/breeding/mares/:mareId" element={<MareDetailView />} />
+                      <Route path="paddocks" element={<Paddocks />} />
+                      <Route path="laboratory" element={<LaboratoryDepartment />} />
+                      <Route path="clinic" element={<ClinicDepartment />} />
+                      <Route path="pharmacy" element={<PharmacyDepartment />} />
+                      <Route path="finance" element={<FinanceDepartment />} />
+                      <Route path="hr" element={<HRDepartment />} />
+                      <Route path="inventory" element={<InventoryManagement />} />
+                      <Route path="marketplace" element={<MarketplaceDepartment />} />
+                      <Route path="movements" element={<HorseMovements />} />
+                      <Route path="training" element={<TrainingCenter />} />
+                      <Route path="rooms" element={<StableRooms />} />
+                      <Route path="maintenance" element={<MaintenanceDepartment />} />
+                      <Route path="messages" element={<MessagesDepartment />} />
+                      <Route path="settings" element={<TenantSettings />} />
+                      
+                      {/* Client Management Routes */}
+                      <Route path="clients" element={<ClientsDepartment />} />
+                      <Route path="clients/:id" element={<ClientProfile />} />
+                      <Route path="clients/new" element={<ClientForm />} />
+                      <Route path="clients/:id/edit" element={<ClientForm />} />
+                    </Route>
+                    
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </MareProvider>
               </EnhancedAuthProvider>
             </AccessModeProvider>
           </BrowserRouter>

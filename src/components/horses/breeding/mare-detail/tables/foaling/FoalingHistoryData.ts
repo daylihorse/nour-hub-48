@@ -1,60 +1,66 @@
 
 export const mockFoalingHistory = [
   {
-    id: "FOAL001",
-    title: "Luna's Thunder Birth",
-    foalName: "Luna's Thunder",
-    birthDate: "2023-01-15",
-    date: "2023-01-15",
-    birthTime: "14:30",
-    gender: "Colt",
-    sire: "Golden Thunder", 
+    id: "1",
+    title: "Star Bright - 2023 Birth",
+    foalName: "Star Bright",
+    birthDate: "2023-04-15",
+    birthTime: "06:30 AM",
+    gender: "Filly",
+    sire: "Thunder Storm",
     birthWeight: "45 kg",
     height: "85 cm",
     color: "Bay",
     status: "Healthy",
     complications: "None",
-    veterinarian: "Dr. Sarah Ahmed",
-    registrationNumber: "ARA-2023-0123",
-    weaningDate: "2023-07-15",
-    currentLocation: "Pasture A",
-    details: {
-      "Gender": "Colt",
-      "Sire": "Golden Thunder",
-      "Weight": "45 kg",
-      "Color": "Bay"
-    }
+    veterinarian: "Dr. Sarah Wilson",
+    registrationNumber: "REG2023001",
+    weaningDate: "2023-10-15",
+    currentLocation: "Paddock A"
   },
   {
-    id: "FOAL002",
-    title: "Silver Star Birth", 
-    foalName: "Silver Star",
+    id: "2",
+    title: "Lightning Flash - 2022 Birth",
+    foalName: "Lightning Flash",
     birthDate: "2022-03-20",
-    date: "2022-03-20",
-    birthTime: "09:15",
-    gender: "Filly",
-    sire: "Silver Knight",
-    birthWeight: "42 kg", 
+    birthTime: "02:15 AM",
+    gender: "Colt",
+    sire: "Storm King",
+    birthWeight: "42 kg",
     height: "82 cm",
-    color: "Gray",
-    status: "Healthy",
-    complications: "Mild dystocia",
-    veterinarian: "Dr. Sarah Ahmed",
-    registrationNumber: "ARA-2022-0087",
+    color: "Chestnut",
+    status: "Sold",
+    complications: "Minor - assisted delivery",
+    veterinarian: "Dr. Michael Brown",
+    registrationNumber: "REG2022045",
     weaningDate: "2022-09-20",
-    currentLocation: "Training Facility",
-    details: {
-      "Gender": "Filly",
-      "Sire": "Silver Knight",
-      "Weight": "42 kg",
-      "Color": "Gray"
-    }
+    currentLocation: "Sold to Blue Ridge Farm"
   }
 ];
 
 export const foalingStatistics = [
-  { value: "2", label: "Total Foals", color: "green" },
-  { value: "1", label: "Colts", color: "blue" },
-  { value: "1", label: "Fillies", color: "pink" },
-  { value: "100%", label: "Survival Rate", color: "purple" }
+  {
+    title: "Total Births",
+    value: "2",
+    description: "Successful deliveries",
+    trend: "+100%"
+  },
+  {
+    title: "Live Births",
+    value: "2",
+    description: "Healthy foals",
+    trend: "100%"
+  },
+  {
+    title: "Average Birth Weight",
+    value: "43.5 kg",
+    description: "Weight at birth",
+    trend: "+5%"
+  },
+  {
+    title: "Weaning Success",
+    value: "100%",
+    description: "Successful weanings",
+    trend: "Stable"
+  }
 ];

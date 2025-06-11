@@ -1,51 +1,110 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Calendar, Heart, Activity, Baby } from "lucide-react";
 
 interface MareSummaryCardProps {
   mare: {
+    id?: string;
     name: string;
-    breed: string;
+    status: string;
     age: number;
-    image: string;
+    breed: string;
+    pregnancyDay?: number;
+    expectedDueDate?: string;
     totalFoals: number;
     liveFoals: number;
-    pregnancyDay: number;
+    lastBreedingDate?: string;
+    stallionName?: string;
   };
 }
 
 const MareSummaryCard = ({ mare }: MareSummaryCardProps) => {
+  const pregnancyProgress = mare.pregnancyDay ? (mare.pregnancyDay / 340) * 100 : 0;
+
   return (
-    <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+    <Card>
       <CardHeader>
-        <CardTitle className="text-xl text-slate-800">Mare Overview</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <Activity className="h-5 w-5" />
+          Current Status Overview
+        </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="flex items-center space-x-4">
-            <img 
-              src={mare.image} 
-              alt={mare.name}
-              className="w-16 h-16 rounded-full object-cover border-2 border-blue-200"
-            />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Pregnancy Status */}
+          {mare.status === 'pregnant' && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Baby className="h-4 w-4 text-blue-500" />
+                <span className="font-medium">Pregnancy Progress</span>
+              </div>
+              <Progress value={pregnancyProgress} className="h-2" />
+              <div className="flex justify-between text-sm text-muted-foreground">
+                <span>Day {mare.pregnancyDay}/340</span>
+                <span>{Math.round(pregnancyProgress)}%</span>
+              </div>
+              {mare.expectedDueDate && (
+                <p className="text-sm">
+                  Due: {new Date(mare.expectedDueDate).toLocaleDateString()}
+                </p>
+              )}
+            </div>
+          )}
+          
+          {/* Breeding History */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Heart className="h-4 w-4 text-red-500" />
+              <span className="font-medium">Foaling Record</span>
+            </div>
             <div>
-              <p className="font-semibold text-slate-700">{mare.breed}</p>
-              <p className="text-sm text-muted-foreground">Age: {mare.age} years</p>
+              <div className="text-2xl font-bold">{mare.totalFoals}</div>
+              <p className="text-sm text-muted-foreground">
+                Total foals ({mare.liveFoals} live births)
+              </p>
             </div>
           </div>
           
-          <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">{mare.totalFoals}</div>
-            <p className="text-sm text-muted-foreground">Total Foals</p>
-          </div>
+          {/* Current Stallion */}
+          {mare.stallionName && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Activity className="h-4 w-4 text-purple-500" />
+                <span className="font-medium">Current Sire</span>
+              </div>
+              <div>
+                <div className="font-semibold">{mare.stallionName}</div>
+                {mare.lastBreedingDate && (
+                  <p className="text-sm text-muted-foreground">
+                    Bred: {new Date(mare.lastBreedingDate).toLocaleDateString()}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
           
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">{mare.liveFoals}</div>
-            <p className="text-sm text-muted-foreground">Live Foals</p>
-          </div>
-          
-          <div className="text-center">
-            <div className="text-2xl font-bold text-purple-600">{mare.pregnancyDay}</div>
-            <p className="text-sm text-muted-foreground">Pregnancy Day</p>
+          {/* Status Badge */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-green-500" />
+              <span className="font-medium">Current Status</span>
+            </div>
+            <div>
+              <Badge className={`capitalize ${
+                mare.status === 'pregnant' ? 'bg-blue-500' :
+                mare.status === 'nursing' ? 'bg-green-500' :
+                mare.status === 'open' ? 'bg-yellow-500' :
+                mare.status === 'bred' ? 'bg-purple-500' :
+                'bg-gray-500'
+              }`}>
+                {mare.status}
+              </Badge>
+              <p className="text-sm text-muted-foreground mt-1">
+                Active in breeding program
+              </p>
+            </div>
           </div>
         </div>
       </CardContent>

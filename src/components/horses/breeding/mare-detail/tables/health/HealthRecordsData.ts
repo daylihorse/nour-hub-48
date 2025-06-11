@@ -1,61 +1,52 @@
 
 export const mockHealthRecords = [
   {
-    id: "HR001",
+    id: "1",
     title: "Pregnancy Checkup",
-    date: "2024-03-01",
-    type: "Pregnancy Checkup",
-    veterinarian: "Dr. Sarah Ahmed",
-    findings: "Healthy pregnancy progression",
-    treatment: "Prenatal vitamins",
-    nextAppointment: "2024-04-01",
-    status: "Normal",
-    details: {
-      "Type": "Pregnancy Checkup",
-      "Veterinarian": "Dr. Sarah Ahmed",
-      "Treatment": "Prenatal vitamins",
-      "Next Appointment": "2024-04-01"
-    }
+    date: "2024-01-10",
+    type: "Pregnancy Exam",
+    veterinarian: "Dr. Sarah Wilson",
+    findings: "Healthy pregnancy progression, foal developing normally",
+    treatment: "Continued prenatal vitamins",
+    nextAppointment: "2024-02-10",
+    status: "Normal"
   },
   {
-    id: "HR002",
+    id: "2",
     title: "Annual Vaccination",
-    date: "2024-01-15",
+    date: "2023-12-01",
     type: "Vaccination",
-    veterinarian: "Dr. Michael Roberts",
-    findings: "Annual vaccinations administered",
-    treatment: "EHV, WNV, Tetanus vaccines",
-    nextAppointment: "2025-01-15",
-    status: "Completed",
-    details: {
-      "Type": "Vaccination",
-      "Veterinarian": "Dr. Michael Roberts",
-      "Treatment": "EHV, WNV, Tetanus vaccines",
-      "Next Appointment": "2025-01-15"
-    }
-  },
-  {
-    id: "HR003",
-    title: "Dental Checkup",
-    date: "2023-12-10",
-    type: "Dental Checkup",
-    veterinarian: "Dr. Sarah Ahmed",
-    findings: "Minor dental wear, no issues",
-    treatment: "Routine dental float",
-    nextAppointment: "2024-12-10",
-    status: "Normal",
-    details: {
-      "Type": "Dental Checkup",
-      "Veterinarian": "Dr. Sarah Ahmed",
-      "Treatment": "Routine dental float",
-      "Next Appointment": "2024-12-10"
-    }
+    veterinarian: "Dr. Michael Brown",
+    findings: "Good overall health",
+    treatment: "Annual vaccinations administered",
+    nextAppointment: "2024-12-01",
+    status: "Completed"
   }
 ];
 
 export const healthStatistics = [
-  { value: "3", label: "Total Records", color: "green" },
-  { value: "1", label: "Recent Checkups", color: "blue" },
-  { value: "2", label: "Vaccinations", color: "purple" },
-  { value: "0", label: "Pending Follow-ups", color: "orange" }
+  {
+    title: "Total Records",
+    value: "2",
+    description: "Health entries",
+    trend: "+100%"
+  },
+  {
+    title: "Last Checkup",
+    value: "10 days ago",
+    description: "Most recent visit",
+    trend: "Recent"
+  },
+  {
+    title: "Health Status",
+    value: "Excellent",
+    description: "Overall condition",
+    trend: "Stable"
+  },
+  {
+    title: "Vaccinations",
+    value: "Up to date",
+    description: "Current status",
+    trend: "Current"
+  }
 ];

@@ -1,7 +1,8 @@
 
 import { Button } from "@/components/ui/button";
-import { Download, Plus } from "lucide-react";
-import ViewToggle from "./ViewToggle";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Plus, Download, Grid, List, Table } from "lucide-react";
 
 interface RecordHeaderProps {
   title: string;
@@ -9,37 +10,60 @@ interface RecordHeaderProps {
   onViewModeChange: (mode: 'grid' | 'list' | 'table') => void;
   onAddRecord: () => void;
   addButtonText: string;
-  exportLabel?: string;
+  exportLabel: string;
 }
 
-const RecordHeader = ({
-  title,
-  viewMode,
-  onViewModeChange,
-  onAddRecord,
-  addButtonText,
-  exportLabel = "Export"
+const RecordHeader = ({ 
+  title, 
+  viewMode, 
+  onViewModeChange, 
+  onAddRecord, 
+  addButtonText, 
+  exportLabel 
 }: RecordHeaderProps) => {
   return (
-    <div className="flex justify-between items-center">
-      <h2 className="text-2xl font-bold text-slate-800">{title}</h2>
-      <div className="flex items-center gap-4">
-        <ViewToggle currentView={viewMode} onViewChange={onViewModeChange} />
-        <div className="flex gap-3">
-          <Button variant="outline" className="flex items-center gap-2">
-            <Download className="h-4 w-4" />
-            {exportLabel}
-          </Button>
-          <Button 
-            onClick={onAddRecord} 
-            className="bg-blue-500 hover:bg-blue-600 text-white flex items-center gap-2"
-          >
-            <Plus className="h-4 w-4" />
-            {addButtonText}
-          </Button>
+    <Card>
+      <CardHeader>
+        <div className="flex justify-between items-center">
+          <CardTitle>{title}</CardTitle>
+          <div className="flex items-center gap-2">
+            <Select value={viewMode} onValueChange={(value: 'grid' | 'list' | 'table') => onViewModeChange(value)}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="grid">
+                  <div className="flex items-center gap-2">
+                    <Grid className="h-4 w-4" />
+                    Grid
+                  </div>
+                </SelectItem>
+                <SelectItem value="list">
+                  <div className="flex items-center gap-2">
+                    <List className="h-4 w-4" />
+                    List
+                  </div>
+                </SelectItem>
+                <SelectItem value="table">
+                  <div className="flex items-center gap-2">
+                    <Table className="h-4 w-4" />
+                    Table
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <Button onClick={onAddRecord}>
+              <Plus className="h-4 w-4 mr-2" />
+              {addButtonText}
+            </Button>
+            <Button variant="outline">
+              <Download className="h-4 w-4 mr-2" />
+              {exportLabel}
+            </Button>
+          </div>
         </div>
-      </div>
-    </div>
+      </CardHeader>
+    </Card>
   );
 };
 
