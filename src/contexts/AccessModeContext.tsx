@@ -25,7 +25,7 @@ interface AccessModeProviderProps {
 }
 
 export const AccessModeProvider = ({ children }: AccessModeProviderProps) => {
-  const [accessMode, setAccessMode] = useState<AccessMode>('demo');
+  const [accessMode, setAccessMode] = useState<AccessMode>('public');
 
   const value: AccessModeContextType = {
     accessMode,

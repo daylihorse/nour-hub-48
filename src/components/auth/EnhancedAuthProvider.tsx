@@ -34,6 +34,7 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
   const login = async (email: string, password: string) => {
     if (accessMode === 'public') {
       // In public mode, login is not needed
+      console.log('Login not required in public mode');
       return;
     }
     
@@ -52,6 +53,7 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
   const logout = async () => {
     if (accessMode === 'public') {
       // In public mode, logout just clears the mode
+      console.log('Logout not required in public mode');
       return;
     }
     
@@ -60,7 +62,7 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
       if (error) throw error;
     } catch (error) {
       console.error('Logout error:', error);
-      throw error;
+      // Don't re-throw logout errors to prevent app crashes
     }
   };
 

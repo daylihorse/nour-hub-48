@@ -5,72 +5,110 @@ export const authService = {
   async signInWithPassword(email: string, password: string) {
     console.log('Attempting to sign in with:', email);
     
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
-      console.error('Sign in error:', error);
-      throw error;
+      if (error) {
+        console.error('Sign in error:', error);
+        throw error;
+      }
+
+      console.log('Sign in successful:', data.user?.email);
+      return { data, error };
+    } catch (error) {
+      console.error('Auth service unavailable, falling back to public mode:', error);
+      throw new Error('Authentication service unavailable');
     }
-
-    console.log('Sign in successful:', data.user?.email);
-    return { data, error };
   },
 
   async signUp(email: string, password: string, metadata?: any) {
     console.log('Attempting to sign up with:', email);
     
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: metadata,
-        emailRedirectTo: undefined // Disable email confirmation for dev
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: metadata,
+          emailRedirectTo: undefined // Disable email confirmation for dev
+        }
+      });
+
+      if (error) {
+        console.error('Sign up error:', error);
+        throw error;
       }
-    });
 
-    if (error) {
-      console.error('Sign up error:', error);
-      throw error;
+      console.log('Sign up successful:', data.user?.email);
+      
+      // Immediately ensure profile exists for the new user
+      if (data.user && !error) {
+        await this.ensureUserProfile(data.user, metadata);
+      }
+      
+      return { data, error };
+    } catch (error) {
+      console.error('Auth service unavailable during signup:', error);
+      throw new Error('Authentication service unavailable');
     }
-
-    console.log('Sign up successful:', data.user?.email);
-    
-    // Immediately ensure profile exists for the new user
-    if (data.user && !error) {
-      await this.ensureUserProfile(data.user, metadata);
-    }
-    
-    return { data, error };
   },
 
   async signOut() {
     console.log('Signing out user');
     
-    const { error } = await supabase.auth.signOut();
-    
-    if (error) {
-      console.error('Sign out error:', error);
-      throw error;
-    }
+    try {
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('Sign out error:', error);
+        throw error;
+      }
 
-    console.log('Sign out successful');
-    return { error };
+      console.log('Sign out successful');
+      return { error };
+    } catch (error) {
+      console.error('Auth service unavailable during signout:', error);
+      // Don't throw error on signout failure, just log it
+      return { error: null };
+    }
   },
 
   async getSession() {
-    return await supabase.auth.getSession();
+    try {
+      return await supabase.auth.getSession();
+    } catch (error) {
+      console.error('Failed to get session, auth service unavailable:', error);
+      return { data: { session: null }, error };
+    }
   },
 
   onAuthStateChange(callback: (event: any, session: any) => void) {
-    return supabase.auth.onAuthStateChange(callback);
+    try {
+      return supabase.auth.onAuthStateChange(callback);
+    } catch (error) {
+      console.error('Failed to listen to auth changes, auth service unavailable:', error);
+      // Return a mock subscription that can be unsubscribed
+      return {
+        data: {
+          subscription: {
+            unsubscribe: () => console.log('Mock auth subscription unsubscribed')
+          }
+        }
+      };
+    }
   },
 
   async getCurrentUser() {
-    const { data: { user } } = await supabase.auth.getUser();
-    return user;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      return user;
+    } catch (error) {
+      console.error('Failed to get current user, auth service unavailable:', error);
+      return null;
+    }
   },
 
   async ensureUserProfile(user: any, metadata?: any) {
@@ -93,7 +131,7 @@ export const authService = {
         console.log('User profile ensured for:', user.email);
       }
     } catch (error) {
-      console.error('Exception ensuring user profile:', error);
+      console.error('Exception ensuring user profile, auth service unavailable:', error);
     }
   },
 
@@ -137,8 +175,8 @@ export const authService = {
       
       return { data, error };
     } catch (createError) {
-      console.error('Failed to create sample user:', createError);
-      throw createError;
+      console.error('Failed to create sample user, auth service unavailable:', createError);
+      throw new Error('Authentication service unavailable');
     }
   },
 
@@ -155,7 +193,7 @@ export const authService = {
         console.log('Tenant associations ensured for:', email);
       }
     } catch (error) {
-      console.error('Exception ensuring tenant associations:', error);
+      console.error('Exception ensuring tenant associations, auth service unavailable:', error);
     }
   }
 };

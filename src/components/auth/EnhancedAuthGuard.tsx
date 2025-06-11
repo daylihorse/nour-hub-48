@@ -15,17 +15,24 @@ const EnhancedAuthGuard = ({ children }: EnhancedAuthGuardProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // In public mode, always allow access immediately
     if (isPublicMode) {
-      // In public mode, always allow access
       return;
     }
     
+    // Only redirect to login in demo mode when user is not authenticated
     if (!isLoading && !user) {
       navigate('/login');
     }
   }, [user, isLoading, navigate, isPublicMode]);
 
-  if (!isPublicMode && isLoading) {
+  // In public mode, render children immediately without any loading states
+  if (isPublicMode) {
+    return <>{children}</>;
+  }
+
+  // In demo mode, show loading state while checking auth
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="space-y-4 w-full max-w-md">
@@ -37,7 +44,8 @@ const EnhancedAuthGuard = ({ children }: EnhancedAuthGuardProps) => {
     );
   }
 
-  if (!isPublicMode && !user) {
+  // In demo mode, don't render anything if no user (will redirect to login)
+  if (!user) {
     return null;
   }
 

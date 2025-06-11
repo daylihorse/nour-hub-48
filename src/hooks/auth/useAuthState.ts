@@ -43,7 +43,8 @@ export const useAuthState = () => {
         return;
       }
       
-      // Clear state on final error
+      // Clear state on final error and stop loading
+      console.log('Failed to load user data after retries, clearing auth state');
       setUser(null);
       setCurrentTenant(null);
       setAvailableTenants([]);
@@ -52,34 +53,65 @@ export const useAuthState = () => {
   };
 
   useEffect(() => {
-    // Get initial session
-    authService.getSession().then(({ data: { session } }) => {
-      console.log('Initial session check:', session);
-      if (session?.user) {
-        loadUserData(session.user);
-      } else {
-        setIsLoading(false);
-      }
-    });
+    let mounted = true;
 
-    // Listen for auth changes
-    const { data: { subscription } } = authService.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state change:', event, session);
-        if (event === 'SIGNED_IN' && session?.user) {
+    const initializeAuth = async () => {
+      try {
+        // Get initial session
+        const { data: { session }, error } = await authService.getSession();
+        
+        if (error) {
+          console.error('Failed to get initial session:', error);
+          if (mounted) setIsLoading(false);
+          return;
+        }
+
+        console.log('Initial session check:', session);
+        if (session?.user && mounted) {
           await loadUserData(session.user);
-        } else if (event === 'SIGNED_OUT') {
-          console.log('User signed out, clearing state');
-          setUser(null);
-          setCurrentTenant(null);
-          setAvailableTenants([]);
-          tenantService.clearCurrentTenant();
+        } else if (mounted) {
           setIsLoading(false);
         }
+      } catch (error) {
+        console.error('Auth initialization failed:', error);
+        if (mounted) setIsLoading(false);
       }
-    );
+    };
 
-    return () => subscription.unsubscribe();
+    initializeAuth();
+
+    // Listen for auth changes with error handling
+    let subscription: any = null;
+    try {
+      const { data } = authService.onAuthStateChange(
+        async (event, session) => {
+          if (!mounted) return;
+          
+          console.log('Auth state change:', event, session);
+          if (event === 'SIGNED_IN' && session?.user) {
+            await loadUserData(session.user);
+          } else if (event === 'SIGNED_OUT') {
+            console.log('User signed out, clearing state');
+            setUser(null);
+            setCurrentTenant(null);
+            setAvailableTenants([]);
+            tenantService.clearCurrentTenant();
+            setIsLoading(false);
+          }
+        }
+      );
+      subscription = data?.subscription;
+    } catch (error) {
+      console.error('Failed to setup auth state listener:', error);
+      if (mounted) setIsLoading(false);
+    }
+
+    return () => {
+      mounted = false;
+      if (subscription?.unsubscribe) {
+        subscription.unsubscribe();
+      }
+    };
   }, []);
 
   const switchTenant = async (tenantId: string) => {
