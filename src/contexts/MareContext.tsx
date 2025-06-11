@@ -1,23 +1,6 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-
-// Using the legacy Mare interface for consistency with existing components
-export interface Mare {
-  id: string;
-  horseId: string;
-  horseName: string;
-  status: string;
-  age: number;
-  breed: string;
-  totalFoals: number;
-  liveFoals: number;
-  lastBreedingDate: string | null;
-  expectedDueDate: string | null;
-  pregnancyDay: number;
-  nextHeat: string | null;
-  stallionName: string | null;
-  foalBirthDate?: string;
-}
+import { Mare } from '@/types/breeding/mare';
 
 interface MareContextType {
   mares: Mare[];
@@ -31,6 +14,7 @@ interface MareContextType {
   filteredMares: Mare[];
   isLoading: boolean;
   error: string | null;
+  clearError: () => void;
 }
 
 const MareContext = createContext<MareContextType | undefined>(undefined);
@@ -111,23 +95,46 @@ export const MareProvider = ({ children }: MareProviderProps) => {
 
   const filteredMares = mares.filter(mare =>
     mare.horseName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    mare.breed.toLowerCase().includes(searchTerm.toLowerCase())
+    mare.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    mare.horseId.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const updateMare = (updatedMare: Mare) => {
-    setMares(prevMares => 
-      prevMares.map(mare => 
-        mare.id === updatedMare.id ? updatedMare : mare
-      )
-    );
+    try {
+      setMares(prevMares => 
+        prevMares.map(mare => 
+          mare.id === updatedMare.id ? updatedMare : mare
+        )
+      );
+      setError(null);
+    } catch (err) {
+      setError('Failed to update mare');
+      console.error('Error updating mare:', err);
+    }
   };
 
   const addMare = (mare: Mare) => {
-    setMares(prevMares => [...prevMares, mare]);
+    try {
+      setMares(prevMares => [...prevMares, mare]);
+      setError(null);
+    } catch (err) {
+      setError('Failed to add mare');
+      console.error('Error adding mare:', err);
+    }
   };
 
   const removeMare = (mareId: string) => {
-    setMares(prevMares => prevMares.filter(mare => mare.id !== mareId));
+    try {
+      setMares(prevMares => prevMares.filter(mare => mare.id !== mareId));
+      setError(null);
+    } catch (err) {
+      setError('Failed to remove mare');
+      console.error('Error removing mare:', err);
+    }
+  };
+
+  const clearError = () => {
+    setError(null);
   };
 
   const value: MareContextType = {
@@ -141,7 +148,8 @@ export const MareProvider = ({ children }: MareProviderProps) => {
     setSearchTerm,
     filteredMares,
     isLoading,
-    error
+    error,
+    clearError
   };
 
   return (

@@ -10,7 +10,7 @@ import ActionDialog from "./components/ActionDialog";
 const MareDetailView = () => {
   const { mareId } = useParams();
   const navigate = useNavigate();
-  const { mares } = useMareContext();
+  const { mares, error, clearError } = useMareContext();
   const [activeTab, setActiveTab] = useState("basic-info");
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'table'>('grid');
   const [actionDialog, setActionDialog] = useState<{
@@ -26,6 +26,7 @@ const MareDetailView = () => {
   // Debug logging
   console.log('MareDetailView - mareId from params:', mareId);
   console.log('MareDetailView - available mares:', mares.map(m => ({ id: m.id, name: m.horseName })));
+  console.log('MareDetailView - context error:', error);
 
   // Find the mare from the context
   const mare = mares.find(m => m.id === mareId);
@@ -34,7 +35,12 @@ const MareDetailView = () => {
     if (!mare && mareId) {
       console.error(`Mare with ID ${mareId} not found in context`);
     }
-  }, [mare, mareId]);
+    
+    // Clear any existing errors when component mounts
+    if (error) {
+      clearError();
+    }
+  }, [mare, mareId, error, clearError]);
 
   const handleBackToMares = () => {
     // Navigate back to horses department and switch to breeding tab, then mares sub-tab
@@ -54,24 +60,47 @@ const MareDetailView = () => {
     setActionDialog({ isOpen: false, type: null, title: '' });
   };
 
-  if (!mareId) {
+  // Error state
+  if (error) {
     return (
       <div className="p-6">
-        <p className="text-red-500">No mare ID provided in URL</p>
+        <div className="text-red-500 mb-4">Error: {error}</div>
+        <button 
+          onClick={handleBackToMares}
+          className="text-blue-500 hover:underline"
+        >
+          Back to Mares
+        </button>
       </div>
     );
   }
 
+  // No mare ID provided
+  if (!mareId) {
+    return (
+      <div className="p-6">
+        <p className="text-red-500 mb-4">No mare ID provided in URL</p>
+        <button 
+          onClick={handleBackToMares}
+          className="text-blue-500 hover:underline"
+        >
+          Back to Mares
+        </button>
+      </div>
+    );
+  }
+
+  // Mare not found
   if (!mare) {
     return (
       <div className="p-6">
-        <p className="text-red-500">Mare with ID "{mareId}" not found</p>
-        <p className="text-sm text-muted-foreground mt-2">
+        <p className="text-red-500 mb-2">Mare with ID "{mareId}" not found</p>
+        <p className="text-sm text-muted-foreground mb-4">
           Available mares: {mares.map(m => `${m.id} (${m.horseName})`).join(', ')}
         </p>
         <button 
           onClick={handleBackToMares}
-          className="mt-4 text-blue-500 hover:underline"
+          className="text-blue-500 hover:underline"
         >
           Back to Mares
         </button>

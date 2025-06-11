@@ -11,15 +11,29 @@ interface MareBasicInfoTableProps {
 }
 
 const MareBasicInfoTable = ({ mareId }: MareBasicInfoTableProps) => {
-  const { mares } = useMareContext();
+  const { mares, error } = useMareContext();
+  
+  console.log('MareBasicInfoTable - looking for mareId:', mareId);
+  console.log('MareBasicInfoTable - available mares:', mares.map(m => ({ id: m.id, name: m.horseName })));
+  
   const mare = mares.find(m => m.id === mareId);
+
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <p className="text-red-500">Error loading mare data: {error}</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   if (!mare) {
     return (
       <Card>
         <CardContent className="p-6">
-          <p className="text-muted-foreground">Mare not found (ID: {mareId})</p>
-          <p className="text-sm text-muted-foreground mt-2">
+          <p className="text-muted-foreground mb-2">Mare not found (ID: {mareId})</p>
+          <p className="text-sm text-muted-foreground">
             Available mare IDs: {mares.map(m => m.id).join(', ')}
           </p>
         </CardContent>

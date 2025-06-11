@@ -1,74 +1,36 @@
-import React, { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+
+import { useState, useEffect } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
-
-interface Mare {
-  id: string;
-  horseId: string;
-  horseName: string;
-  status: string;
-  age: number;
-  breed: string;
-  totalFoals: number;
-  liveFoals: number;
-  lastBreedingDate: string | null;
-  expectedDueDate: string | null;
-  pregnancyDay: number;
-  nextHeat: string | null;
-  stallionName: string | null;
-  foalBirthDate?: string;
-}
+import { Mare } from "@/types/breeding/mare";
 
 interface EditMareDialogProps {
   isOpen: boolean;
   onClose: () => void;
   mare: Mare | null;
-  onSave: (updatedMare: Mare) => void;
+  onSave: (mare: Mare) => void;
 }
 
 const EditMareDialog = ({ isOpen, onClose, mare, onSave }: EditMareDialogProps) => {
-  const { toast } = useToast();
   const [formData, setFormData] = useState<Partial<Mare>>({});
 
-  // Initialize form data when mare changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (mare) {
       setFormData(mare);
     }
   }, [mare]);
 
-  const handleSave = () => {
-    if (!mare || !formData.horseName || !formData.breed) {
-      toast({
-        title: "Validation Error",
-        description: "Please fill in all required fields",
-        variant: "destructive",
-      });
-      return;
+  const handleSubmit = () => {
+    if (formData && mare) {
+      onSave({ ...mare, ...formData } as Mare);
     }
-
-    const updatedMare: Mare = {
-      ...mare,
-      ...formData,
-    } as Mare;
-
-    onSave(updatedMare);
-    toast({
-      title: "Mare Updated",
-      description: `${updatedMare.horseName} has been updated successfully`,
-    });
-    onClose();
   };
 
-  const handleInputChange = (field: keyof Mare, value: string | number) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value,
-    }));
+  const handleChange = (field: keyof Mare, value: string | number) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   if (!mare) return null;
@@ -80,53 +42,51 @@ const EditMareDialog = ({ isOpen, onClose, mare, onSave }: EditMareDialogProps) 
           <DialogTitle>Edit Mare - {mare.horseName}</DialogTitle>
         </DialogHeader>
         
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="horseName" className="text-right">
-              Name*
-            </Label>
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="horseName">Mare Name</Label>
             <Input
               id="horseName"
               value={formData.horseName || ''}
-              onChange={(e) => handleInputChange('horseName', e.target.value)}
-              className="col-span-3"
+              onChange={(e) => handleChange('horseName', e.target.value)}
             />
           </div>
-          
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="breed" className="text-right">
-              Breed*
-            </Label>
+
+          <div>
+            <Label htmlFor="horseId">Horse ID</Label>
+            <Input
+              id="horseId"
+              value={formData.horseId || ''}
+              onChange={(e) => handleChange('horseId', e.target.value)}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="breed">Breed</Label>
             <Input
               id="breed"
               value={formData.breed || ''}
-              onChange={(e) => handleInputChange('breed', e.target.value)}
-              className="col-span-3"
+              onChange={(e) => handleChange('breed', e.target.value)}
             />
           </div>
-          
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="age" className="text-right">
-              Age
-            </Label>
+
+          <div>
+            <Label htmlFor="age">Age</Label>
             <Input
               id="age"
               type="number"
               value={formData.age || ''}
-              onChange={(e) => handleInputChange('age', parseInt(e.target.value))}
-              className="col-span-3"
+              onChange={(e) => handleChange('age', parseInt(e.target.value))}
             />
           </div>
-          
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="status" className="text-right">
-              Status
-            </Label>
-            <Select
-              value={formData.status || ''}
-              onValueChange={(value) => handleInputChange('status', value)}
+
+          <div>
+            <Label htmlFor="status">Status</Label>
+            <Select 
+              value={formData.status} 
+              onValueChange={(value) => handleChange('status', value)}
             >
-              <SelectTrigger className="col-span-3">
+              <SelectTrigger>
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
               <SelectContent>
@@ -138,28 +98,16 @@ const EditMareDialog = ({ isOpen, onClose, mare, onSave }: EditMareDialogProps) 
               </SelectContent>
             </Select>
           </div>
-          
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="stallionName" className="text-right">
-              Stallion
-            </Label>
-            <Input
-              id="stallionName"
-              value={formData.stallionName || ''}
-              onChange={(e) => handleInputChange('stallionName', e.target.value)}
-              className="col-span-3"
-            />
+
+          <div className="flex justify-end gap-2 pt-4">
+            <Button variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button onClick={handleSubmit}>
+              Save Changes
+            </Button>
           </div>
         </div>
-        
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button onClick={handleSave}>
-            Save Changes
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
