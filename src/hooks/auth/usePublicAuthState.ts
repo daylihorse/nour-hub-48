@@ -38,12 +38,20 @@ export const usePublicAuthState = () => {
     // In demo mode, this will be handled by regular auth
   };
 
+  const switchDemoAccount = async (account: any) => {
+    // In public mode, this function doesn't need to do anything
+    // since account switching is handled by the regular auth state
+    console.log('switchDemoAccount called in public auth state for:', account.tenantName);
+    return Promise.resolve();
+  };
+
   return {
     user,
     currentTenant,
     availableTenants,
     isLoading,
     switchTenant,
+    switchDemoAccount,
     setIsLoading,
   };
 };
