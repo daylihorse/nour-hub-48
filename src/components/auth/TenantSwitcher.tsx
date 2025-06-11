@@ -25,8 +25,20 @@ const TenantSwitcher = () => {
     switch (type) {
       case 'stable': return 'bg-blue-100 text-blue-800';
       case 'clinic': return 'bg-green-100 text-green-800';
-      case 'marketplace': return 'bg-purple-100 text-purple-800';
+      case 'hospital': return 'bg-red-100 text-red-800';
+      case 'laboratory': return 'bg-purple-100 text-purple-800';
+      case 'marketplace': return 'bg-pink-100 text-pink-800';
       case 'enterprise': return 'bg-orange-100 text-orange-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'active': return 'bg-green-100 text-green-800';
+      case 'trial': return 'bg-yellow-100 text-yellow-800';
+      case 'suspended': return 'bg-red-100 text-red-800';
+      case 'expired': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -67,7 +79,7 @@ const TenantSwitcher = () => {
                   <Check className="h-4 w-4 text-green-600" />
                 )}
               </div>
-              <div className="flex items-center gap-2 mt-1">
+              <div className="flex items-center gap-2 mt-1 flex-wrap">
                 <Badge 
                   variant="secondary" 
                   className={`text-xs ${getTenantTypeColor(tenant.type)}`}
@@ -77,7 +89,16 @@ const TenantSwitcher = () => {
                 <Badge variant="outline" className="text-xs">
                   {tenant.subscriptionTier}
                 </Badge>
+                <Badge 
+                  variant="outline" 
+                  className={`text-xs ${getStatusColor(tenant.status)}`}
+                >
+                  {tenant.status}
+                </Badge>
               </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {tenant.metadata?.address?.city}, {tenant.metadata?.address?.country}
+              </p>
             </div>
           </DropdownMenuItem>
         ))}

@@ -1,5 +1,4 @@
-
-export type TenantType = 'stable' | 'clinic' | 'marketplace' | 'enterprise';
+export type TenantType = 'stable' | 'clinic' | 'marketplace' | 'enterprise' | 'hospital' | 'laboratory';
 export type SubscriptionTier = 'basic' | 'professional' | 'premium' | 'enterprise';
 export type UserRole = 'owner' | 'admin' | 'manager' | 'employee' | 'viewer';
 
