@@ -8,6 +8,8 @@ export const userDataService = {
     user: User;
     tenants: Tenant[];
   }> {
+    console.log('Loading user data for user ID:', supabaseUser.id);
+
     // Get user profile
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
@@ -19,6 +21,8 @@ export const userDataService = {
       console.error('Error loading profile:', profileError);
       throw profileError;
     }
+
+    console.log('Profile loaded:', profile);
 
     // Get user's tenant memberships
     const { data: tenantUsers, error: tenantUsersError } = await supabase
@@ -32,6 +36,28 @@ export const userDataService = {
       throw tenantUsersError;
     }
 
+    console.log('Tenant users loaded:', tenantUsers);
+
+    if (!tenantUsers || tenantUsers.length === 0) {
+      console.warn('No tenant associations found for user');
+      // Return user with empty tenants array instead of throwing error
+      const transformedUser: User = {
+        id: profile.id,
+        email: profile.email,
+        firstName: profile.first_name,
+        lastName: profile.last_name,
+        avatar: profile.avatar,
+        createdAt: new Date(profile.created_at),
+        updatedAt: new Date(profile.updated_at),
+        tenants: [],
+      };
+
+      return {
+        user: transformedUser,
+        tenants: []
+      };
+    }
+
     // Get tenant details for user's memberships
     const tenantIds = tenantUsers.map(tu => tu.tenant_id);
     const { data: tenants, error: tenantsError } = await supabase
@@ -43,6 +69,8 @@ export const userDataService = {
       console.error('Error loading tenants:', tenantsError);
       throw tenantsError;
     }
+
+    console.log('Tenants loaded:', tenants);
 
     // Transform data to match our types
     const transformedTenantUsers: TenantUser[] = tenantUsers.map(tu => ({

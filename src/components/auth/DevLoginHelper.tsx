@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -98,107 +97,6 @@ const DevLoginHelper = () => {
     }
   ];
 
-  const createTenantAssociation = async (userId: string, account: SampleAccount) => {
-    console.log('Creating tenant association for user:', userId, 'account:', account.email);
-    
-    const permissions = account.role === 'owner' ? ['*'] : 
-      account.role === 'manager' ? ['horses:read', 'horses:write', 'inventory:read', 'inventory:write', 'finance:read'] :
-      ['horses:read'];
-
-    const { data, error } = await supabase
-      .from('tenant_users')
-      .insert({
-        tenant_id: account.tenantId,
-        user_id: userId,
-        role: account.role,
-        permissions: permissions,
-        status: 'active'
-      })
-      .select();
-
-    if (error) {
-      console.error('Error creating tenant association:', error);
-      throw error;
-    }
-
-    console.log('Tenant association created successfully:', data);
-    return data;
-  };
-
-  const createSampleAccount = async (account: SampleAccount) => {
-    setIsCreating(true);
-    try {
-      console.log('Creating account for:', account.email);
-      
-      // First, try to sign up the user
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email: account.email,
-        password: account.password,
-        options: {
-          data: {
-            first_name: account.email.split('@')[0].split('.')[0],
-            last_name: account.role.charAt(0).toUpperCase() + account.role.slice(1),
-          },
-          emailRedirectTo: undefined // Disable email confirmation
-        }
-      });
-
-      console.log('Sign up response:', signUpData, signUpError);
-
-      if (signUpError) {
-        // If user already exists, try to sign in instead
-        if (signUpError.message.includes('already registered') || signUpError.message.includes('already been registered')) {
-          console.log('User already exists, attempting login...');
-          await login(account.email, account.password);
-          
-          // Get current user to create tenant association
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user) {
-            await createTenantAssociation(user.id, account);
-          }
-          
-          toast({
-            title: 'Logged in',
-            description: `Logged in as ${account.email} and associated with ${account.tenantName}`,
-          });
-        } else {
-          throw signUpError;
-        }
-      } else {
-        // User was created successfully, create tenant association
-        if (signUpData.user) {
-          console.log('New user created:', signUpData.user.id);
-          await createTenantAssociation(signUpData.user.id, account);
-          
-          // Now sign in the user
-          const { error: signInError } = await supabase.auth.signInWithPassword({
-            email: account.email,
-            password: account.password,
-          });
-
-          if (signInError) {
-            console.error('Sign in error after creation:', signInError);
-            throw signInError;
-          }
-
-          toast({
-            title: 'Account created and logged in',
-            description: `Created ${account.email} and associated with ${account.tenantName}`,
-          });
-        }
-      }
-    } catch (error: any) {
-      console.error('Error in createSampleAccount:', error);
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to create account',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsCreating(false);
-    }
-  };
-
   const quickLogin = async (account: SampleAccount) => {
     try {
       console.log('Quick login for:', account.email);
@@ -211,82 +109,9 @@ const DevLoginHelper = () => {
       console.error('Quick login error:', error);
       toast({
         title: 'Login failed',
-        description: 'Account may not exist. Try creating it first.',
+        description: error.message || 'Login failed. Please try again.',
         variant: 'destructive',
       });
-    }
-  };
-
-  const setupAllSampleData = async () => {
-    setIsSettingUpData(true);
-    try {
-      let successCount = 0;
-      let errorCount = 0;
-
-      for (const account of sampleAccounts) {
-        try {
-          console.log(`Setting up account ${successCount + errorCount + 1}/${sampleAccounts.length}: ${account.email}`);
-          
-          // Try to create the account
-          const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-            email: account.email,
-            password: account.password,
-            options: {
-              data: {
-                first_name: account.email.split('@')[0].split('.')[0],
-                last_name: account.role.charAt(0).toUpperCase() + account.role.slice(1),
-              },
-              emailRedirectTo: undefined
-            }
-          });
-
-          if (signUpError && !signUpError.message.includes('already registered')) {
-            throw signUpError;
-          }
-
-          // If user was created or already exists, ensure tenant association
-          let userId = signUpData?.user?.id;
-          
-          if (!userId) {
-            // User already exists, get their ID from profiles
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('id')
-              .eq('email', account.email)
-              .single();
-            
-            userId = profile?.id;
-          }
-
-          if (userId) {
-            await createTenantAssociation(userId, account);
-            successCount++;
-          } else {
-            errorCount++;
-          }
-
-          // Small delay to avoid rate limiting
-          await new Promise(resolve => setTimeout(resolve, 100));
-        } catch (error) {
-          console.error(`Error setting up ${account.email}:`, error);
-          errorCount++;
-        }
-      }
-
-      toast({
-        title: 'Sample data setup complete',
-        description: `Successfully set up ${successCount} accounts. ${errorCount > 0 ? `${errorCount} errors occurred.` : ''}`,
-        variant: errorCount > 0 ? 'destructive' : 'default',
-      });
-    } catch (error: any) {
-      console.error('Error in setupAllSampleData:', error);
-      toast({
-        title: 'Setup failed',
-        description: error.message || 'Failed to setup sample data',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsSettingUpData(false);
     }
   };
 
@@ -350,14 +175,6 @@ const DevLoginHelper = () => {
         </p>
         <div className="flex gap-2 mt-4">
           <Button
-            onClick={setupAllSampleData}
-            disabled={isSettingUpData}
-            variant="outline"
-            className="bg-green-50 hover:bg-green-100 border-green-200"
-          >
-            {isSettingUpData ? 'Setting Up...' : 'Setup All Sample Data'}
-          </Button>
-          <Button
             onClick={debugCurrentUser}
             variant="outline"
             size="sm"
@@ -393,20 +210,11 @@ const DevLoginHelper = () => {
               <div className="flex gap-2">
                 <Button
                   size="sm"
-                  variant="outline"
-                  onClick={() => createSampleAccount(account)}
-                  disabled={isCreating || isSettingUpData}
-                  className="flex-1"
-                >
-                  Create & Login
-                </Button>
-                <Button
-                  size="sm"
                   onClick={() => quickLogin(account)}
                   disabled={isSettingUpData}
                   className="flex-1"
                 >
-                  Quick Login
+                  Login
                 </Button>
               </div>
             </div>
@@ -416,10 +224,9 @@ const DevLoginHelper = () => {
         <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
           <h4 className="font-medium text-amber-800 mb-2">Important Notes:</h4>
           <ul className="text-sm text-amber-700 space-y-1">
-            <li>• Use "Setup All Sample Data" to create all accounts and tenant associations at once</li>
-            <li>• "Create & Login" will create a new user account and automatically associate it with the correct tenant</li>
-            <li>• "Quick Login" assumes the account already exists and has tenant associations</li>
+            <li>• Click "Login" to quickly sign in with any sample account</li>
             <li>• Use "Debug Current User" to see user and tenant information in the console</li>
+            <li>• All sample accounts are pre-configured with tenant associations</li>
           </ul>
         </div>
       </CardContent>
