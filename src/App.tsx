@@ -24,7 +24,7 @@ import MaintenanceDepartment from "./pages/dashboard/MaintainenceDepartment";
 import MessagesDepartment from "./pages/dashboard/MessagesDepartment";
 import MarketplaceDepartment from "./pages/dashboard/MarketplaceDepartment";
 
-// New client-related imports
+// Client-related imports
 import ClientsDepartment from "./pages/dashboard/ClientsDepartment";
 import ClientProfile from "./pages/dashboard/ClientProfile";
 import ClientForm from "./pages/dashboard/ClientForm";
@@ -36,9 +36,10 @@ import MareDetailView from "./components/horses/breeding/mare-detail/MareDetailV
 import PublicMarketplace from "./pages/PublicMarketplace";
 import OnboardingEntry from "./pages/onboarding/OnboardingEntry";
 
-// Auth components
-import AuthGuard from "./components/auth/AuthGuard";
-import { AuthProvider } from "./components/auth/AuthProvider";
+// Enhanced auth components
+import EnhancedAuthGuard from "./components/auth/EnhancedAuthGuard";
+import { EnhancedAuthProvider } from "./components/auth/EnhancedAuthProvider";
+import { AccessModeProvider } from "./contexts/AccessModeContext";
 
 // Tenant Settings import
 import TenantSettings from "./pages/dashboard/TenantSettings";
@@ -56,52 +57,54 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <AuthProvider>
-              <Routes>
-                {/* Public marketplace landing page */}
-                <Route path="/" element={<PublicMarketplace />} />
-                
-                {/* Login page */}
-                <Route path="/login" element={<Login />} />
-                
-                {/* Onboarding flow */}
-                <Route path="/onboarding" element={<OnboardingEntry />} />
-                <Route path="/onboarding/:tenantType" element={<OnboardingEntry />} />
-                
-                {/* Protected dashboard routes */}
-                <Route path="/dashboard" element={
-                  <AuthGuard>
-                    <DashboardLayout />
-                  </AuthGuard>
-                }>
-                  <Route index element={<Dashboard />} />
-                  <Route path="operations" element={<UnifiedOperations />} />
-                  <Route path="horses" element={<HorsesDepartment />} />
-                  <Route path="horses/breeding/mares/:mareId" element={<MareDetailView />} />
-                  <Route path="laboratory" element={<LaboratoryDepartment />} />
-                  <Route path="clinic" element={<ClinicDepartment />} />
-                  <Route path="pharmacy" element={<PharmacyDepartment />} />
-                  <Route path="finance" element={<FinanceDepartment />} />
-                  <Route path="hr" element={<HRDepartment />} />
-                  <Route path="inventory" element={<InventoryManagement />} />
-                  <Route path="marketplace" element={<MarketplaceDepartment />} />
-                  <Route path="movements" element={<HorseMovements />} />
-                  <Route path="training" element={<TrainingCenter />} />
-                  <Route path="rooms" element={<StableRooms />} />
-                  <Route path="maintenance" element={<MaintenanceDepartment />} />
-                  <Route path="messages" element={<MessagesDepartment />} />
-                  <Route path="settings" element={<TenantSettings />} />
+            <AccessModeProvider>
+              <EnhancedAuthProvider>
+                <Routes>
+                  {/* Public marketplace landing page */}
+                  <Route path="/" element={<PublicMarketplace />} />
                   
-                  {/* Client Management Routes */}
-                  <Route path="clients" element={<ClientsDepartment />} />
-                  <Route path="clients/:id" element={<ClientProfile />} />
-                  <Route path="clients/new" element={<ClientForm />} />
-                  <Route path="clients/:id/edit" element={<ClientForm />} />
-                </Route>
-                
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </AuthProvider>
+                  {/* Login page */}
+                  <Route path="/login" element={<Login />} />
+                  
+                  {/* Onboarding flow */}
+                  <Route path="/onboarding" element={<OnboardingEntry />} />
+                  <Route path="/onboarding/:tenantType" element={<OnboardingEntry />} />
+                  
+                  {/* Protected dashboard routes - now with enhanced auth guard */}
+                  <Route path="/dashboard" element={
+                    <EnhancedAuthGuard>
+                      <DashboardLayout />
+                    </EnhancedAuthGuard>
+                  }>
+                    <Route index element={<Dashboard />} />
+                    <Route path="operations" element={<UnifiedOperations />} />
+                    <Route path="horses" element={<HorsesDepartment />} />
+                    <Route path="horses/breeding/mares/:mareId" element={<MareDetailView />} />
+                    <Route path="laboratory" element={<LaboratoryDepartment />} />
+                    <Route path="clinic" element={<ClinicDepartment />} />
+                    <Route path="pharmacy" element={<PharmacyDepartment />} />
+                    <Route path="finance" element={<FinanceDepartment />} />
+                    <Route path="hr" element={<HRDepartment />} />
+                    <Route path="inventory" element={<InventoryManagement />} />
+                    <Route path="marketplace" element={<MarketplaceDepartment />} />
+                    <Route path="movements" element={<HorseMovements />} />
+                    <Route path="training" element={<TrainingCenter />} />
+                    <Route path="rooms" element={<StableRooms />} />
+                    <Route path="maintenance" element={<MaintenanceDepartment />} />
+                    <Route path="messages" element={<MessagesDepartment />} />
+                    <Route path="settings" element={<TenantSettings />} />
+                    
+                    {/* Client Management Routes */}
+                    <Route path="clients" element={<ClientsDepartment />} />
+                    <Route path="clients/:id" element={<ClientProfile />} />
+                    <Route path="clients/new" element={<ClientForm />} />
+                    <Route path="clients/:id/edit" element={<ClientForm />} />
+                  </Route>
+                  
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </EnhancedAuthProvider>
+            </AccessModeProvider>
           </BrowserRouter>
         </TooltipProvider>
       </QueryClientProvider>

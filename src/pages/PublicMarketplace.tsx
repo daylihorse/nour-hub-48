@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,13 +15,15 @@ import {
   Zap,
   ShoppingBag,
   Search,
-  TrendingUp
+  TrendingUp,
+  Settings
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { TenantType } from '@/types/tenant';
 import { publicMarketplaceService } from '@/services/publicMarketplaceService';
 import EnhancedProductCard from '@/components/marketplace/EnhancedProductCard';
 import ProductSearchFilters from '@/components/marketplace/ProductSearchFilters';
+import AccessModeToggle from '@/components/marketplace/AccessModeToggle';
 
 interface FilterState {
   query: string;
@@ -35,7 +36,7 @@ interface FilterState {
 
 const PublicMarketplace = () => {
   const [selectedType, setSelectedType] = useState<TenantType | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'services'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'access' | 'products' | 'services'>('overview');
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [filters, setFilters] = useState<FilterState>({
     query: '',
@@ -192,10 +193,14 @@ const PublicMarketplace = () => {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="mb-16">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
             <TabsTrigger value="overview" className="gap-2">
               <Building2 className="h-4 w-4" />
               Solutions
+            </TabsTrigger>
+            <TabsTrigger value="access" className="gap-2">
+              <Settings className="h-4 w-4" />
+              Try Now
             </TabsTrigger>
             <TabsTrigger value="products" className="gap-2">
               <ShoppingBag className="h-4 w-4" />
@@ -259,6 +264,16 @@ const PublicMarketplace = () => {
                   </Card>
                 ))}
               </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="access">
+            <div className="space-y-6">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold mb-4">Try EquiSense Now</h2>
+                <p className="text-gray-600">Choose how you want to explore our platform</p>
+              </div>
+              <AccessModeToggle />
             </div>
           </TabsContent>
 
