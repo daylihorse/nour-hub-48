@@ -5,8 +5,9 @@ import { useInventoryState } from "@/hooks/useInventoryState";
 import InventoryHeader from "@/components/inventory/InventoryHeader";
 import InventoryFormSections from "@/components/inventory/InventoryFormSections";
 import InventoryMainTabs from "@/components/inventory/InventoryMainTabs";
+import WarehouseManagement from "@/components/warehouse/WarehouseManagement";
 import StoreManagement from "@/components/store/StoreManagement";
-import { Package, Store } from "lucide-react";
+import { Package, Store, Warehouse } from "lucide-react";
 
 const InventoryManagement = () => {
   const [activeTab, setActiveTab] = useState("inventory");
@@ -30,15 +31,19 @@ const InventoryManagement = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Inventory Management</h1>
-        <p className="text-muted-foreground">Manage items, supplies, services, and store operations</p>
+        <h1 className="text-3xl font-bold">Inventory & Warehouse Management</h1>
+        <p className="text-muted-foreground">Comprehensive inventory, warehouse, and store operations management</p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="inventory" className="flex items-center gap-2">
             <Package className="h-4 w-4" />
             Inventory Management
+          </TabsTrigger>
+          <TabsTrigger value="warehouse" className="flex items-center gap-2">
+            <Warehouse className="h-4 w-4" />
+            Warehouse Operations
           </TabsTrigger>
           <TabsTrigger value="store" className="flex items-center gap-2">
             <Store className="h-4 w-4" />
@@ -70,6 +75,10 @@ const InventoryManagement = () => {
               onWithdrawFromStock={handleWithdrawFromStock}
             />
           )}
+        </TabsContent>
+
+        <TabsContent value="warehouse" className="space-y-6">
+          <WarehouseManagement />
         </TabsContent>
 
         <TabsContent value="store">

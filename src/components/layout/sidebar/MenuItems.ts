@@ -16,6 +16,7 @@ import {
   BarChart3,
   UserCheck,
   Settings,
+  MapPin,
   LucideIcon
 } from "lucide-react";
 
@@ -35,6 +36,11 @@ export const menuItems: MenuItem[] = [
     title: "Horses Department", 
     url: "/dashboard/horses", 
     icon: Rabbit 
+  },
+  { 
+    title: "Paddock Management", 
+    url: "/dashboard/paddocks", 
+    icon: MapPin 
   },
   { 
     title: "Clients", 
@@ -67,7 +73,7 @@ export const menuItems: MenuItem[] = [
     icon: Users 
   },
   { 
-    title: "Inventory", 
+    title: "Inventory & Warehouse", 
     url: "/dashboard/inventory", 
     icon: Package 
   },

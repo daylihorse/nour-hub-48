@@ -1,9 +1,8 @@
-
 import { useState, useCallback } from 'react';
 import { Room, Assignment, MaintenanceRecord } from '@/types/stableRooms';
 import { v4 as uuidv4 } from 'uuid';
 
-// Mock initial data
+// Mock initial data - focusing only on stables, no warehouses
 const initialRooms: Room[] = [
   {
     id: "1",
@@ -45,20 +44,20 @@ const initialRooms: Room[] = [
   },
   {
     id: "3",
-    number: "W-01",
-    name: "Feed Storage Warehouse",
-    type: "warehouse",
+    number: "T-01",
+    name: "Tack Room Alpha",
+    type: "tack_room",
     status: "occupied",
-    capacity: 100,
-    currentOccupancy: 75,
-    size: { length: 20, width: 15, height: 5, unit: "m" },
-    location: { building: "Warehouse Complex", section: "Central" },
-    features: ["Climate controlled", "Pest control", "Loading dock"],
-    amenities: ["Forklift access", "Inventory system"],
+    capacity: 20,
+    currentOccupancy: 15,
+    size: { length: 6, width: 4, unit: "m" },
+    location: { building: "Building A", section: "Central" },
+    features: ["Climate controlled", "Security locks", "Saddle racks"],
+    amenities: ["Lighting", "Ventilation"],
     assignedTo: {
-      type: "supplies",
-      entityId: "s1",
-      entityName: "Horse Feed & Bedding",
+      type: "equipment",
+      entityId: "eq1",
+      entityName: "Training Equipment",
       assignedDate: new Date("2024-01-01")
     },
     createdAt: new Date("2024-01-01"),
@@ -87,18 +86,13 @@ const initialAssignments: Assignment[] = [
   {
     id: "2",
     roomId: "3",
-    entityType: "supplies",
-    entityId: "s1",
-    entityName: "Horse Feed & Bedding",
+    entityType: "equipment",
+    entityId: "eq1",
+    entityName: "Training Equipment",
     assignedDate: new Date("2024-01-01"),
     status: "active",
     assignedBy: "Sarah Johnson",
-    notes: "Long-term storage for feed supplies",
-    cost: {
-      dailyRate: 25,
-      totalCost: 4575,
-      currency: "USD"
-    }
+    notes: "Long-term storage for training equipment"
   }
 ];
 

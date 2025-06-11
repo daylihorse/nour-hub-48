@@ -23,6 +23,7 @@ import StableRooms from "./pages/dashboard/StableRooms";
 import MaintenanceDepartment from "./pages/dashboard/MaintainenceDepartment";
 import MessagesDepartment from "./pages/dashboard/MessagesDepartment";
 import MarketplaceDepartment from "./pages/dashboard/MarketplaceDepartment";
+import Paddocks from "./pages/dashboard/Paddocks";
 
 // Client-related imports
 import ClientsDepartment from "./pages/dashboard/ClientsDepartment";
@@ -80,6 +81,7 @@ const App = () => {
                     <Route path="operations" element={<UnifiedOperations />} />
                     <Route path="horses" element={<HorsesDepartment />} />
                     <Route path="horses/breeding/mares/:mareId" element={<MareDetailView />} />
+                    <Route path="paddocks" element={<Paddocks />} />
                     <Route path="laboratory" element={<LaboratoryDepartment />} />
                     <Route path="clinic" element={<ClinicDepartment />} />
                     <Route path="pharmacy" element={<PharmacyDepartment />} />
