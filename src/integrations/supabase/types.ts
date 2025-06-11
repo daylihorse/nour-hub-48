@@ -128,6 +128,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      ensure_all_sample_tenant_associations: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       get_user_tenant_access: {
         Args: { user_id: string }
         Returns: {

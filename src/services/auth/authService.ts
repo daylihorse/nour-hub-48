@@ -70,11 +70,15 @@ export const authService = {
   async createSampleUserIfNotExists(email: string, password: string, firstName: string, lastName: string) {
     console.log('Creating sample user if not exists:', email);
     
-    // First try to sign in
+    // First try to sign in to check if user exists
     try {
       const { data, error } = await this.signInWithPassword(email, password);
       if (!error && data.user) {
         console.log('Sample user already exists and can sign in:', email);
+        
+        // Ensure tenant associations exist for this user
+        await this.ensureTenantAssociations(email);
+        
         return { data, error: null };
       }
     } catch (signInError) {
@@ -94,10 +98,33 @@ export const authService = {
       }
       
       console.log('Sample user created successfully:', email);
+      
+      // Give the profile trigger some time to execute, then ensure tenant associations
+      setTimeout(async () => {
+        await this.ensureTenantAssociations(email);
+      }, 1000);
+      
       return { data, error };
     } catch (createError) {
       console.error('Failed to create sample user:', createError);
       throw createError;
+    }
+  },
+
+  async ensureTenantAssociations(email: string) {
+    console.log('Ensuring tenant associations for:', email);
+    
+    try {
+      // Call the database function to ensure all sample tenant associations exist
+      const { error } = await supabase.rpc('ensure_all_sample_tenant_associations');
+      
+      if (error) {
+        console.error('Error ensuring tenant associations:', error);
+      } else {
+        console.log('Tenant associations ensured for:', email);
+      }
+    } catch (error) {
+      console.error('Exception ensuring tenant associations:', error);
     }
   }
 };

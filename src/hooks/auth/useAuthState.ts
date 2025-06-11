@@ -12,9 +12,9 @@ export const useAuthState = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Load user data and tenants from Supabase
-  const loadUserData = async (supabaseUser: any) => {
+  const loadUserData = async (supabaseUser: any, retryCount = 0) => {
     try {
-      console.log('Loading user data for:', supabaseUser.email);
+      console.log(`Loading user data for: ${supabaseUser.email} (attempt ${retryCount + 1})`);
       setIsLoading(true);
       
       const { user: transformedUser, tenants: transformedTenants } = await userDataService.loadUserData(supabaseUser);
@@ -32,8 +32,18 @@ export const useAuthState = () => {
       
       setIsLoading(false);
     } catch (error) {
-      console.error('Error loading user data:', error);
-      // Clear state on error
+      console.error(`Error loading user data (attempt ${retryCount + 1}):`, error);
+      
+      // Retry logic for newly created users (profile might not exist yet)
+      if (retryCount < 2) {
+        console.log(`Retrying user data load in ${(retryCount + 1) * 1000}ms...`);
+        setTimeout(() => {
+          loadUserData(supabaseUser, retryCount + 1);
+        }, (retryCount + 1) * 1000);
+        return;
+      }
+      
+      // Clear state on final error
       setUser(null);
       setCurrentTenant(null);
       setAvailableTenants([]);
