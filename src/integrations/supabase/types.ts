@@ -136,6 +136,15 @@ export type Database = {
           permissions: string[]
         }[]
       }
+      insert_tenant_user_if_exists: {
+        Args: {
+          p_user_email: string
+          p_tenant_id: string
+          p_role: string
+          p_permissions?: string[]
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
