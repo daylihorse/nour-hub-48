@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import SidebarAccountSwitcher from "@/components/auth/SidebarAccountSwitcher";
 
 const DashboardHeader = () => {
   const { logout, user } = useAuth();
@@ -34,8 +35,13 @@ const DashboardHeader = () => {
           </div>
         </div>
 
+        {/* Center - Account Switcher */}
+        <div className="flex-1 flex justify-center">
+          <SidebarAccountSwitcher />
+        </div>
+
         {/* Right side - User menu */}
-        <div className="ml-auto flex items-center gap-2">
+        <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground hidden sm:block">
             {user?.firstName} {user?.lastName}
           </span>

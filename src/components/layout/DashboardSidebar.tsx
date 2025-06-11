@@ -14,7 +14,6 @@ import {
 import SidebarMenu from "./sidebar/SidebarMenu";
 import SidebarFooter from "./sidebar/SidebarFooter";
 import DashboardSidebarHeader from "./sidebar/DashboardSidebarHeader";
-import SidebarAccountSwitcher from "@/components/auth/SidebarAccountSwitcher";
 
 const DashboardSidebar = () => {
   const { state } = useSidebar();
@@ -24,7 +23,6 @@ const DashboardSidebar = () => {
     <TooltipProvider>
       <Sidebar className={collapsed ? "w-16" : "w-64"} collapsible="icon">
         <SidebarHeader>
-          <SidebarAccountSwitcher />
           <DashboardSidebarHeader />
         </SidebarHeader>
 
