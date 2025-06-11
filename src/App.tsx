@@ -31,6 +31,10 @@ import ClientForm from "./pages/dashboard/ClientForm";
 // Mare detail view import
 import MareDetailView from "./components/horses/breeding/mare-detail/MareDetailView";
 
+// Onboarding imports
+import PublicMarketplace from "./pages/PublicMarketplace";
+import OnboardingEntry from "./pages/onboarding/OnboardingEntry";
+
 // Create a new QueryClient instance
 const queryClient = new QueryClient();
 
@@ -45,7 +49,14 @@ const App = () => {
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              {/* Public marketplace landing page */}
+              <Route path="/" element={<PublicMarketplace />} />
+              
+              {/* Onboarding flow */}
+              <Route path="/onboarding" element={<OnboardingEntry />} />
+              <Route path="/onboarding/:tenantType" element={<OnboardingEntry />} />
+              
+              {/* Dashboard routes */}
               <Route path="/dashboard" element={<DashboardLayout />}>
                 <Route index element={<Dashboard />} />
                 <Route path="operations" element={<UnifiedOperations />} />
@@ -70,6 +81,7 @@ const App = () => {
                 <Route path="clients/new" element={<ClientForm />} />
                 <Route path="clients/:id/edit" element={<ClientForm />} />
               </Route>
+              
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
