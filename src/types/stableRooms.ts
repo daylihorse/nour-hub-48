@@ -59,11 +59,12 @@ export interface Assignment {
 export interface MaintenanceRecord {
   id: string;
   roomId: string;
-  type: 'cleaning' | 'repair' | 'upgrade' | 'inspection' | 'pest_control';
+  type: 'cleaning' | 'repair' | 'upgrade' | 'inspection' | 'pest_control' | 'emergency' | 'routine' | 'preventive';
   description: string;
   scheduledDate: Date;
   completedDate?: Date;
   status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
+  priority: 'low' | 'medium' | 'high' | 'urgent';
   assignedTo?: string;
   cost?: number;
   notes?: string;

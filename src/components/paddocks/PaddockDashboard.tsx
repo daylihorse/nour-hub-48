@@ -1,9 +1,8 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { MapPin, Grass, Activity, AlertTriangle, Calendar, Users } from "lucide-react";
+import { MapPin, Leaf, Activity, AlertTriangle, Calendar, Users } from "lucide-react";
 import { usePaddockData } from "@/hooks/usePaddockData";
 
 const PaddockDashboard = () => {
@@ -22,7 +21,7 @@ const PaddockDashboard = () => {
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'grazing': return Grass;
+      case 'grazing': return Leaf;
       case 'exercise': return Activity;
       default: return MapPin;
     }

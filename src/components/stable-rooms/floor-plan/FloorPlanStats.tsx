@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -29,7 +28,7 @@ const FloorPlanStats = ({ rooms, selectedBuilding, selectedFloor, buildings }: F
   const occupiedRooms = rooms.filter(r => r.status === 'occupied').length;
   const availableRooms = rooms.filter(r => r.status === 'available').length;
   const maintenanceRooms = rooms.filter(r => r.status === 'maintenance').length;
-  const outOfOrderRooms = rooms.filter(r => r.status === 'out_of_order').length;
+  const reservedRooms = rooms.filter(r => r.status === 'reserved').length;
   
   const occupancyRate = totalRooms > 0 ? (occupiedRooms / totalRooms) * 100 : 0;
   
@@ -45,7 +44,7 @@ const FloorPlanStats = ({ rooms, selectedBuilding, selectedFloor, buildings }: F
     .reduce((sum, room) => sum + (room.pricing?.dailyRate || 0), 0);
 
   // Maintenance alerts
-  const maintenanceAlerts = maintenanceRooms + outOfOrderRooms;
+  const maintenanceAlerts = maintenanceRooms;
   
   // Building info
   const currentBuilding = buildings.find(b => b.id === selectedBuilding);
@@ -240,8 +239,8 @@ const FloorPlanStats = ({ rooms, selectedBuilding, selectedFloor, buildings }: F
                 <Badge className="bg-orange-500">{maintenanceRooms}</Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Out of Order</span>
-                <Badge className="bg-red-500">{outOfOrderRooms}</Badge>
+                <span className="text-sm">Reserved</span>
+                <Badge className="bg-purple-500">{reservedRooms}</Badge>
               </div>
             </div>
           </div>
