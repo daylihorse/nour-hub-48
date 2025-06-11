@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -5,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { authService } from '@/services/auth/authService';
 
 interface SampleAccount {
   email: string;
@@ -14,11 +16,13 @@ interface SampleAccount {
   tenantId: string;
   tenantName: string;
   description: string;
+  firstName: string;
+  lastName: string;
 }
 
 const DevLoginHelper = () => {
   const [isCreating, setIsCreating] = useState(false);
-  const [isSettingUpData, setIsSettingUpData] = useState(false);
+  const [creatingEmail, setCreatingEmail] = useState<string | null>(null);
   const { login } = useAuth();
   const { toast } = useToast();
 
@@ -30,7 +34,9 @@ const DevLoginHelper = () => {
       role: 'owner',
       tenantId: '550e8400-e29b-41d4-a716-446655440001',
       tenantName: 'Elite Equestrian Center',
-      description: 'Premium stable with full features enabled'
+      description: 'Premium stable with full features enabled',
+      firstName: 'Elite',
+      lastName: 'Owner'
     },
     {
       email: 'manager@eliteequestrian.com',
@@ -39,7 +45,9 @@ const DevLoginHelper = () => {
       role: 'manager',
       tenantId: '550e8400-e29b-41d4-a716-446655440001',
       tenantName: 'Elite Equestrian Center',
-      description: 'Manager with limited permissions'
+      description: 'Manager with limited permissions',
+      firstName: 'Elite',
+      lastName: 'Manager'
     },
     {
       email: 'owner@sunsetstables.com',
@@ -48,7 +56,9 @@ const DevLoginHelper = () => {
       role: 'owner',
       tenantId: '550e8400-e29b-41d4-a716-446655440002',
       tenantName: 'Sunset Stables',
-      description: 'Basic stable with essential features only'
+      description: 'Basic stable with essential features only',
+      firstName: 'Sunset',
+      lastName: 'Owner'
     },
     {
       email: 'director@advancedvetclinic.com',
@@ -57,7 +67,9 @@ const DevLoginHelper = () => {
       role: 'owner',
       tenantId: '550e8400-e29b-41d4-a716-446655440003',
       tenantName: 'Advanced Veterinary Clinic',
-      description: 'Professional clinic with medical features'
+      description: 'Professional clinic with medical features',
+      firstName: 'Clinic',
+      lastName: 'Director'
     },
     {
       email: 'director@equinediagnostics.com',
@@ -66,7 +78,9 @@ const DevLoginHelper = () => {
       role: 'owner',
       tenantId: '550e8400-e29b-41d4-a716-446655440004',
       tenantName: 'Equine Diagnostics Lab',
-      description: 'Professional laboratory with diagnostic tools'
+      description: 'Professional laboratory with diagnostic tools',
+      firstName: 'Lab',
+      lastName: 'Director'
     },
     {
       email: 'admin@regionalequinehospital.com',
@@ -75,7 +89,9 @@ const DevLoginHelper = () => {
       role: 'owner',
       tenantId: '550e8400-e29b-41d4-a716-446655440005',
       tenantName: 'Regional Equine Hospital',
-      description: 'Enterprise hospital with all features'
+      description: 'Enterprise hospital with all features',
+      firstName: 'Hospital',
+      lastName: 'Admin'
     },
     {
       email: 'admin@horsetrader.com',
@@ -84,7 +100,9 @@ const DevLoginHelper = () => {
       role: 'owner',
       tenantId: '550e8400-e29b-41d4-a716-446655440006',
       tenantName: 'HorseTrader Marketplace',
-      description: 'Premium marketplace platform'
+      description: 'Premium marketplace platform',
+      firstName: 'Marketplace',
+      lastName: 'Admin'
     },
     {
       email: 'ceo@globalequinesolutions.com',
@@ -93,14 +111,28 @@ const DevLoginHelper = () => {
       role: 'owner',
       tenantId: '550e8400-e29b-41d4-a716-446655440007',
       tenantName: 'Global Equine Solutions',
-      description: 'Enterprise solution with complete feature set'
+      description: 'Enterprise solution with complete feature set',
+      firstName: 'Global',
+      lastName: 'CEO'
     }
   ];
 
   const quickLogin = async (account: SampleAccount) => {
     try {
       console.log('Quick login for:', account.email);
+      setCreatingEmail(account.email);
+      
+      // First try to create the user if it doesn't exist
+      await authService.createSampleUserIfNotExists(
+        account.email, 
+        account.password, 
+        account.firstName, 
+        account.lastName
+      );
+      
+      // Then try to log in
       await login(account.email, account.password);
+      
       toast({
         title: 'Logged in',
         description: `Logged in as ${account.email}`,
@@ -112,6 +144,45 @@ const DevLoginHelper = () => {
         description: error.message || 'Login failed. Please try again.',
         variant: 'destructive',
       });
+    } finally {
+      setCreatingEmail(null);
+    }
+  };
+
+  const createAllSampleUsers = async () => {
+    setIsCreating(true);
+    try {
+      console.log('Creating all sample users...');
+      
+      for (const account of sampleAccounts) {
+        setCreatingEmail(account.email);
+        try {
+          await authService.createSampleUserIfNotExists(
+            account.email,
+            account.password,
+            account.firstName,
+            account.lastName
+          );
+          console.log(`Created/verified user: ${account.email}`);
+        } catch (error) {
+          console.error(`Failed to create user ${account.email}:`, error);
+        }
+      }
+      
+      toast({
+        title: 'Sample users ready',
+        description: 'All sample user accounts have been created and are ready to use.',
+      });
+    } catch (error: any) {
+      console.error('Error creating sample users:', error);
+      toast({
+        title: 'Creation failed',
+        description: 'Some sample users could not be created. Check console for details.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsCreating(false);
+      setCreatingEmail(null);
     }
   };
 
@@ -175,6 +246,13 @@ const DevLoginHelper = () => {
         </p>
         <div className="flex gap-2 mt-4">
           <Button
+            onClick={createAllSampleUsers}
+            disabled={isCreating}
+            className="bg-blue-600 hover:bg-blue-700"
+          >
+            {isCreating ? 'Creating Users...' : 'Create All Sample Users'}
+          </Button>
+          <Button
             onClick={debugCurrentUser}
             variant="outline"
             size="sm"
@@ -211,10 +289,10 @@ const DevLoginHelper = () => {
                 <Button
                   size="sm"
                   onClick={() => quickLogin(account)}
-                  disabled={isSettingUpData}
+                  disabled={isCreating || creatingEmail === account.email}
                   className="flex-1"
                 >
-                  Login
+                  {creatingEmail === account.email ? 'Creating & Logging in...' : 'Login'}
                 </Button>
               </div>
             </div>
@@ -224,9 +302,10 @@ const DevLoginHelper = () => {
         <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
           <h4 className="font-medium text-amber-800 mb-2">Important Notes:</h4>
           <ul className="text-sm text-amber-700 space-y-1">
+            <li>• Click "Create All Sample Users" first to ensure all accounts exist in Supabase Auth</li>
             <li>• Click "Login" to quickly sign in with any sample account</li>
             <li>• Use "Debug Current User" to see user and tenant information in the console</li>
-            <li>• All sample accounts are pre-configured with tenant associations</li>
+            <li>• Sample accounts will be automatically created if they don't exist</li>
           </ul>
         </div>
       </CardContent>

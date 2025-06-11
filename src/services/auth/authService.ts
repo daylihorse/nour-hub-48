@@ -65,5 +65,39 @@ export const authService = {
   async getCurrentUser() {
     const { data: { user } } = await supabase.auth.getUser();
     return user;
+  },
+
+  async createSampleUserIfNotExists(email: string, password: string, firstName: string, lastName: string) {
+    console.log('Creating sample user if not exists:', email);
+    
+    // First try to sign in
+    try {
+      const { data, error } = await this.signInWithPassword(email, password);
+      if (!error && data.user) {
+        console.log('Sample user already exists and can sign in:', email);
+        return { data, error: null };
+      }
+    } catch (signInError) {
+      console.log('Sample user does not exist or cannot sign in, creating:', email);
+    }
+    
+    // If sign in failed, try to create the user
+    try {
+      const { data, error } = await this.signUp(email, password, {
+        first_name: firstName,
+        last_name: lastName
+      });
+      
+      if (error) {
+        console.error('Error creating sample user:', error);
+        throw error;
+      }
+      
+      console.log('Sample user created successfully:', email);
+      return { data, error };
+    } catch (createError) {
+      console.error('Failed to create sample user:', createError);
+      throw createError;
+    }
   }
 };
