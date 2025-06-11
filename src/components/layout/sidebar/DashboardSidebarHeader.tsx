@@ -1,32 +1,43 @@
 
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import NotificationDropdown from "@/components/notifications/NotificationDropdown";
+import TenantSwitcher from "@/components/auth/TenantSwitcher";
 
 const DashboardSidebarHeader = () => {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
 
   return (
-    <div className={`flex items-center p-4 border-b border-sidebar-border gap-3 ${
-      collapsed ? 'flex-col justify-center' : 'justify-between'
-    }`}>
-      {/* Sidebar Toggle */}
-      <div className="flex items-center justify-center">
-        <SidebarTrigger className="
-          h-10 w-10 p-0 
-          hover:bg-sidebar-accent hover:text-sidebar-accent-foreground 
-          transition-all duration-300 ease-in-out
-          hover:scale-110 active:scale-95
-          rounded-lg border border-sidebar-border/20
-          shadow-sm hover:shadow-md
-          [&_svg]:h-5 [&_svg]:w-5
-        " />
+    <div className={`flex flex-col p-4 border-b border-sidebar-border gap-3`}>
+      {/* Top row with toggle and notification */}
+      <div className={`flex items-center ${
+        collapsed ? 'flex-col justify-center gap-2' : 'justify-between'
+      }`}>
+        {/* Sidebar Toggle */}
+        <div className="flex items-center justify-center">
+          <SidebarTrigger className="
+            h-10 w-10 p-0 
+            hover:bg-sidebar-accent hover:text-sidebar-accent-foreground 
+            transition-all duration-300 ease-in-out
+            hover:scale-110 active:scale-95
+            rounded-lg border border-sidebar-border/20
+            shadow-sm hover:shadow-md
+            [&_svg]:h-5 [&_svg]:w-5
+          " />
+        </div>
+
+        {/* Notification Bell */}
+        <div className="flex items-center justify-center">
+          <NotificationDropdown />
+        </div>
       </div>
 
-      {/* Notification Bell */}
-      <div className="flex items-center justify-center">
-        <NotificationDropdown />
-      </div>
+      {/* Tenant Switcher */}
+      {!collapsed && (
+        <div className="w-full">
+          <TenantSwitcher />
+        </div>
+      )}
     </div>
   );
 };
