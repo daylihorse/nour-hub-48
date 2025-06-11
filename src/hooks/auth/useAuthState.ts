@@ -15,6 +15,8 @@ export const useAuthState = () => {
   const loadUserData = async (supabaseUser: any) => {
     try {
       console.log('Loading user data for:', supabaseUser.email);
+      setIsLoading(true);
+      
       const { user: transformedUser, tenants: transformedTenants } = await userDataService.loadUserData(supabaseUser);
 
       console.log('Loaded user:', transformedUser);
@@ -27,12 +29,15 @@ export const useAuthState = () => {
       const defaultTenant = tenantService.getCurrentTenant(transformedTenants);
       console.log('Setting current tenant:', defaultTenant);
       setCurrentTenant(defaultTenant);
+      
+      setIsLoading(false);
     } catch (error) {
       console.error('Error loading user data:', error);
       // Clear state on error
       setUser(null);
       setCurrentTenant(null);
       setAvailableTenants([]);
+      setIsLoading(false);
     }
   };
 
@@ -59,8 +64,8 @@ export const useAuthState = () => {
           setCurrentTenant(null);
           setAvailableTenants([]);
           tenantService.clearCurrentTenant();
+          setIsLoading(false);
         }
-        setIsLoading(false);
       }
     );
 
