@@ -18,7 +18,10 @@ const MareBasicInfoTable = ({ mareId }: MareBasicInfoTableProps) => {
     return (
       <Card>
         <CardContent className="p-6">
-          <p className="text-muted-foreground">Mare not found</p>
+          <p className="text-muted-foreground">Mare not found (ID: {mareId})</p>
+          <p className="text-sm text-muted-foreground mt-2">
+            Available mare IDs: {mares.map(m => m.id).join(', ')}
+          </p>
         </CardContent>
       </Card>
     );

@@ -8,13 +8,14 @@ export const useMareManagement = () => {
     filteredMares,
     updateMare,
     isLoading,
-    error
+    error,
+    mares
   } = useMareContext();
 
   return {
     searchTerm,
     setSearchTerm,
-    mares: filteredMares,
+    mares: filteredMares, // Use filteredMares as the main mares array
     filteredMares,
     updateMare,
     isLoading,
