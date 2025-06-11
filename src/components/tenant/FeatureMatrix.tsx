@@ -10,7 +10,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Check, AlertTriangle, Lock } from "lucide-react";
 import { useTenantFeatures, FeatureDefinition } from "@/hooks/useTenantFeatures";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const FeatureMatrix = () => {
   const { 
@@ -32,7 +31,7 @@ const FeatureMatrix = () => {
         ${isEnabled ? 'border-green-200 bg-green-50' : isAvailable ? 'border-muted' : 'border-gray-200 bg-gray-50'}
       `}>
         <div className={`
-          flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center
+          flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center
           ${isEnabled 
             ? 'bg-green-100 text-green-600' 
             : isAvailable 
@@ -41,41 +40,41 @@ const FeatureMatrix = () => {
           }
         `}>
           {isEnabled ? (
-            <Check className="h-4 w-4" />
+            <Check className="h-3 w-3" />
           ) : isAvailable ? (
-            <AlertTriangle className="h-4 w-4" />
+            <AlertTriangle className="h-3 w-3" />
           ) : (
-            <Lock className="h-4 w-4" />
+            <Lock className="h-3 w-3" />
           )}
         </div>
         
-        <div>
+        <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <h4 className="font-medium text-sm">{feature.name}</h4>
+            <h4 className="font-medium text-sm truncate">{feature.name}</h4>
             {isEnabled ? (
               <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-xs">Active</Badge>
             ) : isAvailable ? (
               <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 text-xs">Available</Badge>
             ) : (
-              <Badge variant="outline" className="bg-gray-100 text-gray-500 border-gray-200 text-xs">Unavailable</Badge>
+              <Badge variant="outline" className="bg-gray-100 text-gray-500 border-gray-200 text-xs">Locked</Badge>
             )}
           </div>
-          <p className="text-xs text-muted-foreground">{feature.description}</p>
+          <p className="text-xs text-muted-foreground line-clamp-2">{feature.description}</p>
         </div>
       </div>
     );
   };
   
   return (
-    <Card className="shadow-sm">
-      <CardHeader className="pb-3">
+    <Card className="shadow-sm h-full">
+      <CardHeader className="pb-4">
         <CardTitle className="text-lg">Feature Matrix</CardTitle>
         <CardDescription>
           Features available based on your subscription tier
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 max-h-[400px] overflow-y-auto">
           {Object.values(featureMatrix).map((feature) => (
             <FeatureCard 
               key={feature.id}

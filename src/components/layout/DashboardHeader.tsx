@@ -1,16 +1,12 @@
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import TenantSwitcher from "@/components/auth/TenantSwitcher";
-import DemoAccountSwitcher from "@/components/auth/DemoAccountSwitcher";
 import { useAuth } from "@/hooks/useAuth";
-import { useAccessMode } from "@/contexts/AccessModeContext";
 import { LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const DashboardHeader = () => {
   const { logout, user } = useAuth();
-  const { isDemoMode, isPublicMode } = useAccessMode();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -25,21 +21,6 @@ const DashboardHeader = () => {
     }
   };
 
-  const renderSwitcher = () => {
-    if (isPublicMode) {
-      // In public mode, don't show any switcher
-      return null;
-    }
-    
-    if (isDemoMode) {
-      // In demo mode, show demo account switcher
-      return <DemoAccountSwitcher />;
-    }
-    
-    // In regular auth mode, show tenant switcher
-    return <TenantSwitcher />;
-  };
-
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-14 items-center px-4">
@@ -51,11 +32,6 @@ const DashboardHeader = () => {
               EquiSense Dashboard
             </h1>
           </div>
-        </div>
-
-        {/* Center - Appropriate Switcher */}
-        <div className="flex-1 flex justify-center max-w-xs mx-4">
-          {renderSwitcher()}
         </div>
 
         {/* Right side - User menu */}

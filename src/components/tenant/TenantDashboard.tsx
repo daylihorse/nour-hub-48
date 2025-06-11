@@ -123,8 +123,8 @@ const TenantDashboard = () => {
         </Card>
       </div>
 
-      {/* Subscription and Features */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Subscription and Features - Fixed grid layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <SubscriptionTierInfo />
         <FeatureMatrix />
       </div>
