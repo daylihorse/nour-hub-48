@@ -208,7 +208,20 @@ class PublicDemoService {
       case 'marketplace':
         return { ...baseFeatures, marketplace: true, inventory: true, finance: true };
       case 'enterprise':
-        return Object.fromEntries(Object.keys(baseFeatures).map(key => [key, true]));
+        return {
+          horses: true,
+          laboratory: true,
+          clinic: true,
+          pharmacy: true,
+          marketplace: true,
+          finance: true,
+          hr: true,
+          inventory: true,
+          training: true,
+          rooms: true,
+          maintenance: true,
+          messages: true,
+        };
       default:
         return baseFeatures;
     }
