@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
+import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import Dashboard from "./pages/dashboard/Dashboard";
@@ -35,6 +36,10 @@ import MareDetailView from "./components/horses/breeding/mare-detail/MareDetailV
 import PublicMarketplace from "./pages/PublicMarketplace";
 import OnboardingEntry from "./pages/onboarding/OnboardingEntry";
 
+// Auth components
+import AuthGuard from "./components/auth/AuthGuard";
+import { AuthProvider } from "./hooks/useAuth";
+
 // Create a new QueryClient instance
 const queryClient = new QueryClient();
 
@@ -48,42 +53,51 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <Routes>
-              {/* Public marketplace landing page */}
-              <Route path="/" element={<PublicMarketplace />} />
-              
-              {/* Onboarding flow */}
-              <Route path="/onboarding" element={<OnboardingEntry />} />
-              <Route path="/onboarding/:tenantType" element={<OnboardingEntry />} />
-              
-              {/* Dashboard routes */}
-              <Route path="/dashboard" element={<DashboardLayout />}>
-                <Route index element={<Dashboard />} />
-                <Route path="operations" element={<UnifiedOperations />} />
-                <Route path="horses" element={<HorsesDepartment />} />
-                <Route path="horses/breeding/mares/:mareId" element={<MareDetailView />} />
-                <Route path="laboratory" element={<LaboratoryDepartment />} />
-                <Route path="clinic" element={<ClinicDepartment />} />
-                <Route path="pharmacy" element={<PharmacyDepartment />} />
-                <Route path="finance" element={<FinanceDepartment />} />
-                <Route path="hr" element={<HRDepartment />} />
-                <Route path="inventory" element={<InventoryManagement />} />
-                <Route path="marketplace" element={<MarketplaceDepartment />} />
-                <Route path="movements" element={<HorseMovements />} />
-                <Route path="training" element={<TrainingCenter />} />
-                <Route path="rooms" element={<StableRooms />} />
-                <Route path="maintenance" element={<MaintenanceDepartment />} />
-                <Route path="messages" element={<MessagesDepartment />} />
+            <AuthProvider>
+              <Routes>
+                {/* Public marketplace landing page */}
+                <Route path="/" element={<PublicMarketplace />} />
                 
-                {/* Client Management Routes */}
-                <Route path="clients" element={<ClientsDepartment />} />
-                <Route path="clients/:id" element={<ClientProfile />} />
-                <Route path="clients/new" element={<ClientForm />} />
-                <Route path="clients/:id/edit" element={<ClientForm />} />
-              </Route>
-              
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+                {/* Login page */}
+                <Route path="/login" element={<Login />} />
+                
+                {/* Onboarding flow */}
+                <Route path="/onboarding" element={<OnboardingEntry />} />
+                <Route path="/onboarding/:tenantType" element={<OnboardingEntry />} />
+                
+                {/* Protected dashboard routes */}
+                <Route path="/dashboard" element={
+                  <AuthGuard>
+                    <DashboardLayout />
+                  </AuthGuard>
+                }>
+                  <Route index element={<Dashboard />} />
+                  <Route path="operations" element={<UnifiedOperations />} />
+                  <Route path="horses" element={<HorsesDepartment />} />
+                  <Route path="horses/breeding/mares/:mareId" element={<MareDetailView />} />
+                  <Route path="laboratory" element={<LaboratoryDepartment />} />
+                  <Route path="clinic" element={<ClinicDepartment />} />
+                  <Route path="pharmacy" element={<PharmacyDepartment />} />
+                  <Route path="finance" element={<FinanceDepartment />} />
+                  <Route path="hr" element={<HRDepartment />} />
+                  <Route path="inventory" element={<InventoryManagement />} />
+                  <Route path="marketplace" element={<MarketplaceDepartment />} />
+                  <Route path="movements" element={<HorseMovements />} />
+                  <Route path="training" element={<TrainingCenter />} />
+                  <Route path="rooms" element={<StableRooms />} />
+                  <Route path="maintenance" element={<MaintenanceDepartment />} />
+                  <Route path="messages" element={<MessagesDepartment />} />
+                  
+                  {/* Client Management Routes */}
+                  <Route path="clients" element={<ClientsDepartment />} />
+                  <Route path="clients/:id" element={<ClientProfile />} />
+                  <Route path="clients/new" element={<ClientForm />} />
+                  <Route path="clients/:id/edit" element={<ClientForm />} />
+                </Route>
+                
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AuthProvider>
           </BrowserRouter>
         </TooltipProvider>
       </QueryClientProvider>
