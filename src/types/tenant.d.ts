@@ -1,3 +1,4 @@
+
 export type TenantType = 'stable' | 'clinic' | 'marketplace' | 'enterprise' | 'hospital' | 'laboratory';
 export type SubscriptionTier = 'basic' | 'professional' | 'premium' | 'enterprise';
 export type UserRole = 'owner' | 'admin' | 'manager' | 'employee' | 'viewer';
@@ -89,6 +90,7 @@ export interface AuthContext {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   switchTenant: (tenantId: string) => Promise<void>;
+  switchDemoAccount?: (account: any) => Promise<void>;
   hasPermission: (permission: string) => boolean;
   hasRole: (role: UserRole) => boolean;
 }

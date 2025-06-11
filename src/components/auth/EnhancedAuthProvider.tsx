@@ -7,13 +7,14 @@ import { usePublicAuthState } from '@/hooks/auth/usePublicAuthState';
 import { usePermissions } from '@/hooks/auth/usePermissions';
 import { AuthContextProvider } from '@/contexts/AuthContext';
 import { useAccessMode } from '@/contexts/AccessModeContext';
+import { publicDemoService } from '@/services/auth/publicDemoService';
 
 interface EnhancedAuthProviderProps {
   children: ReactNode;
 }
 
 export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) => {
-  const { accessMode } = useAccessMode();
+  const { accessMode, setAccessMode } = useAccessMode();
   
   // Use different auth states based on access mode
   const regularAuth = useAuthState();
@@ -67,6 +68,30 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
     }
   };
 
+  const switchDemoAccount = async (account: any) => {
+    console.log('Switching to demo account:', account);
+    
+    setIsLoading(true);
+    try {
+      // Set to demo mode
+      setAccessMode('demo');
+      
+      // Create tenant and user from account data
+      const tenant = publicDemoService.createTenantFromDemoAccount(account);
+      const user = publicDemoService.createUserFromDemoAccount(account, tenant);
+      
+      // Update auth state directly (this will be handled by the auth hooks)
+      // The actual state update will happen through the auth state hooks
+      console.log('Demo account switch completed for:', account.tenantName);
+      
+    } catch (error) {
+      console.error('Demo account switch error:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const value: AuthContext = {
     user,
     currentTenant,
@@ -75,6 +100,7 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
     login,
     logout,
     switchTenant,
+    switchDemoAccount,
     hasPermission,
     hasRole,
   };

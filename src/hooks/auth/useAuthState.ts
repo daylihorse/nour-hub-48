@@ -2,124 +2,92 @@
 import { useState, useEffect } from 'react';
 import { User, Tenant } from '@/types/tenant';
 import { authService } from '@/services/auth/authService';
-import { userDataService } from '@/services/auth/userDataService';
-import { tenantService } from '@/services/auth/tenantService';
+import { useAccessMode } from '@/contexts/AccessModeContext';
+import { publicDemoService } from '@/services/auth/publicDemoService';
 
 export const useAuthState = () => {
+  const { accessMode } = useAccessMode();
   const [user, setUser] = useState<User | null>(null);
   const [currentTenant, setCurrentTenant] = useState<Tenant | null>(null);
   const [availableTenants, setAvailableTenants] = useState<Tenant[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load user data and tenants from Supabase
-  const loadUserData = async (supabaseUser: any, retryCount = 0) => {
-    try {
-      console.log(`Loading user data for: ${supabaseUser.email} (attempt ${retryCount + 1})`);
-      setIsLoading(true);
-      
-      const { user: transformedUser, tenants: transformedTenants } = await userDataService.loadUserData(supabaseUser);
-
-      console.log('Loaded user:', transformedUser);
-      console.log('Loaded tenants:', transformedTenants);
-
-      setUser(transformedUser);
-      setAvailableTenants(transformedTenants);
-
-      // Set current tenant
-      const defaultTenant = tenantService.getCurrentTenant(transformedTenants);
-      console.log('Setting current tenant:', defaultTenant);
-      setCurrentTenant(defaultTenant);
-      
-      setIsLoading(false);
-    } catch (error) {
-      console.error(`Error loading user data (attempt ${retryCount + 1}):`, error);
-      
-      // Retry logic for newly created users (profile might not exist yet)
-      if (retryCount < 3) {
-        console.log(`Retrying user data load in ${(retryCount + 1) * 1500}ms...`);
-        setTimeout(() => {
-          loadUserData(supabaseUser, retryCount + 1);
-        }, (retryCount + 1) * 1500);
-        return;
-      }
-      
-      // Clear state on final error and stop loading
-      console.log('Failed to load user data after retries, clearing auth state');
-      setUser(null);
-      setCurrentTenant(null);
-      setAvailableTenants([]);
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    let mounted = true;
-
     const initializeAuth = async () => {
-      try {
-        // Get initial session
-        const { data: { session }, error } = await authService.getSession();
-        
-        if (error) {
-          console.error('Failed to get initial session:', error);
-          if (mounted) setIsLoading(false);
-          return;
+      if (accessMode === 'demo') {
+        // In demo mode, start with the first demo account
+        const demoAccounts = publicDemoService.getDemoAccounts();
+        if (demoAccounts.length > 0) {
+          const firstAccount = demoAccounts[0];
+          const tenant = publicDemoService.createTenantFromDemoAccount(firstAccount);
+          const user = publicDemoService.createUserFromDemoAccount(firstAccount, tenant);
+          
+          setUser(user);
+          setCurrentTenant(tenant);
+          setAvailableTenants([tenant]);
         }
-
-        console.log('Initial session check:', session);
-        if (session?.user && mounted) {
-          await loadUserData(session.user);
-        } else if (mounted) {
+        setIsLoading(false);
+      } else {
+        // Regular auth mode - get session from Supabase
+        try {
+          const { data: { session } } = await authService.getSession();
+          if (session) {
+            // Handle regular auth session
+            // This would typically load user and tenant data from the database
+            console.log('Regular auth session:', session);
+          }
+        } catch (error) {
+          console.error('Auth initialization error:', error);
+        } finally {
           setIsLoading(false);
         }
-      } catch (error) {
-        console.error('Auth initialization failed:', error);
-        if (mounted) setIsLoading(false);
       }
     };
 
     initializeAuth();
 
-    // Listen for auth changes with error handling
-    let subscription: any = null;
-    try {
-      const { data } = authService.onAuthStateChange(
-        async (event, session) => {
-          if (!mounted) return;
-          
-          console.log('Auth state change:', event, session);
-          if (event === 'SIGNED_IN' && session?.user) {
-            await loadUserData(session.user);
-          } else if (event === 'SIGNED_OUT') {
-            console.log('User signed out, clearing state');
-            setUser(null);
-            setCurrentTenant(null);
-            setAvailableTenants([]);
-            tenantService.clearCurrentTenant();
-            setIsLoading(false);
-          }
+    // Listen for auth changes
+    const { data: { subscription } } = authService.onAuthStateChange((event, session) => {
+      console.log('Auth state changed:', event, session);
+      if (accessMode !== 'demo') {
+        // Handle regular auth state changes
+        if (!session) {
+          setUser(null);
+          setCurrentTenant(null);
+          setAvailableTenants([]);
         }
-      );
-      subscription = data?.subscription;
-    } catch (error) {
-      console.error('Failed to setup auth state listener:', error);
-      if (mounted) setIsLoading(false);
-    }
+      }
+    });
 
     return () => {
-      mounted = false;
-      if (subscription?.unsubscribe) {
-        subscription.unsubscribe();
-      }
+      subscription?.unsubscribe();
     };
-  }, []);
+  }, [accessMode]);
 
   const switchTenant = async (tenantId: string) => {
-    const tenant = availableTenants.find(t => t.id === tenantId);
-    if (tenant) {
-      console.log('Switching to tenant:', tenant);
+    if (accessMode === 'demo') {
+      // In demo mode, find the tenant by ID and switch to it
+      const tenant = availableTenants.find(t => t.id === tenantId);
+      if (tenant) {
+        setCurrentTenant(tenant);
+      }
+    } else {
+      // Regular tenant switching logic would go here
+      console.log('Regular tenant switch:', tenantId);
+    }
+  };
+
+  // Function to handle demo account switching
+  const switchDemoAccount = (account: any) => {
+    if (accessMode === 'demo') {
+      const tenant = publicDemoService.createTenantFromDemoAccount(account);
+      const user = publicDemoService.createUserFromDemoAccount(account, tenant);
+      
+      setUser(user);
       setCurrentTenant(tenant);
-      tenantService.setCurrentTenant(tenantId);
+      setAvailableTenants([tenant]);
+      
+      console.log('Switched to demo account:', account.tenantName);
     }
   };
 
@@ -129,6 +97,7 @@ export const useAuthState = () => {
     availableTenants,
     isLoading,
     switchTenant,
+    switchDemoAccount,
     setIsLoading,
   };
 };

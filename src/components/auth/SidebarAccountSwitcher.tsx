@@ -16,7 +16,7 @@ import { publicDemoService } from '@/services/auth/publicDemoService';
 import { useAccessMode } from '@/contexts/AccessModeContext';
 
 const SidebarAccountSwitcher = () => {
-  const { currentTenant } = useAuth();
+  const { currentTenant, switchDemoAccount } = useAuth();
   const { isDemoMode, isPublicMode, setAccessMode } = useAccessMode();
   const navigate = useNavigate();
 
@@ -24,20 +24,24 @@ const SidebarAccountSwitcher = () => {
     return null;
   }
 
-  const handleAccountSwitch = (account: any) => {
+  const handleAccountSwitch = async (account: any) => {
     console.log('Switching to account:', account);
     
-    // Set to demo mode when switching accounts
-    setAccessMode('demo');
-    
-    // Navigate to login with the selected account credentials
-    navigate('/login', {
-      state: {
-        email: account.email,
-        password: account.password,
-        autoLogin: true
+    try {
+      // Set to demo mode
+      setAccessMode('demo');
+      
+      // Use the new switchDemoAccount function
+      if (switchDemoAccount) {
+        await switchDemoAccount(account);
+        console.log('Successfully switched to:', account.tenantName);
+        
+        // Navigate to dashboard after successful switch
+        navigate('/dashboard');
       }
-    });
+    } catch (error) {
+      console.error('Account switch error:', error);
+    }
   };
 
   const handleCreateAccount = () => {
