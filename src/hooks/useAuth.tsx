@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     availableTenants,
     isLoading,
     switchTenant,
+    setIsLoading,
   } = useAuthState();
 
   const { hasPermission, hasRole } = usePermissions(user, currentTenant);

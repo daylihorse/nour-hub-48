@@ -68,5 +68,6 @@ export const useAuthState = () => {
     availableTenants,
     isLoading,
     switchTenant,
+    setIsLoading,
   };
 };
