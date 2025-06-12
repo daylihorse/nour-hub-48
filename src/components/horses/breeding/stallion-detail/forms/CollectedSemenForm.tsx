@@ -25,8 +25,8 @@ import {
 import { CollectedSemen } from '@/types/breeding/stallion-detail';
 
 const collectedSemenSchema = z.object({
-  stallionId: z.string(),
-  collectionDate: z.string(),
+  stallionId: z.string().min(1, 'Stallion ID is required'),
+  collectionDate: z.string().min(1, 'Collection date is required'),
   volume: z.string().min(1, 'Volume is required'),
   concentration: z.string().min(1, 'Concentration is required'),
   motility: z.string().min(1, 'Motility is required'),
@@ -55,6 +55,13 @@ const CollectedSemenForm = ({ stallionId, onSubmit, onCancel, isLoading }: Colle
       collectionDate: new Date().toISOString().split('T')[0],
       status: 'Fresh',
       quality: 'Good',
+      volume: '',
+      concentration: '',
+      motility: '',
+      technician: '',
+      temperature: '',
+      ph: '',
+      notes: '',
     },
   });
 

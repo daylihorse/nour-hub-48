@@ -22,14 +22,14 @@ import {
 import { FrozenSemenInventory } from '@/types/breeding/stallion-detail';
 
 const frozenSemenSchema = z.object({
-  stallionId: z.string(),
-  freezeDate: z.string(),
+  stallionId: z.string().min(1, 'Stallion ID is required'),
+  freezeDate: z.string().min(1, 'Freeze date is required'),
   straws: z.number().min(1, 'Number of straws must be at least 1'),
   tank: z.string().min(1, 'Tank is required'),
   quality: z.enum(['Grade A', 'Grade B', 'Grade C']),
   viability: z.string().min(1, 'Viability is required'),
   location: z.string().min(1, 'Location is required'),
-  expiry: z.string(),
+  expiry: z.string().min(1, 'Expiry date is required'),
   batchNumber: z.string().optional(),
   freezingProtocol: z.string().optional(),
 });
@@ -50,8 +50,13 @@ const FrozenSemenForm = ({ stallionId, onSubmit, onCancel, isLoading }: FrozenSe
       stallionId,
       freezeDate: new Date().toISOString().split('T')[0],
       quality: 'Grade A',
-      // Default expiry to 5 years from now
+      straws: 1,
+      tank: '',
+      viability: '',
+      location: '',
       expiry: new Date(Date.now() + 5 * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      batchNumber: '',
+      freezingProtocol: '',
     },
   });
 
