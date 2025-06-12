@@ -3,15 +3,11 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LaboratoryOverview from "@/components/laboratory/LaboratoryOverview";
 import SampleManagement from "@/components/laboratory/SampleManagement";
-import TestRequests from "@/components/laboratory/TestRequests";
 import TestResults from "@/components/laboratory/TestResults";
-import ResultComparison from "@/components/laboratory/ResultComparison";
 import EquipmentManagement from "@/components/laboratory/EquipmentManagement";
-import QualityControl from "@/components/laboratory/QualityControl";
-import TemplateManagement from "@/components/laboratory/TemplateManagement";
 import LaboratoryDocumentManager from "@/components/laboratory/LaboratoryDocumentManager";
 import StoreManagement from "@/components/store/StoreManagement";
-import { Store } from "lucide-react";
+import { Store, FlaskRound, TestTube, Microscope, FileText, Settings } from "lucide-react";
 
 const LaboratoryDepartment = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -24,18 +20,29 @@ const LaboratoryDepartment = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-10">
-          <TabsTrigger value="overview">Lab Overview</TabsTrigger>
-          <TabsTrigger value="samples">Sample Management</TabsTrigger>
-          <TabsTrigger value="tests">Test Requests</TabsTrigger>
-          <TabsTrigger value="results">Results</TabsTrigger>
-          <TabsTrigger value="comparison">Comparison</TabsTrigger>
-          <TabsTrigger value="equipment">Equipment</TabsTrigger>
-          <TabsTrigger value="quality">Quality Control</TabsTrigger>
-          <TabsTrigger value="templates">Templates</TabsTrigger>
-          <TabsTrigger value="documents">Documents</TabsTrigger>
-          <TabsTrigger value="store" className="flex items-center gap-1">
-            <Store className="h-3 w-3" />
+        <TabsList className="grid w-full grid-cols-6">
+          <TabsTrigger value="overview" className="flex items-center gap-2">
+            <FlaskRound className="h-4 w-4" />
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="samples" className="flex items-center gap-2">
+            <TestTube className="h-4 w-4" />
+            Samples & Tests
+          </TabsTrigger>
+          <TabsTrigger value="results" className="flex items-center gap-2">
+            <Microscope className="h-4 w-4" />
+            Results
+          </TabsTrigger>
+          <TabsTrigger value="equipment" className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            Equipment
+          </TabsTrigger>
+          <TabsTrigger value="documents" className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            Documents
+          </TabsTrigger>
+          <TabsTrigger value="store" className="flex items-center gap-2">
+            <Store className="h-4 w-4" />
             Store
           </TabsTrigger>
         </TabsList>
@@ -48,28 +55,12 @@ const LaboratoryDepartment = () => {
           <SampleManagement />
         </TabsContent>
         
-        <TabsContent value="tests" className="mt-6">
-          <TestRequests />
-        </TabsContent>
-        
         <TabsContent value="results" className="mt-6">
           <TestResults />
         </TabsContent>
         
-        <TabsContent value="comparison" className="mt-6">
-          <ResultComparison />
-        </TabsContent>
-        
         <TabsContent value="equipment" className="mt-6">
           <EquipmentManagement />
-        </TabsContent>
-        
-        <TabsContent value="quality" className="mt-6">
-          <QualityControl />
-        </TabsContent>
-        
-        <TabsContent value="templates" className="mt-6">
-          <TemplateManagement />
         </TabsContent>
 
         <TabsContent value="documents" className="mt-6">

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -52,6 +51,7 @@ import TenantSettings from "./pages/dashboard/TenantSettings";
 const queryClient = new QueryClient();
 
 import UnifiedOperations from "./pages/dashboard/UnifiedOperations";
+import TrainingAcademy from "./pages/dashboard/TrainingAcademy";
 
 const App = () => {
   return (
@@ -94,7 +94,7 @@ const App = () => {
                       <Route path="inventory" element={<InventoryManagement />} />
                       <Route path="marketplace" element={<MarketplaceDepartment />} />
                       <Route path="movements" element={<HorseMovements />} />
-                      <Route path="training" element={<TrainingCenter />} />
+                      <Route path="academy" element={<TrainingAcademy />} />
                       <Route path="rooms" element={<StableRooms />} />
                       <Route path="maintenance" element={<MaintenanceDepartment />} />
                       <Route path="messages" element={<MessagesDepartment />} />

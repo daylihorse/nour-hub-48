@@ -7,7 +7,7 @@ import {
   Users, 
   Package, 
   ArrowRightLeft, 
-  Dumbbell, 
+  GraduationCap,
   Warehouse, 
   Wrench,
   Store,
@@ -88,9 +88,9 @@ export const menuItems: MenuItem[] = [
     icon: ArrowRightLeft 
   },
   { 
-    title: "Training Center", 
-    url: "/dashboard/training", 
-    icon: Dumbbell 
+    title: "Training Academy", 
+    url: "/dashboard/academy", 
+    icon: GraduationCap 
   },
   { 
     title: "Stable Rooms", 
