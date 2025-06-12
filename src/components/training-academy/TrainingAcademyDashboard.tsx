@@ -14,7 +14,8 @@ import {
   MapPin,
   Award,
   Activity,
-  Star
+  Star,
+  UserCheck
 } from "lucide-react";
 
 const TrainingAcademyDashboard = () => {
