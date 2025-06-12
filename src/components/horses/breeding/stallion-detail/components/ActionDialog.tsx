@@ -7,6 +7,8 @@ import {
 } from "@/components/ui/dialog";
 import CollectedSemenForm from "../forms/CollectedSemenForm";
 import FrozenSemenForm from "../forms/FrozenSemenForm";
+import FrozenEmbryoForm from "../forms/FrozenEmbryoForm";
+import BreedingRecordForm from "../forms/BreedingRecordForm";
 
 interface ActionDialogProps {
   isOpen: boolean;
@@ -42,13 +44,20 @@ const ActionDialog = ({ isOpen, onClose, actionType, title, stallionId = "1" }: 
           />
         );
       case 'freeze-embryo':
+        return (
+          <FrozenEmbryoForm
+            stallionId={stallionId}
+            onSubmit={handleSubmit}
+            onCancel={onClose}
+          />
+        );
       case 'new-breeding':
         return (
-          <div className="p-4">
-            <p className="text-muted-foreground">
-              {actionType} functionality will be implemented here.
-            </p>
-          </div>
+          <BreedingRecordForm
+            stallionId={stallionId}
+            onSubmit={handleSubmit}
+            onCancel={onClose}
+          />
         );
       default:
         return (

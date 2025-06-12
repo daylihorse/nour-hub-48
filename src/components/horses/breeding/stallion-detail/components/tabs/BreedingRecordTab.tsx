@@ -1,15 +1,20 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { 
   Calendar, 
   Heart,
   CheckCircle,
   Clock,
   Plus,
-  Filter
+  Filter,
+  Search,
+  Download
 } from "lucide-react";
+import { useBreedingRecordManagement } from "../../hooks/useBreedingRecordManagement";
 
 interface BreedingRecordTabProps {
   stallionId: string;
@@ -17,42 +22,13 @@ interface BreedingRecordTabProps {
 }
 
 const BreedingRecordTab = ({ stallionId, onActionClick }: BreedingRecordTabProps) => {
-  // Mock data for breeding records
-  const breedingRecords = [
-    {
-      id: "BR001",
-      date: "2024-01-20",
-      mareName: "Golden Mare",
-      mareOwner: "Smith Ranch",
-      method: "AI Fresh",
-      result: "Confirmed Pregnant",
-      status: "Active",
-      expectedFoaling: "2025-01-15",
-      veterinarian: "Dr. Wilson"
-    },
-    {
-      id: "BR002",
-      date: "2024-01-15",
-      mareName: "Silver Beauty",
-      mareOwner: "Johnson Stables",
-      method: "AI Frozen",
-      result: "Pending",
-      status: "Monitoring",
-      expectedFoaling: "TBD",
-      veterinarian: "Dr. Brown"
-    },
-    {
-      id: "BR003",
-      date: "2024-01-10",
-      mareName: "Black Diamond",
-      mareOwner: "Wilson Farm",
-      method: "Natural Cover",
-      result: "Live Foal",
-      status: "Completed",
-      expectedFoaling: "2024-12-05",
-      veterinarian: "Dr. Davis"
-    }
-  ];
+  const { breedingRecords, filters, setFilters, exportData } = useBreedingRecordManagement(stallionId);
+  const [searchTerm, setSearchTerm] = useState(filters.searchTerm || "");
+
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    setFilters({ ...filters, searchTerm: value });
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -80,9 +56,9 @@ const BreedingRecordTab = ({ stallionId, onActionClick }: BreedingRecordTabProps
           <p className="text-muted-foreground">Complete breeding history and outcomes</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
-            <Filter className="h-4 w-4 mr-2" />
-            Filter
+          <Button variant="outline" size="sm" onClick={() => exportData('csv')}>
+            <Download className="h-4 w-4 mr-2" />
+            Export
           </Button>
           <Button 
             size="sm"
@@ -92,6 +68,22 @@ const BreedingRecordTab = ({ stallionId, onActionClick }: BreedingRecordTabProps
             New Record
           </Button>
         </div>
+      </div>
+
+      <div className="flex gap-4 items-center">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Input
+            placeholder="Search by mare name, owner, or vet..."
+            value={searchTerm}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Button variant="outline" size="sm">
+          <Filter className="h-4 w-4 mr-2" />
+          Filter
+        </Button>
       </div>
 
       <div className="grid gap-4">
@@ -141,7 +133,7 @@ const BreedingRecordTab = ({ stallionId, onActionClick }: BreedingRecordTabProps
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Expected Foaling</p>
-                    <p className="font-medium">{record.expectedFoaling}</p>
+                    <p className="font-medium">{record.expectedFoaling || 'TBD'}</p>
                   </div>
                 </div>
               </div>

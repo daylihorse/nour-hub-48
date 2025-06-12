@@ -3,23 +3,17 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { 
   Snowflake, 
   Calendar,
-  Package,
+  MapPin,
   Plus,
-  Edit,
-  Trash2
+  Filter,
+  Search,
+  Download
 } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useFrozenSemenManagement } from "../../hooks/useFrozenSemenManagement";
-import FrozenSemenForm from "../../forms/FrozenSemenForm";
-import StallionDetailFilters from "../filters/StallionDetailFilters";
 
 interface FrozenSemenInventoryTabProps {
   stallionId: string;
@@ -27,28 +21,21 @@ interface FrozenSemenInventoryTabProps {
 }
 
 const FrozenSemenInventoryTab = ({ stallionId, onActionClick }: FrozenSemenInventoryTabProps) => {
-  const [showForm, setShowForm] = useState(false);
-  
-  const {
-    frozenSemen,
-    filters,
-    setFilters,
-    isLoading,
-    addFrozenSemen,
-    exportData
-  } = useFrozenSemenManagement(stallionId);
+  const { frozenSemen, filters, setFilters, exportData } = useFrozenSemenManagement(stallionId);
+  const [searchTerm, setSearchTerm] = useState(filters.searchTerm || "");
 
-  const handleAddNew = () => {
-    setShowForm(true);
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    setFilters({ ...filters, searchTerm: value });
   };
 
-  const handleFormSubmit = async (data: any) => {
-    await addFrozenSemen(data);
-    setShowForm(false);
-  };
-
-  const filterOptions = {
-    quality: ['Grade A', 'Grade B', 'Grade C']
+  const getQualityColor = (quality: string) => {
+    switch (quality) {
+      case 'Grade A': return 'default';
+      case 'Grade B': return 'secondary';
+      case 'Grade C': return 'outline';
+      default: return 'secondary';
+    }
   };
 
   return (
@@ -56,107 +43,92 @@ const FrozenSemenInventoryTab = ({ stallionId, onActionClick }: FrozenSemenInven
       <div className="flex justify-between items-center">
         <div>
           <h3 className="text-lg font-semibold">Frozen Semen Inventory</h3>
-          <p className="text-muted-foreground">Cryopreserved semen storage and management</p>
+          <p className="text-muted-foreground">Cryopreserved semen storage and tracking</p>
         </div>
-        <Button onClick={handleAddNew}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add to Inventory
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => exportData('csv')}>
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
+          <Button 
+            size="sm"
+            onClick={() => onActionClick("freeze-semen", "Freeze New Semen")}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Semen
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex gap-4 items-center">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Input
+            placeholder="Search by ID, tank, or location..."
+            value={searchTerm}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Button variant="outline" size="sm">
+          <Filter className="h-4 w-4 mr-2" />
+          Filter
         </Button>
       </div>
 
-      <StallionDetailFilters
-        filters={filters}
-        onFiltersChange={setFilters}
-        filterOptions={filterOptions}
-      />
-
       <div className="grid gap-4">
-        {frozenSemen.map((item) => (
-          <Card key={item.id}>
+        {frozenSemen.map((semen) => (
+          <Card key={semen.id}>
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div>
                   <CardTitle className="text-base flex items-center gap-2">
                     <Snowflake className="h-4 w-4 text-blue-500" />
-                    {item.id}
+                    {semen.id}
                   </CardTitle>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Calendar className="h-4 w-4" />
-                    <span>Frozen: {item.freezeDate}</span>
+                    <span>Frozen: {semen.freezeDate}</span>
                     <span>•</span>
-                    <span>Expires: {item.expiry}</span>
+                    <span>Expires: {semen.expiry}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline">
-                    {item.quality}
-                  </Badge>
-                  <Button variant="ghost" size="sm">
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
+                <Badge variant={getQualityColor(semen.quality)}>
+                  {semen.quality}
+                </Badge>
               </div>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="flex items-center gap-2">
-                  <Package className="h-4 w-4 text-green-500" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Straws</p>
-                    <p className="font-medium">{item.straws}</p>
-                  </div>
-                </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Tank</p>
-                  <p className="font-medium">{item.tank}</p>
+                  <p className="text-sm text-muted-foreground">Straws</p>
+                  <p className="font-medium">{semen.straws}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Viability</p>
-                  <p className="font-medium">{item.viability}</p>
+                  <p className="font-medium">{semen.viability}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-gray-500" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Tank</p>
+                    <p className="font-medium">{semen.tank}</p>
+                  </div>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Location</p>
-                  <p className="font-medium">{item.location}</p>
+                  <p className="font-medium">{semen.location}</p>
                 </div>
               </div>
+              {semen.batchNumber && (
+                <div className="mt-2">
+                  <p className="text-sm text-muted-foreground">Batch: {semen.batchNumber}</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}
       </div>
-
-      <div className="flex justify-between items-center">
-        <div className="text-sm text-muted-foreground">
-          Showing {frozenSemen.length} records • {frozenSemen.reduce((sum, item) => sum + item.straws, 0)} total straws
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => exportData('csv')}>
-            Export CSV
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => exportData('excel')}>
-            Export Excel
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => exportData('pdf')}>
-            Export PDF
-          </Button>
-        </div>
-      </div>
-
-      <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Add Frozen Semen to Inventory</DialogTitle>
-          </DialogHeader>
-          <FrozenSemenForm
-            stallionId={stallionId}
-            onSubmit={handleFormSubmit}
-            onCancel={() => setShowForm(false)}
-            isLoading={isLoading}
-          />
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

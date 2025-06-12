@@ -1,14 +1,19 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { 
   Snowflake, 
   Calendar,
   Heart,
   Plus,
-  Filter
+  Filter,
+  Search,
+  Download
 } from "lucide-react";
+import { useFrozenEmbryoManagement } from "../../hooks/useFrozenEmbryoManagement";
 
 interface FrozenEmbryoInventoryTabProps {
   stallionId: string;
@@ -16,29 +21,13 @@ interface FrozenEmbryoInventoryTabProps {
 }
 
 const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInventoryTabProps) => {
-  // Mock data for frozen embryo inventory
-  const embryoInventory = [
-    {
-      id: "FE001",
-      creationDate: "2023-12-15",
-      mareName: "Golden Mare",
-      grade: "Grade 1",
-      stage: "Blastocyst",
-      viability: "95%",
-      tank: "Tank C-2",
-      location: "Section 3A"
-    },
-    {
-      id: "FE002",
-      creationDate: "2023-11-20",
-      mareName: "Silver Beauty", 
-      grade: "Grade 2",
-      stage: "Expanded Blastocyst",
-      viability: "88%",
-      tank: "Tank C-1",
-      location: "Section 2C"
-    }
-  ];
+  const { frozenEmbryos, filters, setFilters, exportData } = useFrozenEmbryoManagement(stallionId);
+  const [searchTerm, setSearchTerm] = useState(filters.searchTerm || "");
+
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    setFilters({ ...filters, searchTerm: value });
+  };
 
   const getGradeColor = (grade: string) => {
     switch (grade) {
@@ -57,9 +46,9 @@ const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInv
           <p className="text-muted-foreground">Cryopreserved embryo storage and tracking</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
-            <Filter className="h-4 w-4 mr-2" />
-            Filter
+          <Button variant="outline" size="sm" onClick={() => exportData('csv')}>
+            <Download className="h-4 w-4 mr-2" />
+            Export
           </Button>
           <Button 
             size="sm"
@@ -71,8 +60,24 @@ const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInv
         </div>
       </div>
 
+      <div className="flex gap-4 items-center">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Input
+            placeholder="Search by ID, mare name, or tank..."
+            value={searchTerm}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Button variant="outline" size="sm">
+          <Filter className="h-4 w-4 mr-2" />
+          Filter
+        </Button>
+      </div>
+
       <div className="grid gap-4">
-        {embryoInventory.map((embryo) => (
+        {frozenEmbryos.map((embryo) => (
           <Card key={embryo.id}>
             <CardHeader>
               <div className="flex justify-between items-start">
@@ -115,6 +120,11 @@ const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInv
                   <p className="font-medium">{embryo.location}</p>
                 </div>
               </div>
+              {embryo.diameter && (
+                <div className="mt-2">
+                  <p className="text-sm text-muted-foreground">Diameter: {embryo.diameter}</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}
