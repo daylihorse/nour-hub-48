@@ -94,9 +94,6 @@ const StallionCard = ({ stallion }: StallionCardProps) => {
         {/* Actions */}
         <div className="flex gap-2 pt-2">
           <Button variant="outline" size="sm" className="flex-1">
-            View Details
-          </Button>
-          <Button variant="outline" size="sm" className="flex-1">
             Schedule
           </Button>
         </div>

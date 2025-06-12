@@ -12,35 +12,52 @@ const StallionContext = createContext<StallionContextType | undefined>(undefined
 export const StallionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [error, setError] = useState<string | null>(null);
   
-  // Mock stallions data
+  // Updated stallions data to match the useStallionManagement structure
   const stallions = [
     {
-      id: "stallion-1",
-      horseId: "horse-1",
-      horseName: "Thunder Storm",
+      id: "1",
+      horseId: "H001",
+      horseName: "Thunder",
       status: "active",
+      age: 8,
       breed: "Arabian",
-      studFee: 25000,
-      successRate: 85.5,
       totalMares: 45,
       successfulBreedings: 38,
       livefoals: 35,
+      successRate: 92.1,
+      studFee: 5000,
       nextAvailable: "Feb 15, 2024",
-      bookings: 8
+      bookings: 3
     },
     {
-      id: "stallion-2", 
-      horseId: "horse-2",
-      horseName: "Golden Eagle",
+      id: "2",
+      horseId: "H002", 
+      horseName: "Lightning",
       status: "active",
+      age: 6,
       breed: "Thoroughbred",
-      studFee: 35000,
-      successRate: 78.2,
       totalMares: 32,
       successfulBreedings: 25,
       livefoals: 24,
+      successRate: 91.7,
+      studFee: 3500,
       nextAvailable: "Feb 20, 2024",
       bookings: 5
+    },
+    {
+      id: "3",
+      horseId: "H003",
+      horseName: "Storm",
+      status: "retired",
+      age: 15,
+      breed: "Arabian",
+      totalMares: 120,
+      successfulBreedings: 105,
+      livefoals: 98,
+      successRate: 93.3,
+      studFee: 0,
+      nextAvailable: "N/A",
+      bookings: 0
     }
   ];
 

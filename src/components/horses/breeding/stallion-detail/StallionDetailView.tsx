@@ -23,24 +23,27 @@ const StallionDetailView = () => {
     closeActionDialog
   } = useStallionDetailState();
 
-  // Debug logging
+  // Enhanced debug logging
   console.log('StallionDetailView - stallionId from params:', stallionId);
-  console.log('StallionDetailView - available stallions:', stallions.map(s => ({ id: s.id, name: s.horseName })));
+  console.log('StallionDetailView - all stallions:', stallions);
+  console.log('StallionDetailView - stallion IDs:', stallions.map(s => s.id));
   console.log('StallionDetailView - context error:', error);
 
   // Find the stallion from the context
   const stallion = stallions.find(s => s.id === stallionId);
+  console.log('StallionDetailView - found stallion:', stallion);
 
   useEffect(() => {
     if (!stallion && stallionId) {
       console.error(`Stallion with ID ${stallionId} not found in context`);
+      console.log('Available stallion IDs:', stallions.map(s => s.id));
     }
     
     // Clear any existing errors when component mounts
     if (error) {
       clearError();
     }
-  }, [stallion, stallionId, error, clearError]);
+  }, [stallion, stallionId, error, clearError, stallions]);
 
   return (
     <StallionDetailErrorBoundary
