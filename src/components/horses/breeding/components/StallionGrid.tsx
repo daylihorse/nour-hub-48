@@ -1,4 +1,5 @@
 
+import { useNavigate } from "react-router-dom";
 import StallionCard from "./StallionCard";
 
 interface Stallion {
@@ -22,10 +23,18 @@ interface StallionGridProps {
 }
 
 const StallionGrid = ({ stallions }: StallionGridProps) => {
+  const navigate = useNavigate();
+
+  const handleStallionClick = (stallionId: string) => {
+    navigate(`/dashboard/horses/breeding/stallions/${stallionId}`);
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
       {stallions.map((stallion) => (
-        <StallionCard key={stallion.id} stallion={stallion} />
+        <div key={stallion.id} onClick={() => handleStallionClick(stallion.id)} className="cursor-pointer">
+          <StallionCard stallion={stallion} />
+        </div>
       ))}
     </div>
   );
