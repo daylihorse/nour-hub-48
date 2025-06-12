@@ -1,277 +1,22 @@
 
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { useAuth } from '@/hooks/useAuth';
-import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import { authService } from '@/services/auth/authService';
-import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
-
-interface SampleAccount {
-  email: string;
-  password: string;
-  tenantType: string;
-  role: string;
-  tenantId: string;
-  tenantName: string;
-  description: string;
-  firstName: string;
-  lastName: string;
-}
+import { Loader2 } from 'lucide-react';
+import { sampleAccounts } from './dev-login/SampleAccount';
+import { useDevLogin } from './dev-login/useDevLogin';
+import AccountCard from './dev-login/AccountCard';
+import StatusGuide from './dev-login/StatusGuide';
+import ImportantNotes from './dev-login/ImportantNotes';
 
 const DevLoginHelper = () => {
-  const [isCreating, setIsCreating] = useState(false);
-  const [creatingEmail, setCreatingEmail] = useState<string | null>(null);
-  const [operationStatus, setOperationStatus] = useState<Record<string, 'pending' | 'success' | 'error'>>({});
-  const { login } = useAuth();
-  const { toast } = useToast();
-
-  const sampleAccounts: SampleAccount[] = [
-    {
-      email: 'owner@eliteequestrian.com',
-      password: 'password123',
-      tenantType: 'stable',
-      role: 'owner',
-      tenantId: '550e8400-e29b-41d4-a716-446655440001',
-      tenantName: 'Elite Equestrian Center',
-      description: 'Premium stable with full features enabled',
-      firstName: 'Elite',
-      lastName: 'Owner'
-    },
-    {
-      email: 'manager@eliteequestrian.com',
-      password: 'password123',
-      tenantType: 'stable',
-      role: 'manager',
-      tenantId: '550e8400-e29b-41d4-a716-446655440001',
-      tenantName: 'Elite Equestrian Center',
-      description: 'Manager with limited permissions',
-      firstName: 'Elite',
-      lastName: 'Manager'
-    },
-    {
-      email: 'owner@sunsetstables.com',
-      password: 'password123',
-      tenantType: 'stable',
-      role: 'owner',
-      tenantId: '550e8400-e29b-41d4-a716-446655440002',
-      tenantName: 'Sunset Stables',
-      description: 'Basic stable with essential features only',
-      firstName: 'Sunset',
-      lastName: 'Owner'
-    },
-    {
-      email: 'director@advancedvetclinic.com',
-      password: 'password123',
-      tenantType: 'clinic',
-      role: 'owner',
-      tenantId: '550e8400-e29b-41d4-a716-446655440003',
-      tenantName: 'Advanced Veterinary Clinic',
-      description: 'Professional clinic with medical features',
-      firstName: 'Clinic',
-      lastName: 'Director'
-    },
-    {
-      email: 'director@equinediagnostics.com',
-      password: 'password123',
-      tenantType: 'laboratory',
-      role: 'owner',
-      tenantId: '550e8400-e29b-41d4-a716-446655440004',
-      tenantName: 'Equine Diagnostics Lab',
-      description: 'Professional laboratory with diagnostic tools',
-      firstName: 'Lab',
-      lastName: 'Director'
-    },
-    {
-      email: 'admin@regionalequinehospital.com',
-      password: 'password123',
-      tenantType: 'hospital',
-      role: 'owner',
-      tenantId: '550e8400-e29b-41d4-a716-446655440005',
-      tenantName: 'Regional Equine Hospital',
-      description: 'Enterprise hospital with all features',
-      firstName: 'Hospital',
-      lastName: 'Admin'
-    },
-    {
-      email: 'admin@horsetrader.com',
-      password: 'password123',
-      tenantType: 'marketplace',
-      role: 'owner',
-      tenantId: '550e8400-e29b-41d4-a716-446655440006',
-      tenantName: 'HorseTrader Marketplace',
-      description: 'Premium marketplace platform',
-      firstName: 'Marketplace',
-      lastName: 'Admin'
-    },
-    {
-      email: 'ceo@globalequinesolutions.com',
-      password: 'password123',
-      tenantType: 'enterprise',
-      role: 'owner',
-      tenantId: '550e8400-e29b-41d4-a716-446655440007',
-      tenantName: 'Global Equine Solutions',
-      description: 'Enterprise solution with complete feature set',
-      firstName: 'Global',
-      lastName: 'CEO'
-    }
-  ];
-
-  const quickLogin = async (account: SampleAccount) => {
-    try {
-      console.log('Quick login for:', account.email);
-      setCreatingEmail(account.email);
-      setOperationStatus(prev => ({ ...prev, [account.email]: 'pending' }));
-      
-      // First try to create the user if it doesn't exist
-      await authService.createSampleUserIfNotExists(
-        account.email, 
-        account.password, 
-        account.firstName, 
-        account.lastName
-      );
-      
-      // Then try to log in
-      await login(account.email, account.password);
-      
-      setOperationStatus(prev => ({ ...prev, [account.email]: 'success' }));
-      
-      toast({
-        title: 'Logged in successfully',
-        description: `Logged in as ${account.email}`,
-      });
-    } catch (error: any) {
-      console.error('Quick login error:', error);
-      setOperationStatus(prev => ({ ...prev, [account.email]: 'error' }));
-      
-      toast({
-        title: 'Login failed',
-        description: error.message || 'Login failed. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      setCreatingEmail(null);
-    }
-  };
-
-  const createAllSampleUsers = async () => {
-    setIsCreating(true);
-    setOperationStatus({});
-    
-    try {
-      console.log('Creating all sample users...');
-      
-      for (const account of sampleAccounts) {
-        setCreatingEmail(account.email);
-        setOperationStatus(prev => ({ ...prev, [account.email]: 'pending' }));
-        
-        try {
-          await authService.createSampleUserIfNotExists(
-            account.email,
-            account.password,
-            account.firstName,
-            account.lastName
-          );
-          console.log(`Created/verified user: ${account.email}`);
-          setOperationStatus(prev => ({ ...prev, [account.email]: 'success' }));
-        } catch (error) {
-          console.error(`Failed to create user ${account.email}:`, error);
-          setOperationStatus(prev => ({ ...prev, [account.email]: 'error' }));
-        }
-      }
-      
-      // Ensure all tenant associations are in place
-      try {
-        const { error } = await supabase.rpc('ensure_all_sample_tenant_associations');
-        if (error) {
-          console.error('Error ensuring tenant associations:', error);
-        }
-      } catch (error) {
-        console.error('Exception ensuring tenant associations:', error);
-      }
-      
-      toast({
-        title: 'Sample users ready',
-        description: 'All sample user accounts have been created and are ready to use.',
-      });
-    } catch (error: any) {
-      console.error('Error creating sample users:', error);
-      toast({
-        title: 'Creation failed',
-        description: 'Some sample users could not be created. Check console for details.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsCreating(false);
-      setCreatingEmail(null);
-    }
-  };
-
-  const debugCurrentUser = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      console.log('Current user:', user);
-      
-      if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-        console.log('User profile:', profile);
-
-        const { data: tenantUsers } = await supabase
-          .from('tenant_users')
-          .select('*, tenants(*)')
-          .eq('user_id', user.id);
-        console.log('User tenant associations:', tenantUsers);
-      }
-
-      toast({
-        title: 'Debug info logged',
-        description: 'Check the browser console for detailed user information',
-      });
-    } catch (error) {
-      console.error('Debug error:', error);
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return <Loader2 className="h-4 w-4 animate-spin text-blue-500" />;
-      case 'success':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'error':
-        return <AlertCircle className="h-4 w-4 text-red-500" />;
-      default:
-        return null;
-    }
-  };
-
-  const getTenantTypeColor = (type: string) => {
-    switch (type) {
-      case 'stable': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'clinic': return 'bg-green-100 text-green-800 border-green-200';
-      case 'laboratory': return 'bg-purple-100 text-purple-800 border-purple-200';
-      case 'hospital': return 'bg-red-100 text-red-800 border-red-200';
-      case 'marketplace': return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'enterprise': return 'bg-gray-100 text-gray-800 border-gray-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
-  const getRoleColor = (role: string) => {
-    switch (role) {
-      case 'owner': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'admin': return 'bg-red-100 text-red-800 border-red-200';
-      case 'manager': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'employee': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
+  const {
+    isCreating,
+    creatingEmail,
+    operationStatus,
+    quickLogin,
+    createAllSampleUsers,
+    debugCurrentUser
+  } = useDevLogin();
 
   return (
     <Card className="w-full max-w-4xl mx-auto">
@@ -308,76 +53,19 @@ const DevLoginHelper = () => {
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {sampleAccounts.map((account, index) => (
-            <div key={index} className="border rounded-lg p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="font-medium text-sm">{account.tenantName}</h3>
-                <div className="flex gap-1 items-center">
-                  {getStatusIcon(operationStatus[account.email])}
-                  <Badge className={`text-xs ${getTenantTypeColor(account.tenantType)}`}>
-                    {account.tenantType}
-                  </Badge>
-                  <Badge className={`text-xs ${getRoleColor(account.role)}`}>
-                    {account.role}
-                  </Badge>
-                </div>
-              </div>
-              
-              <p className="text-xs text-muted-foreground">{account.description}</p>
-              
-              <div className="space-y-1">
-                <p className="text-xs"><strong>Email:</strong> {account.email}</p>
-                <p className="text-xs"><strong>Password:</strong> {account.password}</p>
-              </div>
-              
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  onClick={() => quickLogin(account)}
-                  disabled={isCreating || creatingEmail === account.email}
-                  className="flex-1"
-                >
-                  {creatingEmail === account.email ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    'Login'
-                  )}
-                </Button>
-              </div>
-            </div>
+            <AccountCard
+              key={index}
+              account={account}
+              isCreating={isCreating}
+              creatingEmail={creatingEmail}
+              operationStatus={operationStatus}
+              onQuickLogin={quickLogin}
+            />
           ))}
         </div>
         
-        <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-          <h4 className="font-medium text-amber-800 mb-2">Status Guide:</h4>
-          <div className="flex gap-4 text-sm text-amber-700">
-            <div className="flex items-center gap-1">
-              <Loader2 className="h-3 w-3 animate-spin text-blue-500" />
-              <span>Processing</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <CheckCircle className="h-3 w-3 text-green-500" />
-              <span>Success</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <AlertCircle className="h-3 w-3 text-red-500" />
-              <span>Error</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h4 className="font-medium text-blue-800 mb-2">Important Notes:</h4>
-          <ul className="text-sm text-blue-700 space-y-1">
-            <li>• Click "Create All Sample Users" first to ensure all accounts exist in Supabase Auth</li>
-            <li>• Click "Login" to quickly sign in with any sample account</li>
-            <li>• Use "Debug Current User" to see user and tenant information in the console</li>
-            <li>• Sample accounts will be automatically created if they don't exist</li>
-            <li>• Tenant associations are automatically ensured for all sample users</li>
-          </ul>
-        </div>
+        <StatusGuide />
+        <ImportantNotes />
       </CardContent>
     </Card>
   );
