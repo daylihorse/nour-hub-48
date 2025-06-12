@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,8 +8,18 @@ import {
   Calendar,
   Package,
   Plus,
-  Filter
+  Edit,
+  Trash2
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useFrozenSemenManagement } from "../../hooks/useFrozenSemenManagement";
+import FrozenSemenForm from "../../forms/FrozenSemenForm";
+import StallionDetailFilters from "../filters/StallionDetailFilters";
 
 interface FrozenSemenInventoryTabProps {
   stallionId: string;
@@ -16,29 +27,29 @@ interface FrozenSemenInventoryTabProps {
 }
 
 const FrozenSemenInventoryTab = ({ stallionId, onActionClick }: FrozenSemenInventoryTabProps) => {
-  // Mock data for frozen semen inventory
-  const frozenInventory = [
-    {
-      id: "FS001",
-      freezeDate: "2024-01-10",
-      straws: 25,
-      tank: "Tank A-3",
-      quality: "Grade A",
-      viability: "92%",
-      location: "Section 2B",
-      expiry: "2029-01-10"
-    },
-    {
-      id: "FS002",
-      freezeDate: "2024-01-05", 
-      straws: 18,
-      tank: "Tank B-1",
-      quality: "Grade A",
-      viability: "89%",
-      location: "Section 1A",
-      expiry: "2029-01-05"
-    }
-  ];
+  const [showForm, setShowForm] = useState(false);
+  
+  const {
+    frozenSemen,
+    filters,
+    setFilters,
+    isLoading,
+    addFrozenSemen,
+    exportData
+  } = useFrozenSemenManagement(stallionId);
+
+  const handleAddNew = () => {
+    setShowForm(true);
+  };
+
+  const handleFormSubmit = async (data: any) => {
+    await addFrozenSemen(data);
+    setShowForm(false);
+  };
+
+  const filterOptions = {
+    quality: ['Grade A', 'Grade B', 'Grade C']
+  };
 
   return (
     <div className="space-y-6">
@@ -47,23 +58,20 @@ const FrozenSemenInventoryTab = ({ stallionId, onActionClick }: FrozenSemenInven
           <h3 className="text-lg font-semibold">Frozen Semen Inventory</h3>
           <p className="text-muted-foreground">Cryopreserved semen storage and management</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm">
-            <Filter className="h-4 w-4 mr-2" />
-            Filter
-          </Button>
-          <Button 
-            size="sm"
-            onClick={() => onActionClick("freeze-semen", "Freeze New Semen")}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add to Inventory
-          </Button>
-        </div>
+        <Button onClick={handleAddNew}>
+          <Plus className="h-4 w-4 mr-2" />
+          Add to Inventory
+        </Button>
       </div>
 
+      <StallionDetailFilters
+        filters={filters}
+        onFiltersChange={setFilters}
+        filterOptions={filterOptions}
+      />
+
       <div className="grid gap-4">
-        {frozenInventory.map((item) => (
+        {frozenSemen.map((item) => (
           <Card key={item.id}>
             <CardHeader>
               <div className="flex justify-between items-start">
@@ -79,9 +87,17 @@ const FrozenSemenInventoryTab = ({ stallionId, onActionClick }: FrozenSemenInven
                     <span>Expires: {item.expiry}</span>
                   </div>
                 </div>
-                <Badge variant="outline">
-                  {item.quality}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline">
+                    {item.quality}
+                  </Badge>
+                  <Button variant="ghost" size="sm">
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="sm">
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
@@ -110,6 +126,37 @@ const FrozenSemenInventoryTab = ({ stallionId, onActionClick }: FrozenSemenInven
           </Card>
         ))}
       </div>
+
+      <div className="flex justify-between items-center">
+        <div className="text-sm text-muted-foreground">
+          Showing {frozenSemen.length} records • {frozenSemen.reduce((sum, item) => sum + item.straws, 0)} total straws
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => exportData('csv')}>
+            Export CSV
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => exportData('excel')}>
+            Export Excel
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => exportData('pdf')}>
+            Export PDF
+          </Button>
+        </div>
+      </div>
+
+      <Dialog open={showForm} onOpenChange={setShowForm}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Add Frozen Semen to Inventory</DialogTitle>
+          </DialogHeader>
+          <FrozenSemenForm
+            stallionId={stallionId}
+            onSubmit={handleFormSubmit}
+            onCancel={() => setShowForm(false)}
+            isLoading={isLoading}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

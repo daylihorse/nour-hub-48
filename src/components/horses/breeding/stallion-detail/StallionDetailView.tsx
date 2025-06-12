@@ -100,6 +100,7 @@ const StallionDetailView = () => {
             onClose={closeActionDialog}
             actionType={actionDialog.type}
             title={actionDialog.title}
+            stallionId={stallion.id}
           />
         </div>
       )}
