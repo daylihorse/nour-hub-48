@@ -10,7 +10,7 @@ import ResultComparison from "@/components/laboratory/ResultComparison";
 import QualityControl from "@/components/laboratory/QualityControl";
 import TemplateManagement from "@/components/laboratory/TemplateManagement";
 import StoreManagement from "@/components/store/StoreManagement";
-import { Store, FlaskRound, TestTube, Microscope, FileText, Settings, TrendingUp, Shield, FileTemplate } from "lucide-react";
+import { Store, FlaskRound, TestTube, Microscope, FileText, Settings, TrendingUp, Shield, File } from "lucide-react";
 
 const LaboratoryDepartment = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -45,7 +45,7 @@ const LaboratoryDepartment = () => {
             Quality Control
           </TabsTrigger>
           <TabsTrigger value="templates" className="flex items-center gap-2">
-            <FileTemplate className="h-4 w-4" />
+            <File className="h-4 w-4" />
             Templates
           </TabsTrigger>
           <TabsTrigger value="equipment" className="flex items-center gap-2">
