@@ -1,7 +1,11 @@
 
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useMareContext } from "@/contexts/MareContext";
+import { useMareDetailNavigation } from "./hooks/useMareDetailNavigation";
+import { useMareDetailState } from "./hooks/useMareDetailState";
+import MareDetailErrorBoundary from "./components/MareDetailErrorBoundary";
+import MareNotFoundError from "./components/MareNotFoundError";
 import MareHeader from "./components/MareHeader";
 import MareSummaryCard from "./components/MareSummaryCard";
 import MareDetailTabs from "./components/MareDetailTabs";
@@ -9,19 +13,17 @@ import ActionDialog from "./components/ActionDialog";
 
 const MareDetailView = () => {
   const { mareId } = useParams();
-  const navigate = useNavigate();
   const { mares, error, clearError } = useMareContext();
-  const [activeTab, setActiveTab] = useState("basic-info");
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'table'>('grid');
-  const [actionDialog, setActionDialog] = useState<{
-    isOpen: boolean;
-    type: 'checkup' | 'breeding' | 'health' | 'birth' | null;
-    title: string;
-  }>({
-    isOpen: false,
-    type: null,
-    title: ''
-  });
+  const { handleBackToMares } = useMareDetailNavigation();
+  const {
+    activeTab,
+    setActiveTab,
+    viewMode,
+    setViewMode,
+    actionDialog,
+    openActionDialog,
+    closeActionDialog
+  } = useMareDetailState();
 
   // Debug logging
   console.log('MareDetailView - mareId from params:', mareId);
@@ -42,110 +44,74 @@ const MareDetailView = () => {
     }
   }, [mare, mareId, error, clearError]);
 
-  const handleBackToMares = () => {
-    // Navigate back to horses department and switch to breeding tab, then mares sub-tab
-    navigate("/dashboard/horses", { 
-      state: { 
-        activeTab: "breeding",
-        breedingSubTab: "mares"
-      } 
-    });
-  };
-
-  const openActionDialog = (type: 'checkup' | 'breeding' | 'health' | 'birth', title: string) => {
-    setActionDialog({ isOpen: true, type, title });
-  };
-
-  const closeActionDialog = () => {
-    setActionDialog({ isOpen: false, type: null, title: '' });
-  };
-
-  // Error state
-  if (error) {
-    return (
-      <div className="p-6">
-        <div className="text-red-500 mb-4">Error: {error}</div>
-        <button 
-          onClick={handleBackToMares}
-          className="text-blue-500 hover:underline"
-        >
-          Back to Mares
-        </button>
-      </div>
-    );
-  }
-
-  // No mare ID provided
-  if (!mareId) {
-    return (
-      <div className="p-6">
-        <p className="text-red-500 mb-4">No mare ID provided in URL</p>
-        <button 
-          onClick={handleBackToMares}
-          className="text-blue-500 hover:underline"
-        >
-          Back to Mares
-        </button>
-      </div>
-    );
-  }
-
-  // Mare not found
-  if (!mare) {
-    return (
-      <div className="p-6">
-        <p className="text-red-500 mb-2">Mare with ID "{mareId}" not found</p>
-        <p className="text-sm text-muted-foreground mb-4">
-          Available mares: {mares.map(m => `${m.id} (${m.horseName})`).join(', ')}
-        </p>
-        <button 
-          onClick={handleBackToMares}
-          className="text-blue-500 hover:underline"
-        >
-          Back to Mares
-        </button>
-      </div>
-    );
-  }
-
-  // Transform mare data for components that expect different format
-  const transformedMare = {
-    id: mare.id,
-    name: mare.horseName,
-    status: mare.status,
-    age: mare.age,
-    breed: mare.breed,
-    image: "/placeholder.svg",
-    pregnancyDay: mare.pregnancyDay,
-    expectedDueDate: mare.expectedDueDate,
-    totalFoals: mare.totalFoals,
-    liveFoals: mare.liveFoals,
-    lastBreedingDate: mare.lastBreedingDate,
-    stallionName: mare.stallionName
-  };
-
   return (
-    <div className="space-y-6">
-      <MareHeader mare={transformedMare} onBackToMares={handleBackToMares} />
-      
-      <MareSummaryCard mare={transformedMare} />
+    <MareDetailErrorBoundary
+      error={error}
+      mareId={mareId}
+      availableMares={mares.map(m => ({ id: m.id, horseName: m.horseName }))}
+      onBackToMares={handleBackToMares}
+    >
+      {!mare ? (
+        <MareNotFoundError
+          mareId={mareId!}
+          availableMares={mares.map(m => ({ id: m.id, horseName: m.horseName }))}
+          onBackToMares={handleBackToMares}
+        />
+      ) : (
+        <div className="space-y-6">
+          <MareHeader 
+            mare={{
+              id: mare.id,
+              name: mare.horseName,
+              status: mare.status,
+              age: mare.age,
+              breed: mare.breed,
+              image: "/placeholder.svg",
+              pregnancyDay: mare.pregnancyDay,
+              expectedDueDate: mare.expectedDueDate,
+              totalFoals: mare.totalFoals,
+              liveFoals: mare.liveFoals,
+              lastBreedingDate: mare.lastBreedingDate,
+              stallionName: mare.stallionName
+            }} 
+            onBackToMares={handleBackToMares} 
+          />
+          
+          <MareSummaryCard 
+            mare={{
+              id: mare.id,
+              name: mare.horseName,
+              status: mare.status,
+              age: mare.age,
+              breed: mare.breed,
+              image: "/placeholder.svg",
+              pregnancyDay: mare.pregnancyDay,
+              expectedDueDate: mare.expectedDueDate,
+              totalFoals: mare.totalFoals,
+              liveFoals: mare.liveFoals,
+              lastBreedingDate: mare.lastBreedingDate,
+              stallionName: mare.stallionName
+            }} 
+          />
 
-      <MareDetailTabs
-        mareId={mare.id}
-        activeTab={activeTab}
-        viewMode={viewMode}
-        onActiveTabChange={setActiveTab}
-        onViewModeChange={setViewMode}
-        onActionClick={openActionDialog}
-      />
+          <MareDetailTabs
+            mareId={mare.id}
+            activeTab={activeTab}
+            viewMode={viewMode}
+            onActiveTabChange={setActiveTab}
+            onViewModeChange={setViewMode}
+            onActionClick={openActionDialog}
+          />
 
-      <ActionDialog
-        isOpen={actionDialog.isOpen}
-        onClose={closeActionDialog}
-        actionType={actionDialog.type}
-        title={actionDialog.title}
-      />
-    </div>
+          <ActionDialog
+            isOpen={actionDialog.isOpen}
+            onClose={closeActionDialog}
+            actionType={actionDialog.type}
+            title={actionDialog.title}
+          />
+        </div>
+      )}
+    </MareDetailErrorBoundary>
   );
 };
 
