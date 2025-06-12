@@ -6,8 +6,11 @@ import SampleManagement from "@/components/laboratory/SampleManagement";
 import TestResults from "@/components/laboratory/TestResults";
 import EquipmentManagement from "@/components/laboratory/EquipmentManagement";
 import LaboratoryDocumentManager from "@/components/laboratory/LaboratoryDocumentManager";
+import ResultComparison from "@/components/laboratory/ResultComparison";
+import QualityControl from "@/components/laboratory/QualityControl";
+import TemplateManagement from "@/components/laboratory/TemplateManagement";
 import StoreManagement from "@/components/store/StoreManagement";
-import { Store, FlaskRound, TestTube, Microscope, FileText, Settings } from "lucide-react";
+import { Store, FlaskRound, TestTube, Microscope, FileText, Settings, TrendingUp, Shield, FileTemplate } from "lucide-react";
 
 const LaboratoryDepartment = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -20,7 +23,7 @@ const LaboratoryDepartment = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-9">
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <FlaskRound className="h-4 w-4" />
             Overview
@@ -32,6 +35,18 @@ const LaboratoryDepartment = () => {
           <TabsTrigger value="results" className="flex items-center gap-2">
             <Microscope className="h-4 w-4" />
             Results
+          </TabsTrigger>
+          <TabsTrigger value="comparison" className="flex items-center gap-2">
+            <TrendingUp className="h-4 w-4" />
+            Comparison
+          </TabsTrigger>
+          <TabsTrigger value="quality" className="flex items-center gap-2">
+            <Shield className="h-4 w-4" />
+            Quality Control
+          </TabsTrigger>
+          <TabsTrigger value="templates" className="flex items-center gap-2">
+            <FileTemplate className="h-4 w-4" />
+            Templates
           </TabsTrigger>
           <TabsTrigger value="equipment" className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
@@ -57,6 +72,18 @@ const LaboratoryDepartment = () => {
         
         <TabsContent value="results" className="mt-6">
           <TestResults />
+        </TabsContent>
+        
+        <TabsContent value="comparison" className="mt-6">
+          <ResultComparison />
+        </TabsContent>
+        
+        <TabsContent value="quality" className="mt-6">
+          <QualityControl />
+        </TabsContent>
+        
+        <TabsContent value="templates" className="mt-6">
+          <TemplateManagement />
         </TabsContent>
         
         <TabsContent value="equipment" className="mt-6">

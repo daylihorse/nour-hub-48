@@ -17,6 +17,7 @@ import {
   UserCheck,
   Settings,
   MapPin,
+  Dumbbell,
   LucideIcon
 } from "lucide-react";
 
@@ -86,6 +87,11 @@ export const menuItems: MenuItem[] = [
     title: "Horse Movements", 
     url: "/dashboard/movements", 
     icon: ArrowRightLeft 
+  },
+  { 
+    title: "Training Center", 
+    url: "/dashboard/training", 
+    icon: Dumbbell 
   },
   { 
     title: "Training Academy", 
