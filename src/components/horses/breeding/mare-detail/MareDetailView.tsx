@@ -65,14 +65,7 @@ const MareDetailView = () => {
               name: mare.horseName,
               status: mare.status,
               age: mare.age,
-              breed: mare.breed,
-              image: "/placeholder.svg",
-              pregnancyDay: mare.pregnancyDay,
-              expectedDueDate: mare.expectedDueDate,
-              totalFoals: mare.totalFoals,
-              liveFoals: mare.liveFoals,
-              lastBreedingDate: mare.lastBreedingDate,
-              stallionName: mare.stallionName
+              breed: mare.breed
             }} 
             onBackToMares={handleBackToMares} 
           />
@@ -84,7 +77,6 @@ const MareDetailView = () => {
               status: mare.status,
               age: mare.age,
               breed: mare.breed,
-              image: "/placeholder.svg",
               pregnancyDay: mare.pregnancyDay,
               expectedDueDate: mare.expectedDueDate,
               totalFoals: mare.totalFoals,
