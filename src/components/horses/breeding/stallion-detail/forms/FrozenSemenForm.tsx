@@ -61,7 +61,20 @@ const FrozenSemenForm = ({ stallionId, onSubmit, onCancel, isLoading }: FrozenSe
   });
 
   const handleSubmit = async (data: FormData) => {
-    await onSubmit(data);
+    // Transform the form data to match the expected type
+    const submissionData: Omit<FrozenSemenInventory, 'id' | 'createdAt'> = {
+      stallionId: data.stallionId,
+      freezeDate: data.freezeDate,
+      straws: data.straws,
+      tank: data.tank,
+      quality: data.quality,
+      viability: data.viability,
+      location: data.location,
+      expiry: data.expiry,
+      batchNumber: data.batchNumber || undefined,
+      freezingProtocol: data.freezingProtocol || undefined,
+    };
+    await onSubmit(submissionData);
   };
 
   return (

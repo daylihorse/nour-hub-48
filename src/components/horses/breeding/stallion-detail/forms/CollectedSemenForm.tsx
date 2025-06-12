@@ -1,11 +1,9 @@
 
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
@@ -66,7 +64,21 @@ const CollectedSemenForm = ({ stallionId, onSubmit, onCancel, isLoading }: Colle
   });
 
   const handleSubmit = async (data: FormData) => {
-    await onSubmit(data);
+    // Transform the form data to match the expected type
+    const submissionData: Omit<CollectedSemen, 'id' | 'createdAt'> = {
+      stallionId: data.stallionId,
+      collectionDate: data.collectionDate,
+      volume: data.volume,
+      concentration: data.concentration,
+      motility: data.motility,
+      quality: data.quality,
+      technician: data.technician,
+      status: data.status,
+      temperature: data.temperature || undefined,
+      ph: data.ph || undefined,
+      notes: data.notes || undefined,
+    };
+    await onSubmit(submissionData);
   };
 
   return (
