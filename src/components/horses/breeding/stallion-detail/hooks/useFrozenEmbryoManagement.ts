@@ -1,6 +1,7 @@
 
-import { useState, useMemo } from 'react';
-import { FrozenEmbryoInventory, StallionDetailFilters } from '@/types/breeding/stallion-detail';
+import { FrozenEmbryoInventory } from '@/types/breeding/stallion-detail';
+import { useGenericManagement } from './useGenericManagement';
+import { filterFrozenEmbryo } from '../utils/filterUtils';
 
 const mockFrozenEmbryos: FrozenEmbryoInventory[] = [
   {
@@ -36,83 +37,19 @@ const mockFrozenEmbryos: FrozenEmbryoInventory[] = [
 ];
 
 export const useFrozenEmbryoManagement = (stallionId: string) => {
-  const [frozenEmbryos, setFrozenEmbryos] = useState<FrozenEmbryoInventory[]>(mockFrozenEmbryos);
-  const [filters, setFilters] = useState<StallionDetailFilters>({});
-  const [isLoading, setIsLoading] = useState(false);
-
-  const filteredData = useMemo(() => {
-    return frozenEmbryos.filter(item => {
-      if (filters.searchTerm && 
-          !item.id.toLowerCase().includes(filters.searchTerm.toLowerCase()) &&
-          !item.mareName.toLowerCase().includes(filters.searchTerm.toLowerCase()) &&
-          !item.tank.toLowerCase().includes(filters.searchTerm.toLowerCase())) {
-        return false;
-      }
-      
-      if (filters.quality?.length && !filters.quality.includes(item.grade)) {
-        return false;
-      }
-      
-      if (filters.dateRange) {
-        const itemDate = new Date(item.creationDate);
-        const startDate = new Date(filters.dateRange.start);
-        const endDate = new Date(filters.dateRange.end);
-        if (itemDate < startDate || itemDate > endDate) {
-          return false;
-        }
-      }
-      
-      return true;
-    });
-  }, [frozenEmbryos, filters]);
-
-  const addFrozenEmbryo = async (data: Omit<FrozenEmbryoInventory, 'id' | 'createdAt'>) => {
-    setIsLoading(true);
-    try {
-      const newRecord: FrozenEmbryoInventory = {
-        ...data,
-        id: `FE${Date.now()}`,
-        createdAt: new Date()
-      };
-      setFrozenEmbryos(prev => [newRecord, ...prev]);
-      return newRecord;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const updateFrozenEmbryo = async (id: string, data: Partial<FrozenEmbryoInventory>) => {
-    setIsLoading(true);
-    try {
-      setFrozenEmbryos(prev => 
-        prev.map(item => item.id === id ? { ...item, ...data } : item)
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const deleteFrozenEmbryo = async (id: string) => {
-    setIsLoading(true);
-    try {
-      setFrozenEmbryos(prev => prev.filter(item => item.id !== id));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const exportData = (format: 'csv' | 'excel' | 'pdf') => {
-    console.log(`Exporting frozen embryo data as ${format}`, filteredData);
-  };
+  const result = useGenericManagement<FrozenEmbryoInventory>({
+    initialData: mockFrozenEmbryos,
+    filterFn: filterFrozenEmbryo
+  });
 
   return {
-    frozenEmbryos: filteredData,
-    filters,
-    setFilters,
-    isLoading,
-    addFrozenEmbryo,
-    updateFrozenEmbryo,
-    deleteFrozenEmbryo,
-    exportData
+    frozenEmbryos: result.data,
+    filters: result.filters,
+    setFilters: result.setFilters,
+    isLoading: result.isLoading,
+    addFrozenEmbryo: result.addRecord,
+    updateFrozenEmbryo: result.updateRecord,
+    deleteFrozenEmbryo: result.deleteRecord,
+    exportData: result.exportData
   };
 };

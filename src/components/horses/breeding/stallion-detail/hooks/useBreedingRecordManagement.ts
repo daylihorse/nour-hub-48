@@ -1,6 +1,7 @@
 
-import { useState, useMemo } from 'react';
-import { BreedingRecord, StallionDetailFilters } from '@/types/breeding/stallion-detail';
+import { BreedingRecord } from '@/types/breeding/stallion-detail';
+import { useGenericManagement } from './useGenericManagement';
+import { filterBreedingRecord } from '../utils/filterUtils';
 
 const mockBreedingRecords: BreedingRecord[] = [
   {
@@ -55,88 +56,19 @@ const mockBreedingRecords: BreedingRecord[] = [
 ];
 
 export const useBreedingRecordManagement = (stallionId: string) => {
-  const [breedingRecords, setBreedingRecords] = useState<BreedingRecord[]>(mockBreedingRecords);
-  const [filters, setFilters] = useState<StallionDetailFilters>({});
-  const [isLoading, setIsLoading] = useState(false);
-
-  const filteredData = useMemo(() => {
-    return breedingRecords.filter(item => {
-      if (filters.searchTerm && 
-          !item.id.toLowerCase().includes(filters.searchTerm.toLowerCase()) &&
-          !item.mareName.toLowerCase().includes(filters.searchTerm.toLowerCase()) &&
-          !item.mareOwner.toLowerCase().includes(filters.searchTerm.toLowerCase()) &&
-          !item.veterinarian.toLowerCase().includes(filters.searchTerm.toLowerCase())) {
-        return false;
-      }
-      
-      if (filters.status?.length && !filters.status.includes(item.status)) {
-        return false;
-      }
-      
-      if (filters.method?.length && !filters.method.includes(item.method)) {
-        return false;
-      }
-      
-      if (filters.dateRange) {
-        const itemDate = new Date(item.date);
-        const startDate = new Date(filters.dateRange.start);
-        const endDate = new Date(filters.dateRange.end);
-        if (itemDate < startDate || itemDate > endDate) {
-          return false;
-        }
-      }
-      
-      return true;
-    });
-  }, [breedingRecords, filters]);
-
-  const addBreedingRecord = async (data: Omit<BreedingRecord, 'id' | 'createdAt'>) => {
-    setIsLoading(true);
-    try {
-      const newRecord: BreedingRecord = {
-        ...data,
-        id: `BR${Date.now()}`,
-        createdAt: new Date()
-      };
-      setBreedingRecords(prev => [newRecord, ...prev]);
-      return newRecord;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const updateBreedingRecord = async (id: string, data: Partial<BreedingRecord>) => {
-    setIsLoading(true);
-    try {
-      setBreedingRecords(prev => 
-        prev.map(item => item.id === id ? { ...item, ...data } : item)
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const deleteBreedingRecord = async (id: string) => {
-    setIsLoading(true);
-    try {
-      setBreedingRecords(prev => prev.filter(item => item.id !== id));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const exportData = (format: 'csv' | 'excel' | 'pdf') => {
-    console.log(`Exporting breeding records as ${format}`, filteredData);
-  };
+  const result = useGenericManagement<BreedingRecord>({
+    initialData: mockBreedingRecords,
+    filterFn: filterBreedingRecord
+  });
 
   return {
-    breedingRecords: filteredData,
-    filters,
-    setFilters,
-    isLoading,
-    addBreedingRecord,
-    updateBreedingRecord,
-    deleteBreedingRecord,
-    exportData
+    breedingRecords: result.data,
+    filters: result.filters,
+    setFilters: result.setFilters,
+    isLoading: result.isLoading,
+    addBreedingRecord: result.addRecord,
+    updateBreedingRecord: result.updateRecord,
+    deleteBreedingRecord: result.deleteRecord,
+    exportData: result.exportData
   };
 };

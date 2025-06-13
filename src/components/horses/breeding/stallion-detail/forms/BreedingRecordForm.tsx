@@ -2,25 +2,13 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
 import { BreedingRecord } from '@/types/breeding/stallion-detail';
+import { FormLayout } from '../shared/FormLayout';
+import { DateField } from '../shared/form-fields/DateField';
+import { TextField } from '../shared/form-fields/TextField';
+import { SelectField } from '../shared/form-fields/SelectField';
+import { TextareaField } from '../shared/form-fields/TextareaField';
+import { breedingMethodOptions, breedingResultOptions, breedingStatusOptions } from '../config/formConfigs';
 
 const breedingRecordSchema = z.object({
   stallionId: z.string().min(1, 'Stallion ID is required'),
@@ -87,224 +75,105 @@ const BreedingRecordForm = ({ stallionId, onSubmit, onCancel, isLoading }: Breed
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Breeding Date</FormLabel>
-                <FormControl>
-                  <Input type="date" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    <FormLayout
+      form={form}
+      onSubmit={handleSubmit}
+      onCancel={onCancel}
+      isLoading={isLoading}
+      submitLabel="Save Record"
+    >
+      <DateField
+        control={form.control}
+        name="date"
+        label="Breeding Date"
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="veterinarian"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Veterinarian</FormLabel>
-                <FormControl>
-                  <Input placeholder="Dr. Wilson" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <TextField
+        control={form.control}
+        name="veterinarian"
+        label="Veterinarian"
+        placeholder="Dr. Wilson"
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="mareName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Mare Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Golden Mare" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <TextField
+        control={form.control}
+        name="mareName"
+        label="Mare Name"
+        placeholder="Golden Mare"
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="mareId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Mare ID (Optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="M001" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <TextField
+        control={form.control}
+        name="mareId"
+        label="Mare ID (Optional)"
+        placeholder="M001"
+      />
 
-          <FormField
-            control={form.control}
-            name="mareOwner"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Mare Owner</FormLabel>
-                <FormControl>
-                  <Input placeholder="Smith Ranch" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <TextField
+        control={form.control}
+        name="mareOwner"
+        label="Mare Owner"
+        placeholder="Smith Ranch"
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="method"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Breeding Method</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select method" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="AI Fresh">AI Fresh</SelectItem>
-                    <SelectItem value="AI Frozen">AI Frozen</SelectItem>
-                    <SelectItem value="Natural Cover">Natural Cover</SelectItem>
-                    <SelectItem value="Embryo Transfer">Embryo Transfer</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <SelectField
+        control={form.control}
+        name="method"
+        label="Breeding Method"
+        options={breedingMethodOptions}
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="result"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Result</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select result" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="Confirmed Pregnant">Confirmed Pregnant</SelectItem>
-                    <SelectItem value="Not Pregnant">Not Pregnant</SelectItem>
-                    <SelectItem value="Pending">Pending</SelectItem>
-                    <SelectItem value="Live Foal">Live Foal</SelectItem>
-                    <SelectItem value="Lost Pregnancy">Lost Pregnancy</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <SelectField
+        control={form.control}
+        name="result"
+        label="Result"
+        options={breedingResultOptions}
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Status</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select status" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="Completed">Completed</SelectItem>
-                    <SelectItem value="Monitoring">Monitoring</SelectItem>
-                    <SelectItem value="Cancelled">Cancelled</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <SelectField
+        control={form.control}
+        name="status"
+        label="Status"
+        options={breedingStatusOptions}
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="expectedFoaling"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Expected Foaling (Optional)</FormLabel>
-                <FormControl>
-                  <Input type="date" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <DateField
+        control={form.control}
+        name="expectedFoaling"
+        label="Expected Foaling (Optional)"
+      />
 
-          <FormField
-            control={form.control}
-            name="contractId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Contract ID (Optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="C001" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <TextField
+        control={form.control}
+        name="contractId"
+        label="Contract ID (Optional)"
+        placeholder="C001"
+      />
 
-          <FormField
-            control={form.control}
-            name="studFee"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Stud Fee (Optional)</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    placeholder="5000" 
-                    {...field} 
-                    onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+      <TextField
+        control={form.control}
+        name="studFee"
+        label="Stud Fee (Optional)"
+        type="number"
+        placeholder="5000"
+      />
 
-        <FormField
+      <div className="md:col-span-2">
+        <TextareaField
           control={form.control}
           name="notes"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Notes (Optional)</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Additional notes about the breeding..." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Notes (Optional)"
+          placeholder="Additional notes about the breeding..."
         />
-
-        <div className="flex justify-end gap-2">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Saving...' : 'Save Record'}
-          </Button>
-        </div>
-      </form>
-    </Form>
+      </div>
+    </FormLayout>
   );
 };
 

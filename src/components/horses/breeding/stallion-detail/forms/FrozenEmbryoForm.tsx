@@ -2,24 +2,12 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
 import { FrozenEmbryoInventory } from '@/types/breeding/stallion-detail';
+import { FormLayout } from '../shared/FormLayout';
+import { DateField } from '../shared/form-fields/DateField';
+import { TextField } from '../shared/form-fields/TextField';
+import { SelectField } from '../shared/form-fields/SelectField';
+import { embryoGradeOptions, embryoStageOptions } from '../config/formConfigs';
 
 const frozenEmbryoSchema = z.object({
   stallionId: z.string().min(1, 'Stallion ID is required'),
@@ -80,181 +68,89 @@ const FrozenEmbryoForm = ({ stallionId, onSubmit, onCancel, isLoading }: FrozenE
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="creationDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Creation Date</FormLabel>
-                <FormControl>
-                  <Input type="date" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    <FormLayout
+      form={form}
+      onSubmit={handleSubmit}
+      onCancel={onCancel}
+      isLoading={isLoading}
+      submitLabel="Save Embryo"
+    >
+      <DateField
+        control={form.control}
+        name="creationDate"
+        label="Creation Date"
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="mareName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Mare Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Golden Mare" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <TextField
+        control={form.control}
+        name="mareName"
+        label="Mare Name"
+        placeholder="Golden Mare"
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="mareId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Mare ID (Optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="M001" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <TextField
+        control={form.control}
+        name="mareId"
+        label="Mare ID (Optional)"
+        placeholder="M001"
+      />
 
-          <FormField
-            control={form.control}
-            name="grade"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Grade</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select grade" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="Grade 1">Grade 1</SelectItem>
-                    <SelectItem value="Grade 2">Grade 2</SelectItem>
-                    <SelectItem value="Grade 3">Grade 3</SelectItem>
-                    <SelectItem value="Grade 4">Grade 4</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <SelectField
+        control={form.control}
+        name="grade"
+        label="Grade"
+        options={embryoGradeOptions}
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="stage"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Embryonic Stage</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select stage" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="Morula">Morula</SelectItem>
-                    <SelectItem value="Early Blastocyst">Early Blastocyst</SelectItem>
-                    <SelectItem value="Blastocyst">Blastocyst</SelectItem>
-                    <SelectItem value="Expanded Blastocyst">Expanded Blastocyst</SelectItem>
-                    <SelectItem value="Hatched Blastocyst">Hatched Blastocyst</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <SelectField
+        control={form.control}
+        name="stage"
+        label="Embryonic Stage"
+        options={embryoStageOptions}
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="viability"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Viability</FormLabel>
-                <FormControl>
-                  <Input placeholder="95%" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <TextField
+        control={form.control}
+        name="viability"
+        label="Viability"
+        placeholder="95%"
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="tank"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Tank</FormLabel>
-                <FormControl>
-                  <Input placeholder="Tank C-2" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <TextField
+        control={form.control}
+        name="tank"
+        label="Tank"
+        placeholder="Tank C-2"
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="location"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Location</FormLabel>
-                <FormControl>
-                  <Input placeholder="Section 3A" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <TextField
+        control={form.control}
+        name="location"
+        label="Location"
+        placeholder="Section 3A"
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="diameter"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Diameter (Optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="180μm" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <TextField
+        control={form.control}
+        name="diameter"
+        label="Diameter (Optional)"
+        placeholder="180μm"
+      />
 
-          <FormField
-            control={form.control}
-            name="freezingMethod"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Freezing Method (Optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="Vitrification" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="flex justify-end gap-2">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Saving...' : 'Save Embryo'}
-          </Button>
-        </div>
-      </form>
-    </Form>
+      <TextField
+        control={form.control}
+        name="freezingMethod"
+        label="Freezing Method (Optional)"
+        placeholder="Vitrification"
+      />
+    </FormLayout>
   );
 };
 

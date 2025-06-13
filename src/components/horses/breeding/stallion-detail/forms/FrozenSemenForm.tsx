@@ -2,24 +2,12 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
 import { FrozenSemenInventory } from '@/types/breeding/stallion-detail';
+import { FormLayout } from '../shared/FormLayout';
+import { DateField } from '../shared/form-fields/DateField';
+import { TextField } from '../shared/form-fields/TextField';
+import { SelectField } from '../shared/form-fields/SelectField';
+import { frozenSemenQualityOptions } from '../config/formConfigs';
 
 const frozenSemenSchema = z.object({
   stallionId: z.string().min(1, 'Stallion ID is required'),
@@ -61,7 +49,6 @@ const FrozenSemenForm = ({ stallionId, onSubmit, onCancel, isLoading }: FrozenSe
   });
 
   const handleSubmit = async (data: FormData) => {
-    // Transform the form data to match the expected type
     const submissionData: Omit<FrozenSemenInventory, 'id' | 'createdAt'> = {
       stallionId: data.stallionId,
       freezeDate: data.freezeDate,
@@ -78,159 +65,81 @@ const FrozenSemenForm = ({ stallionId, onSubmit, onCancel, isLoading }: FrozenSe
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="freezeDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Freeze Date</FormLabel>
-                <FormControl>
-                  <Input type="date" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    <FormLayout
+      form={form}
+      onSubmit={handleSubmit}
+      onCancel={onCancel}
+      isLoading={isLoading}
+      submitLabel="Save to Inventory"
+    >
+      <DateField
+        control={form.control}
+        name="freezeDate"
+        label="Freeze Date"
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="straws"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Number of Straws</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    {...field} 
-                    onChange={(e) => field.onChange(parseInt(e.target.value))}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <TextField
+        control={form.control}
+        name="straws"
+        label="Number of Straws"
+        type="number"
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="tank"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Tank</FormLabel>
-                <FormControl>
-                  <Input placeholder="Tank A-3" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <TextField
+        control={form.control}
+        name="tank"
+        label="Tank"
+        placeholder="Tank A-3"
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="location"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Location</FormLabel>
-                <FormControl>
-                  <Input placeholder="Section 2B" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <TextField
+        control={form.control}
+        name="location"
+        label="Location"
+        placeholder="Section 2B"
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="quality"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Quality Grade</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select quality grade" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="Grade A">Grade A</SelectItem>
-                    <SelectItem value="Grade B">Grade B</SelectItem>
-                    <SelectItem value="Grade C">Grade C</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <SelectField
+        control={form.control}
+        name="quality"
+        label="Quality Grade"
+        options={frozenSemenQualityOptions}
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="viability"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Viability</FormLabel>
-                <FormControl>
-                  <Input placeholder="92%" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <TextField
+        control={form.control}
+        name="viability"
+        label="Viability"
+        placeholder="92%"
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="expiry"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Expiry Date</FormLabel>
-                <FormControl>
-                  <Input type="date" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <DateField
+        control={form.control}
+        name="expiry"
+        label="Expiry Date"
+        required
+      />
 
-          <FormField
-            control={form.control}
-            name="batchNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Batch Number (Optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="B001" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <TextField
+        control={form.control}
+        name="batchNumber"
+        label="Batch Number (Optional)"
+        placeholder="B001"
+      />
 
-          <FormField
-            control={form.control}
-            name="freezingProtocol"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Freezing Protocol (Optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="Standard Protocol A" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="flex justify-end gap-2">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Saving...' : 'Save to Inventory'}
-          </Button>
-        </div>
-      </form>
-    </Form>
+      <TextField
+        control={form.control}
+        name="freezingProtocol"
+        label="Freezing Protocol (Optional)"
+        placeholder="Standard Protocol A"
+      />
+    </FormLayout>
   );
 };
 
