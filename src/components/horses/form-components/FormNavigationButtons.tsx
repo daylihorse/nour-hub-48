@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Save } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { FormStage } from "@/types/horse";
 
 interface FormNavigationButtonsProps {
@@ -23,27 +23,21 @@ const FormNavigationButtons = ({
   const isFirstStage = currentStage === 0;
   const isLastStage = currentStage === formStages.length - 1;
 
-  console.log("FormNavigationButtons - Current stage:", currentStage, "Is last stage:", isLastStage);
-
-  const handleSubmitClick = () => {
-    console.log("Submit button clicked in FormNavigationButtons");
-    onSubmit();
-  };
-
   return (
-    <div className="flex items-center justify-between pt-6">
-      <Button
-        type="button"
-        variant="outline"
-        onClick={onPrevious}
-        disabled={isFirstStage}
-        className="flex items-center gap-2"
-      >
-        <ChevronLeft className="h-4 w-4" />
-        Previous
-      </Button>
-
-      <div className="flex items-center gap-2">
+    <div className="flex justify-between items-center pt-6">
+      <div className="flex gap-2">
+        {!isFirstStage && (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onPrevious}
+            className="flex items-center gap-2"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Previous
+          </Button>
+        )}
+        
         <Button
           type="button"
           variant="outline"
@@ -51,15 +45,16 @@ const FormNavigationButtons = ({
         >
           Cancel
         </Button>
+      </div>
 
+      <div>
         {isLastStage ? (
           <Button
             type="button"
-            onClick={handleSubmitClick}
-            className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+            onClick={onSubmit}
+            className="flex items-center gap-2"
           >
-            <Save className="h-4 w-4" />
-            Register Horse
+            Submit Registration
           </Button>
         ) : (
           <Button

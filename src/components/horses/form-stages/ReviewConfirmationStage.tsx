@@ -1,22 +1,25 @@
 
 import { useFormContext } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { HorseFormData } from "@/types/horse";
 
-const ReviewConfirmationStage = () => {
+interface ReviewConfirmationStageProps {
+  onSubmit: () => void;
+}
+
+const ReviewConfirmationStage = ({ onSubmit }: ReviewConfirmationStageProps) => {
   const form = useFormContext<HorseFormData>();
   const formData = form.getValues();
-
-  console.log("ReviewConfirmationStage - Current form data:", formData);
 
   return (
     <div className="space-y-6">
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold">Review & Confirmation</h2>
-        <p className="text-muted-foreground">Please review all information and set the horse status</p>
+        <p className="text-muted-foreground">Please review all information and set the horse status before submitting</p>
       </div>
 
       {/* Status Field */}
@@ -33,11 +36,8 @@ const ReviewConfirmationStage = () => {
                 <FormLabel>Status *</FormLabel>
                 <FormControl>
                   <RadioGroup
-                    onValueChange={(value) => {
-                      console.log("Status changed to:", value);
-                      field.onChange(value);
-                    }}
-                    value={field.value}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
                     className="flex flex-col space-y-2"
                   >
                     <div className="flex items-center space-x-2">
@@ -135,6 +135,16 @@ const ReviewConfirmationStage = () => {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      <div className="flex justify-center pt-6">
+        <Button 
+          onClick={onSubmit}
+          size="lg"
+          className="px-8 py-3 text-lg"
+        >
+          Register Horse
+        </Button>
       </div>
     </div>
   );

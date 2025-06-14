@@ -12,12 +12,10 @@ import ReviewConfirmationStage from "../form-stages/ReviewConfirmationStage";
 
 interface StageContentRendererProps {
   stage: FormStage;
-  onSubmit?: () => void;
+  onSubmit: () => void;
 }
 
-const StageContentRenderer = ({ stage }: StageContentRendererProps) => {
-  console.log("StageContentRenderer - Rendering stage:", stage.id);
-
+const StageContentRenderer = ({ stage, onSubmit }: StageContentRendererProps) => {
   switch (stage.id) {
     case "basic":
       return <BasicInformationStage />;
@@ -36,9 +34,9 @@ const StageContentRenderer = ({ stage }: StageContentRendererProps) => {
     case "documents":
       return <DocumentsImagesStage />;
     case "review":
-      return <ReviewConfirmationStage />;
+      return <ReviewConfirmationStage onSubmit={onSubmit} />;
     default:
-      return <div>Unknown stage: {stage.id}</div>;
+      return null;
   }
 };
 
