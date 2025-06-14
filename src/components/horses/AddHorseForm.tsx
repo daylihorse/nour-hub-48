@@ -47,6 +47,7 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
 
   console.log("AddHorseForm - Current form values:", form.getValues());
   console.log("AddHorseForm - Form errors:", form.formState.errors);
+  console.log("AddHorseForm - Current stage:", currentStage, "of", formStages.length);
 
   const progress = ((completedStages.size + (currentStage + 1)) / formStages.length) * 100;
 
@@ -96,7 +97,8 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
   };
 
   const handleSubmit = async () => {
-    console.log("HandleSubmit called");
+    console.log("=== HORSE REGISTRATION SUBMIT STARTED ===");
+    console.log("Is already submitting?", isSubmitting);
     
     if (isSubmitting) {
       console.log("Already submitting, ignoring duplicate click");
@@ -106,43 +108,59 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
     setIsSubmitting(true);
     
     try {
+      console.log("Starting form validation...");
+      
       // Validate all form fields
       const isValid = await form.trigger();
       console.log("Full form validation result:", isValid);
       
       if (!isValid) {
-        console.log("Form validation failed:", form.formState.errors);
+        const errors = form.formState.errors;
+        console.log("Form validation failed with errors:", errors);
+        
+        // Show a more detailed error message
+        const errorMessages = Object.entries(errors).map(([field, error]) => {
+          return `${field}: ${error?.message || 'Invalid value'}`;
+        });
+        
         toast({
           title: "Validation Error",
-          description: "Please check all fields and correct any errors.",
+          description: `Please correct the following errors: ${errorMessages.join(', ')}`,
           variant: "destructive",
         });
         return;
       }
 
       const formData = form.getValues();
-      console.log("Submitting form data:", formData);
+      console.log("Form validation passed. Submitting data:", formData);
       
       // Ensure status is set
       if (!formData.status) {
         formData.status = "active";
+        console.log("Status was empty, set to 'active'");
       }
 
+      console.log("Calling onSave with form data...");
       await onSave(formData);
       
+      console.log("onSave completed successfully");
       toast({
         title: "Success",
         description: `${formData.name} has been registered successfully!`,
       });
       
     } catch (error) {
-      console.error("Form submission error:", error);
+      console.error("=== HORSE REGISTRATION ERROR ===");
+      console.error("Error details:", error);
+      console.error("Error stack:", error instanceof Error ? error.stack : 'No stack trace');
+      
       toast({
-        title: "Error",
-        description: "Failed to register horse. Please try again.",
+        title: "Registration Error",
+        description: error instanceof Error ? error.message : "Failed to register horse. Please try again.",
         variant: "destructive",
       });
     } finally {
+      console.log("=== HORSE REGISTRATION SUBMIT COMPLETED ===");
       setIsSubmitting(false);
     }
   };

@@ -1,454 +1,185 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Building2, 
-  Hospital, 
-  FlaskRound, 
-  Store, 
-  Users, 
-  ArrowRight,
-  CheckCircle,
-  Star,
-  Zap,
-  ShoppingBag,
-  Search,
-  TrendingUp,
-  Settings
-} from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { TenantType } from '@/types/tenant';
-import { publicMarketplaceService } from '@/services/publicMarketplaceService';
-import EnhancedProductCard from '@/components/marketplace/EnhancedProductCard';
-import ProductSearchFilters from '@/components/marketplace/ProductSearchFilters';
-import AccessModeToggle from '@/components/marketplace/AccessModeToggle';
 
-interface FilterState {
-  query: string;
-  category: string;
-  department: string;
-  priceRange: [number, number];
-  rating: number;
-  featured: boolean;
-}
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Eye, 
+  UserCheck, 
+  ArrowRight, 
+  Horse,
+  Activity,
+  Shield,
+  Zap
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import AccessModeToggle from "@/components/marketplace/AccessModeToggle";
+import { useAccessMode } from "@/contexts/AccessModeContext";
 
 const PublicMarketplace = () => {
-  const [selectedType, setSelectedType] = useState<TenantType | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'access' | 'products' | 'services'>('overview');
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [filters, setFilters] = useState<FilterState>({
-    query: '',
-    category: '',
-    department: '',
-    priceRange: [0, 1000],
-    rating: 0,
-    featured: false
-  });
+  const { setAccessMode } = useAccessMode();
 
-  const tenantTypes = [
-    {
-      type: 'stable' as TenantType,
-      title: 'Equestrian Stable',
-      description: 'Comprehensive horse management, breeding records, and training programs',
-      icon: Building2,
-      features: ['Horse Management', 'Breeding Records', 'Training Programs', 'Facility Management'],
-      price: 'From $99/month',
-      popular: true,
-      color: 'bg-blue-500'
-    },
-    {
-      type: 'clinic' as TenantType,
-      title: 'Veterinary Clinic',
-      description: 'Complete veterinary practice management with appointments and medical records',
-      icon: Hospital,
-      features: ['Appointment Scheduling', 'Medical Records', 'Prescription Management', 'Client Portal'],
-      price: 'From $149/month',
-      popular: false,
-      color: 'bg-green-500'
-    },
-    {
-      type: 'laboratory' as TenantType,
-      title: 'Diagnostic Laboratory',
-      description: 'Advanced laboratory management with testing workflows and quality control',
-      icon: FlaskRound,
-      features: ['Sample Management', 'Test Results', 'Quality Control', 'Equipment Tracking'],
-      price: 'From $199/month',
-      popular: false,
-      color: 'bg-purple-500'
-    },
-    {
-      type: 'hospital' as TenantType,
-      title: 'Veterinary Hospital',
-      description: 'Full-service hospital management with surgical suites and emergency care',
-      icon: Hospital,
-      features: ['Emergency Management', 'Surgical Scheduling', 'ICU Monitoring', 'Staff Coordination'],
-      price: 'From $299/month',
-      popular: false,
-      color: 'bg-red-500'
-    },
-    {
-      type: 'marketplace' as TenantType,
-      title: 'Equine Marketplace',
-      description: 'Online marketplace for buying and selling horses, equipment, and services',
-      icon: Store,
-      features: ['Product Listings', 'Payment Processing', 'Buyer/Seller Matching', 'Transaction Management'],
-      price: 'From $79/month',
-      popular: false,
-      color: 'bg-pink-500'
-    },
-    {
-      type: 'enterprise' as TenantType,
-      title: 'Enterprise Solution',
-      description: 'Multi-facility management with advanced analytics and custom integrations',
-      icon: Users,
-      features: ['Multi-Location', 'Advanced Analytics', 'Custom Integrations', 'White Label'],
-      price: 'Custom Pricing',
-      popular: false,
-      color: 'bg-orange-500'
-    }
-  ];
-
-  const testimonials = [
-    {
-      name: 'Sarah Johnson',
-      role: 'Stable Owner',
-      company: 'Sunset Stables',
-      content: 'This platform transformed how we manage our 50+ horses. The breeding module alone saved us countless hours.',
-      rating: 5
-    },
-    {
-      name: 'Dr. Michael Chen',
-      role: 'Veterinarian',
-      company: 'Equine Health Center',
-      content: 'The integrated approach between clinic management and horse records is exactly what our practice needed.',
-      rating: 5
-    },
-    {
-      name: 'Lisa Thompson',
-      role: 'Lab Director',
-      company: 'Advanced Equine Diagnostics',
-      content: 'Quality control features and automated workflows have significantly improved our testing accuracy.',
-      rating: 5
-    }
-  ];
-
-  // Get marketplace data
-  const featuredProducts = publicMarketplaceService.getFeaturedProducts();
-  const featuredServices = publicMarketplaceService.getFeaturedServices();
-  const filteredData = publicMarketplaceService.filterItems({
-    query: filters.query,
-    category: filters.category || undefined,
-    department: filters.department || undefined,
-    minPrice: filters.priceRange[0],
-    maxPrice: filters.priceRange[1],
-    rating: filters.rating || undefined,
-    featured: filters.featured || undefined
-  });
-
-  const toggleFavorite = (itemId: string) => {
-    const newFavorites = new Set(favorites);
-    if (newFavorites.has(itemId)) {
-      newFavorites.delete(itemId);
-    } else {
-      newFavorites.add(itemId);
-    }
-    setFavorites(newFavorites);
-  };
-
-  const handleAddToCart = (item: any) => {
-    console.log('Added to cart:', item.name);
-    // In a real app, this would add to cart state or context
+  const handleEnterDashboard = (mode: 'public' | 'demo') => {
+    setAccessMode(mode);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      {/* Hero Section */}
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center gap-2 mb-6">
-            <Building2 className="h-8 w-8 text-blue-600" />
-            <span className="text-2xl font-bold text-gray-900">EquiSense</span>
-          </div>
-          <h1 className="text-5xl font-bold text-gray-900 mb-6">
-            The Complete Equine
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> Management Platform</span>
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            From stables to clinics, laboratories to marketplaces - discover the perfect solution for your equine business. 
-            Join thousands of professionals who trust EquiSense for their daily operations.
-          </p>
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <Badge className="px-4 py-2 bg-green-100 text-green-800">
-              <CheckCircle className="h-4 w-4 mr-2" />
-              30-Day Free Trial
-            </Badge>
-            <Badge className="px-4 py-2 bg-blue-100 text-blue-800">
-              <Zap className="h-4 w-4 mr-2" />
-              Setup in Minutes
-            </Badge>
+      {/* Header */}
+      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+                <Horse className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">EquiSense</h1>
+                <p className="text-sm text-gray-600">Complete Equine Management Platform</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Link to="/dashboard" onClick={() => handleEnterDashboard('public')}>
+                <Button size="lg" className="bg-purple-600 hover:bg-purple-700">
+                  <Eye className="h-5 w-5 mr-2" />
+                  Explore Dashboard
+                  <ArrowRight className="h-5 w-5 ml-2" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
+      </header>
 
-        {/* Main Content Tabs */}
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="mb-16">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
-            <TabsTrigger value="overview" className="gap-2">
-              <Building2 className="h-4 w-4" />
-              Solutions
-            </TabsTrigger>
-            <TabsTrigger value="access" className="gap-2">
-              <Settings className="h-4 w-4" />
-              Try Now
-            </TabsTrigger>
-            <TabsTrigger value="products" className="gap-2">
-              <ShoppingBag className="h-4 w-4" />
-              Products
-            </TabsTrigger>
-            <TabsTrigger value="services" className="gap-2">
-              <Star className="h-4 w-4" />
-              Services
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="overview">
-            {/* Tenant Type Selection */}
-            <div className="mb-16">
-              <h2 className="text-3xl font-bold text-center mb-8">Choose Your Solution</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {tenantTypes.map((tenant) => (
-                  <Card 
-                    key={tenant.type}
-                    className={`relative cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 ${
-                      selectedType === tenant.type ? 'ring-2 ring-blue-500 shadow-xl' : ''
-                    } ${tenant.popular ? 'border-2 border-blue-500' : ''}`}
-                    onClick={() => setSelectedType(tenant.type)}
-                  >
-                    {tenant.popular && (
-                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                        <Badge className="bg-blue-500 text-white px-4 py-1">
-                          <Star className="h-3 w-3 mr-1" />
-                          Most Popular
-                        </Badge>
-                      </div>
-                    )}
-                    <CardHeader>
-                      <div className={`w-12 h-12 rounded-lg ${tenant.color} flex items-center justify-center mb-4`}>
-                        <tenant.icon className="h-6 w-6 text-white" />
-                      </div>
-                      <CardTitle className="text-xl">{tenant.title}</CardTitle>
-                      <p className="text-gray-600">{tenant.description}</p>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3 mb-6">
-                        {tenant.features.map((feature) => (
-                          <div key={feature} className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-green-500" />
-                            <span className="text-sm">{feature}</span>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-2xl font-bold text-gray-900">{tenant.price}</span>
-                        {selectedType === tenant.type && (
-                          <Link to={`/onboarding/${tenant.type}`}>
-                            <Button className="bg-blue-600 hover:bg-blue-700">
-                              Get Started
-                              <ArrowRight className="h-4 w-4 ml-2" />
-                            </Button>
-                          </Link>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+      {/* Hero Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-4xl mx-auto">
+            <Badge className="bg-blue-100 text-blue-800 border-blue-200 mb-6">
+              🚀 Try EquiSense - No Signup Required
+            </Badge>
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              The Complete
+              <span className="text-blue-600"> Equine Management</span>
+              <br />Platform
+            </h1>
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              Manage your horses, track health records, handle breeding, monitor training, 
+              and run your equine business all in one powerful platform.
+            </p>
+            
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+              <Link to="/dashboard" onClick={() => handleEnterDashboard('public')}>
+                <Button size="lg" className="bg-purple-600 hover:bg-purple-700 text-lg px-8 py-4">
+                  <Eye className="h-6 w-6 mr-3" />
+                  Explore Now - No Login Required
+                  <ArrowRight className="h-6 w-6 ml-3" />
+                </Button>
+              </Link>
+              <Link to="/" onClick={() => handleEnterDashboard('demo')}>
+                <Button size="lg" variant="outline" className="text-lg px-8 py-4 border-2">
+                  <UserCheck className="h-6 w-6 mr-3" />
+                  Try Demo Accounts
+                </Button>
+              </Link>
             </div>
-          </TabsContent>
-
-          <TabsContent value="access">
-            <div className="space-y-6">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold mb-4">Try EquiSense Now</h2>
-                <p className="text-gray-600">Choose how you want to explore our platform</p>
-              </div>
-              <AccessModeToggle />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="products">
-            <div className="space-y-6">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold mb-4">Featured Products</h2>
-                <p className="text-gray-600">Premium products from verified vendors</p>
-              </div>
-
-              <ProductSearchFilters 
-                onFiltersChange={setFilters}
-                activeFilters={filters}
-              />
-
-              {/* Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-center gap-2">
-                      <ShoppingBag className="h-5 w-5 text-blue-600" />
-                      <span className="font-semibold">{filteredData.products.length} Products</span>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5 text-green-600" />
-                      <span className="font-semibold">{featuredProducts.length} Featured</span>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-center gap-2">
-                      <Star className="h-5 w-5 text-yellow-600" />
-                      <span className="font-semibold">4.8 Avg Rating</span>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredData.products.map((product) => (
-                  <EnhancedProductCard
-                    key={product.id}
-                    item={product}
-                    onAddToCart={() => handleAddToCart(product)}
-                    onToggleFavorite={() => toggleFavorite(product.id)}
-                    isFavorite={favorites.has(product.id)}
-                  />
-                ))}
-              </div>
-
-              {filteredData.products.length === 0 && (
-                <div className="text-center py-12">
-                  <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">No products found</h3>
-                  <p className="text-gray-600">Try adjusting your filters or search terms</p>
-                </div>
-              )}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="services">
-            <div className="space-y-6">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold mb-4">Professional Services</h2>
-                <p className="text-gray-600">Expert services from certified professionals</p>
-              </div>
-
-              <ProductSearchFilters 
-                onFiltersChange={setFilters}
-                activeFilters={filters}
-              />
-
-              {/* Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-center gap-2">
-                      <Star className="h-5 w-5 text-purple-600" />
-                      <span className="font-semibold">{filteredData.services.length} Services</span>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5 text-green-600" />
-                      <span className="font-semibold">{featuredServices.length} Featured</span>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="h-5 w-5 text-blue-600" />
-                      <span className="font-semibold">Verified Providers</span>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredData.services.map((service) => (
-                  <EnhancedProductCard
-                    key={service.id}
-                    item={service}
-                    onAddToCart={() => handleAddToCart(service)}
-                    onToggleFavorite={() => toggleFavorite(service.id)}
-                    isFavorite={favorites.has(service.id)}
-                  />
-                ))}
-              </div>
-
-              {filteredData.services.length === 0 && (
-                <div className="text-center py-12">
-                  <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">No services found</h3>
-                  <p className="text-gray-600">Try adjusting your filters or search terms</p>
-                </div>
-              )}
-            </div>
-          </TabsContent>
-        </Tabs>
-
-        {/* Testimonials - only show on overview tab */}
-        {activeTab === 'overview' && (
-          <div className="mb-16">
-            <h2 className="text-3xl font-bold text-center mb-8">Trusted by Industry Leaders</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {testimonials.map((testimonial, index) => (
-                <Card key={index} className="bg-white/80 backdrop-blur-sm">
-                  <CardHeader>
-                    <div className="flex items-center gap-1 mb-2">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      ))}
-                    </div>
-                    <p className="text-gray-600 italic">"{testimonial.content}"</p>
-                  </CardHeader>
-                  <CardContent>
-                    <div>
-                      <p className="font-semibold">{testimonial.name}</p>
-                      <p className="text-sm text-gray-500">{testimonial.role}</p>
-                      <p className="text-sm text-gray-500">{testimonial.company}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            
+            <p className="text-sm text-gray-500">
+              ✨ Experience the full platform instantly • No registration required • Try all features
+            </p>
           </div>
-        )}
+        </div>
+      </section>
 
-        {/* CTA Section */}
-        <div className="text-center bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-white">
-          <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Equine Business?</h2>
-          <p className="text-xl mb-8 opacity-90">
-            Join thousands of professionals who have streamlined their operations with EquiSense
-          </p>
+      {/* Key Features */}
+      <section className="py-16 bg-white/60">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Everything You Need for Equine Management
+            </h2>
+            <p className="text-gray-600">
+              From individual horse owners to large equestrian facilities, EquiSense adapts to your needs
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <Card className="border-2 border-blue-200 bg-blue-50/50">
+              <CardHeader>
+                <Horse className="h-12 w-12 text-blue-600 mb-4" />
+                <CardTitle>Horse Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">
+                  Complete horse profiles, breeding records, health tracking, and performance monitoring
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-2 border-green-200 bg-green-50/50">
+              <CardHeader>
+                <Activity className="h-12 w-12 text-green-600 mb-4" />
+                <CardTitle>Health & Veterinary</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">
+                  Medical records, vaccination schedules, lab results, and veterinary clinic management
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-2 border-purple-200 bg-purple-50/50">
+              <CardHeader>
+                <Shield className="h-12 w-12 text-purple-600 mb-4" />
+                <CardTitle>Business Operations</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">
+                  Financial management, staff coordination, facility maintenance, and client relations
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Access Mode Selection */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Choose Your Experience
+              </h2>
+              <p className="text-gray-600">
+                Explore EquiSense with public access or try our realistic demo accounts
+              </p>
+            </div>
+            
+            <AccessModeToggle />
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Access */}
+      <section className="py-12 bg-gray-900 text-white">
+        <div className="container mx-auto px-4 text-center">
+          <h3 className="text-2xl font-bold mb-6">Ready to get started?</h3>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/onboarding">
-              <Button size="lg" variant="secondary" className="bg-white text-blue-600 hover:bg-gray-100">
-                Start Free Trial
-                <ArrowRight className="h-5 w-5 ml-2" />
+            <Link to="/dashboard" onClick={() => handleEnterDashboard('public')}>
+              <Button size="lg" className="bg-purple-600 hover:bg-purple-700">
+                <Zap className="h-5 w-5 mr-2" />
+                Start Exploring Now
               </Button>
             </Link>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-              Schedule Demo
-            </Button>
+            <Link to="/onboarding">
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900">
+                Create Your Account
+              </Button>
+            </Link>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

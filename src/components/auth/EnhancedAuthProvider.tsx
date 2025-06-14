@@ -32,6 +32,13 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
 
   const { hasPermission, hasRole } = usePermissions(user, currentTenant);
 
+  console.log('EnhancedAuthProvider - Current state:', {
+    accessMode,
+    user: !!user,
+    currentTenant: !!currentTenant,
+    isLoading
+  });
+
   const login = async (email: string, password: string) => {
     if (accessMode === 'public') {
       // In public mode, login is not needed
@@ -39,10 +46,15 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
       return;
     }
     
+    console.log('Attempting login for:', email);
     setIsLoading(true);
     try {
       const { error } = await authService.signInWithPassword(email, password);
-      if (error) throw error;
+      if (error) {
+        console.error('Login error:', error);
+        throw error;
+      }
+      console.log('Login successful');
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -62,6 +74,7 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
     try {
       const { error } = await authService.signOut();
       if (error) throw error;
+      console.log('Logout successful');
     } catch (error) {
       console.error('Logout error:', error);
       // Don't re-throw logout errors to prevent app crashes
@@ -76,7 +89,7 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
       setAccessMode('demo');
       
       // Wait a bit for the access mode to propagate
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await new Promise(resolve => setTimeout(resolve, 100));
       
       // Use the auth hook's switchDemoAccount function
       if (authSwitchDemoAccount) {

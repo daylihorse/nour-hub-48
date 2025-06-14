@@ -1,5 +1,5 @@
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 export type AccessMode = 'demo' | 'public';
 
@@ -25,7 +25,23 @@ interface AccessModeProviderProps {
 }
 
 export const AccessModeProvider = ({ children }: AccessModeProviderProps) => {
-  const [accessMode, setAccessMode] = useState<AccessMode>('public');
+  // Initialize from localStorage or default to 'public'
+  const [accessMode, setAccessModeState] = useState<AccessMode>(() => {
+    const saved = localStorage.getItem('accessMode');
+    return (saved === 'demo' || saved === 'public') ? saved : 'public';
+  });
+
+  // Save to localStorage when mode changes
+  const setAccessMode = (mode: AccessMode) => {
+    console.log('Setting access mode to:', mode);
+    localStorage.setItem('accessMode', mode);
+    setAccessModeState(mode);
+  };
+
+  // Log current mode for debugging
+  useEffect(() => {
+    console.log('Access mode initialized:', accessMode);
+  }, [accessMode]);
 
   const value: AccessModeContextType = {
     accessMode,
