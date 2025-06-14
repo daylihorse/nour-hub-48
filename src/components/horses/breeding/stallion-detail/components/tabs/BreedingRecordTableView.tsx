@@ -14,27 +14,18 @@ import { Eye, Edit2, Trash2 } from "lucide-react";
 import { BreedingRecord } from "@/types/breeding/stallion-detail";
 
 interface BreedingRecordTableViewProps {
-  records: BreedingRecord[];
-  onViewDetails: (record: BreedingRecord) => void;
-  onEditRecord: (record: BreedingRecord) => void;
-  onDeleteRecord: (record: BreedingRecord) => void;
+  breedingRecords: BreedingRecord[];
+  onEdit: (record: BreedingRecord) => void;
+  onDelete: (record: BreedingRecord) => void;
+  getStatusColor: (status: string) => "default" | "secondary" | "outline";
 }
 
 const BreedingRecordTableView = ({ 
-  records, 
-  onViewDetails, 
-  onEditRecord, 
-  onDeleteRecord 
+  breedingRecords,
+  onEdit,
+  onDelete,
+  getStatusColor
 }: BreedingRecordTableViewProps) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Active': return 'default';
-      case 'Completed': return 'secondary';
-      case 'Monitoring': return 'outline';
-      default: return 'secondary';
-    }
-  };
-
   const getResultColor = (result: string) => {
     switch (result) {
       case 'Confirmed Pregnant': return 'text-green-600';
@@ -62,7 +53,7 @@ const BreedingRecordTableView = ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {records.map((record) => (
+            {breedingRecords.map((record) => (
               <TableRow key={record.id}>
                 <TableCell className="font-medium">{record.id}</TableCell>
                 <TableCell>{record.date}</TableCell>
@@ -82,13 +73,13 @@ const BreedingRecordTableView = ({
                 <TableCell>Dr. {record.veterinarian}</TableCell>
                 <TableCell>
                   <div className="flex gap-1">
-                    <Button variant="ghost" size="sm" onClick={() => onViewDetails(record)}>
+                    <Button variant="ghost" size="sm" onClick={() => console.log('View details:', record)}>
                       <Eye className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={() => onEditRecord(record)}>
+                    <Button variant="ghost" size="sm" onClick={() => onEdit(record)}>
                       <Edit2 className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={() => onDeleteRecord(record)}>
+                    <Button variant="ghost" size="sm" onClick={() => onDelete(record)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>

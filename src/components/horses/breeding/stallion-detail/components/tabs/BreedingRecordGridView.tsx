@@ -4,26 +4,33 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Heart, CheckCircle, Clock, Eye, Edit2, Trash2 } from "lucide-react";
 import { BreedingRecord } from "@/types/breeding/stallion-detail";
+import { GridSize } from "../../../components/GridSizeSelector";
 
 interface BreedingRecordGridViewProps {
-  records: BreedingRecord[];
-  onViewDetails: (record: BreedingRecord) => void;
-  onEditRecord: (record: BreedingRecord) => void;
-  onDeleteRecord: (record: BreedingRecord) => void;
+  breedingRecords: BreedingRecord[];
+  gridSize: GridSize;
+  onEdit: (record: BreedingRecord) => void;
+  onDelete: (record: BreedingRecord) => void;
+  getStatusColor: (status: string) => "default" | "secondary" | "outline";
 }
 
 const BreedingRecordGridView = ({ 
-  records, 
-  onViewDetails, 
-  onEditRecord, 
-  onDeleteRecord 
+  breedingRecords,
+  gridSize,
+  onEdit,
+  onDelete,
+  getStatusColor
 }: BreedingRecordGridViewProps) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Active': return 'default';
-      case 'Completed': return 'secondary';
-      case 'Monitoring': return 'outline';
-      default: return 'secondary';
+  const getGridColumns = () => {
+    switch (gridSize) {
+      case 2:
+        return "grid-cols-1 md:grid-cols-2";
+      case 3:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+      case 4:
+        return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+      default:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
     }
   };
 
@@ -46,8 +53,8 @@ const BreedingRecordGridView = ({
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {records.map((record) => (
+    <div className={`grid ${getGridColumns()} gap-4`}>
+      {breedingRecords.map((record) => (
         <Card key={record.id} className="hover:shadow-md transition-shadow">
           <CardHeader>
             <div className="flex justify-between items-start">
@@ -91,13 +98,13 @@ const BreedingRecordGridView = ({
                   Dr. {record.veterinarian}
                 </span>
                 <div className="flex gap-1">
-                  <Button variant="ghost" size="sm" onClick={() => onViewDetails(record)}>
+                  <Button variant="ghost" size="sm" onClick={() => console.log('View details:', record)}>
                     <Eye className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="sm" onClick={() => onEditRecord(record)}>
+                  <Button variant="ghost" size="sm" onClick={() => onEdit(record)}>
                     <Edit2 className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="sm" onClick={() => onDeleteRecord(record)}>
+                  <Button variant="ghost" size="sm" onClick={() => onDelete(record)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
