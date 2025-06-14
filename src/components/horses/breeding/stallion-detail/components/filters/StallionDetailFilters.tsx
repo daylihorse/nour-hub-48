@@ -1,22 +1,12 @@
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Filter, X } from 'lucide-react';
 import { StallionDetailFilters as FilterType } from '@/types/breeding/stallion-detail';
+import FilterPopover from './FilterPopover';
+import FilterHeader from './FilterHeader';
+import FilterTriggerButton from './FilterTriggerButton';
+import SearchInput from './SearchInput';
+import DateRangeFilter from './DateRangeFilter';
+import DropdownFilter from './DropdownFilter';
 
 interface StallionDetailFiltersProps {
   filters: FilterType;
@@ -50,156 +40,72 @@ const StallionDetailFilters = ({ filters, onFiltersChange, filterOptions }: Stal
 
   return (
     <div className="flex items-center gap-2">
-      <div className="flex-1">
-        <Input
-          placeholder="Search records..."
-          value={filters.searchTerm || ''}
-          onChange={(e) => updateFilter('searchTerm', e.target.value)}
-          className="max-w-xs"
-        />
-      </div>
+      <SearchInput
+        searchTerm={filters.searchTerm || ''}
+        onSearchChange={(value) => updateFilter('searchTerm', value)}
+      />
 
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
-        <PopoverTrigger asChild>
-          <Button variant="outline" size="sm" className="relative">
-            <Filter className="h-4 w-4 mr-2" />
-            Filter
-            {hasActiveFilters && (
-              <span className="absolute -top-1 -right-1 h-3 w-3 bg-primary rounded-full" />
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-80" align="end">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h4 className="font-medium">Filters</h4>
-              {hasActiveFilters && (
-                <Button variant="ghost" size="sm" onClick={clearFilters}>
-                  <X className="h-4 w-4 mr-1" />
-                  Clear
-                </Button>
-              )}
-            </div>
+      <FilterPopover
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        trigger={<FilterTriggerButton hasActiveFilters={hasActiveFilters} />}
+      >
+        <div className="space-y-4">
+          <FilterHeader
+            hasActiveFilters={hasActiveFilters}
+            onClearFilters={clearFilters}
+          />
 
-            {/* Date Range */}
-            <div className="space-y-2">
-              <Label>Date Range</Label>
-              <div className="grid grid-cols-2 gap-2">
-                <Input
-                  type="date"
-                  placeholder="Start date"
-                  value={filters.dateRange?.start || ''}
-                  onChange={(e) => updateFilter('dateRange', {
-                    ...filters.dateRange,
-                    start: e.target.value
-                  })}
-                />
-                <Input
-                  type="date"
-                  placeholder="End date"
-                  value={filters.dateRange?.end || ''}
-                  onChange={(e) => updateFilter('dateRange', {
-                    ...filters.dateRange,
-                    end: e.target.value
-                  })}
-                />
-              </div>
-            </div>
+          <DateRangeFilter
+            dateRange={filters.dateRange}
+            onDateRangeChange={(dateRange) => updateFilter('dateRange', dateRange)}
+          />
 
-            {/* Status Filter */}
-            {filterOptions.status && (
-              <div className="space-y-2">
-                <Label>Status</Label>
-                <Select
-                  value={filters.status?.[0] || ''}
-                  onValueChange={(value) => updateFilter('status', value ? [value] : [])}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Statuses</SelectItem>
-                    {filterOptions.status.map((status) => (
-                      <SelectItem key={status} value={status}>
-                        {status}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+          {filterOptions.status && (
+            <DropdownFilter
+              label="Status"
+              placeholder="Select status"
+              value={filters.status?.[0] || ''}
+              options={filterOptions.status}
+              onValueChange={(value) => updateFilter('status', value ? [value] : [])}
+              allOptionsLabel="All Statuses"
+            />
+          )}
 
-            {/* Quality Filter */}
-            {filterOptions.quality && (
-              <div className="space-y-2">
-                <Label>Quality</Label>
-                <Select
-                  value={filters.quality?.[0] || ''}
-                  onValueChange={(value) => updateFilter('quality', value ? [value] : [])}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select quality" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Qualities</SelectItem>
-                    {filterOptions.quality.map((quality) => (
-                      <SelectItem key={quality} value={quality}>
-                        {quality}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+          {filterOptions.quality && (
+            <DropdownFilter
+              label="Quality"
+              placeholder="Select quality"
+              value={filters.quality?.[0] || ''}
+              options={filterOptions.quality}
+              onValueChange={(value) => updateFilter('quality', value ? [value] : [])}
+              allOptionsLabel="All Qualities"
+            />
+          )}
 
-            {/* Technician Filter */}
-            {filterOptions.technician && (
-              <div className="space-y-2">
-                <Label>Technician</Label>
-                <Select
-                  value={filters.technician?.[0] || ''}
-                  onValueChange={(value) => updateFilter('technician', value ? [value] : [])}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select technician" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Technicians</SelectItem>
-                    {filterOptions.technician.map((tech) => (
-                      <SelectItem key={tech} value={tech}>
-                        {tech}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+          {filterOptions.technician && (
+            <DropdownFilter
+              label="Technician"
+              placeholder="Select technician"
+              value={filters.technician?.[0] || ''}
+              options={filterOptions.technician}
+              onValueChange={(value) => updateFilter('technician', value ? [value] : [])}
+              allOptionsLabel="All Technicians"
+            />
+          )}
 
-            {/* Method Filter */}
-            {filterOptions.method && (
-              <div className="space-y-2">
-                <Label>Method</Label>
-                <Select
-                  value={filters.method?.[0] || ''}
-                  onValueChange={(value) => updateFilter('method', value ? [value] : [])}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select method" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Methods</SelectItem>
-                    {filterOptions.method.map((method) => (
-                      <SelectItem key={method} value={method}>
-                        {method}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          </div>
-        </PopoverContent>
-      </Popover>
+          {filterOptions.method && (
+            <DropdownFilter
+              label="Method"
+              placeholder="Select method"
+              value={filters.method?.[0] || ''}
+              options={filterOptions.method}
+              onValueChange={(value) => updateFilter('method', value ? [value] : [])}
+              allOptionsLabel="All Methods"
+            />
+          )}
+        </div>
+      </FilterPopover>
     </div>
   );
 };
