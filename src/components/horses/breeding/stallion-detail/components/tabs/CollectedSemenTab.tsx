@@ -1,6 +1,5 @@
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
@@ -36,7 +35,7 @@ const CollectedSemenTab = ({ stallionId, onActionClick }: CollectedSemenTabProps
     switch (status) {
       case 'Fresh': return 'default';
       case 'Processed': return 'secondary';
-      case 'Used': return 'outline';
+      case 'Stored': return 'outline';
       default: return 'secondary';
     }
   };
@@ -66,7 +65,7 @@ const CollectedSemenTab = ({ stallionId, onActionClick }: CollectedSemenTabProps
       <div className="flex justify-between items-center">
         <div>
           <h3 className="text-lg font-semibold">Collected Semen</h3>
-          <p className="text-muted-foreground">Track and manage collected semen samples</p>
+          <p className="text-muted-foreground">Manage semen collection records and quality</p>
         </div>
         <div className="flex gap-2">
           <ViewSelector
@@ -81,10 +80,10 @@ const CollectedSemenTab = ({ stallionId, onActionClick }: CollectedSemenTabProps
           </Button>
           <Button 
             size="sm"
-            onClick={() => onActionClick("new-collection", "Record New Collection")}
+            onClick={() => onActionClick("new-collected-semen", "Add Collection Record")}
           >
             <Plus className="h-4 w-4 mr-2" />
-            New Collection
+            Add Record
           </Button>
         </div>
       </div>
@@ -93,7 +92,7 @@ const CollectedSemenTab = ({ stallionId, onActionClick }: CollectedSemenTabProps
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
-            placeholder="Search by collection ID, technician..."
+            placeholder="Search by ID, technician, quality..."
             value={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
             className="pl-10"

@@ -1,15 +1,17 @@
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
   Plus,
   Filter,
   Search,
-  Download,
-  Heart
+  Download
 } from "lucide-react";
+import { useFrozenEmbryoManagement } from "../../hooks/useFrozenEmbryoManagement";
+import FrozenEmbryoGridView from "./FrozenEmbryoGridView";
+import FrozenEmbryoListView from "./FrozenEmbryoListView";
+import FrozenEmbryoTableView from "./FrozenEmbryoTableView";
 import ViewSelector, { ViewMode } from "../../../components/ViewSelector";
 import { GridSize } from "../../../components/GridSizeSelector";
 
@@ -19,99 +21,42 @@ interface FrozenEmbryoInventoryTabProps {
 }
 
 const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInventoryTabProps) => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const { frozenEmbryos, filters, setFilters, exportData } = useFrozenEmbryoManagement(stallionId);
+  const [searchTerm, setSearchTerm] = useState(filters.searchTerm || "");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [gridSize, setGridSize] = useState<GridSize>(3);
 
-  // Mock data for demonstration
-  const frozenEmbryos = [
-    {
-      id: "FE001",
-      freezeDate: "2024-01-20",
-      mareId: "M001",
-      mareName: "Bella Star",
-      stage: "Blastocyst",
-      quality: "Grade A",
-      viability: "98%",
-      tank: "Tank E-1",
-      location: "Section 1A",
-      expiry: "2029-01-20"
-    }
-  ];
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    setFilters({ ...filters, searchTerm: value });
+  };
 
-  const getGridColumns = () => {
-    switch (gridSize) {
-      case 2:
-        return "grid-cols-1 md:grid-cols-2";
-      case 3:
-        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
-      case 4:
-        return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
-      default:
-        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+  const getGradeColor = (grade: string) => {
+    switch (grade) {
+      case 'Grade 1': return 'default';
+      case 'Grade 2': return 'secondary';
+      case 'Grade 3': return 'outline';
+      default: return 'secondary';
     }
   };
 
-  const renderGridView = () => (
-    <div className={`grid ${getGridColumns()} gap-4`}>
-      {frozenEmbryos.map((embryo) => (
-        <Card key={embryo.id}>
-          <CardHeader>
-            <div className="flex justify-between items-start">
-              <div>
-                <CardTitle className="text-base flex items-center gap-2">
-                  <Heart className="h-4 w-4 text-pink-500" />
-                  {embryo.id}
-                </CardTitle>
-                <div className="text-sm text-muted-foreground">
-                  <span>Frozen: {embryo.freezeDate}</span>
-                  <span> • </span>
-                  <span>Expires: {embryo.expiry}</span>
-                </div>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <div>
-                <p className="text-sm text-muted-foreground">Mare</p>
-                <p className="font-medium">{embryo.mareName}</p>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Stage</p>
-                  <p className="font-medium">{embryo.stage}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Quality</p>
-                  <p className="font-medium">{embryo.quality}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Viability</p>
-                  <p className="font-medium">{embryo.viability}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Tank</p>
-                  <p className="font-medium">{embryo.tank}</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
-
   const renderView = () => {
+    const commonProps = {
+      frozenEmbryos,
+      onEdit: (record: any) => console.log('Edit record:', record),
+      onDelete: (record: any) => console.log('Delete record:', record),
+      getGradeColor
+    };
+
     switch (viewMode) {
       case "grid":
-        return renderGridView();
+        return <FrozenEmbryoGridView {...commonProps} gridSize={gridSize} />;
       case "list":
-        return <div className="text-center py-8 text-muted-foreground">List view coming soon</div>;
+        return <FrozenEmbryoListView {...commonProps} />;
       case "table":
-        return <div className="text-center py-8 text-muted-foreground">Table view coming soon</div>;
+        return <FrozenEmbryoTableView {...commonProps} />;
       default:
-        return renderGridView();
+        return <FrozenEmbryoGridView {...commonProps} gridSize={gridSize} />;
     }
   };
 
@@ -129,7 +74,7 @@ const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInv
             gridSize={gridSize}
             onGridSizeChange={setGridSize}
           />
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={() => exportData('csv')}>
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
@@ -149,7 +94,7 @@ const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInv
           <Input
             placeholder="Search by ID, mare, tank..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => handleSearch(e.target.value)}
             className="pl-10"
           />
         </div>

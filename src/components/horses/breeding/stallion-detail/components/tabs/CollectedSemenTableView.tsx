@@ -38,6 +38,8 @@ const CollectedSemenTableView = ({
             <TableHead>Motility</TableHead>
             <TableHead>Quality</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Temperature</TableHead>
+            <TableHead>pH</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -56,6 +58,8 @@ const CollectedSemenTableView = ({
                   {collection.status}
                 </Badge>
               </TableCell>
+              <TableCell>{collection.temperature || '-'}</TableCell>
+              <TableCell>{collection.ph || '-'}</TableCell>
               <TableCell>
                 <div className="flex gap-2">
                   <Button variant="ghost" size="sm" onClick={() => onEdit(collection)}>
