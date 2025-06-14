@@ -56,6 +56,26 @@ export interface TenantSettings {
   };
 }
 
+export interface TenantMetadata {
+  address?: {
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+  };
+  contact?: {
+    phone: string;
+    email: string;
+    website?: string;
+  };
+  businessInfo?: {
+    registrationNumber?: string;
+    taxId?: string;
+    industry?: string;
+  };
+}
+
 export interface AuthContext {
   user: User | null;
   currentTenant: Tenant | null;
