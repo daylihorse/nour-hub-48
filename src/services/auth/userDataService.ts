@@ -1,44 +1,92 @@
 
-import { User, Tenant, TenantUser, TenantSettings, TenantMetadata } from '@/types/tenant';
-import { mockTenantService } from './mockTenantService';
+import { supabase } from '@/integrations/supabase/client';
+import { User, Tenant } from '@/types/tenant';
 
 export const userDataService = {
-  async loadUserData(mockUser: any): Promise<{
-    user: User;
-    tenants: Tenant[];
-  }> {
-    console.log('Loading user data for user:', mockUser.email);
+  async loadUserData(authUser: any): Promise<{ user: User; tenants: Tenant[] }> {
+    console.log('Loading user data for:', authUser.email);
+    
+    // Get user profile
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', authUser.id)
+      .single();
 
-    try {
-      // Get user's tenant memberships using mock service
-      const { tenants, tenantUsers } = await mockTenantService.getUserTenants(mockUser.email);
-      console.log('Tenants loaded:', tenants);
-      console.log('Tenant users loaded:', tenantUsers);
-
-      // Transform user data
-      const transformedUser: User = {
-        id: mockUser.id,
-        email: mockUser.email,
-        firstName: mockUser.user_metadata?.first_name || '',
-        lastName: mockUser.user_metadata?.last_name || '',
-        avatar: undefined,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        tenants: tenantUsers,
-      };
-
-      console.log('User data transformation complete:', {
-        user: transformedUser,
-        tenants: tenants
-      });
-
-      return {
-        user: transformedUser,
-        tenants: tenants
-      };
-    } catch (error) {
-      console.error('Error in loadUserData:', error);
-      throw error;
+    if (profileError) {
+      console.error('Error loading profile:', profileError);
+      // If profile doesn't exist, create it
+      if (profileError.code === 'PGRST116') {
+        await supabase.functions.invoke('ensure_user_profile_exists', {
+          body: {
+            user_id: authUser.id,
+            email: authUser.email,
+            first_name: authUser.user_metadata?.first_name || '',
+            last_name: authUser.user_metadata?.last_name || ''
+          }
+        });
+        
+        // Try to get profile again
+        const { data: newProfile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', authUser.id)
+          .single();
+        
+        if (newProfile) {
+          console.log('Profile created successfully');
+        }
+      }
     }
+
+    // Get user's tenants
+    const { data: tenantUsers, error: tenantError } = await supabase
+      .from('tenant_users')
+      .select(`
+        tenant_id,
+        role,
+        permissions,
+        tenants (
+          id,
+          name,
+          type,
+          subscription_tier,
+          status,
+          settings,
+          metadata
+        )
+      `)
+      .eq('user_id', authUser.id)
+      .eq('status', 'active');
+
+    if (tenantError) {
+      console.error('Error loading tenants:', tenantError);
+      throw tenantError;
+    }
+
+    const tenants: Tenant[] = tenantUsers?.map((tu: any) => ({
+      id: tu.tenants.id,
+      name: tu.tenants.name,
+      type: tu.tenants.type,
+      subscription_tier: tu.tenants.subscription_tier,
+      status: tu.tenants.status,
+      settings: tu.tenants.settings,
+      metadata: tu.tenants.metadata,
+      user_role: tu.role,
+      user_permissions: tu.permissions
+    })) || [];
+
+    const user: User = {
+      id: authUser.id,
+      email: authUser.email,
+      first_name: profile?.first_name || authUser.user_metadata?.first_name || '',
+      last_name: profile?.last_name || authUser.user_metadata?.last_name || '',
+      avatar: profile?.avatar || null,
+      created_at: profile?.created_at || authUser.created_at,
+      updated_at: profile?.updated_at || authUser.updated_at
+    };
+
+    console.log('User data loaded successfully:', { user, tenants: tenants.length });
+    return { user, tenants };
   }
 };

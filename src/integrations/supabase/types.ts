@@ -1168,12 +1168,14 @@ export type Database = {
         Returns: undefined
       }
       ensure_user_profile_exists: {
-        Args: {
-          p_user_id: string
-          p_email: string
-          p_first_name?: string
-          p_last_name?: string
-        }
+        Args:
+          | Record<PropertyKey, never>
+          | {
+              p_user_id: string
+              p_email: string
+              p_first_name?: string
+              p_last_name?: string
+            }
         Returns: undefined
       }
       get_user_tenant_access: {

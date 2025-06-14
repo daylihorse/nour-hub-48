@@ -8,12 +8,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Separator } from '@/components/ui/separator';
 import DevLoginHelper from './DevLoginHelper';
+import SignUpForm from './SignUpForm';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('login');
   const { login } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -23,16 +26,36 @@ const LoginForm = () => {
     setIsLoading(true);
 
     try {
-      await login(email, password);
-      toast({
-        title: 'Success',
-        description: 'Logged in successfully',
-      });
-      navigate('/dashboard');
+      const { data, error } = await login(email, password);
+      
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          toast({
+            title: 'Login Failed',
+            description: 'Invalid email or password. Please check your credentials and try again.',
+            variant: 'destructive',
+          });
+        } else {
+          toast({
+            title: 'Login Failed',
+            description: error.message || 'An unexpected error occurred',
+            variant: 'destructive',
+          });
+        }
+        return;
+      }
+
+      if (data.user) {
+        toast({
+          title: 'Success',
+          description: 'Logged in successfully',
+        });
+        navigate('/dashboard');
+      }
     } catch (error: any) {
       toast({
         title: 'Login Failed',
-        description: error.message || 'Invalid email or password',
+        description: error.message || 'An unexpected error occurred',
         variant: 'destructive',
       });
     } finally {
@@ -40,12 +63,21 @@ const LoginForm = () => {
     }
   };
 
+  const handleSwitchToSignUp = () => {
+    setActiveTab('signup');
+  };
+
+  const handleSwitchToLogin = () => {
+    setActiveTab('login');
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4">
       <div className="w-full max-w-6xl">
-        <Tabs defaultValue="login" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="login">Login</TabsTrigger>
+            <TabsTrigger value="signup">Sign Up</TabsTrigger>
             <TabsTrigger value="dev-helper">Dev Accounts</TabsTrigger>
           </TabsList>
           
@@ -89,13 +121,27 @@ const LoginForm = () => {
                     {isLoading ? 'Signing in...' : 'Sign In'}
                   </Button>
                 </form>
+                
+                <Separator className="my-4" />
+                
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground">
+                    Don't have an account?{' '}
+                    <button
+                      type="button"
+                      onClick={handleSwitchToSignUp}
+                      className="text-primary hover:underline font-medium"
+                    >
+                      Sign up here
+                    </button>
+                  </p>
+                </div>
               </CardContent>
-              <CardFooter className="flex justify-center">
-                <p className="text-sm text-muted-foreground">
-                  Don't have an account? Contact your administrator.
-                </p>
-              </CardFooter>
             </Card>
+          </TabsContent>
+          
+          <TabsContent value="signup">
+            <SignUpForm onSwitchToLogin={handleSwitchToLogin} />
           </TabsContent>
           
           <TabsContent value="dev-helper">

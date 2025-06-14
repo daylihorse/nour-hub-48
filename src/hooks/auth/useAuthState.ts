@@ -29,16 +29,17 @@ export const useAuthState = () => {
         }
         setIsLoading(false);
       } else {
-        // Regular auth mode - get session from mock auth service
+        // Regular auth mode - get session from Supabase
         try {
           const { data: { session } } = await authService.getSession();
-          if (session) {
+          if (session?.user) {
             console.log('Found existing session:', session.user.email);
             await loadUserData(session.user);
+          } else {
+            setIsLoading(false);
           }
         } catch (error) {
           console.error('Auth initialization error:', error);
-        } finally {
           setIsLoading(false);
         }
       }
@@ -50,12 +51,13 @@ export const useAuthState = () => {
     const { data: { subscription } } = authService.onAuthStateChange(async (event, session) => {
       console.log('Auth state changed:', event, session?.user?.email);
       if (accessMode !== 'demo') {
-        if (session) {
+        if (session?.user) {
           await loadUserData(session.user);
         } else {
           setUser(null);
           setCurrentTenant(null);
           setAvailableTenants([]);
+          setIsLoading(false);
         }
       }
     });
@@ -65,10 +67,10 @@ export const useAuthState = () => {
     };
   }, [accessMode]);
 
-  const loadUserData = async (mockUser: any) => {
+  const loadUserData = async (authUser: any) => {
     try {
       setIsLoading(true);
-      const { user, tenants } = await userDataService.loadUserData(mockUser);
+      const { user, tenants } = await userDataService.loadUserData(authUser);
       
       setUser(user);
       setAvailableTenants(tenants);
