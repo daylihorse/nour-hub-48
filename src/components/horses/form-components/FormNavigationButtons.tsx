@@ -54,7 +54,7 @@ const FormNavigationButtons = ({
       <div>
         {isLastStage ? (
           <Button
-            type="button"
+            type="submit"
             onClick={onSubmit}
             disabled={isSubmitting}
             className="flex items-center gap-2"

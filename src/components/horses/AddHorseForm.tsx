@@ -82,20 +82,6 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
     setIsSubmitting(true);
     
     try {
-      // Validate all form data before submission
-      const isFormValid = await form.trigger();
-      console.log("Form validation result:", isFormValid);
-      
-      if (!isFormValid) {
-        console.log("Form validation errors:", form.formState.errors);
-        toast({
-          title: "Validation Error",
-          description: "Please check all required fields and correct any errors.",
-          variant: "destructive",
-        });
-        return;
-      }
-
       console.log("Calling onSave with data:", data);
       await onSave(data);
       
@@ -115,21 +101,6 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
     }
   };
 
-  const handleFormSubmit = () => {
-    console.log("Submit button clicked");
-    console.log("Current form values:", form.getValues());
-    console.log("Form errors:", form.formState.errors);
-    
-    form.handleSubmit(handleSubmit, (errors) => {
-      console.log("Form submission failed with errors:", errors);
-      toast({
-        title: "Form Validation Failed",
-        description: "Please check the form for errors and try again.",
-        variant: "destructive",
-      });
-    })();
-  };
-
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       <FormProgressHeader 
@@ -146,17 +117,14 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
       />
 
       <FormProvider {...form}>
-        <form className="space-y-6">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>{formStages[currentStage].title}</CardTitle>
               <p className="text-muted-foreground">{formStages[currentStage].description}</p>
             </CardHeader>
             <CardContent>
-              <StageContentRenderer 
-                stage={formStages[currentStage]} 
-                onSubmit={handleFormSubmit}
-              />
+              <StageContentRenderer stage={formStages[currentStage]} />
             </CardContent>
           </Card>
 
@@ -166,7 +134,7 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
             onPrevious={handlePrevious}
             onNext={handleNext}
             onCancel={onCancel}
-            onSubmit={handleFormSubmit}
+            onSubmit={() => form.handleSubmit(handleSubmit)()}
             isSubmitting={isSubmitting}
           />
         </form>
