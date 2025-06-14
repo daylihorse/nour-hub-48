@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -129,64 +128,60 @@ const ClinicDepartment = () => {
         {/* Main Content Tabs */}
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <div className="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 px-8 pt-6 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-100/20 via-purple-100/20 to-pink-100/20"></div>
-              <div className="absolute inset-0 opacity-10 bg-repeat" style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.02'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-              }}></div>
-              <TabsList className="relative z-10 bg-white/80 backdrop-blur-sm border-2 border-white/50 shadow-lg rounded-xl p-1">
+            <div className="bg-white border-b">
+              <TabsList className="w-full h-auto bg-transparent p-0 justify-start">
                 <TabsTrigger 
                   value="overview" 
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold transition-all duration-300 flex items-center gap-2 px-4 py-2 rounded-lg"
+                  className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-900 border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent rounded-none"
                 >
                   <Activity className="h-4 w-4" />
                   Overview
                 </TabsTrigger>
                 <TabsTrigger 
                   value="appointments" 
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold transition-all duration-300 flex items-center gap-2 px-4 py-2 rounded-lg"
+                  className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-900 border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent rounded-none"
                 >
                   <Calendar className="h-4 w-4" />
                   Appointments
                 </TabsTrigger>
                 <TabsTrigger 
                   value="patients" 
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold transition-all duration-300 flex items-center gap-2 px-4 py-2 rounded-lg"
+                  className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-900 border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent rounded-none"
                 >
                   <FileText className="h-4 w-4" />
                   Patient Records
                 </TabsTrigger>
                 <TabsTrigger 
                   value="treatments" 
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold transition-all duration-300 flex items-center gap-2 px-4 py-2 rounded-lg"
+                  className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-900 border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent rounded-none"
                 >
                   <Syringe className="h-4 w-4" />
                   Treatments
                 </TabsTrigger>
                 <TabsTrigger 
                   value="surgery" 
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-pink-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold transition-all duration-300 flex items-center gap-2 px-4 py-2 rounded-lg"
+                  className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-900 border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent rounded-none"
                 >
                   <Scissors className="h-4 w-4" />
                   Surgery
                 </TabsTrigger>
                 <TabsTrigger 
                   value="pharmacy" 
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-yellow-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold transition-all duration-300 flex items-center gap-2 px-4 py-2 rounded-lg"
+                  className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-900 border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent rounded-none"
                 >
                   <Pill className="h-4 w-4" />
                   Pharmacy
                 </TabsTrigger>
                 <TabsTrigger 
                   value="documents" 
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-slate-500 data-[state=active]:to-gray-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold transition-all duration-300 flex items-center gap-2 px-4 py-2 rounded-lg"
+                  className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-900 border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent rounded-none"
                 >
                   <FileText className="h-4 w-4" />
                   Documents
                 </TabsTrigger>
                 <TabsTrigger 
                   value="store" 
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold transition-all duration-300 flex items-center gap-2 px-4 py-2 rounded-lg"
+                  className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-900 border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent rounded-none"
                 >
                   <Store className="h-4 w-4" />
                   Store
@@ -194,7 +189,7 @@ const ClinicDepartment = () => {
                 {showPOSInTab && (
                   <TabsTrigger 
                     value="pos" 
-                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold transition-all duration-300 flex items-center gap-2 px-4 py-2 rounded-lg"
+                    className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-900 border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent rounded-none"
                   >
                     <CreditCard className="h-4 w-4" />
                     Point of Sale
