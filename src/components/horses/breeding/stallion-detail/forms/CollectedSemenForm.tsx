@@ -46,8 +46,8 @@ const CollectedSemenForm = ({
     defaultValues: {
       stallionId,
       collectionDate: initialData?.collectionDate || new Date().toISOString().split('T')[0],
-      status: initialData?.status || 'Fresh',
-      quality: initialData?.quality || 'Good',
+      status: (initialData?.status as "Fresh" | "Used" | "Frozen" | "Discarded") || 'Fresh',
+      quality: (initialData?.quality as "Excellent" | "Good" | "Fair" | "Poor") || 'Good',
       volume: initialData?.volume || '',
       concentration: initialData?.concentration || '',
       motility: initialData?.motility || '',
