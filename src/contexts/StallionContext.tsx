@@ -1,79 +1,142 @@
 
-import React, { createContext, useContext, useState } from 'react';
+import { createContext, useContext, ReactNode } from "react";
 
-interface StallionContextType {
-  stallions: any[];
-  error: string | null;
-  clearError: () => void;
+interface Stallion {
+  id: string;
+  horseId: string;
+  horseName: string;
+  status: string;
+  age: number;
+  breed: string;
+  totalMares: number;
+  successfulBreedings: number;
+  livefoals: number;
+  successRate: number;
+  studFee: number;
+  nextAvailable: string;
+  bookings: number;
 }
 
-const StallionContext = createContext<StallionContextType | undefined>(undefined);
+interface StallionContextValue {
+  stallions: Stallion[];
+}
 
-export const StallionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [error, setError] = useState<string | null>(null);
-  
-  // Updated stallions data to match the useStallionManagement structure
-  const stallions = [
+const StallionContext = createContext<StallionContextValue | undefined>(undefined);
+
+export const useStallionContext = () => {
+  const context = useContext(StallionContext);
+  if (!context) {
+    throw new Error("useStallionContext must be used within a StallionProvider");
+  }
+  return context;
+};
+
+interface StallionProviderProps {
+  children: ReactNode;
+}
+
+export const StallionProvider = ({ children }: StallionProviderProps) => {
+  // Mock data for stallions
+  const stallions: Stallion[] = [
     {
       id: "1",
-      horseId: "H001",
-      horseName: "Thunder",
+      horseId: "stallion-001",
+      horseName: "Thunder Storm",
       status: "active",
       age: 8,
       breed: "Arabian",
-      totalMares: 45,
-      successfulBreedings: 38,
-      livefoals: 35,
-      successRate: 92.1,
-      studFee: 5000,
-      nextAvailable: "Feb 15, 2024",
+      totalMares: 24,
+      successfulBreedings: 22,
+      livefoals: 20,
+      successRate: 91.3,
+      studFee: 15000,
+      nextAvailable: "Next Week",
       bookings: 3
     },
     {
       id: "2",
-      horseId: "H002", 
-      horseName: "Lightning",
+      horseId: "stallion-002",
+      horseName: "Desert Prince",
       status: "active",
-      age: 6,
-      breed: "Thoroughbred",
-      totalMares: 32,
-      successfulBreedings: 25,
-      livefoals: 24,
-      successRate: 91.7,
-      studFee: 3500,
-      nextAvailable: "Feb 20, 2024",
-      bookings: 5
+      age: 10,
+      breed: "Arabian",
+      totalMares: 18,
+      successfulBreedings: 17,
+      livefoals: 16,
+      successRate: 94.4,
+      studFee: 25000,
+      nextAvailable: "Available",
+      bookings: 1
     },
     {
       id: "3",
-      horseId: "H003",
-      horseName: "Storm",
-      status: "retired",
-      age: 15,
+      horseId: "stallion-003",
+      horseName: "Royal Legacy",
+      status: "active",
+      age: 12,
       breed: "Arabian",
-      totalMares: 120,
-      successfulBreedings: 105,
-      livefoals: 98,
-      successRate: 93.3,
+      totalMares: 31,
+      successfulBreedings: 28,
+      livefoals: 27,
+      successRate: 90.3,
+      studFee: 20000,
+      nextAvailable: "2 Weeks",
+      bookings: 5
+    },
+    {
+      id: "4",
+      horseId: "stallion-004",
+      horseName: "Golden Majesty",
+      status: "retired",
+      age: 18,
+      breed: "Arabian",
+      totalMares: 156,
+      successfulBreedings: 142,
+      livefoals: 138,
+      successRate: 91.0,
       studFee: 0,
-      nextAvailable: "N/A",
+      nextAvailable: "Retired",
       bookings: 0
+    },
+    {
+      id: "5",
+      horseId: "stallion-005",
+      horseName: "Midnight Shadow",
+      status: "unavailable",
+      age: 9,
+      breed: "Arabian",
+      totalMares: 12,
+      successfulBreedings: 10,
+      livefoals: 9,
+      successRate: 83.3,
+      studFee: 18000,
+      nextAvailable: "Under Treatment",
+      bookings: 0
+    },
+    {
+      id: "6",
+      horseId: "stallion-006",
+      horseName: "Silver Flame",
+      status: "active",
+      age: 7,
+      breed: "Arabian",
+      totalMares: 15,
+      successfulBreedings: 14,
+      livefoals: 13,
+      successRate: 93.3,
+      studFee: 22000,
+      nextAvailable: "Available",
+      bookings: 2
     }
   ];
 
-  const clearError = () => setError(null);
+  const value = {
+    stallions
+  };
 
   return (
-    <StallionContext.Provider value={{ stallions, error, clearError }}>
+    <StallionContext.Provider value={value}>
       {children}
     </StallionContext.Provider>
   );
-};
-
-export const useStallionContext = () => {
-  const context = useContext(StallionContext);
-  if (context === undefined) {
-    throw new Error('useStallionContext must be used within a StallionProvider');
-  }
-  return context;
 };

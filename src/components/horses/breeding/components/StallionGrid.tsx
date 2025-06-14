@@ -1,6 +1,7 @@
 
 import { useNavigate } from "react-router-dom";
 import StallionCard from "./StallionCard";
+import { GridSize } from "./GridSizeSelector";
 
 interface Stallion {
   id: string;
@@ -20,17 +21,32 @@ interface Stallion {
 
 interface StallionGridProps {
   stallions: Stallion[];
+  gridSize?: GridSize;
 }
 
-const StallionGrid = ({ stallions }: StallionGridProps) => {
+const StallionGrid = ({ stallions, gridSize = 3 }: StallionGridProps) => {
   const navigate = useNavigate();
 
   const handleStallionClick = (stallionId: string) => {
     navigate(`/dashboard/horses/breeding/stallions/${stallionId}`);
   };
 
+  // Determine grid columns based on grid size
+  const getGridColumns = () => {
+    switch (gridSize) {
+      case 2:
+        return "grid-cols-1 md:grid-cols-2";
+      case 3:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+      case 4:
+        return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+      default:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+    }
+  };
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div className={`grid ${getGridColumns()} gap-6`}>
       {stallions.map((stallion) => (
         <div key={stallion.id} onClick={() => handleStallionClick(stallion.id)} className="cursor-pointer">
           <StallionCard stallion={stallion} />
