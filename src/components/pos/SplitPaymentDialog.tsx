@@ -137,7 +137,7 @@ const SplitPaymentDialog = ({
                       </div>
                       <select
                         value={payment.method}
-                        onChange={(e) => updatePaymentMethod(index, e.target.value as any)}
+                        onChange={(e) => updatePaymentMethod(index, e.target.value as 'cash' | 'card' | 'bank_transfer')}
                         className="border rounded px-2 py-1 text-sm"
                       >
                         <option value={payment.method}>{config.label}</option>
