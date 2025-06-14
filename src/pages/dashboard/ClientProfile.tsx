@@ -124,8 +124,8 @@ const ClientProfile = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
-      <div className="container mx-auto py-6 space-y-6">
-        {/* Breadcrumb Navigation */}
+      <div className="container mx-auto py-6 space-y-4">
+        {/* Breadcrumb Navigation - Moved here */}
         <div className="flex items-center space-x-2">
           <Button 
             variant="ghost" 
@@ -172,15 +172,15 @@ const ClientProfile = () => {
           </CardHeader>
         </Card>
 
-        {/* 2. Contact Card */}
+        {/* 2. Contact Card - Smaller */}
         <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm flex items-center">
               <Phone className="h-4 w-4 mr-2 text-blue-500" />
               Contact
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2 pt-0">
             <div className="flex items-center p-2 rounded-lg bg-gray-50">
               <Phone className="h-3 w-3 mr-2 text-gray-500" />
               <span className="text-sm">{client.phone}</span>
@@ -198,46 +198,46 @@ const ClientProfile = () => {
           </CardContent>
         </Card>
 
-        {/* 3. Quick Actions */}
+        {/* 3. Quick Actions - Smaller */}
         <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Quick Actions</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">Quick Actions</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleSendMessage}>
-              <Mail className="h-4 w-4 mr-2" /> Message
+          <CardContent className="space-y-1 pt-0">
+            <Button variant="outline" size="sm" className="w-full justify-start h-8" onClick={handleSendMessage}>
+              <Mail className="h-3 w-3 mr-2" /> Message
             </Button>
-            <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleScheduleMeeting}>
-              <Calendar className="h-4 w-4 mr-2" /> Schedule
+            <Button variant="outline" size="sm" className="w-full justify-start h-8" onClick={handleScheduleMeeting}>
+              <Calendar className="h-3 w-3 mr-2" /> Schedule
             </Button>
-            <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => setActiveTab("notes")}>
-              <FileText className="h-4 w-4 mr-2" /> Add Note
+            <Button variant="outline" size="sm" className="w-full justify-start h-8" onClick={() => setActiveTab("notes")}>
+              <FileText className="h-3 w-3 mr-2" /> Add Note
             </Button>
-            <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleUploadDocument}>
-              <Upload className="h-4 w-4 mr-2" /> Upload
+            <Button variant="outline" size="sm" className="w-full justify-start h-8" onClick={handleUploadDocument}>
+              <Upload className="h-3 w-3 mr-2" /> Upload
             </Button>
             {isHorseOwner && (
-              <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleViewHorses}>
-                <LinkIcon className="h-4 w-4 mr-2" /> View Horses
+              <Button variant="outline" size="sm" className="w-full justify-start h-8" onClick={handleViewHorses}>
+                <LinkIcon className="h-3 w-3 mr-2" /> View Horses
               </Button>
             )}
           </CardContent>
         </Card>
 
-        {/* 4. Timeline */}
+        {/* 4. Timeline - Smaller */}
         <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Timeline</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">Timeline</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="text-center p-3 rounded-lg bg-blue-50">
-              <div className="text-sm font-medium text-blue-600">Client Since</div>
+          <CardContent className="space-y-2 pt-0">
+            <div className="text-center p-2 rounded-lg bg-blue-50">
+              <div className="text-xs font-medium text-blue-600">Client Since</div>
               <div className="text-sm font-bold text-blue-800">
                 {format(new Date(client.createdAt), 'MMM yyyy')}
               </div>
             </div>
-            <div className="text-center p-3 rounded-lg bg-green-50">
-              <div className="text-sm font-medium text-green-600">Last Contact</div>
+            <div className="text-center p-2 rounded-lg bg-green-50">
+              <div className="text-xs font-medium text-green-600">Last Contact</div>
               <div className="text-sm font-bold text-green-800">
                 {formatDistanceToNow(new Date(client.lastInteraction), { addSuffix: true })}
               </div>
@@ -245,30 +245,30 @@ const ClientProfile = () => {
           </CardContent>
         </Card>
 
-        {/* 5. Stats Card for Horse Owners */}
+        {/* 5. Stats Card for Horse Owners - Smaller */}
         {isHorseOwner && (
           <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base flex items-center">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center">
                 <User className="h-4 w-4 mr-2 text-purple-500" />
                 Statistics
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="text-center p-3 rounded-lg bg-purple-50">
-                  <div className="text-xl font-bold text-purple-600">{horseOwner.horsesOwned}</div>
+            <CardContent className="pt-0">
+              <div className="grid grid-cols-2 gap-2">
+                <div className="text-center p-2 rounded-lg bg-purple-50">
+                  <div className="text-lg font-bold text-purple-600">{horseOwner.horsesOwned}</div>
                   <div className="text-xs text-purple-600">Horses</div>
                 </div>
                 {horseOwner.billingInfo && (
-                  <div className="text-center p-3 rounded-lg bg-red-50">
-                    <div className="text-xl font-bold text-red-600">${horseOwner.billingInfo.outstanding.toFixed(0)}</div>
+                  <div className="text-center p-2 rounded-lg bg-red-50">
+                    <div className="text-lg font-bold text-red-600">${horseOwner.billingInfo.outstanding.toFixed(0)}</div>
                     <div className="text-xs text-red-600">Outstanding</div>
                   </div>
                 )}
               </div>
               {horseOwner.stableAssignment && (
-                <div className="mt-3 p-2 rounded-lg bg-gray-50">
+                <div className="mt-2 p-2 rounded-lg bg-gray-50">
                   <div className="text-xs font-medium text-gray-700">Stable Assignment</div>
                   <div className="text-xs text-gray-600">{horseOwner.stableAssignment}</div>
                 </div>
@@ -280,7 +280,7 @@ const ClientProfile = () => {
         {/* Main Content Area - Tabs */}
         <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <div className="p-6 pb-0">
+            <div className="p-4 pb-0">
               <TabsList className="grid grid-cols-5 w-full bg-gray-100/50">
                 <TabsTrigger value="overview" className="data-[state=active]:bg-white">Overview</TabsTrigger>
                 <TabsTrigger value="notes" className="data-[state=active]:bg-white">Notes</TabsTrigger>
@@ -290,21 +290,21 @@ const ClientProfile = () => {
               </TabsList>
             </div>
             
-            <div className="p-6">
-              <TabsContent value="overview" className="space-y-6 mt-0">
+            <div className="p-4">
+              <TabsContent value="overview" className="space-y-4 mt-0">
                 {/* Recent Notes */}
                 <div>
-                  <h3 className="font-semibold text-lg mb-4 flex items-center">
-                    <FileText className="h-5 w-5 mr-2 text-blue-500" />
+                  <h3 className="font-semibold text-base mb-3 flex items-center">
+                    <FileText className="h-4 w-4 mr-2 text-blue-500" />
                     Recent Notes
                   </h3>
                   {notes.length ? (
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       {notes.slice(-3).map((note) => (
                         <Card key={note.id} className="bg-gradient-to-r from-gray-50 to-gray-100/50">
-                          <CardContent className="p-4">
+                          <CardContent className="p-3">
                             <p className="text-sm text-gray-700">{note.content}</p>
-                            <p className="text-xs text-gray-500 mt-2">
+                            <p className="text-xs text-gray-500 mt-1">
                               {formatDistanceToNow(new Date(note.createdAt), { addSuffix: true })}
                             </p>
                           </CardContent>
@@ -313,8 +313,8 @@ const ClientProfile = () => {
                     </div>
                   ) : (
                     <Card className="bg-gray-50/50">
-                      <CardContent className="p-6 text-center">
-                        <FileText className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                      <CardContent className="p-4 text-center">
+                        <FileText className="h-6 w-6 text-gray-400 mx-auto mb-2" />
                         <p className="text-sm text-gray-500">No notes available</p>
                       </CardContent>
                     </Card>
@@ -323,24 +323,24 @@ const ClientProfile = () => {
 
                 {/* Recent Communications */}
                 <div>
-                  <h3 className="font-semibold text-lg mb-4 flex items-center">
-                    <MessageSquare className="h-5 w-5 mr-2 text-green-500" />
+                  <h3 className="font-semibold text-base mb-3 flex items-center">
+                    <MessageSquare className="h-4 w-4 mr-2 text-green-500" />
                     Recent Communications
                   </h3>
                   {communications && communications.length ? (
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       {communications.slice(-3).map((comm) => (
                         <Card key={comm.id} className="bg-gradient-to-r from-green-50 to-green-100/50">
-                          <CardContent className="p-4">
-                            <div className="flex items-center mb-2">
-                              {comm.type === "call" && <Phone className="h-4 w-4 mr-2 text-green-600" />}
-                              {comm.type === "email" && <Mail className="h-4 w-4 mr-2 text-green-600" />}
-                              {comm.type === "message" && <MessageSquare className="h-4 w-4 mr-2 text-green-600" />}
-                              {comm.type === "meeting" && <Calendar className="h-4 w-4 mr-2 text-green-600" />}
+                          <CardContent className="p-3">
+                            <div className="flex items-center mb-1">
+                              {comm.type === "call" && <Phone className="h-3 w-3 mr-2 text-green-600" />}
+                              {comm.type === "email" && <Mail className="h-3 w-3 mr-2 text-green-600" />}
+                              {comm.type === "message" && <MessageSquare className="h-3 w-3 mr-2 text-green-600" />}
+                              {comm.type === "meeting" && <Calendar className="h-3 w-3 mr-2 text-green-600" />}
                               <span className="text-sm font-medium capitalize text-green-700">{comm.type}</span>
                             </div>
                             <p className="text-sm text-gray-700">{comm.description}</p>
-                            <p className="text-xs text-gray-500 mt-2">
+                            <p className="text-xs text-gray-500 mt-1">
                               {formatDistanceToNow(new Date(comm.date), { addSuffix: true })}
                             </p>
                           </CardContent>
@@ -349,8 +349,8 @@ const ClientProfile = () => {
                     </div>
                   ) : (
                     <Card className="bg-gray-50/50">
-                      <CardContent className="p-6 text-center">
-                        <MessageSquare className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                      <CardContent className="p-4 text-center">
+                        <MessageSquare className="h-6 w-6 text-gray-400 mx-auto mb-2" />
                         <p className="text-sm text-gray-500">No communication logs available</p>
                       </CardContent>
                     </Card>
@@ -360,20 +360,20 @@ const ClientProfile = () => {
                 {/* Linked Horses for Horse Owners */}
                 {isHorseOwner && horseOwner.linkedHorses && horseOwner.linkedHorses.length > 0 && (
                   <div>
-                    <h3 className="font-semibold text-lg mb-4 flex items-center">
-                      <User className="h-5 w-5 mr-2 text-purple-500" />
+                    <h3 className="font-semibold text-base mb-3 flex items-center">
+                      <User className="h-4 w-4 mr-2 text-purple-500" />
                       Linked Horses
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {horseOwner.linkedHorses.map((horseId) => (
                         <Card 
                           key={horseId}
                           className="bg-gradient-to-br from-purple-50 to-purple-100/50 hover:shadow-md transition-all cursor-pointer"
                           onClick={handleViewHorses}
                         >
-                          <CardContent className="p-4 flex items-center">
-                            <div className="w-12 h-12 rounded-full bg-purple-200 flex items-center justify-center mr-4">
-                              <User className="h-6 w-6 text-purple-600" />
+                          <CardContent className="p-3 flex items-center">
+                            <div className="w-10 h-10 rounded-full bg-purple-200 flex items-center justify-center mr-3">
+                              <User className="h-5 w-5 text-purple-600" />
                             </div>
                             <div>
                               <p className="font-medium text-purple-800">Horse #{horseId.split('-')[1]}</p>
