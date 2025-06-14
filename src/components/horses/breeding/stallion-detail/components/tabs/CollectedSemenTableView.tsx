@@ -31,7 +31,7 @@ const CollectedSemenTableView = ({
         <TableHeader>
           <TableRow>
             <TableHead>ID</TableHead>
-            <TableHead>Collection Date</TableHead>
+            <TableHead>Date</TableHead>
             <TableHead>Technician</TableHead>
             <TableHead>Volume</TableHead>
             <TableHead>Concentration</TableHead>

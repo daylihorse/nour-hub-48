@@ -1,17 +1,34 @@
 
 import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { 
+  Calendar, 
+  Heart,
+  CheckCircle,
+  Clock,
   Plus,
   Filter,
   Search,
-  Download
+  Download,
+  LayoutGrid,
+  List,
+  Table as TableIcon,
+  Eye,
+  Edit2,
+  Trash2
 } from "lucide-react";
 import { useBreedingRecordManagement } from "../../hooks/useBreedingRecordManagement";
+import { BreedingRecord } from "@/types/breeding/stallion-detail";
+import BreedingRecordViewSelector from "./BreedingRecordViewSelector";
 import BreedingRecordGridView from "./BreedingRecordGridView";
-import BreedingRecordViewSelector, { ViewMode } from "./BreedingRecordViewSelector";
-import { GridSize } from "../../../components/GridSizeSelector";
+import BreedingRecordListView from "./BreedingRecordListView";
+import BreedingRecordTableView from "./BreedingRecordTableView";
+import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
+
+export type ViewMode = "grid" | "list" | "table";
 
 interface EnhancedBreedingRecordTabProps {
   stallionId: string;
@@ -22,51 +39,53 @@ const EnhancedBreedingRecordTab = ({ stallionId, onActionClick }: EnhancedBreedi
   const { breedingRecords, filters, setFilters, exportData } = useBreedingRecordManagement(stallionId);
   const [searchTerm, setSearchTerm] = useState(filters.searchTerm || "");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [gridSize, setGridSize] = useState<GridSize>(3);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [selectedRecordForDelete, setSelectedRecordForDelete] = useState<BreedingRecord | null>(null);
 
   const handleSearch = (value: string) => {
     setSearchTerm(value);
     setFilters({ ...filters, searchTerm: value });
   };
 
-  const getGridColumns = () => {
-    switch (gridSize) {
-      case 2:
-        return "grid-cols-1 md:grid-cols-2";
-      case 3:
-        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
-      case 4:
-        return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
-      default:
-        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+  const handleEditRecord = (record: BreedingRecord) => {
+    onActionClick("edit-breeding", `Edit Breeding Record ${record.id}`);
+  };
+
+  const handleViewDetails = (record: BreedingRecord) => {
+    onActionClick("view-breeding", `Breeding Record Details ${record.id}`);
+  };
+
+  const handleDeleteRecord = (record: BreedingRecord) => {
+    setSelectedRecordForDelete(record);
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDelete = () => {
+    if (selectedRecordForDelete) {
+      // TODO: Implement actual delete logic
+      console.log('Deleting record:', selectedRecordForDelete.id);
+      setShowDeleteDialog(false);
+      setSelectedRecordForDelete(null);
     }
   };
 
   const renderView = () => {
     const commonProps = {
       records: breedingRecords,
-      onViewDetails: (record: any) => console.log('View details:', record),
-      onEditRecord: (record: any) => console.log('Edit record:', record),
-      onDeleteRecord: (record: any) => console.log('Delete record:', record),
+      onViewDetails: handleViewDetails,
+      onEditRecord: handleEditRecord,
+      onDeleteRecord: handleDeleteRecord,
     };
 
     switch (viewMode) {
       case "grid":
-        return (
-          <div className={`grid ${getGridColumns()} gap-4`}>
-            <BreedingRecordGridView {...commonProps} />
-          </div>
-        );
+        return <BreedingRecordGridView {...commonProps} />;
       case "list":
-        return <div className="text-center py-8 text-muted-foreground">List view coming soon</div>;
+        return <BreedingRecordListView {...commonProps} />;
       case "table":
-        return <div className="text-center py-8 text-muted-foreground">Table view coming soon</div>;
+        return <BreedingRecordTableView {...commonProps} />;
       default:
-        return (
-          <div className={`grid ${getGridColumns()} gap-4`}>
-            <BreedingRecordGridView {...commonProps} />
-          </div>
-        );
+        return <BreedingRecordGridView {...commonProps} />;
     }
   };
 
@@ -78,40 +97,10 @@ const EnhancedBreedingRecordTab = ({ stallionId, onActionClick }: EnhancedBreedi
           <p className="text-muted-foreground">Complete breeding history and outcomes</p>
         </div>
         <div className="flex gap-2">
-          <div className="flex items-center gap-2">
-            {viewMode === "grid" && (
-              <div className="flex border rounded-md overflow-hidden">
-                <Button
-                  variant={gridSize === 2 ? "secondary" : "ghost"}
-                  className="rounded-none text-xs px-2 py-1"
-                  onClick={() => setGridSize(2)}
-                  size="sm"
-                >
-                  2
-                </Button>
-                <Button
-                  variant={gridSize === 3 ? "secondary" : "ghost"}
-                  className="rounded-none text-xs px-2 py-1"
-                  onClick={() => setGridSize(3)}
-                  size="sm"
-                >
-                  3
-                </Button>
-                <Button
-                  variant={gridSize === 4 ? "secondary" : "ghost"}
-                  className="rounded-none text-xs px-2 py-1"
-                  onClick={() => setGridSize(4)}
-                  size="sm"
-                >
-                  4
-                </Button>
-              </div>
-            )}
-            <BreedingRecordViewSelector
-              currentView={viewMode}
-              onViewChange={setViewMode}
-            />
-          </div>
+          <BreedingRecordViewSelector
+            currentView={viewMode}
+            onViewChange={setViewMode}
+          />
           <Button variant="outline" size="sm" onClick={() => exportData('csv')}>
             <Download className="h-4 w-4 mr-2" />
             Export
@@ -143,6 +132,14 @@ const EnhancedBreedingRecordTab = ({ stallionId, onActionClick }: EnhancedBreedi
       </div>
 
       {renderView()}
+
+      <DeleteConfirmationDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        onConfirm={confirmDelete}
+        recordId={selectedRecordForDelete?.id}
+        recordType="breeding record"
+      />
     </div>
   );
 };
