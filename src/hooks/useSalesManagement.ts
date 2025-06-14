@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { POSState, CartItem } from '@/types/store';
+import { Client } from '@/types/client';
 import { storeService } from '@/services/storeService';
 import { useToast } from '@/hooks/use-toast';
 
@@ -10,9 +11,28 @@ export const useSalesManagement = (department: string) => {
     paymentMethod: 'cash',
     discount: 0,
   });
+  const [selectedClient, setSelectedClient] = useState<Client | undefined>();
 
   const updatePosState = (updates: Partial<Omit<POSState, 'cart'>>) => {
     setPosState(prev => ({ ...prev, ...updates }));
+  };
+
+  const selectClient = (client: Client) => {
+    setSelectedClient(client);
+    setPosState(prev => ({ 
+      ...prev, 
+      clientId: client.id,
+      customer: undefined // Clear walk-in customer data when client is selected
+    }));
+  };
+
+  const selectWalkInCustomer = () => {
+    setSelectedClient(undefined);
+    setPosState(prev => ({ 
+      ...prev, 
+      clientId: undefined,
+      customer: { name: '', contact: '' } // Initialize walk-in customer data
+    }));
   };
 
   const completeSale = (
@@ -36,14 +56,21 @@ export const useSalesManagement = (department: string) => {
       tax,
       total,
       paymentMethod: posState.paymentMethod,
-      customerName: posState.customer?.name,
-      customerContact: posState.customer?.contact,
+      clientId: selectedClient?.id,
+      customerName: selectedClient?.name || posState.customer?.name,
+      customerContact: selectedClient?.phone || posState.customer?.contact,
       department,
     });
 
+    const customerInfo = selectedClient 
+      ? `Client: ${selectedClient.name}` 
+      : posState.customer?.name 
+        ? `Customer: ${posState.customer.name}`
+        : 'Walk-in customer';
+
     toast({
       title: "Sale Completed",
-      description: `Sale ${sale.id} completed successfully. Total: $${sale.total.toFixed(2)}`,
+      description: `Sale ${sale.id} completed successfully. Total: $${sale.total.toFixed(2)} - ${customerInfo}`,
     });
 
     // Reset POS state
@@ -51,13 +78,17 @@ export const useSalesManagement = (department: string) => {
       paymentMethod: 'cash',
       discount: 0,
     });
+    setSelectedClient(undefined);
 
     return true;
   };
 
   return {
     posState,
+    selectedClient,
     updatePosState,
+    selectClient,
+    selectWalkInCustomer,
     completeSale,
   };
 };

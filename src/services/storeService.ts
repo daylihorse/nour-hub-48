@@ -330,6 +330,7 @@ class StoreManagementService {
   recordSale(sale: Omit<Sale, 'id' | 'saleDate'>): Sale {
     console.log('recordSale called for department:', sale.department);
     console.log('Sale items:', sale.items.length);
+    console.log('Client ID:', sale.clientId);
     const newSale: Sale = {
       ...sale,
       id: `sale_${Date.now()}`,
@@ -361,6 +362,16 @@ class StoreManagementService {
       : this.sales;
     console.log('Sales returned:', result.length);
     return result;
+  }
+
+  getSalesByClient(clientId: string, department?: string): Sale[] {
+    console.log('getSalesByClient called for client:', clientId, 'department:', department);
+    let relevantSales = this.sales.filter(s => s.clientId === clientId);
+    if (department) {
+      relevantSales = relevantSales.filter(s => s.department === department);
+    }
+    console.log('Client sales returned:', relevantSales.length);
+    return relevantSales;
   }
 
   getSalesStats(department?: string) {

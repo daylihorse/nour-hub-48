@@ -3,8 +3,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CreditCard } from "lucide-react";
+import { CreditCard, User, UserPlus } from "lucide-react";
 import { POSState } from "@/types/store";
+import { Client } from "@/types/client";
 
 interface CheckoutSectionProps {
   posState: POSState;
@@ -13,6 +14,8 @@ interface CheckoutSectionProps {
   total: number;
   onStateChange: (updates: Partial<POSState>) => void;
   onCompleteSale: () => void;
+  selectedClient?: Client;
+  onSelectClient: () => void;
 }
 
 const CheckoutSection = ({ 
@@ -21,35 +24,64 @@ const CheckoutSection = ({
   tax, 
   total, 
   onStateChange, 
-  onCompleteSale 
+  onCompleteSale,
+  selectedClient,
+  onSelectClient
 }: CheckoutSectionProps) => {
   return (
     <div className="space-y-4">
-      {/* Customer Info */}
+      {/* Customer Selection */}
       <div className="space-y-2">
-        <Input
-          placeholder="Customer Name (Optional)"
-          value={posState.customer?.name || ''}
-          onChange={(e) => onStateChange({
-            customer: { 
-              ...posState.customer, 
-              name: e.target.value, 
-              contact: posState.customer?.contact || '' 
-            }
-          })}
-        />
-        <Input
-          placeholder="Customer Contact (Optional)"
-          value={posState.customer?.contact || ''}
-          onChange={(e) => onStateChange({
-            customer: { 
-              ...posState.customer, 
-              contact: e.target.value, 
-              name: posState.customer?.name || '' 
-            }
-          })}
-        />
+        <label className="text-sm font-medium">Customer</label>
+        {selectedClient ? (
+          <div className="p-3 bg-muted rounded-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium">{selectedClient.name}</p>
+                <p className="text-sm text-muted-foreground">{selectedClient.email}</p>
+                <p className="text-sm text-muted-foreground">{selectedClient.phone}</p>
+              </div>
+              <Button variant="outline" size="sm" onClick={onSelectClient}>
+                <User className="h-4 w-4 mr-1" />
+                Change
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <Button variant="outline" onClick={onSelectClient} className="w-full justify-start">
+            <UserPlus className="h-4 w-4 mr-2" />
+            Select Customer
+          </Button>
+        )}
       </div>
+
+      {/* Walk-in Customer Info (only shown if no client selected) */}
+      {!selectedClient && (
+        <div className="space-y-2">
+          <Input
+            placeholder="Customer Name (Optional)"
+            value={posState.customer?.name || ''}
+            onChange={(e) => onStateChange({
+              customer: { 
+                ...posState.customer, 
+                name: e.target.value, 
+                contact: posState.customer?.contact || '' 
+              }
+            })}
+          />
+          <Input
+            placeholder="Customer Contact (Optional)"
+            value={posState.customer?.contact || ''}
+            onChange={(e) => onStateChange({
+              customer: { 
+                ...posState.customer, 
+                contact: e.target.value, 
+                name: posState.customer?.name || '' 
+              }
+            })}
+          />
+        </div>
+      )}
 
       {/* Payment Method */}
       <Select 

@@ -50,14 +50,16 @@ export interface Sale {
   tax: number;
   total: number;
   paymentMethod: 'cash' | 'card' | 'bank_transfer';
-  customerName?: string;
-  customerContact?: string;
+  clientId?: string; // Reference to client ID
+  customerName?: string; // Fallback for walk-in customers
+  customerContact?: string; // Fallback for walk-in customers
   saleDate: Date;
   department: string;
 }
 
 export interface POSState {
   cart: CartItem[];
+  clientId?: string; // Reference to selected client
   customer?: {
     name: string;
     contact: string;
