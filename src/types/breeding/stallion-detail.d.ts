@@ -21,13 +21,16 @@ export interface CollectedSemen {
   id: string;
   stallionId: string;
   collectionDate: string;
-  volume: number;
-  concentration: number;
-  motility: number;
-  morphology: number;
-  pH: number;
-  collectedBy: string;
+  volume: string;
+  concentration: string;
+  motility: string;
+  morphology?: number;
+  pH?: number;
+  technician: string;
   status: string;
+  quality: string;
+  temperature?: string;
+  ph?: string;
   notes?: string;
   createdAt: Date;
 }
@@ -63,4 +66,56 @@ export interface FrozenEmbryo {
   status: string;
   notes?: string;
   createdAt: Date;
+}
+
+// Additional interfaces for inventory management
+export interface FrozenSemenInventory {
+  id: string;
+  stallionId: string;
+  freezeDate: string;
+  straws: number;
+  tank: string;
+  quality: string;
+  viability: string;
+  location: string;
+  expiry: string;
+  batchNumber?: string;
+  freezingProtocol?: string;
+  createdAt: Date;
+}
+
+export interface FrozenEmbryoInventory {
+  id: string;
+  stallionId: string;
+  creationDate: string;
+  mareName: string;
+  mareId?: string;
+  grade: string;
+  stage: string;
+  viability: string;
+  tank: string;
+  location: string;
+  diameter?: string;
+  freezingMethod?: string;
+  createdAt: Date;
+}
+
+// Base record interface
+export interface StallionDetailRecord {
+  id: string;
+  stallionId: string;
+  createdAt: Date;
+}
+
+// Filter interfaces
+export interface StallionDetailFilters {
+  searchTerm?: string;
+  dateRange?: {
+    start: string;
+    end: string;
+  };
+  status?: string[];
+  quality?: string[];
+  technician?: string[];
+  method?: string[];
 }
