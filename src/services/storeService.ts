@@ -331,6 +331,12 @@ class StoreManagementService {
     console.log('recordSale called for department:', sale.department);
     console.log('Sale items:', sale.items.length);
     console.log('Client ID:', sale.clientId);
+    console.log('Payment type:', sale.splitPayments ? 'Split payment' : 'Single payment');
+    
+    if (sale.splitPayments) {
+      console.log('Split payments:', sale.splitPayments.map(p => `${p.method}: $${p.amount}`).join(', '));
+    }
+    
     const newSale: Sale = {
       ...sale,
       id: `sale_${Date.now()}`,

@@ -10,6 +10,7 @@ export const useSalesManagement = (department: string) => {
   const [posState, setPosState] = useState<Omit<POSState, 'cart'>>({
     paymentMethod: 'cash',
     discount: 0,
+    useSplitPayment: false,
   });
   const [selectedClient, setSelectedClient] = useState<Client | undefined>();
 
@@ -50,12 +51,35 @@ export const useSalesManagement = (department: string) => {
       return false;
     }
 
+    // Validate split payment if enabled
+    if (posState.useSplitPayment) {
+      if (!posState.splitPayments || posState.splitPayments.length === 0) {
+        toast({
+          title: "Split Payment Not Configured",
+          description: "Please configure split payment methods before completing the sale.",
+          variant: "destructive",
+        });
+        return false;
+      }
+
+      const totalSplitAmount = posState.splitPayments.reduce((sum, payment) => sum + payment.amount, 0);
+      if (Math.abs(totalSplitAmount - total) > 0.01) {
+        toast({
+          title: "Split Payment Mismatch",
+          description: `Split payment total ($${totalSplitAmount.toFixed(2)}) must equal the order total ($${total.toFixed(2)}).`,
+          variant: "destructive",
+        });
+        return false;
+      }
+    }
+
     const sale = storeService.recordSale({
       items: cart,
       subtotal,
       tax,
       total,
-      paymentMethod: posState.paymentMethod,
+      paymentMethod: posState.useSplitPayment ? undefined : posState.paymentMethod,
+      splitPayments: posState.useSplitPayment ? posState.splitPayments : undefined,
       clientId: selectedClient?.id,
       customerName: selectedClient?.name || posState.customer?.name,
       customerContact: selectedClient?.phone || posState.customer?.contact,
@@ -68,15 +92,20 @@ export const useSalesManagement = (department: string) => {
         ? `Customer: ${posState.customer.name}`
         : 'Walk-in customer';
 
+    const paymentInfo = posState.useSplitPayment && posState.splitPayments
+      ? `Split payment (${posState.splitPayments.length} methods)`
+      : `${posState.paymentMethod.charAt(0).toUpperCase() + posState.paymentMethod.slice(1)}`;
+
     toast({
       title: "Sale Completed",
-      description: `Sale ${sale.id} completed successfully. Total: $${sale.total.toFixed(2)} - ${customerInfo}`,
+      description: `Sale ${sale.id} completed successfully. Total: $${sale.total.toFixed(2)} - ${paymentInfo} - ${customerInfo}`,
     });
 
     // Reset POS state
     setPosState({
       paymentMethod: 'cash',
       discount: 0,
+      useSplitPayment: false,
     });
     setSelectedClient(undefined);
 
