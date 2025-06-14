@@ -1,5 +1,6 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RidingReservationDashboard from "@/components/training-academy/RidingReservationDashboard";
 import RideSessionManagement from "@/components/training-academy/RideSessionManagement";
@@ -13,6 +14,7 @@ import { usePOSChoice } from "@/hooks/usePOSChoice";
 import { Rabbit, Users, Calendar, UserCheck, MapPin, CreditCard, ShoppingCart } from "lucide-react";
 
 const TrainingAcademy = () => {
+  const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [showPOS, setShowPOS] = useState(false);
   
@@ -23,6 +25,15 @@ const TrainingAcademy = () => {
     handleUseHere,
     handleOpenSeparate,
   } = usePOSChoice("Riding Academy");
+
+  // Handle URL parameters on component mount
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam === 'pos') {
+      setActiveTab('pos');
+      setShowPOS(true);
+    }
+  }, [searchParams]);
 
   const handlePOSTabClick = () => {
     openPOSChoice();
@@ -73,7 +84,7 @@ const TrainingAcademy = () => {
           <TabsTrigger 
             value="pos" 
             className="flex items-center gap-2"
-            onClick={handlePOSTabClick}
+            onClick={activeTab !== "pos" ? handlePOSTabClick : undefined}
           >
             <ShoppingCart className="h-4 w-4" />
             Point of Sale

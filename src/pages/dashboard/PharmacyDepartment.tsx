@@ -1,5 +1,6 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Pill, Package, ShoppingCart, FileText, Users, BarChart3, Shield } from "lucide-react";
 import PharmacyDashboard from "@/components/pharmacy/PharmacyDashboard";
@@ -13,6 +14,7 @@ import POSChoiceDialog from "@/components/pos/POSChoiceDialog";
 import { usePOSChoice } from "@/hooks/usePOSChoice";
 
 const PharmacyDepartment = () => {
+  const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [showPOS, setShowPOS] = useState(false);
   
@@ -23,6 +25,15 @@ const PharmacyDepartment = () => {
     handleUseHere,
     handleOpenSeparate,
   } = usePOSChoice("Pharmacy");
+
+  // Handle URL parameters on component mount
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam === 'pos') {
+      setActiveTab('pos');
+      setShowPOS(true);
+    }
+  }, [searchParams]);
 
   const handlePOSTabClick = () => {
     openPOSChoice();
@@ -65,7 +76,7 @@ const PharmacyDepartment = () => {
           <TabsTrigger 
             value="pos" 
             className="flex items-center gap-2"
-            onClick={handlePOSTabClick}
+            onClick={activeTab !== "pos" ? handlePOSTabClick : undefined}
           >
             <ShoppingCart className="h-4 w-4" />
             POS System
