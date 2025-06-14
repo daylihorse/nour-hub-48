@@ -1,8 +1,7 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Horse, Clock, Users, Plus, Star, MapPin, Calendar } from "lucide-react";
+import { Rabbit, Clock, Users, Plus, Star, MapPin, Calendar } from "lucide-react";
 
 const RideSessionManagement = () => {
   const rideTypes = [
@@ -99,7 +98,7 @@ const RideSessionManagement = () => {
               <div className="flex justify-between items-start">
                 <div>
                   <CardTitle className="text-xl flex items-center gap-2">
-                    <Horse className="h-5 w-5" />
+                    <Rabbit className="h-5 w-5" />
                     {ride.name}
                   </CardTitle>
                   <div className="flex items-center gap-2 mt-2">
@@ -153,7 +152,7 @@ const RideSessionManagement = () => {
               {/* Assigned Horses */}
               <div className="mb-4">
                 <h4 className="text-sm font-semibold mb-2 flex items-center gap-1">
-                  <Horse className="h-3 w-3" />
+                  <Rabbit className="h-3 w-3" />
                   Available Horses ({ride.horses.length})
                 </h4>
                 <div className="flex flex-wrap gap-1">
@@ -206,7 +205,7 @@ const RideSessionManagement = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Horse className="h-4 w-4 text-green-500" />
+              <Rabbit className="h-4 w-4 text-green-500" />
               <div>
                 <p className="text-xs text-muted-foreground">Experiences</p>
                 <p className="text-lg font-bold">{rideTypes.length}</p>

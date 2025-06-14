@@ -7,7 +7,7 @@ import ReservationSystem from "@/components/training-academy/ReservationSystem";
 import InstructorManagement from "@/components/training-academy/InstructorManagement";
 import HorseManagement from "@/components/training-academy/HorseManagement";
 import PaymentManagement from "@/components/training-academy/PaymentManagement";
-import { Horse, Users, Calendar, UserCheck, MapPin, CreditCard } from "lucide-react";
+import { Rabbit, Users, Calendar, UserCheck, MapPin, CreditCard } from "lucide-react";
 
 const TrainingAcademy = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -24,7 +24,7 @@ const TrainingAcademy = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="dashboard" className="flex items-center gap-2">
-            <Horse className="h-4 w-4" />
+            <Rabbit className="h-4 w-4" />
             Dashboard
           </TabsTrigger>
           <TabsTrigger value="sessions" className="flex items-center gap-2">
@@ -40,7 +40,7 @@ const TrainingAcademy = () => {
             Guides
           </TabsTrigger>
           <TabsTrigger value="horses" className="flex items-center gap-2">
-            <Horse className="h-4 w-4" />
+            <Rabbit className="h-4 w-4" />
             Horses
           </TabsTrigger>
           <TabsTrigger value="payments" className="flex items-center gap-2">

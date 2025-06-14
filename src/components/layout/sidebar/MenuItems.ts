@@ -7,7 +7,6 @@ import {
   Users, 
   Package, 
   ArrowRightLeft, 
-  Horse,
   Warehouse, 
   Wrench,
   Store,
@@ -96,7 +95,7 @@ export const menuItems: MenuItem[] = [
   { 
     title: "Riding Reservations", 
     url: "/dashboard/academy", 
-    icon: Horse 
+    icon: Rabbit 
   },
   { 
     title: "Stable Rooms", 

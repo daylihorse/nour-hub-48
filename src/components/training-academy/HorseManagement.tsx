@@ -1,11 +1,10 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Horse, Heart, Search, Filter, Plus, Eye, Edit, Calendar } from "lucide-react";
+import { Rabbit, Heart, Search, Filter, Plus, Eye, Edit, Calendar } from "lucide-react";
 
 const HorseManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -172,7 +171,7 @@ const HorseManagement = () => {
               <div className="flex justify-between items-start">
                 <div>
                   <CardTitle className="text-xl flex items-center gap-2">
-                    <Horse className="h-5 w-5" />
+                    <Rabbit className="h-5 w-5" />
                     {horse.name}
                   </CardTitle>
                   <p className="text-sm text-muted-foreground">
