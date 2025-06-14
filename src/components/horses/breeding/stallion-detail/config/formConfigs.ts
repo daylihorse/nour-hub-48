@@ -1,4 +1,5 @@
 
+
 export const frozenSemenQualityOptions = [
   { value: "Grade A", label: "Grade A" },
   { value: "Grade B", label: "Grade B" },
@@ -25,6 +26,10 @@ export const frozenEmbryoStageOptions = [
   { value: "Hatching Blastocyst", label: "Hatching Blastocyst" },
   { value: "Hatched Blastocyst", label: "Hatched Blastocyst" }
 ];
+
+// Aliases for embryo form compatibility
+export const embryoGradeOptions = frozenEmbryoGradeOptions;
+export const embryoStageOptions = frozenEmbryoStageOptions;
 
 // Additional options for breeding record forms
 export const breedingMethodOptions = [
@@ -60,3 +65,4 @@ export const statusOptions = [
   { value: "used", label: "Used" },
   { value: "expired", label: "Expired" }
 ];
+
