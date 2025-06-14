@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/select";
 import { formatDistanceToNow } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
 
 const ClientsDepartment = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -89,6 +90,44 @@ const ClientsDepartment = () => {
       : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
   };
 
+  const handleEditClient = (clientId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      navigate(`/dashboard/clients/${clientId}/edit`);
+    } catch (error) {
+      console.error("Navigation error:", error);
+      toast.error("Unable to navigate to edit page");
+    }
+  };
+
+  const handleMessageClient = (clientId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      navigate(`/dashboard/messages/${clientId}`);
+    } catch (error) {
+      console.error("Navigation error:", error);
+      toast.error("Unable to navigate to messages");
+    }
+  };
+
+  const handleClientClick = (clientId: string) => {
+    try {
+      navigate(`/dashboard/clients/${clientId}`);
+    } catch (error) {
+      console.error("Navigation error:", error);
+      toast.error("Unable to view client profile");
+    }
+  };
+
+  const handleAddNewClient = () => {
+    try {
+      navigate("/dashboard/clients/new");
+    } catch (error) {
+      console.error("Navigation error:", error);
+      toast.error("Unable to navigate to new client form");
+    }
+  };
+
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -101,7 +140,7 @@ const ClientsDepartment = () => {
             </p>
           </div>
         </div>
-        <Button onClick={() => navigate("/dashboard/clients/new")} className="shrink-0">
+        <Button onClick={handleAddNewClient} className="shrink-0">
           <Plus className="mr-2 h-4 w-4" /> Add New Client
         </Button>
       </div>
@@ -185,7 +224,7 @@ const ClientsDepartment = () => {
                     <TableRow 
                       key={client.id}
                       className="group hover:bg-muted/50 cursor-pointer transition-colors"
-                      onClick={() => navigate(`/dashboard/clients/${client.id}`)}
+                      onClick={() => handleClientClick(client.id)}
                     >
                       <TableCell className="font-medium">
                         {client.name}
@@ -217,16 +256,18 @@ const ClientsDepartment = () => {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity space-x-2">
-                          <Button size="sm" variant="ghost" onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/dashboard/clients/${client.id}/edit`);
-                          }}>
+                          <Button 
+                            size="sm" 
+                            variant="ghost" 
+                            onClick={(e) => handleEditClient(client.id, e)}
+                          >
                             Edit
                           </Button>
-                          <Button size="sm" variant="ghost" onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/dashboard/clients/${client.id}/messages`);
-                          }}>
+                          <Button 
+                            size="sm" 
+                            variant="ghost" 
+                            onClick={(e) => handleMessageClient(client.id, e)}
+                          >
                             Message
                           </Button>
                         </div>

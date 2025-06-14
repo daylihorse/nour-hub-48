@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -73,9 +74,14 @@ const ClientProfile = () => {
     toast.success("Note added successfully");
   };
   
-  // Quick Actions
+  // Quick Actions with proper error handling
   const handleSendMessage = () => {
-    toast.success("Message function triggered for " + client.name);
+    try {
+      navigate(`/dashboard/messages/${client.id}`);
+    } catch (error) {
+      console.error("Navigation error:", error);
+      toast.error("Unable to open messages");
+    }
   };
   
   const handleScheduleMeeting = () => {
@@ -90,6 +96,33 @@ const ClientProfile = () => {
     toast.success("Assign task function triggered for " + client.name);
   };
 
+  const handleViewHorses = () => {
+    try {
+      navigate("/dashboard/horses");
+    } catch (error) {
+      console.error("Navigation error:", error);
+      toast.error("Unable to navigate to horses page");
+    }
+  };
+
+  const handleEditClient = () => {
+    try {
+      navigate(`/dashboard/clients/${client.id}/edit`);
+    } catch (error) {
+      console.error("Navigation error:", error);
+      toast.error("Unable to navigate to edit page");
+    }
+  };
+
+  const handleBackToClients = () => {
+    try {
+      navigate("/dashboard/clients");
+    } catch (error) {
+      console.error("Navigation error:", error);
+      toast.error("Unable to navigate back to clients");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
       <div className="container mx-auto py-6 space-y-6">
@@ -98,7 +131,7 @@ const ClientProfile = () => {
           <Button 
             variant="ghost" 
             size="sm" 
-            onClick={() => navigate("/dashboard/clients")}
+            onClick={handleBackToClients}
             className="hover:bg-white/60"
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
@@ -134,7 +167,7 @@ const ClientProfile = () => {
               </div>
               <div className="flex gap-2">
                 <ClientChatButton client={client} />
-                <Button size="sm" variant="outline" onClick={() => navigate(`/dashboard/clients/${client.id}/edit`)}>
+                <Button size="sm" variant="outline" onClick={handleEditClient}>
                   <Edit className="h-4 w-4 mr-1" /> Edit
                 </Button>
               </div>
@@ -227,7 +260,7 @@ const ClientProfile = () => {
                   <ClipboardList className="h-4 w-4 mr-2" /> Assign Task
                 </Button>
                 {isHorseOwner && (
-                  <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => navigate(`/dashboard/horses?ownerId=${client.id}`)}>
+                  <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleViewHorses}>
                     <LinkIcon className="h-4 w-4 mr-2" /> View Horses
                   </Button>
                 )}
@@ -348,7 +381,7 @@ const ClientProfile = () => {
                             <Card 
                               key={horseId}
                               className="bg-gradient-to-br from-purple-50 to-purple-100/50 hover:shadow-md transition-all cursor-pointer"
-                              onClick={() => navigate(`/dashboard/horses/${horseId}`)}
+                              onClick={handleViewHorses}
                             >
                               <CardContent className="p-4 flex items-center">
                                 <div className="w-12 h-12 rounded-full bg-purple-200 flex items-center justify-center mr-4">

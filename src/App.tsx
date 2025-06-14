@@ -124,6 +124,7 @@ const App = () => {
                         <Route path="rooms" element={<StableRooms />} />
                         <Route path="maintenance" element={<MaintenanceDepartment />} />
                         <Route path="messages" element={<MessagesDepartment />} />
+                        <Route path="messages/:id" element={<MessagesDepartment />} />
                         <Route path="settings" element={<TenantSettings />} />
                         
                         {/* Client Management Routes */}
@@ -131,7 +132,6 @@ const App = () => {
                         <Route path="clients/:id" element={<ClientProfile />} />
                         <Route path="clients/new" element={<ClientForm />} />
                         <Route path="clients/:id/edit" element={<ClientForm />} />
-                        <Route path="clients/:id/messages" element={<MessagesDepartment />} />
                       </Route>
                       
                       <Route path="*" element={<NotFound />} />
