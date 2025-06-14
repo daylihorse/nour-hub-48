@@ -20,6 +20,7 @@ interface AddHorseFormProps {
 const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
   const [currentStage, setCurrentStage] = useState(0);
   const [completedStages, setCompletedStages] = useState<Set<number>>(new Set());
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<HorseFormData>({
@@ -44,23 +45,41 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
     mode: "onChange",
   });
 
+  console.log("AddHorseForm - Current form values:", form.getValues());
+  console.log("AddHorseForm - Form errors:", form.formState.errors);
+
   const progress = ((completedStages.size + (currentStage + 1)) / formStages.length) * 100;
 
   const validateCurrentStage = async () => {
     const stage = formStages[currentStage];
+    console.log("Validating stage:", stage.id, "Fields:", stage.fields);
+    
     const isValid = await form.trigger(stage.fields as any);
+    console.log("Stage validation result:", isValid);
     
     if (isValid) {
       setCompletedStages(prev => new Set(prev).add(currentStage));
       return true;
     }
+    
+    // Show validation errors
+    const errors = form.formState.errors;
+    console.log("Validation errors:", errors);
+    
     return false;
   };
 
   const handleNext = async () => {
+    console.log("HandleNext clicked for stage:", currentStage);
     const isValid = await validateCurrentStage();
     if (isValid && currentStage < formStages.length - 1) {
       setCurrentStage(currentStage + 1);
+    } else if (!isValid) {
+      toast({
+        title: "Validation Error",
+        description: "Please fill in all required fields before proceeding.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -76,19 +95,55 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
     }
   };
 
-  const handleSubmit = async (data: HorseFormData) => {
+  const handleSubmit = async () => {
+    console.log("HandleSubmit called");
+    
+    if (isSubmitting) {
+      console.log("Already submitting, ignoring duplicate click");
+      return;
+    }
+
+    setIsSubmitting(true);
+    
     try {
-      await onSave(data);
+      // Validate all form fields
+      const isValid = await form.trigger();
+      console.log("Full form validation result:", isValid);
+      
+      if (!isValid) {
+        console.log("Form validation failed:", form.formState.errors);
+        toast({
+          title: "Validation Error",
+          description: "Please check all fields and correct any errors.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const formData = form.getValues();
+      console.log("Submitting form data:", formData);
+      
+      // Ensure status is set
+      if (!formData.status) {
+        formData.status = "active";
+      }
+
+      await onSave(formData);
+      
       toast({
         title: "Success",
-        description: "Horse registered successfully!",
+        description: `${formData.name} has been registered successfully!`,
       });
+      
     } catch (error) {
+      console.error("Form submission error:", error);
       toast({
         title: "Error",
         description: "Failed to register horse. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -117,7 +172,7 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
             <CardContent>
               <StageContentRenderer 
                 stage={formStages[currentStage]} 
-                onSubmit={form.handleSubmit(handleSubmit)} 
+                onSubmit={handleSubmit} 
               />
             </CardContent>
           </Card>
@@ -128,7 +183,7 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
             onPrevious={handlePrevious}
             onNext={handleNext}
             onCancel={onCancel}
-            onSubmit={form.handleSubmit(handleSubmit)}
+            onSubmit={handleSubmit}
           />
         </form>
       </FormProvider>

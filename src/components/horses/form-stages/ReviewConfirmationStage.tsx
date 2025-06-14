@@ -1,25 +1,22 @@
 
 import { useFormContext } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { HorseFormData } from "@/types/horse";
 
-interface ReviewConfirmationStageProps {
-  onSubmit: () => void;
-}
-
-const ReviewConfirmationStage = ({ onSubmit }: ReviewConfirmationStageProps) => {
+const ReviewConfirmationStage = () => {
   const form = useFormContext<HorseFormData>();
   const formData = form.getValues();
+
+  console.log("ReviewConfirmationStage - Current form data:", formData);
 
   return (
     <div className="space-y-6">
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold">Review & Confirmation</h2>
-        <p className="text-muted-foreground">Please review all information and set the horse status before submitting</p>
+        <p className="text-muted-foreground">Please review all information and set the horse status</p>
       </div>
 
       {/* Status Field */}
@@ -36,8 +33,11 @@ const ReviewConfirmationStage = ({ onSubmit }: ReviewConfirmationStageProps) => 
                 <FormLabel>Status *</FormLabel>
                 <FormControl>
                   <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    onValueChange={(value) => {
+                      console.log("Status changed to:", value);
+                      field.onChange(value);
+                    }}
+                    value={field.value}
                     className="flex flex-col space-y-2"
                   >
                     <div className="flex items-center space-x-2">
@@ -135,16 +135,6 @@ const ReviewConfirmationStage = ({ onSubmit }: ReviewConfirmationStageProps) => 
             </div>
           </CardContent>
         </Card>
-      </div>
-
-      <div className="flex justify-center pt-6">
-        <Button 
-          onClick={onSubmit}
-          size="lg"
-          className="px-8 py-3 text-lg"
-        >
-          Register Horse
-        </Button>
       </div>
     </div>
   );
