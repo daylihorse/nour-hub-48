@@ -16,10 +16,13 @@ export const AccessModeToggle = () => {
   const { toast } = useToast();
   const [selectedDemoAccount, setSelectedDemoAccount] = React.useState<string>('');
 
+  console.log('AccessModeToggle: Current access mode:', accessMode);
+
   const demoAccounts = publicDemoService.getDemoAccounts();
 
   const handleModeChange = (checked: boolean) => {
     const newMode = checked ? 'demo' : 'public';
+    console.log('AccessModeToggle: Changing mode to:', newMode);
     setAccessMode(newMode);
     
     toast({
@@ -31,18 +34,22 @@ export const AccessModeToggle = () => {
   };
 
   const handleDemoAccountSwitch = async () => {
-    if (!selectedDemoAccount || !switchDemoAccount) return;
+    if (!selectedDemoAccount || !switchDemoAccount) {
+      console.log('AccessModeToggle: Missing account or switch function');
+      return;
+    }
     
     const account = demoAccounts.find(acc => acc.id === selectedDemoAccount);
     if (account) {
       try {
+        console.log('AccessModeToggle: Switching to account:', account);
         await switchDemoAccount(account);
         toast({
           title: 'Demo Account Switched',
           description: `Now viewing as ${account.tenantName}`,
         });
       } catch (error) {
-        console.error('Failed to switch demo account:', error);
+        console.error('AccessModeToggle: Failed to switch demo account:', error);
         toast({
           title: 'Switch Failed',
           description: 'Failed to switch demo account. Please try again.',
