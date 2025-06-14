@@ -82,6 +82,20 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
     setIsSubmitting(true);
     
     try {
+      // Validate all form data before submission
+      const isFormValid = await form.trigger();
+      console.log("Form validation result:", isFormValid);
+      
+      if (!isFormValid) {
+        console.log("Form validation errors:", form.formState.errors);
+        toast({
+          title: "Validation Error",
+          description: "Please check all required fields and correct any errors.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       console.log("Calling onSave with data:", data);
       await onSave(data);
       
@@ -103,7 +117,17 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
 
   const handleFormSubmit = () => {
     console.log("Submit button clicked");
-    form.handleSubmit(handleSubmit)();
+    console.log("Current form values:", form.getValues());
+    console.log("Form errors:", form.formState.errors);
+    
+    form.handleSubmit(handleSubmit, (errors) => {
+      console.log("Form submission failed with errors:", errors);
+      toast({
+        title: "Form Validation Failed",
+        description: "Please check the form for errors and try again.",
+        variant: "destructive",
+      });
+    })();
   };
 
   return (
@@ -122,7 +146,7 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
       />
 
       <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <form className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>{formStages[currentStage].title}</CardTitle>
