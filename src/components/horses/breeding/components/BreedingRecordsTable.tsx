@@ -1,4 +1,3 @@
-
 import { BreedingRecord } from "@/types/breeding";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -97,7 +96,7 @@ const BreedingRecordsTable = ({
             <TableHead>Status</TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Mare</TableHead>
-            <TableHead>Stallion</TableHead>
+            <TableHead>Mate</TableHead>
             <TableHead>Additional Info</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -114,7 +113,7 @@ const BreedingRecordsTable = ({
               </TableCell>
               <TableCell>{getDateValue(record)}</TableCell>
               <TableCell>{record.mateName || "—"}</TableCell>
-              <TableCell>{record.stallionName || "—"}</TableCell>
+              <TableCell>{record.mateName || "—"}</TableCell>
               <TableCell>{getAdditionalInfo(record)}</TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end items-center gap-2">

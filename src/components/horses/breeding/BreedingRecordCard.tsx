@@ -10,9 +10,19 @@ interface BreedingRecordCardProps {
   record: BreedingRecord;
   statusColor: string;
   typeIcon: React.ReactNode;
+  onViewDetails?: (record: BreedingRecord) => void;
+  onEditRecord?: (record: BreedingRecord) => void;
+  onDeleteRecord?: (record: BreedingRecord) => void;
 }
 
-const BreedingRecordCard = ({ record, statusColor, typeIcon }: BreedingRecordCardProps) => {
+const BreedingRecordCard = ({ 
+  record, 
+  statusColor, 
+  typeIcon,
+  onViewDetails = () => {},
+  onEditRecord = () => {},
+  onDeleteRecord = () => {},
+}: BreedingRecordCardProps) => {
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString();
   };
@@ -144,14 +154,29 @@ const BreedingRecordCard = ({ record, statusColor, typeIcon }: BreedingRecordCar
 
         {/* Actions */}
         <div className="flex gap-2 pt-2">
-          <Button variant="outline" size="sm" className="flex-1 flex items-center gap-1">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex-1 flex items-center gap-1"
+            onClick={() => onEditRecord(record)}
+          >
             <Edit className="h-3 w-3" />
             Edit
           </Button>
-          <Button variant="outline" size="sm" className="flex items-center gap-1">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center gap-1"
+            onClick={() => onViewDetails(record)}
+          >
             View Details
           </Button>
-          <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="text-red-600 hover:text-red-700"
+            onClick={() => onDeleteRecord(record)}
+          >
             <Trash2 className="h-3 w-3" />
           </Button>
         </div>

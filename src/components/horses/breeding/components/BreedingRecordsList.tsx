@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { BreedingRecord } from "@/types/breeding";
 import { Card, CardContent } from "@/components/ui/card";
@@ -91,8 +90,8 @@ const BreedingRecordsList = ({
                       {record.mateName && (
                         <span>Mare: <span className="font-medium">{record.mateName}</span></span>
                       )}
-                      {record.stallionName && (
-                        <span>Stallion: <span className="font-medium">{record.stallionName}</span></span>
+                      {record.mateName && (
+                        <span>Mate: <span className="font-medium">{record.mateName}</span></span>
                       )}
                       {record.breedingMethod && (
                         <span>Method: <span className="font-medium capitalize">{record.breedingMethod.replace("_", " ")}</span></span>
@@ -108,8 +107,8 @@ const BreedingRecordsList = ({
                       {record.pregnancyDuration && (
                         <span>Days: <span className="font-medium">{record.pregnancyDuration}</span></span>
                       )}
-                      {record.stallionName && (
-                        <span>Sire: <span className="font-medium">{record.stallionName}</span></span>
+                      {record.mateName && (
+                        <span>Sire: <span className="font-medium">{record.mateName}</span></span>
                       )}
                     </>
                   )}
@@ -125,8 +124,8 @@ const BreedingRecordsList = ({
                       {record.mateName && (
                         <span>Dam: <span className="font-medium">{record.mateName}</span></span>
                       )}
-                      {record.stallionName && (
-                        <span>Sire: <span className="font-medium">{record.stallionName}</span></span>
+                      {record.mateName && (
+                        <span>Sire: <span className="font-medium">{record.mateName}</span></span>
                       )}
                     </>
                   )}
