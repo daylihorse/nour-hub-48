@@ -31,13 +31,6 @@ const ClinicDepartment = () => {
         {/* Header Section */}
         <ClinicHeader />
 
-        {/* Navigation Tabs */}
-        <ClinicNavigationTabs 
-          activeTab={activeTab} 
-          onTabChange={setActiveTab} 
-          showPOSInTab={showPOSInTab} 
-        />
-
         {/* Quick Stats */}
         <ClinicStats />
 
@@ -46,9 +39,17 @@ const ClinicDepartment = () => {
 
         <Separator className="my-8" />
 
-        {/* Main Content Tabs */}
+        {/* Navigation Tabs and Content Combined */}
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            {/* Navigation Tabs */}
+            <ClinicNavigationTabs 
+              activeTab={activeTab} 
+              onTabChange={setActiveTab} 
+              showPOSInTab={showPOSInTab} 
+            />
+            
+            {/* Tab Content */}
             <div className="p-8">
               <ClinicTabContent 
                 showPOSInTab={showPOSInTab} 
