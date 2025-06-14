@@ -60,6 +60,7 @@ import AcademyPOSPage from "./pages/pos/AcademyPOSPage";
 import InventoryPOSPage from "./pages/pos/InventoryPOSPage";
 import ClinicPOSPage from "./pages/pos/ClinicPOSPage";
 import LaboratoryPOSPage from "./pages/pos/LaboratoryPOSPage";
+import PharmacyPOSPage from "./pages/pos/PharmacyPOSPage";
 
 // Create a new QueryClient instance
 const queryClient = new QueryClient();
@@ -96,6 +97,7 @@ const App = () => {
                       <Route path="/pos/inventory" element={<InventoryPOSPage />} />
                       <Route path="/pos/clinic" element={<ClinicPOSPage />} />
                       <Route path="/pos/laboratory" element={<LaboratoryPOSPage />} />
+                      <Route path="/pos/pharmacy" element={<PharmacyPOSPage />} />
                       
                       {/* Protected dashboard routes - now with enhanced auth guard */}
                       <Route path="/dashboard" element={

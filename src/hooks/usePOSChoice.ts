@@ -36,6 +36,9 @@ export const usePOSChoice = (departmentName: string) => {
       case 'laboratory':
         posUrl = '/pos/laboratory';
         break;
+      case 'pharmacy':
+        posUrl = '/pos/pharmacy';
+        break;
       default:
         posUrl = `/pos/${departmentName.toLowerCase()}`;
     }

@@ -35,10 +35,6 @@ const TrainingAcademy = () => {
     });
   };
 
-  const handleOpenPOSSeparate = () => {
-    handleOpenSeparate("/dashboard/academy?tab=pos");
-  };
-
   return (
     <div className="space-y-6">
       <div>
@@ -120,7 +116,7 @@ const TrainingAcademy = () => {
         onClose={closePOSChoice}
         departmentName="Riding Academy"
         onUseHere={handleUsePOSHere}
-        onOpenSeparate={handleOpenPOSSeparate}
+        onOpenSeparate={handleOpenSeparate}
       />
     </div>
   );

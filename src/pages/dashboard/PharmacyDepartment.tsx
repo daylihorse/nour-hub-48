@@ -35,10 +35,6 @@ const PharmacyDepartment = () => {
     });
   };
 
-  const handleOpenPOSSeparate = () => {
-    handleOpenSeparate("/dashboard/pharmacy?tab=pos");
-  };
-
   return (
     <div className="space-y-6">
       <div>
@@ -120,7 +116,7 @@ const PharmacyDepartment = () => {
         onClose={closePOSChoice}
         departmentName="Pharmacy"
         onUseHere={handleUsePOSHere}
-        onOpenSeparate={handleOpenPOSSeparate}
+        onOpenSeparate={handleOpenSeparate}
       />
     </div>
   );
