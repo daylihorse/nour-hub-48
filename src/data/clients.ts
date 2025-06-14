@@ -1,10 +1,9 @@
 
 import { Client, HorseOwner } from "@/types/client";
-import { v4 as uuidv4 } from "uuid";
 
 export const mockClients: (Client | HorseOwner)[] = [
   {
-    id: uuidv4(),
+    id: "client-001",
     name: "John Smith",
     email: "john.smith@example.com",
     phone: "(555) 123-4567",
@@ -24,7 +23,7 @@ export const mockClients: (Client | HorseOwner)[] = [
     },
     notes: [
       {
-        id: uuidv4(),
+        id: "note-001",
         content: "John prefers to be contacted in the afternoons.",
         createdAt: new Date(2023, 3, 12).toISOString(),
         createdBy: "staff-001"
@@ -32,7 +31,7 @@ export const mockClients: (Client | HorseOwner)[] = [
     ],
     communication: [
       {
-        id: uuidv4(),
+        id: "comm-001",
         type: "call",
         description: "Discussed upcoming vet appointment for Thunderbolt",
         date: new Date(2023, 4, 15).toISOString(),
@@ -41,7 +40,7 @@ export const mockClients: (Client | HorseOwner)[] = [
     ]
   },
   {
-    id: uuidv4(),
+    id: "client-002",
     name: "Dr. Emily Johnson",
     email: "emily.johnson@vetclinic.com",
     phone: "(555) 987-6543",
@@ -52,7 +51,7 @@ export const mockClients: (Client | HorseOwner)[] = [
     createdAt: new Date(2021, 6, 15).toISOString(),
     notes: [
       {
-        id: uuidv4(),
+        id: "note-002",
         content: "Specialist in equine dental care and hoof health.",
         createdAt: new Date(2022, 2, 5).toISOString(),
         createdBy: "staff-002"
@@ -60,7 +59,7 @@ export const mockClients: (Client | HorseOwner)[] = [
     ]
   },
   {
-    id: uuidv4(),
+    id: "client-003",
     name: "Sarah Williams",
     email: "sarah.williams@example.com",
     phone: "(555) 456-7890",
@@ -80,7 +79,7 @@ export const mockClients: (Client | HorseOwner)[] = [
     }
   },
   {
-    id: uuidv4(),
+    id: "client-004",
     name: "Mike Anderson",
     email: "mike.anderson@feedsupplies.com",
     phone: "(555) 234-5678",
@@ -91,7 +90,7 @@ export const mockClients: (Client | HorseOwner)[] = [
     createdAt: new Date(2021, 8, 5).toISOString()
   },
   {
-    id: uuidv4(),
+    id: "client-005",
     name: "David Brown",
     email: "david.brown@example.com",
     phone: "(555) 345-6789",
@@ -111,7 +110,7 @@ export const mockClients: (Client | HorseOwner)[] = [
     }
   },
   {
-    id: uuidv4(),
+    id: "client-006",
     name: "Robert Wilson",
     email: "robert.wilson@trainerelite.com",
     phone: "(555) 567-8901",
@@ -122,7 +121,7 @@ export const mockClients: (Client | HorseOwner)[] = [
     createdAt: new Date(2021, 10, 12).toISOString()
   },
   {
-    id: uuidv4(),
+    id: "client-007",
     name: "Lisa Martinez",
     email: "lisa.martinez@example.com",
     phone: "(555) 678-9012",
@@ -151,7 +150,6 @@ export function getHorseOwners(): HorseOwner[] {
   return mockClients.filter(client => client.type === "Horse Owner") as HorseOwner[];
 }
 
-// Add the missing getAllClients function
 export function getAllClients(): (Client | HorseOwner)[] {
   return mockClients;
 }

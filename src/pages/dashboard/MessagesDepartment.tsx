@@ -36,9 +36,9 @@ const MessagesDepartment = () => {
   
   const clients = getAllClients();
   
-  // Mock conversation data - in a real app this would come from an API
+  // Create conversations using the actual client IDs
   const conversations: ConversationPreview[] = clients.slice(0, 8).map((client, index) => ({
-    clientId: client.id,
+    clientId: client.id, // Use actual client.id instead of generating new ones
     clientName: client.name,
     clientAvatar: undefined,
     lastMessage: index % 3 === 0 
