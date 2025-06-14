@@ -25,10 +25,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const { error } = await authService.login(email, password);
+      const { data, error } = await authService.login(email, password);
       if (error) throw error;
+      return { data, error };
     } catch (error) {
       console.error('Login error:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const signUp = async (email: string, password: string, firstName?: string, lastName?: string) => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await authService.signUp(email, password, firstName, lastName);
+      if (error) throw error;
+      return { data, error };
+    } catch (error) {
+      console.error('Sign up error:', error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -51,6 +66,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     availableTenants,
     isLoading,
     login,
+    signUp,
     logout,
     switchTenant,
     hasPermission,

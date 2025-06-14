@@ -1,4 +1,53 @@
 
+export type TenantType = 'stable' | 'clinic' | 'marketplace' | 'enterprise' | 'hospital' | 'laboratory';
+export type SubscriptionTier = 'basic' | 'professional' | 'premium' | 'enterprise';
+export type UserRole = 'owner' | 'admin' | 'manager' | 'employee' | 'viewer';
+
+export interface TenantSettings {
+  timezone?: string;
+  currency?: string;
+  language?: string;
+  customBranding?: {
+    logo?: string;
+    primaryColor?: string;
+    secondaryColor?: string;
+  };
+  features?: {
+    horses?: boolean;
+    laboratory?: boolean;
+    clinic?: boolean;
+    pharmacy?: boolean;
+    marketplace?: boolean;
+    finance?: boolean;
+    hr?: boolean;
+    inventory?: boolean;
+    training?: boolean;
+    rooms?: boolean;
+    maintenance?: boolean;
+    messages?: boolean;
+  };
+}
+
+export interface TenantMetadata {
+  address?: {
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+  };
+  contact?: {
+    phone: string;
+    email: string;
+    website?: string;
+  };
+  businessInfo?: {
+    registrationNumber?: string;
+    taxId?: string;
+    industry?: string;
+  };
+}
+
 export interface User {
   id: string;
   email: string;
@@ -16,33 +65,15 @@ export interface User {
 export interface Tenant {
   id: string;
   name: string;
-  type: 'stable' | 'clinic' | 'marketplace' | 'enterprise' | 'hospital' | 'laboratory';
-  subscription_tier: 'basic' | 'professional' | 'premium' | 'enterprise';
+  type: TenantType;
+  subscription_tier: SubscriptionTier;
   status: 'active' | 'suspended' | 'trial' | 'expired';
-  settings: {
-    timezone?: string;
-    currency?: string;
-    language?: string;
-    features?: {
-      horses?: boolean;
-      laboratory?: boolean;
-      clinic?: boolean;
-      pharmacy?: boolean;
-      marketplace?: boolean;
-      finance?: boolean;
-      hr?: boolean;
-      inventory?: boolean;
-      training?: boolean;
-      rooms?: boolean;
-      maintenance?: boolean;
-      messages?: boolean;
-    };
-  };
-  metadata: Record<string, any>;
+  settings: TenantSettings;
+  metadata: TenantMetadata;
   user_role?: string;
   user_permissions?: string[];
   // Add computed properties for compatibility
-  subscriptionTier: 'basic' | 'professional' | 'premium' | 'enterprise';
+  subscriptionTier: SubscriptionTier;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -51,7 +82,7 @@ export interface TenantUser {
   id: string;
   tenant_id: string;
   user_id: string;
-  role: 'owner' | 'admin' | 'manager' | 'employee' | 'viewer';
+  role: UserRole;
   permissions: string[];
   status: 'active' | 'inactive' | 'pending';
   joined_at: string;
@@ -65,8 +96,9 @@ export interface AuthContext {
   currentTenant: Tenant | null;
   availableTenants: Tenant[];
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<{ data?: any; error?: any }>;
   logout: () => Promise<void>;
+  signUp: (email: string, password: string, firstName?: string, lastName?: string) => Promise<{ data?: any; error?: any }>;
   switchTenant: (tenantId: string) => Promise<void>;
   switchDemoAccount?: (account: any) => Promise<void>;
   hasPermission: (permission: string) => boolean;
