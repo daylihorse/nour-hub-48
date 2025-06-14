@@ -1,4 +1,5 @@
 
 export { authService } from './authService';
 export { userDataService } from './userDataService';
-export { tenantService } from './tenantService';
+export { mockAuthService } from './mockAuthService';
+export { mockTenantService } from './mockTenantService';

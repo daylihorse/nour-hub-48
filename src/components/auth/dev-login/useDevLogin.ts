@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 import { authService } from '@/services/auth/authService';
 import { SampleAccount, sampleAccounts } from './SampleAccount';
 
@@ -74,15 +73,6 @@ export const useDevLogin = () => {
         }
       }
       
-      try {
-        const { error } = await supabase.rpc('ensure_all_sample_tenant_associations');
-        if (error) {
-          console.error('Error ensuring tenant associations:', error);
-        }
-      } catch (error) {
-        console.error('Exception ensuring tenant associations:', error);
-      }
-      
       toast({
         title: 'Sample users ready',
         description: 'All sample user accounts have been created and are ready to use.',
@@ -102,24 +92,9 @@ export const useDevLogin = () => {
 
   const debugCurrentUser = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const user = await authService.getCurrentUser();
       console.log('Current user:', user);
       
-      if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-        console.log('User profile:', profile);
-
-        const { data: tenantUsers } = await supabase
-          .from('tenant_users')
-          .select('*, tenants(*)')
-          .eq('user_id', user.id);
-        console.log('User tenant associations:', tenantUsers);
-      }
-
       toast({
         title: 'Debug info logged',
         description: 'Check the browser console for detailed user information',

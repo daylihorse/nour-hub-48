@@ -1,15 +1,12 @@
 
-import { supabase } from '@/integrations/supabase/client';
+import { mockAuthService } from './mockAuthService';
 
 export const authService = {
   async signInWithPassword(email: string, password: string) {
     console.log('Attempting to sign in with:', email);
     
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data, error } = await mockAuthService.signInWithPassword(email, password);
 
       if (error) {
         console.error('Sign in error:', error);
@@ -19,8 +16,8 @@ export const authService = {
       console.log('Sign in successful:', data.user?.email);
       return { data, error };
     } catch (error) {
-      console.error('Auth service unavailable, falling back to public mode:', error);
-      throw new Error('Authentication service unavailable');
+      console.error('Authentication error:', error);
+      throw error;
     }
   },
 
@@ -28,13 +25,8 @@ export const authService = {
     console.log('Attempting to sign up with:', email);
     
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: metadata,
-          emailRedirectTo: undefined // Disable email confirmation for dev
-        }
+      const { data, error } = await mockAuthService.signUp(email, password, {
+        data: metadata
       });
 
       if (error) {
@@ -43,16 +35,10 @@ export const authService = {
       }
 
       console.log('Sign up successful:', data.user?.email);
-      
-      // Immediately ensure profile exists for the new user
-      if (data.user && !error) {
-        await this.ensureUserProfile(data.user, metadata);
-      }
-      
       return { data, error };
     } catch (error) {
-      console.error('Auth service unavailable during signup:', error);
-      throw new Error('Authentication service unavailable');
+      console.error('Authentication error during signup:', error);
+      throw error;
     }
   },
 
@@ -60,7 +46,7 @@ export const authService = {
     console.log('Signing out user');
     
     try {
-      const { error } = await supabase.auth.signOut();
+      const { error } = await mockAuthService.signOut();
       
       if (error) {
         console.error('Sign out error:', error);
@@ -70,27 +56,25 @@ export const authService = {
       console.log('Sign out successful');
       return { error };
     } catch (error) {
-      console.error('Auth service unavailable during signout:', error);
-      // Don't throw error on signout failure, just log it
+      console.error('Authentication error during signout:', error);
       return { error: null };
     }
   },
 
   async getSession() {
     try {
-      return await supabase.auth.getSession();
+      return await mockAuthService.getSession();
     } catch (error) {
-      console.error('Failed to get session, auth service unavailable:', error);
+      console.error('Failed to get session:', error);
       return { data: { session: null }, error };
     }
   },
 
   onAuthStateChange(callback: (event: any, session: any) => void) {
     try {
-      return supabase.auth.onAuthStateChange(callback);
+      return mockAuthService.onAuthStateChange(callback);
     } catch (error) {
-      console.error('Failed to listen to auth changes, auth service unavailable:', error);
-      // Return a mock subscription that can be unsubscribed
+      console.error('Failed to listen to auth changes:', error);
       return {
         data: {
           subscription: {
@@ -103,58 +87,32 @@ export const authService = {
 
   async getCurrentUser() {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await mockAuthService.getUser();
       return user;
     } catch (error) {
-      console.error('Failed to get current user, auth service unavailable:', error);
+      console.error('Failed to get current user:', error);
       return null;
     }
   },
 
   async ensureUserProfile(user: any, metadata?: any) {
-    console.log('Ensuring user profile exists for:', user.email);
-    
-    try {
-      const firstName = metadata?.first_name || user.user_metadata?.first_name || '';
-      const lastName = metadata?.last_name || user.user_metadata?.last_name || '';
-      
-      const { error } = await supabase.rpc('ensure_user_profile_exists', {
-        p_user_id: user.id,
-        p_email: user.email,
-        p_first_name: firstName,
-        p_last_name: lastName
-      });
-      
-      if (error) {
-        console.error('Error ensuring user profile:', error);
-      } else {
-        console.log('User profile ensured for:', user.email);
-      }
-    } catch (error) {
-      console.error('Exception ensuring user profile, auth service unavailable:', error);
-    }
+    console.log('Mock: User profile ensured for:', user.email);
+    return Promise.resolve();
   },
 
   async createSampleUserIfNotExists(email: string, password: string, firstName: string, lastName: string) {
     console.log('Creating sample user if not exists:', email);
     
-    // First try to sign in to check if user exists
     try {
       const { data, error } = await this.signInWithPassword(email, password);
       if (!error && data.user) {
         console.log('Sample user already exists and can sign in:', email);
-        
-        // Ensure profile and tenant associations exist
-        await this.ensureUserProfile(data.user, { first_name: firstName, last_name: lastName });
-        await this.ensureTenantAssociations(email);
-        
         return { data, error: null };
       }
     } catch (signInError) {
       console.log('Sample user does not exist or cannot sign in, creating:', email);
     }
     
-    // If sign in failed, try to create the user
     try {
       const { data, error } = await this.signUp(email, password, {
         first_name: firstName,
@@ -167,33 +125,15 @@ export const authService = {
       }
       
       console.log('Sample user created successfully:', email);
-      
-      // Wait a moment then ensure tenant associations
-      setTimeout(async () => {
-        await this.ensureTenantAssociations(email);
-      }, 1500);
-      
       return { data, error };
     } catch (createError) {
-      console.error('Failed to create sample user, auth service unavailable:', createError);
-      throw new Error('Authentication service unavailable');
+      console.error('Failed to create sample user:', createError);
+      throw createError;
     }
   },
 
   async ensureTenantAssociations(email: string) {
-    console.log('Ensuring tenant associations for:', email);
-    
-    try {
-      // Call the database function to ensure all sample tenant associations exist
-      const { error } = await supabase.rpc('ensure_all_sample_tenant_associations');
-      
-      if (error) {
-        console.error('Error ensuring tenant associations:', error);
-      } else {
-        console.log('Tenant associations ensured for:', email);
-      }
-    } catch (error) {
-      console.error('Exception ensuring tenant associations, auth service unavailable:', error);
-    }
+    console.log('Mock: Tenant associations ensured for:', email);
+    return Promise.resolve();
   }
 };

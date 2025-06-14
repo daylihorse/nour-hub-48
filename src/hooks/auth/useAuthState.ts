@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { User, Tenant } from '@/types/tenant';
 import { authService } from '@/services/auth/authService';
+import { userDataService } from '@/services/auth/userDataService';
 import { useAccessMode } from '@/contexts/AccessModeContext';
 import { publicDemoService } from '@/services/auth/publicDemoService';
 
@@ -28,13 +29,12 @@ export const useAuthState = () => {
         }
         setIsLoading(false);
       } else {
-        // Regular auth mode - get session from Supabase
+        // Regular auth mode - get session from mock auth service
         try {
           const { data: { session } } = await authService.getSession();
           if (session) {
-            // Handle regular auth session
-            // This would typically load user and tenant data from the database
-            console.log('Regular auth session:', session);
+            console.log('Found existing session:', session.user.email);
+            await loadUserData(session.user);
           }
         } catch (error) {
           console.error('Auth initialization error:', error);
@@ -47,11 +47,12 @@ export const useAuthState = () => {
     initializeAuth();
 
     // Listen for auth changes
-    const { data: { subscription } } = authService.onAuthStateChange((event, session) => {
-      console.log('Auth state changed:', event, session);
+    const { data: { subscription } } = authService.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event, session?.user?.email);
       if (accessMode !== 'demo') {
-        // Handle regular auth state changes
-        if (!session) {
+        if (session) {
+          await loadUserData(session.user);
+        } else {
           setUser(null);
           setCurrentTenant(null);
           setAvailableTenants([]);
@@ -64,6 +65,25 @@ export const useAuthState = () => {
     };
   }, [accessMode]);
 
+  const loadUserData = async (mockUser: any) => {
+    try {
+      setIsLoading(true);
+      const { user, tenants } = await userDataService.loadUserData(mockUser);
+      
+      setUser(user);
+      setAvailableTenants(tenants);
+      
+      // Set the first tenant as current if available
+      if (tenants.length > 0) {
+        setCurrentTenant(tenants[0]);
+      }
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const switchTenant = async (tenantId: string) => {
     if (accessMode === 'demo') {
       // In demo mode, find the tenant by ID and switch to it
@@ -72,12 +92,15 @@ export const useAuthState = () => {
         setCurrentTenant(tenant);
       }
     } else {
-      // Regular tenant switching logic would go here
-      console.log('Regular tenant switch:', tenantId);
+      // Regular tenant switching logic
+      const tenant = availableTenants.find(t => t.id === tenantId);
+      if (tenant) {
+        setCurrentTenant(tenant);
+      }
     }
   };
 
-  // Function to handle demo account switching - this is the key fix
+  // Function to handle demo account switching
   const switchDemoAccount = async (account: any) => {
     if (accessMode === 'demo') {
       setIsLoading(true);
@@ -85,13 +108,12 @@ export const useAuthState = () => {
         const tenant = publicDemoService.createTenantFromDemoAccount(account);
         const user = publicDemoService.createUserFromDemoAccount(account, tenant);
         
-        // Update state synchronously
         setUser(user);
         setCurrentTenant(tenant);
         setAvailableTenants([tenant]);
         
         console.log('Demo account switched successfully:', account.tenantName);
-        return Promise.resolve(); // Return resolved promise
+        return Promise.resolve();
       } catch (error) {
         console.error('Demo account switch error:', error);
         throw error;
