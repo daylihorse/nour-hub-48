@@ -62,7 +62,7 @@ const DashboardHero = () => {
                     {currentTenant.type.toUpperCase()}
                   </Badge>
                 </div>
-                <p className="text-brown-700 text-lg">Welcome back, {user.first_name}! Here's your overview.</p>
+                <p className="text-brown-700 text-lg">Welcome back, {user.firstName}! Here's your overview.</p>
               </div>
             </div>
 
@@ -73,7 +73,7 @@ const DashboardHero = () => {
                   <Star className="h-4 w-4 text-brown-600" />
                   <span className="text-sm text-brown-600">Subscription</span>
                 </div>
-                <p className="font-semibold text-brown-900 capitalize">{currentTenant.subscription_tier}</p>
+                <p className="font-semibold text-brown-900 capitalize">{currentTenant.subscriptionTier}</p>
               </div>
               
               <div className="bg-white/50 backdrop-blur-sm rounded-lg p-4 border border-brown-200">
@@ -82,7 +82,7 @@ const DashboardHero = () => {
                   <span className="text-sm text-brown-600">Your Role</span>
                 </div>
                 <p className="font-semibold text-brown-900 capitalize">
-                  {user.tenants.find(t => t.tenant_id === currentTenant.id)?.role}
+                  {user.tenants.find(t => t.tenantId === currentTenant.id)?.role}
                 </p>
               </div>
               
@@ -92,7 +92,7 @@ const DashboardHero = () => {
                   <span className="text-sm text-brown-600">Member Since</span>
                 </div>
                 <p className="font-semibold text-brown-900">
-                  {new Date(currentTenant.created_at).toLocaleDateString()}
+                  {currentTenant.createdAt.toLocaleDateString()}
                 </p>
               </div>
               
@@ -111,9 +111,9 @@ const DashboardHero = () => {
 
           {/* Right Actions */}
           <div className="flex flex-col gap-3">
-            <Badge className={`${getSubscriptionColor(currentTenant.subscription_tier)} px-4 py-2 text-sm font-medium`}>
+            <Badge className={`${getSubscriptionColor(currentTenant.subscriptionTier)} px-4 py-2 text-sm font-medium`}>
               <Sparkles className="h-4 w-4 mr-2" />
-              {currentTenant.subscription_tier.toUpperCase()} PLAN
+              {currentTenant.subscriptionTier.toUpperCase()} PLAN
             </Badge>
             <Button className="bg-brown-600 hover:bg-brown-700 shadow-brown">
               <Shield className="h-4 w-4 mr-2" />

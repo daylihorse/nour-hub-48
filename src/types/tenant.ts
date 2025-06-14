@@ -7,68 +7,45 @@ export interface User {
   avatar?: string | null;
   created_at: string;
   updated_at: string;
-  tenants: TenantUser[];
 }
 
 export interface Tenant {
   id: string;
   name: string;
-  type: TenantType;
-  subscription_tier: SubscriptionTier;
+  type: 'stable' | 'clinic' | 'marketplace' | 'enterprise' | 'hospital' | 'laboratory';
+  subscription_tier: 'basic' | 'professional' | 'premium' | 'enterprise';
   status: 'active' | 'suspended' | 'trial' | 'expired';
-  settings: TenantSettings;
+  settings: {
+    timezone?: string;
+    currency?: string;
+    language?: string;
+    features?: {
+      horses?: boolean;
+      laboratory?: boolean;
+      clinic?: boolean;
+      pharmacy?: boolean;
+      marketplace?: boolean;
+      finance?: boolean;
+      hr?: boolean;
+      inventory?: boolean;
+      training?: boolean;
+      rooms?: boolean;
+      maintenance?: boolean;
+      messages?: boolean;
+    };
+  };
   metadata: Record<string, any>;
   user_role?: string;
   user_permissions?: string[];
-  created_at: string;
-  updated_at: string;
 }
 
 export interface TenantUser {
   id: string;
   tenant_id: string;
   user_id: string;
-  role: UserRole;
+  role: 'owner' | 'admin' | 'manager' | 'employee' | 'viewer';
   permissions: string[];
   status: 'active' | 'inactive' | 'pending';
   joined_at: string;
   last_login_at?: string;
-  tenantId: string; // Alias for compatibility
 }
-
-export interface TenantSettings {
-  timezone?: string;
-  currency?: string;
-  language?: string;
-  features?: {
-    horses?: boolean;
-    laboratory?: boolean;
-    clinic?: boolean;
-    pharmacy?: boolean;
-    marketplace?: boolean;
-    finance?: boolean;
-    hr?: boolean;
-    inventory?: boolean;
-    training?: boolean;
-    rooms?: boolean;
-    maintenance?: boolean;
-    messages?: boolean;
-  };
-}
-
-export interface AuthContext {
-  user: User | null;
-  currentTenant: Tenant | null;
-  availableTenants: Tenant[];
-  isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-  switchTenant: (tenantId: string) => Promise<void>;
-  switchDemoAccount?: (account: any) => Promise<void>;
-  hasPermission: (permission: string) => boolean;
-  hasRole: (role: string) => boolean;
-}
-
-export type TenantType = 'stable' | 'clinic' | 'marketplace' | 'enterprise' | 'hospital' | 'laboratory';
-export type SubscriptionTier = 'basic' | 'professional' | 'premium' | 'enterprise';
-export type UserRole = 'owner' | 'admin' | 'manager' | 'employee' | 'viewer';

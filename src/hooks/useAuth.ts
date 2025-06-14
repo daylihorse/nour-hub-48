@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { authService } from '@/services/auth/authService';
 import { useToast } from '@/hooks/use-toast';
-import { useAuthState } from '@/hooks/auth/useAuthState';
 
 export const useAuth = () => {
-  const { user, currentTenant, availableTenants, isLoading, switchTenant, switchDemoAccount, setIsLoading } = useAuthState();
+  const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -16,6 +16,7 @@ export const useAuth = () => {
       async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.email);
         setSession(session);
+        setUser(session?.user ?? null);
         setIsLoading(false);
       }
     );
@@ -23,11 +24,12 @@ export const useAuth = () => {
     // Get initial session
     authService.getSession().then(({ data: { session } }) => {
       setSession(session);
+      setUser(session?.user ?? null);
       setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, [setIsLoading]);
+  }, []);
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
@@ -62,6 +64,8 @@ export const useAuth = () => {
     try {
       const { error } = await authService.logout();
       if (error) throw error;
+      setUser(null);
+      setSession(null);
       toast({
         title: 'Success',
         description: 'Logged out successfully',
@@ -78,29 +82,13 @@ export const useAuth = () => {
     }
   };
 
-  const hasPermission = (permission: string): boolean => {
-    if (!currentTenant || !currentTenant.user_permissions) return false;
-    return currentTenant.user_permissions.includes(permission);
-  };
-
-  const hasRole = (role: string): boolean => {
-    if (!currentTenant || !currentTenant.user_role) return false;
-    return currentTenant.user_role === role;
-  };
-
   return {
     user,
     session,
-    currentTenant,
-    availableTenants,
     isLoading,
     login,
     signUp,
     logout,
-    switchTenant,
-    switchDemoAccount,
-    hasPermission,
-    hasRole,
     isAuthenticated: !!user,
   };
 };

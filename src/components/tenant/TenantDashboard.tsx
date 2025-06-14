@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
@@ -54,15 +55,15 @@ const TenantDashboard = () => {
           </div>
           <div>
             <h1 className="text-3xl font-bold">{currentTenant.name}</h1>
-            <p className="text-muted-foreground">Welcome back, {user.first_name}!</p>
+            <p className="text-muted-foreground">Welcome back, {user.firstName}!</p>
           </div>
         </div>
         <div className="flex gap-2">
           <Badge className={getTenantTypeColor(currentTenant.type)}>
             {currentTenant.type.toUpperCase()}
           </Badge>
-          <Badge className={getSubscriptionColor(currentTenant.subscription_tier)}>
-            {currentTenant.subscription_tier.toUpperCase()}
+          <Badge className={getSubscriptionColor(currentTenant.subscriptionTier)}>
+            {currentTenant.subscriptionTier.toUpperCase()}
           </Badge>
         </div>
       </div>
@@ -75,7 +76,7 @@ const TenantDashboard = () => {
               <Star className="h-5 w-5 text-yellow-500" />
               <div>
                 <p className="text-sm text-muted-foreground">Subscription</p>
-                <p className="text-lg font-semibold capitalize">{currentTenant.subscription_tier}</p>
+                <p className="text-lg font-semibold capitalize">{currentTenant.subscriptionTier}</p>
               </div>
             </div>
           </CardContent>
@@ -88,7 +89,7 @@ const TenantDashboard = () => {
               <div>
                 <p className="text-sm text-muted-foreground">Your Role</p>
                 <p className="text-lg font-semibold capitalize">
-                  {user.tenants.find(t => t.tenant_id === currentTenant.id)?.role}
+                  {user.tenants.find(t => t.tenantId === currentTenant.id)?.role}
                 </p>
               </div>
             </div>
@@ -102,7 +103,7 @@ const TenantDashboard = () => {
               <div>
                 <p className="text-sm text-muted-foreground">Member Since</p>
                 <p className="text-lg font-semibold">
-                  {new Date(currentTenant.created_at).toLocaleDateString()}
+                  {currentTenant.createdAt.toLocaleDateString()}
                 </p>
               </div>
             </div>

@@ -1,3 +1,4 @@
+
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
@@ -24,7 +25,7 @@ const DashboardHeader = () => {
 
   const getUserInitials = () => {
     if (!user) return "U";
-    return `${user.first_name?.[0] || ''}${user.last_name?.[0] || ''}`.toUpperCase();
+    return `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase();
   };
 
   const getSubscriptionColor = (tier: string) => {
@@ -75,13 +76,13 @@ const DashboardHeader = () => {
                   </AvatarFallback>
                 </Avatar>
                 <div className="hidden md:block text-left">
-                  <p className="text-sm font-medium">{user?.first_name} {user?.last_name}</p>
+                  <p className="text-sm font-medium">{user?.firstName} {user?.lastName}</p>
                   <div className="flex items-center gap-2">
-                    <Badge className={`${getSubscriptionColor(currentTenant?.subscription_tier || 'basic')} text-xs px-2 py-0`}>
-                      {currentTenant?.subscription_tier || 'basic'}
+                    <Badge className={`${getSubscriptionColor(currentTenant?.subscriptionTier || 'basic')} text-xs px-2 py-0`}>
+                      {currentTenant?.subscriptionTier || 'basic'}
                     </Badge>
                     <span className="text-xs text-muted-foreground">
-                      {user?.tenants.find(t => t.tenant_id === currentTenant?.id)?.role}
+                      {user?.tenants.find(t => t.tenantId === currentTenant?.id)?.role}
                     </span>
                   </div>
                 </div>
@@ -100,19 +101,19 @@ const DashboardHeader = () => {
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="text-sm font-medium leading-none">{user?.first_name} {user?.last_name}</p>
+                      <p className="text-sm font-medium leading-none">{user?.firstName} {user?.lastName}</p>
                       <p className="text-xs leading-none text-muted-foreground mt-1">
                         {user?.email}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge className={`${getSubscriptionColor(currentTenant?.subscription_tier || 'basic')} text-xs`}>
+                    <Badge className={`${getSubscriptionColor(currentTenant?.subscriptionTier || 'basic')} text-xs`}>
                       <Star className="h-3 w-3 mr-1" />
-                      {currentTenant?.subscription_tier}
+                      {currentTenant?.subscriptionTier}
                     </Badge>
                     <Badge variant="outline" className="text-xs">
-                      {user?.tenants.find(t => t.tenant_id === currentTenant?.id)?.role}
+                      {user?.tenants.find(t => t.tenantId === currentTenant?.id)?.role}
                     </Badge>
                   </div>
                 </div>
