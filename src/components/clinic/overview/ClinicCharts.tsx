@@ -1,7 +1,10 @@
 
+import ChartBarChart from "@/components/ui/charts/BarChart";
+import ChartPieChart from "@/components/ui/charts/PieChart";
+import ChartLineChart from "@/components/ui/charts/LineChart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell, LineChart, Line, AreaChart, Area } from "recharts";
+import { AreaChart, Area, XAxis, YAxis } from "recharts";
 
 const ClinicCharts = () => {
   const appointmentData = [
@@ -49,6 +52,12 @@ const ClinicCharts = () => {
     satisfaction: { label: "Satisfaction %", color: "#8884d8" },
     complications: { label: "Complications %", color: "#ff7300" },
   };
+
+  const healthLines = [
+    { dataKey: "recoveryRate", stroke: "#82ca9d", name: "Recovery Rate %" },
+    { dataKey: "satisfaction", stroke: "#8884d8", name: "Satisfaction %" },
+    { dataKey: "complications", stroke: "#ff7300", name: "Complications %" },
+  ];
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -106,103 +115,32 @@ const ClinicCharts = () => {
       </Card>
 
       {/* Treatment Distribution */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Treatment Type Distribution</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ChartContainer config={chartConfig} className="h-[300px]">
-            <PieChart>
-              <Pie
-                data={treatmentTypes}
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                dataKey="count"
-                label={({ type, percentage }) => `${type}: ${percentage}%`}
-              >
-                {treatmentTypes.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <ChartTooltip content={<ChartTooltipContent />} />
-            </PieChart>
-          </ChartContainer>
-        </CardContent>
-      </Card>
+      <ChartPieChart
+        title="Treatment Type Distribution"
+        data={treatmentTypes}
+        dataKey="count"
+        labelKey="type"
+        config={chartConfig}
+      />
 
       {/* Daily Schedule Capacity */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Today's Schedule Capacity</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ChartContainer config={chartConfig} className="h-[300px]">
-            <BarChart data={dailySchedule}>
-              <XAxis 
-                dataKey="time" 
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 12 }}
-              />
-              <YAxis 
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 12 }}
-              />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar dataKey="appointments" fill="#8884d8" name="Scheduled" />
-              <Bar dataKey="capacity" fill="#82ca9d" name="Capacity" />
-            </BarChart>
-          </ChartContainer>
-        </CardContent>
-      </Card>
+      <ChartBarChart
+        title="Today's Schedule Capacity"
+        data={dailySchedule}
+        dataKey="appointments"
+        xAxisKey="time"
+        fill="#8884d8"
+        config={chartConfig}
+      />
 
       {/* Health Outcomes */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Health Outcome Metrics</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ChartContainer config={chartConfig} className="h-[300px]">
-            <LineChart data={healthMetrics}>
-              <XAxis 
-                dataKey="month" 
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 12 }}
-              />
-              <YAxis 
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 12 }}
-              />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <Line 
-                dataKey="recoveryRate" 
-                stroke="#82ca9d" 
-                name="Recovery Rate %" 
-                strokeWidth={2}
-                dot={{ r: 4 }}
-              />
-              <Line 
-                dataKey="satisfaction" 
-                stroke="#8884d8" 
-                name="Satisfaction %" 
-                strokeWidth={2}
-                dot={{ r: 4 }}
-              />
-              <Line 
-                dataKey="complications" 
-                stroke="#ff7300" 
-                name="Complications %" 
-                strokeWidth={2}
-                dot={{ r: 4 }}
-              />
-            </LineChart>
-          </ChartContainer>
-        </CardContent>
-      </Card>
+      <ChartLineChart
+        title="Health Outcome Metrics"
+        data={healthMetrics}
+        lines={healthLines}
+        xAxisKey="month"
+        config={chartConfig}
+      />
     </div>
   );
 };
