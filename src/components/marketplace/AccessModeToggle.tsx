@@ -17,6 +17,7 @@ export const AccessModeToggle = () => {
   const [selectedDemoAccount, setSelectedDemoAccount] = React.useState<string>('');
 
   console.log('AccessModeToggle: Current access mode:', accessMode);
+  console.log('AccessModeToggle: switchDemoAccount function available:', !!switchDemoAccount);
 
   const demoAccounts = publicDemoService.getDemoAccounts();
 
@@ -34,8 +35,27 @@ export const AccessModeToggle = () => {
   };
 
   const handleDemoAccountSwitch = async () => {
-    if (!selectedDemoAccount || !switchDemoAccount) {
-      console.log('AccessModeToggle: Missing account or switch function');
+    console.log('AccessModeToggle: handleDemoAccountSwitch called');
+    console.log('AccessModeToggle: selectedDemoAccount:', selectedDemoAccount);
+    console.log('AccessModeToggle: switchDemoAccount function:', switchDemoAccount);
+    
+    if (!selectedDemoAccount) {
+      console.log('AccessModeToggle: No account selected');
+      toast({
+        title: 'No Account Selected',
+        description: 'Please select a demo account first.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!switchDemoAccount) {
+      console.log('AccessModeToggle: switchDemoAccount function not available');
+      toast({
+        title: 'Function Not Available',
+        description: 'Demo account switching is not available.',
+        variant: 'destructive',
+      });
       return;
     }
     

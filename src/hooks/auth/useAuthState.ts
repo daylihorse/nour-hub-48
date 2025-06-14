@@ -13,6 +13,8 @@ export const useAuthState = () => {
   const [availableTenants, setAvailableTenants] = useState<Tenant[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  console.log('useAuthState: Hook initialized with accessMode:', accessMode);
+
   useEffect(() => {
     const initializeAuth = async () => {
       console.log('useAuthState: Initializing auth with mode:', accessMode);
@@ -114,6 +116,8 @@ export const useAuthState = () => {
       setIsLoading(false);
     }
   };
+
+  console.log('useAuthState: Returning state - user:', user?.email, 'tenant:', currentTenant?.name, 'switchDemoAccount available:', !!switchDemoAccount);
 
   return {
     user,

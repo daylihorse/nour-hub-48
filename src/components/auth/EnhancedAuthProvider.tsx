@@ -15,6 +15,8 @@ interface EnhancedAuthProviderProps {
 export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) => {
   const { accessMode, setAccessMode } = useAccessMode();
   
+  console.log('EnhancedAuthProvider: Current access mode:', accessMode);
+  
   // Use different auth states based on access mode
   const regularAuth = useAuthState();
   const publicAuth = usePublicAuthState();
@@ -76,9 +78,9 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
       // Wait for access mode to update
       await new Promise(resolve => setTimeout(resolve, 100));
       
-      // Use the appropriate auth hook's switchDemoAccount function
-      if (authSwitchDemoAccount) {
-        await authSwitchDemoAccount(account);
+      // Use the regular auth hook's switchDemoAccount function (works for both modes)
+      if (regularAuth.switchDemoAccount) {
+        await regularAuth.switchDemoAccount(account);
         console.log('EnhancedAuthProvider: Demo account switch completed for:', account.tenantName);
       } else {
         console.error('EnhancedAuthProvider: switchDemoAccount function not available');

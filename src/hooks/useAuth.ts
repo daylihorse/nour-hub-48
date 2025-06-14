@@ -1,2 +1,2 @@
 
-export { useAuth } from '@/contexts/AuthContext.tsx';
+export { useAuth } from '@/contexts/AuthContext';
