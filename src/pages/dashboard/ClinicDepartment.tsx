@@ -9,10 +9,15 @@ import ClinicIntegrationPanel from "@/components/integration/ClinicIntegrationPa
 import ClinicHorseUpdatePanel from "@/components/integration/ClinicHorseUpdatePanel";
 import ClinicDocumentManager from "@/components/clinic/ClinicDocumentManager";
 import StoreManagement from "@/components/store/StoreManagement";
-import { Stethoscope, Calendar, FileText, Syringe, Scissors, Pill, Activity, Heart, Users, Store } from "lucide-react";
+import EnhancedPOSSystem from "@/components/pos/EnhancedPOSSystem";
+import POSChoiceDialog from "@/components/pos/POSChoiceDialog";
+import { usePOSChoice } from "@/hooks/usePOSChoice";
+import { Stethoscope, Calendar, FileText, Syringe, Scissors, Pill, Activity, Heart, Users, Store, CreditCard } from "lucide-react";
 
 const ClinicDepartment = () => {
   const [activeTab, setActiveTab] = useState("overview");
+  const [showPOSInTab, setShowPOSInTab] = useState(false);
+  const { isDialogOpen, openPOSChoice, closePOSChoice, handleUseHere, handleOpenSeparate } = usePOSChoice("Clinic");
 
   const stats = [
     {
@@ -44,6 +49,16 @@ const ClinicDepartment = () => {
       bgColor: "bg-green-50"
     }
   ];
+
+  const handlePOSClick = () => {
+    openPOSChoice();
+  };
+
+  const handleUsePOSHere = () => {
+    setShowPOSInTab(true);
+    setActiveTab("pos");
+    closePOSChoice();
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
@@ -114,40 +129,75 @@ const ClinicDepartment = () => {
         {/* Main Content Tabs */}
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <div className="bg-slate-50 px-8 pt-6">
-              <TabsList className="border-2 border-dashed border-black-200 bg-gradient-to-br from-blue-50 to-purple-50">
-                <TabsTrigger value="overview" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
+            <div className="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 px-8 pt-6 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-100/20 via-purple-100/20 to-pink-100/20"></div>
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23000000" fill-opacity="0.02"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+              <TabsList className="relative z-10 bg-white/80 backdrop-blur-sm border-2 border-white/50 shadow-lg rounded-xl p-1">
+                <TabsTrigger 
+                  value="overview" 
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold transition-all duration-300 flex items-center gap-2 px-4 py-2 rounded-lg"
+                >
                   <Activity className="h-4 w-4" />
                   Overview
                 </TabsTrigger>
-                <TabsTrigger value="appointments" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
+                <TabsTrigger 
+                  value="appointments" 
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold transition-all duration-300 flex items-center gap-2 px-4 py-2 rounded-lg"
+                >
                   <Calendar className="h-4 w-4" />
                   Appointments
                 </TabsTrigger>
-                <TabsTrigger value="patients" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
+                <TabsTrigger 
+                  value="patients" 
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold transition-all duration-300 flex items-center gap-2 px-4 py-2 rounded-lg"
+                >
                   <FileText className="h-4 w-4" />
                   Patient Records
                 </TabsTrigger>
-                <TabsTrigger value="treatments" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
+                <TabsTrigger 
+                  value="treatments" 
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold transition-all duration-300 flex items-center gap-2 px-4 py-2 rounded-lg"
+                >
                   <Syringe className="h-4 w-4" />
                   Treatments
                 </TabsTrigger>
-                <TabsTrigger value="surgery" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
+                <TabsTrigger 
+                  value="surgery" 
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-pink-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold transition-all duration-300 flex items-center gap-2 px-4 py-2 rounded-lg"
+                >
                   <Scissors className="h-4 w-4" />
                   Surgery
                 </TabsTrigger>
-                <TabsTrigger value="pharmacy" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
+                <TabsTrigger 
+                  value="pharmacy" 
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-yellow-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold transition-all duration-300 flex items-center gap-2 px-4 py-2 rounded-lg"
+                >
                   <Pill className="h-4 w-4" />
                   Pharmacy
                 </TabsTrigger>
-                <TabsTrigger value="documents" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
+                <TabsTrigger 
+                  value="documents" 
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-slate-500 data-[state=active]:to-gray-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold transition-all duration-300 flex items-center gap-2 px-4 py-2 rounded-lg"
+                >
                   <FileText className="h-4 w-4" />
                   Documents
                 </TabsTrigger>
-                <TabsTrigger value="store" className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 flex items-center gap-2">
+                <TabsTrigger 
+                  value="store" 
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold transition-all duration-300 flex items-center gap-2 px-4 py-2 rounded-lg"
+                >
                   <Store className="h-4 w-4" />
                   Store
                 </TabsTrigger>
+                {showPOSInTab && (
+                  <TabsTrigger 
+                    value="pos" 
+                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold transition-all duration-300 flex items-center gap-2 px-4 py-2 rounded-lg"
+                  >
+                    <CreditCard className="h-4 w-4" />
+                    Point of Sale
+                  </TabsTrigger>
+                )}
               </TabsList>
             </div>
             
@@ -271,12 +321,42 @@ const ClinicDepartment = () => {
               </TabsContent>
 
               <TabsContent value="store" className="mt-0">
-                <StoreManagement department="clinic" departmentName="Clinic" />
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 className="text-2xl font-bold">Clinic Store Management</h2>
+                      <p className="text-muted-foreground">Manage clinic products, services, and point of sale operations</p>
+                    </div>
+                    <button
+                      onClick={handlePOSClick}
+                      className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+                    >
+                      <CreditCard className="h-5 w-5" />
+                      Open Point of Sale
+                    </button>
+                  </div>
+                  <StoreManagement department="clinic" departmentName="Clinic" />
+                </div>
               </TabsContent>
+
+              {showPOSInTab && (
+                <TabsContent value="pos" className="mt-0">
+                  <EnhancedPOSSystem department="clinic" />
+                </TabsContent>
+              )}
             </div>
           </Tabs>
         </div>
       </div>
+
+      {/* POS Choice Dialog */}
+      <POSChoiceDialog
+        isOpen={isDialogOpen}
+        onClose={closePOSChoice}
+        departmentName="Clinic"
+        onUseHere={handleUsePOSHere}
+        onOpenSeparate={() => handleOpenSeparate()}
+      />
     </div>
   );
 };
