@@ -20,7 +20,6 @@ interface AddHorseFormProps {
 const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
   const [currentStage, setCurrentStage] = useState(0);
   const [completedStages, setCompletedStages] = useState<Set<number>>(new Set());
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<HorseFormData>({
@@ -78,56 +77,19 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
   };
 
   const handleSubmit = async (data: HorseFormData) => {
-    console.log("Form submission started with data:", data);
-    setIsSubmitting(true);
-    
     try {
-      // Validate all form data before submission
-      const isFormValid = await form.trigger();
-      console.log("Form validation result:", isFormValid);
-      
-      if (!isFormValid) {
-        console.log("Form validation errors:", form.formState.errors);
-        toast({
-          title: "Validation Error",
-          description: "Please check all required fields and correct any errors.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      console.log("Calling onSave with data:", data);
       await onSave(data);
-      
       toast({
         title: "Success",
         description: "Horse registered successfully!",
       });
     } catch (error) {
-      console.error("Form submission error:", error);
       toast({
         title: "Error",
         description: "Failed to register horse. Please try again.",
         variant: "destructive",
       });
-    } finally {
-      setIsSubmitting(false);
     }
-  };
-
-  const handleFormSubmit = () => {
-    console.log("Submit button clicked");
-    console.log("Current form values:", form.getValues());
-    console.log("Form errors:", form.formState.errors);
-    
-    form.handleSubmit(handleSubmit, (errors) => {
-      console.log("Form submission failed with errors:", errors);
-      toast({
-        title: "Form Validation Failed",
-        description: "Please check the form for errors and try again.",
-        variant: "destructive",
-      });
-    })();
   };
 
   return (
@@ -155,7 +117,7 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
             <CardContent>
               <StageContentRenderer 
                 stage={formStages[currentStage]} 
-                onSubmit={handleFormSubmit}
+                onSubmit={form.handleSubmit(handleSubmit)} 
               />
             </CardContent>
           </Card>
@@ -166,8 +128,7 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
             onPrevious={handlePrevious}
             onNext={handleNext}
             onCancel={onCancel}
-            onSubmit={handleFormSubmit}
-            isSubmitting={isSubmitting}
+            onSubmit={form.handleSubmit(handleSubmit)}
           />
         </form>
       </FormProvider>
