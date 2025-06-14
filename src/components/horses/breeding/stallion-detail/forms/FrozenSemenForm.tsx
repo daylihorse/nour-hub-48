@@ -1,4 +1,3 @@
-
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -38,7 +37,7 @@ const FrozenSemenForm = ({ stallionId, onSubmit, onCancel, isLoading, initialDat
     defaultValues: {
       stallionId: initialData?.stallionId || stallionId,
       freezeDate: initialData?.freezeDate || new Date().toISOString().split('T')[0],
-      quality: initialData?.quality || 'Grade A',
+      quality: (initialData?.quality as "Grade A" | "Grade B" | "Grade C") || 'Grade A',
       straws: initialData?.straws || 1,
       tank: initialData?.tank || '',
       viability: initialData?.viability || '',
