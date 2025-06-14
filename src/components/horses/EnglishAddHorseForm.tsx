@@ -1,5 +1,5 @@
 
-import AddHorseForm from "./AddHorseForm";
+import RedesignedHorseForm from "./redesigned-form/RedesignedHorseForm";
 import { HorseFormData } from "@/types/horse";
 
 interface EnglishAddHorseFormProps {
@@ -8,7 +8,7 @@ interface EnglishAddHorseFormProps {
 }
 
 const EnglishAddHorseForm = ({ onSave, onCancel }: EnglishAddHorseFormProps) => {
-  return <AddHorseForm onSave={onSave} onCancel={onCancel} />;
+  return <RedesignedHorseForm onSave={onSave} onCancel={onCancel} />;
 };
 
 export default EnglishAddHorseForm;
