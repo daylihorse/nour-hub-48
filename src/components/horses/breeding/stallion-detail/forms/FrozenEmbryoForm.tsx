@@ -30,23 +30,24 @@ interface FrozenEmbryoFormProps {
   onSubmit: (data: Omit<FrozenEmbryoInventory, 'id' | 'createdAt'>) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
+  initialData?: FrozenEmbryoInventory;
 }
 
-const FrozenEmbryoForm = ({ stallionId, onSubmit, onCancel, isLoading }: FrozenEmbryoFormProps) => {
+const FrozenEmbryoForm = ({ stallionId, onSubmit, onCancel, isLoading, initialData }: FrozenEmbryoFormProps) => {
   const form = useForm<FormData>({
     resolver: zodResolver(frozenEmbryoSchema),
     defaultValues: {
       stallionId,
-      creationDate: new Date().toISOString().split('T')[0],
-      grade: 'Grade 1',
-      stage: 'Blastocyst',
-      mareName: '',
-      mareId: '',
-      viability: '',
-      tank: '',
-      location: '',
-      diameter: '',
-      freezingMethod: 'Vitrification',
+      creationDate: initialData?.creationDate || new Date().toISOString().split('T')[0],
+      grade: initialData?.grade || 'Grade 1',
+      stage: initialData?.stage || 'Blastocyst',
+      mareName: initialData?.mareName || '',
+      mareId: initialData?.mareId || '',
+      viability: initialData?.viability || '',
+      tank: initialData?.tank || '',
+      location: initialData?.location || '',
+      diameter: initialData?.diameter || '',
+      freezingMethod: initialData?.freezingMethod || 'Vitrification',
     },
   });
 

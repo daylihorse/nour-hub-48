@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -65,7 +64,7 @@ const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInv
     if (!selectedRecord) return;
     
     try {
-      await deleteFrozenEmbryo(selectedRecord.id);
+      await deleteFrozenEmbryo(selectedRecord.id, selectedRecord);
       setDeleteDialogOpen(false);
       setSelectedRecord(null);
       toast({
