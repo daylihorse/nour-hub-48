@@ -1,13 +1,13 @@
 
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import TrainingAcademyDashboard from "@/components/training-academy/TrainingAcademyDashboard";
-import PublicLessonsManagement from "@/components/training-academy/PublicLessonsManagement";
+import RidingReservationDashboard from "@/components/training-academy/RidingReservationDashboard";
+import RideSessionManagement from "@/components/training-academy/RideSessionManagement";
 import ReservationSystem from "@/components/training-academy/ReservationSystem";
 import InstructorManagement from "@/components/training-academy/InstructorManagement";
-import FacilityBooking from "@/components/training-academy/FacilityBooking";
+import HorseManagement from "@/components/training-academy/HorseManagement";
 import PaymentManagement from "@/components/training-academy/PaymentManagement";
-import { GraduationCap, Users, Calendar, UserCheck, MapPin, CreditCard } from "lucide-react";
+import { Horse, Users, Calendar, UserCheck, MapPin, CreditCard } from "lucide-react";
 
 const TrainingAcademy = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -15,21 +15,21 @@ const TrainingAcademy = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Training Academy</h1>
+        <h1 className="text-3xl font-bold">Horse Riding Reservations</h1>
         <p className="text-muted-foreground">
-          Public riding lessons, instructor management, and comprehensive reservation system
+          Book unforgettable horse riding experiences with professional guides and well-trained horses
         </p>
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="dashboard" className="flex items-center gap-2">
-            <GraduationCap className="h-4 w-4" />
+            <Horse className="h-4 w-4" />
             Dashboard
           </TabsTrigger>
-          <TabsTrigger value="lessons" className="flex items-center gap-2">
+          <TabsTrigger value="sessions" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
-            Lessons
+            Ride Sessions
           </TabsTrigger>
           <TabsTrigger value="reservations" className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
@@ -37,11 +37,11 @@ const TrainingAcademy = () => {
           </TabsTrigger>
           <TabsTrigger value="instructors" className="flex items-center gap-2">
             <UserCheck className="h-4 w-4" />
-            Instructors
+            Guides
           </TabsTrigger>
-          <TabsTrigger value="facilities" className="flex items-center gap-2">
-            <MapPin className="h-4 w-4" />
-            Facilities
+          <TabsTrigger value="horses" className="flex items-center gap-2">
+            <Horse className="h-4 w-4" />
+            Horses
           </TabsTrigger>
           <TabsTrigger value="payments" className="flex items-center gap-2">
             <CreditCard className="h-4 w-4" />
@@ -50,11 +50,11 @@ const TrainingAcademy = () => {
         </TabsList>
         
         <TabsContent value="dashboard" className="mt-6">
-          <TrainingAcademyDashboard />
+          <RidingReservationDashboard />
         </TabsContent>
         
-        <TabsContent value="lessons" className="mt-6">
-          <PublicLessonsManagement />
+        <TabsContent value="sessions" className="mt-6">
+          <RideSessionManagement />
         </TabsContent>
         
         <TabsContent value="reservations" className="mt-6">
@@ -65,8 +65,8 @@ const TrainingAcademy = () => {
           <InstructorManagement />
         </TabsContent>
         
-        <TabsContent value="facilities" className="mt-6">
-          <FacilityBooking />
+        <TabsContent value="horses" className="mt-6">
+          <HorseManagement />
         </TabsContent>
         
         <TabsContent value="payments" className="mt-6">
