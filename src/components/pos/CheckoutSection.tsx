@@ -1,19 +1,17 @@
 
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { CreditCard, DollarSign, Smartphone } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CreditCard } from "lucide-react";
+import { POSState } from "@/types/store";
 
 interface CheckoutSectionProps {
-  posState: any;
+  posState: POSState;
   subtotal: number;
   tax: number;
   total: number;
-  onStateChange: (updates: any) => void;
+  onStateChange: (updates: Partial<POSState>) => void;
   onCompleteSale: () => void;
 }
 
@@ -25,132 +23,76 @@ const CheckoutSection = ({
   onStateChange, 
   onCompleteSale 
 }: CheckoutSectionProps) => {
-  const [isProcessing, setIsProcessing] = useState(false);
-
-  const handleCompleteSale = async () => {
-    setIsProcessing(true);
-    try {
-      onCompleteSale();
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const paymentMethods = [
-    { value: 'cash', label: 'Cash', icon: DollarSign },
-    { value: 'card', label: 'Credit/Debit Card', icon: CreditCard },
-    { value: 'mobile', label: 'Mobile Payment', icon: Smartphone },
-  ];
-
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Checkout</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Customer Information */}
-        <div className="space-y-3">
-          <Label className="text-sm font-medium">Customer Information (Optional)</Label>
-          <Input
-            placeholder="Customer name"
-            value={posState.customerInfo?.name || ''}
-            onChange={(e) => onStateChange({ 
-              customerInfo: { ...posState.customerInfo, name: e.target.value }
-            })}
-          />
-          <Input
-            placeholder="Email"
-            type="email"
-            value={posState.customerInfo?.email || ''}
-            onChange={(e) => onStateChange({ 
-              customerInfo: { ...posState.customerInfo, email: e.target.value }
-            })}
-          />
-          <Input
-            placeholder="Phone"
-            value={posState.customerInfo?.phone || ''}
-            onChange={(e) => onStateChange({ 
-              customerInfo: { ...posState.customerInfo, phone: e.target.value }
-            })}
-          />
+    <div className="space-y-4">
+      {/* Customer Info */}
+      <div className="space-y-2">
+        <Input
+          placeholder="Customer Name (Optional)"
+          value={posState.customer?.name || ''}
+          onChange={(e) => onStateChange({
+            customer: { 
+              ...posState.customer, 
+              name: e.target.value, 
+              contact: posState.customer?.contact || '' 
+            }
+          })}
+        />
+        <Input
+          placeholder="Customer Contact (Optional)"
+          value={posState.customer?.contact || ''}
+          onChange={(e) => onStateChange({
+            customer: { 
+              ...posState.customer, 
+              contact: e.target.value, 
+              name: posState.customer?.name || '' 
+            }
+          })}
+        />
+      </div>
+
+      {/* Payment Method */}
+      <Select 
+        value={posState.paymentMethod} 
+        onValueChange={(value: any) => onStateChange({ paymentMethod: value })}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder="Payment Method" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="cash">Cash</SelectItem>
+          <SelectItem value="card">Card</SelectItem>
+          <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Separator />
+
+      {/* Totals */}
+      <div className="space-y-2">
+        <div className="flex justify-between">
+          <span>Subtotal:</span>
+          <span>${subtotal.toFixed(2)}</span>
         </div>
-
-        <Separator />
-
-        {/* Discount */}
-        <div className="space-y-2">
-          <Label htmlFor="discount">Discount ($)</Label>
-          <Input
-            id="discount"
-            type="number"
-            min="0"
-            step="0.01"
-            value={posState.discount || 0}
-            onChange={(e) => onStateChange({ discount: parseFloat(e.target.value) || 0 })}
-          />
+        <div className="flex justify-between">
+          <span>Tax (10%):</span>
+          <span>${tax.toFixed(2)}</span>
         </div>
-
-        {/* Payment Method */}
-        <div className="space-y-2">
-          <Label>Payment Method</Label>
-          <Select 
-            value={posState.paymentMethod || 'cash'} 
-            onValueChange={(value) => onStateChange({ paymentMethod: value })}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select payment method" />
-            </SelectTrigger>
-            <SelectContent>
-              {paymentMethods.map((method) => {
-                const Icon = method.icon;
-                return (
-                  <SelectItem key={method.value} value={method.value}>
-                    <div className="flex items-center gap-2">
-                      <Icon className="h-4 w-4" />
-                      {method.label}
-                    </div>
-                  </SelectItem>
-                );
-              })}
-            </SelectContent>
-          </Select>
+        <div className="flex justify-between font-bold">
+          <span>Total:</span>
+          <span>${total.toFixed(2)}</span>
         </div>
+      </div>
 
-        <Separator />
-
-        {/* Order Summary */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span>Subtotal:</span>
-            <span>${subtotal.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span>Tax:</span>
-            <span>${tax.toFixed(2)}</span>
-          </div>
-          {posState.discount > 0 && (
-            <div className="flex justify-between text-sm text-green-600">
-              <span>Discount:</span>
-              <span>-${posState.discount.toFixed(2)}</span>
-            </div>
-          )}
-          <Separator />
-          <div className="flex justify-between font-bold text-lg">
-            <span>Total:</span>
-            <span>${total.toFixed(2)}</span>
-          </div>
-        </div>
-
-        <Button 
-          onClick={handleCompleteSale} 
-          className="w-full" 
-          size="lg"
-          disabled={isProcessing || posState.cart?.length === 0}
-        >
-          {isProcessing ? 'Processing...' : `Complete Sale - $${total.toFixed(2)}`}
-        </Button>
-      </CardContent>
-    </Card>
+      <Button 
+        className="w-full" 
+        onClick={onCompleteSale}
+        disabled={posState.cart.length === 0}
+      >
+        <CreditCard className="h-4 w-4 mr-2" />
+        Complete Sale
+      </Button>
+    </div>
   );
 };
 

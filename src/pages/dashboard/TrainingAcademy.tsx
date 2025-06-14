@@ -1,6 +1,5 @@
 
-import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RidingReservationDashboard from "@/components/training-academy/RidingReservationDashboard";
 import RideSessionManagement from "@/components/training-academy/RideSessionManagement";
@@ -14,8 +13,8 @@ import { usePOSChoice } from "@/hooks/usePOSChoice";
 import { Rabbit, Users, Calendar, UserCheck, MapPin, CreditCard, ShoppingCart } from "lucide-react";
 
 const TrainingAcademy = () => {
-  const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [showPOS, setShowPOS] = useState(false);
   
   const {
     isDialogOpen,
@@ -25,29 +24,19 @@ const TrainingAcademy = () => {
     handleOpenSeparate,
   } = usePOSChoice("Riding Academy");
 
-  // Handle URL parameters on component mount
-  useEffect(() => {
-    const tabParam = searchParams.get('tab');
-    if (tabParam === 'pos') {
-      setActiveTab('pos');
-    }
-  }, [searchParams]);
-
   const handlePOSTabClick = () => {
-    // If we're not already on the POS tab, show the dialog
-    if (activeTab !== "pos") {
-      openPOSChoice();
-    }
+    openPOSChoice();
   };
 
   const handleUsePOSHere = () => {
     handleUseHere(() => {
       setActiveTab("pos");
+      setShowPOS(true);
     });
   };
 
   const handleOpenPOSSeparate = () => {
-    handleOpenSeparate("");
+    handleOpenSeparate("/dashboard/academy?tab=pos");
   };
 
   return (
@@ -115,9 +104,11 @@ const TrainingAcademy = () => {
           <HorseManagement />
         </TabsContent>
 
-        <TabsContent value="pos" className="mt-6">
-          <RidingPOS />
-        </TabsContent>
+        {showPOS && (
+          <TabsContent value="pos" className="mt-6">
+            <RidingPOS />
+          </TabsContent>
+        )}
         
         <TabsContent value="payments" className="mt-6">
           <PaymentManagement />

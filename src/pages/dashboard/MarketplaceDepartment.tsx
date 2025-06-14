@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Store, Package, ShoppingCart, Users, BarChart3, Settings, TrendingUp } from "lucide-react";
 import MarketplaceView from "@/components/marketplace/MarketplaceView";
@@ -9,7 +9,6 @@ import POSChoiceDialog from "@/components/pos/POSChoiceDialog";
 import { usePOSChoice } from "@/hooks/usePOSChoice";
 
 const MarketplaceDepartment = () => {
-  const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("marketplace");
   const [showPOS, setShowPOS] = useState(false);
   
@@ -20,15 +19,6 @@ const MarketplaceDepartment = () => {
     handleUseHere,
     handleOpenSeparate,
   } = usePOSChoice("Marketplace");
-
-  // Handle URL parameters on component mount
-  useEffect(() => {
-    const tabParam = searchParams.get('tab');
-    if (tabParam === 'pos') {
-      setActiveTab('pos');
-      setShowPOS(true);
-    }
-  }, [searchParams]);
 
   const handlePOSTabClick = () => {
     openPOSChoice();
@@ -42,7 +32,7 @@ const MarketplaceDepartment = () => {
   };
 
   const handleOpenPOSSeparate = () => {
-    handleOpenSeparate("");
+    handleOpenSeparate("/dashboard/marketplace?tab=pos");
   };
 
   return (
@@ -67,7 +57,7 @@ const MarketplaceDepartment = () => {
           <TabsTrigger 
             value="pos" 
             className="flex items-center gap-2"
-            onClick={activeTab !== "pos" ? handlePOSTabClick : undefined}
+            onClick={handlePOSTabClick}
           >
             <ShoppingCart className="h-4 w-4" />
             Point of Sale
