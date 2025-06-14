@@ -1,54 +1,66 @@
 
-import { CollectedSemen } from '@/types/breeding/stallion-detail';
-import { useGenericManagement } from './useGenericManagement';
-import { filterCollectedSemen } from '../utils/filterUtils';
+import { useState, useMemo } from "react";
+import { CollectedSemen, StallionDetailFilters } from "@/types/breeding/stallion-detail";
 
+// Mock data for demonstration
 const mockCollectedSemen: CollectedSemen[] = [
   {
     id: "CS001",
-    stallionId: "1",
+    stallionId: "stallion-1",
     collectionDate: "2024-01-15",
-    volume: "50ml",
+    technician: "Dr. Smith",
+    volume: "120ml",
     concentration: "150M/ml",
     motility: "85%",
     quality: "Excellent",
-    technician: "Dr. Smith",
     status: "Fresh",
-    temperature: "37°C",
-    ph: "7.2",
-    notes: "High quality collection",
+    notes: "High quality sample",
     createdAt: new Date("2024-01-15")
   },
   {
     id: "CS002",
-    stallionId: "1", 
-    collectionDate: "2024-01-12",
-    volume: "45ml",
-    concentration: "140M/ml",
-    motility: "82%",
-    quality: "Good",
+    stallionId: "stallion-1",
+    collectionDate: "2024-02-01",
     technician: "Dr. Johnson",
-    status: "Used",
-    temperature: "37°C",
-    ph: "7.1",
-    createdAt: new Date("2024-01-12")
+    volume: "95ml",
+    concentration: "135M/ml",
+    motility: "78%",
+    quality: "Good",
+    status: "Processed",
+    createdAt: new Date("2024-02-01")
   }
 ];
 
 export const useCollectedSemenManagement = (stallionId: string) => {
-  const result = useGenericManagement<CollectedSemen>({
-    initialData: mockCollectedSemen,
-    filterFn: filterCollectedSemen
+  const [data, setData] = useState<CollectedSemen[]>(mockCollectedSemen);
+  const [filters, setFilters] = useState<StallionDetailFilters>({
+    searchTerm: "",
   });
 
+  const collectedSemen = useMemo(() => {
+    let filtered = data.filter(item => item.stallionId === stallionId);
+
+    if (filters.searchTerm) {
+      const searchTerm = filters.searchTerm.toLowerCase();
+      filtered = filtered.filter(item =>
+        item.id.toLowerCase().includes(searchTerm) ||
+        item.technician.toLowerCase().includes(searchTerm) ||
+        item.quality.toLowerCase().includes(searchTerm)
+      );
+    }
+
+    return filtered;
+  }, [stallionId, filters, data]);
+
+  const exportData = (format: 'csv' | 'excel' | 'pdf') => {
+    console.log(`Exporting collected semen data as ${format}`);
+    // TODO: Implement actual export functionality
+  };
+
   return {
-    collectedSemen: result.data,
-    filters: result.filters,
-    setFilters: result.setFilters,
-    isLoading: result.isLoading,
-    addCollectedSemen: result.addRecord,
-    updateCollectedSemen: result.updateRecord,
-    deleteCollectedSemen: result.deleteRecord,
-    exportData: result.exportData
+    collectedSemen,
+    filters,
+    setFilters,
+    exportData,
   };
 };

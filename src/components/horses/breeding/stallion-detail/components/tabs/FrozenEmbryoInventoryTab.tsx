@@ -1,16 +1,17 @@
+
 import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, Download, Filter } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { useFrozenEmbryoManagement } from "../../hooks/useFrozenEmbryoManagement";
-import { FrozenEmbryoInventory } from "@/types/breeding/stallion-detail";
+import { 
+  Plus,
+  Filter,
+  Search,
+  Download,
+  Heart
+} from "lucide-react";
 import ViewSelector, { ViewMode } from "../../../components/ViewSelector";
-import FrozenEmbryoGridView from "./FrozenEmbryoGridView";
-import FrozenEmbryoListView from "./FrozenEmbryoListView";
-import FrozenEmbryoTableView from "./FrozenEmbryoTableView";
-import EditFrozenEmbryoDialog from "./EditFrozenEmbryoDialog";
-import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
+import { GridSize } from "../../../components/GridSizeSelector";
 
 interface FrozenEmbryoInventoryTabProps {
   stallionId: string;
@@ -18,94 +19,99 @@ interface FrozenEmbryoInventoryTabProps {
 }
 
 const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInventoryTabProps) => {
-  const { toast } = useToast();
-  const { frozenEmbryos, filters, setFilters, exportData, updateFrozenEmbryo, deleteFrozenEmbryo } = useFrozenEmbryoManagement(stallionId);
-  
-  const [searchTerm, setSearchTerm] = useState(filters.searchTerm || "");
+  const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<FrozenEmbryoInventory | null>(null);
+  const [gridSize, setGridSize] = useState<GridSize>(3);
 
-  const handleSearch = (value: string) => {
-    setSearchTerm(value);
-    setFilters({ ...filters, searchTerm: value });
-  };
+  // Mock data for demonstration
+  const frozenEmbryos = [
+    {
+      id: "FE001",
+      freezeDate: "2024-01-20",
+      mareId: "M001",
+      mareName: "Bella Star",
+      stage: "Blastocyst",
+      quality: "Grade A",
+      viability: "98%",
+      tank: "Tank E-1",
+      location: "Section 1A",
+      expiry: "2029-01-20"
+    }
+  ];
 
-  const handleEdit = (record: FrozenEmbryoInventory) => {
-    setSelectedRecord(record);
-    setEditDialogOpen(true);
-  };
-
-  const handleDelete = (record: FrozenEmbryoInventory) => {
-    setSelectedRecord(record);
-    setDeleteDialogOpen(true);
-  };
-
-  const handleSaveEdit = async (updatedRecord: FrozenEmbryoInventory) => {
-    try {
-      await updateFrozenEmbryo(updatedRecord.id, updatedRecord);
-      setEditDialogOpen(false);
-      setSelectedRecord(null);
-      toast({
-        title: "Success",
-        description: "Frozen embryo record updated successfully",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update frozen embryo record",
-        variant: "destructive",
-      });
+  const getGridColumns = () => {
+    switch (gridSize) {
+      case 2:
+        return "grid-cols-1 md:grid-cols-2";
+      case 3:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+      case 4:
+        return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+      default:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
     }
   };
 
-  const handleConfirmDelete = async () => {
-    if (!selectedRecord) return;
-    
-    try {
-      await deleteFrozenEmbryo(selectedRecord.id);
-      setDeleteDialogOpen(false);
-      setSelectedRecord(null);
-      toast({
-        title: "Success",
-        description: "Frozen embryo record deleted successfully",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete frozen embryo record",
-        variant: "destructive",
-      });
-    }
-  };
+  const renderGridView = () => (
+    <div className={`grid ${getGridColumns()} gap-4`}>
+      {frozenEmbryos.map((embryo) => (
+        <Card key={embryo.id}>
+          <CardHeader>
+            <div className="flex justify-between items-start">
+              <div>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Heart className="h-4 w-4 text-pink-500" />
+                  {embryo.id}
+                </CardTitle>
+                <div className="text-sm text-muted-foreground">
+                  <span>Frozen: {embryo.freezeDate}</span>
+                  <span> • </span>
+                  <span>Expires: {embryo.expiry}</span>
+                </div>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div>
+                <p className="text-sm text-muted-foreground">Mare</p>
+                <p className="font-medium">{embryo.mareName}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">Stage</p>
+                  <p className="font-medium">{embryo.stage}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Quality</p>
+                  <p className="font-medium">{embryo.quality}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Viability</p>
+                  <p className="font-medium">{embryo.viability}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Tank</p>
+                  <p className="font-medium">{embryo.tank}</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
 
-  const getGradeColor = (grade: string) => {
-    switch (grade) {
-      case 'Grade 1': return 'default';
-      case 'Grade 2': return 'secondary';
-      case 'Grade 3': return 'outline';
-      default: return 'secondary';
-    }
-  };
-
-  const renderContent = () => {
-    const commonProps = {
-      frozenEmbryos,
-      onEdit: handleEdit,
-      onDelete: handleDelete,
-      getGradeColor
-    };
-
+  const renderView = () => {
     switch (viewMode) {
       case "grid":
-        return <FrozenEmbryoGridView {...commonProps} />;
+        return renderGridView();
       case "list":
-        return <FrozenEmbryoListView {...commonProps} />;
+        return <div className="text-center py-8 text-muted-foreground">List view coming soon</div>;
       case "table":
-        return <FrozenEmbryoTableView {...commonProps} />;
+        return <div className="text-center py-8 text-muted-foreground">Table view coming soon</div>;
       default:
-        return <FrozenEmbryoGridView {...commonProps} />;
+        return renderGridView();
     }
   };
 
@@ -114,64 +120,46 @@ const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInv
       <div className="flex justify-between items-center">
         <div>
           <h3 className="text-lg font-semibold">Frozen Embryo Inventory</h3>
-          <p className="text-muted-foreground">Cryopreserved embryo storage and tracking</p>
+          <p className="text-muted-foreground">Manage frozen embryo storage and tracking</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => exportData('csv')}>
+          <ViewSelector
+            currentView={viewMode}
+            onViewChange={setViewMode}
+            gridSize={gridSize}
+            onGridSizeChange={setGridSize}
+          />
+          <Button variant="outline" size="sm">
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
           <Button 
             size="sm"
-            onClick={() => onActionClick("freeze-embryo", "Freeze New Embryo")}
+            onClick={() => onActionClick("new-frozen-embryo", "Add Frozen Embryo")}
           >
             <Plus className="h-4 w-4 mr-2" />
-            Add Embryo
+            Add Inventory
           </Button>
         </div>
       </div>
 
-      <div className="flex justify-between items-center gap-4">
-        <div className="flex gap-4 items-center flex-1">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              placeholder="Search by ID, mare name, or tank..."
-              value={searchTerm}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <Button variant="outline" size="sm">
-            <Filter className="h-4 w-4 mr-2" />
-            Filter
-          </Button>
+      <div className="flex gap-4 items-center">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Input
+            placeholder="Search by ID, mare, tank..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
         </div>
-        <ViewSelector 
-          currentView={viewMode}
-          onViewChange={setViewMode}
-        />
+        <Button variant="outline" size="sm">
+          <Filter className="h-4 w-4 mr-2" />
+          Filter
+        </Button>
       </div>
 
-      {renderContent()}
-
-      <EditFrozenEmbryoDialog
-        isOpen={editDialogOpen}
-        onClose={() => {
-          setEditDialogOpen(false);
-          setSelectedRecord(null);
-        }}
-        record={selectedRecord}
-        onSave={handleSaveEdit}
-      />
-
-      <DeleteConfirmationDialog
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        onConfirm={handleConfirmDelete}
-        recordId={selectedRecord?.id}
-        recordType="Frozen Embryo"
-      />
+      {renderView()}
     </div>
   );
 };

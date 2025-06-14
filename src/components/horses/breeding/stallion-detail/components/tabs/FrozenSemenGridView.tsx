@@ -10,22 +10,38 @@ import {
   Trash2
 } from "lucide-react";
 import { FrozenSemenInventory } from "@/types/breeding/stallion-detail";
+import { GridSize } from "../../../components/GridSizeSelector";
 
 interface FrozenSemenGridViewProps {
   frozenSemen: FrozenSemenInventory[];
   onEdit: (record: FrozenSemenInventory) => void;
   onDelete: (record: FrozenSemenInventory) => void;
   getQualityColor: (quality: string) => "default" | "secondary" | "outline" | "destructive";
+  gridSize?: GridSize;
 }
 
 const FrozenSemenGridView = ({
   frozenSemen,
   onEdit,
   onDelete,
-  getQualityColor
+  getQualityColor,
+  gridSize = 3
 }: FrozenSemenGridViewProps) => {
+  const getGridColumns = () => {
+    switch (gridSize) {
+      case 2:
+        return "grid-cols-1 md:grid-cols-2";
+      case 3:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+      case 4:
+        return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+      default:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+    }
+  };
+
   return (
-    <div className="grid gap-4">
+    <div className={`grid ${getGridColumns()} gap-4`}>
       {frozenSemen.map((semen) => (
         <Card key={semen.id}>
           <CardHeader>

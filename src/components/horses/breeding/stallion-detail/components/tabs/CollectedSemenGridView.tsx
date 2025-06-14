@@ -4,22 +4,38 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, TestTube, Edit, Trash2 } from "lucide-react";
 import { CollectedSemen } from "@/types/breeding/stallion-detail";
+import { GridSize } from "../../../components/GridSizeSelector";
 
 interface CollectedSemenGridViewProps {
   collectedSemen: CollectedSemen[];
   onEdit: (record: CollectedSemen) => void;
   onDelete: (record: CollectedSemen) => void;
   getStatusColor: (status: string) => "default" | "secondary" | "outline" | "destructive";
+  gridSize?: GridSize;
 }
 
 const CollectedSemenGridView = ({
   collectedSemen,
   onEdit,
   onDelete,
-  getStatusColor
+  getStatusColor,
+  gridSize = 3
 }: CollectedSemenGridViewProps) => {
+  const getGridColumns = () => {
+    switch (gridSize) {
+      case 2:
+        return "grid-cols-1 md:grid-cols-2";
+      case 3:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+      case 4:
+        return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+      default:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+    }
+  };
+
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className={`grid ${getGridColumns()} gap-4`}>
       {collectedSemen.map((collection) => (
         <Card key={collection.id}>
           <CardHeader>
