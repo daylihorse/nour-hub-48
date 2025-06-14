@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Toaster } from '@/components/ui/toaster';
 import { AccessModeProvider } from '@/contexts/AccessModeContext';
 import { EnhancedAuthProvider } from '@/components/auth/EnhancedAuthProvider';
-import { EnhancedAuthGuard } from '@/components/auth/EnhancedAuthGuard';
+import EnhancedAuthGuard from '@/components/auth/EnhancedAuthGuard';
 import PublicMarketplace from '@/pages/PublicMarketplace';
-import Dashboard from '@/pages/Dashboard';
-import LoginPage from '@/pages/LoginPage';
-import OnboardingPage from '@/pages/OnboardingPage';
+import Dashboard from '@/pages/dashboard/Dashboard';
+import Login from '@/pages/Login';
+import OnboardingEntry from '@/pages/onboarding/OnboardingEntry';
 import './App.css';
 
 function App() {
@@ -19,9 +19,9 @@ function App() {
             <Routes>
               {/* Public route - no auth required */}
               <Route path="/" element={<PublicMarketplace />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/onboarding" element={<OnboardingPage />} />
-              <Route path="/onboarding/:tenantType" element={<OnboardingPage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/onboarding" element={<OnboardingEntry />} />
+              <Route path="/onboarding/:tenantType" element={<OnboardingEntry />} />
               
               {/* Protected routes */}
               <Route path="/dashboard/*" element={
