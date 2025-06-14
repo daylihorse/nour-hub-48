@@ -112,7 +112,7 @@ const SplitPaymentDialog = ({
   const handlePaymentMethodChange = (index: number, value: string) => {
     // Validate that the value is one of the allowed payment methods
     if (value === 'cash' || value === 'card' || value === 'bank_transfer') {
-      updatePaymentMethod(index, value);
+      updatePaymentMethod(index, value as 'cash' | 'card' | 'bank_transfer');
     }
   };
 
