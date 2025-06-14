@@ -83,10 +83,10 @@ const FrozenSemenInventoryTab = ({ stallionId, onActionClick }: FrozenSemenInven
 
   const getQualityColor = (quality: string) => {
     switch (quality) {
-      case 'Grade A': return 'default';
-      case 'Grade B': return 'secondary';
-      case 'Grade C': return 'outline';
-      default: return 'secondary';
+      case 'Grade A': return 'default' as const;
+      case 'Grade B': return 'secondary' as const;
+      case 'Grade C': return 'outline' as const;
+      default: return 'secondary' as const;
     }
   };
 
