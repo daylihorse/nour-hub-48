@@ -19,6 +19,8 @@ interface Stallion {
 
 interface StallionContextValue {
   stallions: Stallion[];
+  error: string | null;
+  clearError: () => void;
 }
 
 const StallionContext = createContext<StallionContextValue | undefined>(undefined);
@@ -131,7 +133,9 @@ export const StallionProvider = ({ children }: StallionProviderProps) => {
   ];
 
   const value = {
-    stallions
+    stallions,
+    error: null,
+    clearError: () => {}
   };
 
   return (

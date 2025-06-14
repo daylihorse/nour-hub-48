@@ -2,19 +2,22 @@
 import { useNavigate } from "react-router-dom";
 import MareDetailCard from "./MareDetailCard";
 import { Mare } from "@/types/breeding/mare";
+import { GridSize } from "./GridSizeSelector";
 
 interface MareGridViewProps {
   mares: Mare[];
   onEditMare?: (mareId: string) => void;
   onScheduleCheckup?: (mareId: string) => void;
   onViewMedicalRecords?: (mareId: string) => void;
+  gridSize?: GridSize;
 }
 
 const MareGridView = ({ 
   mares, 
   onEditMare, 
   onScheduleCheckup, 
-  onViewMedicalRecords 
+  onViewMedicalRecords,
+  gridSize = 3
 }: MareGridViewProps) => {
   const navigate = useNavigate();
 
@@ -46,8 +49,22 @@ const MareGridView = ({
     }
   };
 
+  // Determine grid columns based on grid size
+  const getGridColumns = () => {
+    switch (gridSize) {
+      case 2:
+        return "grid-cols-1 md:grid-cols-2";
+      case 3:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+      case 4:
+        return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+      default:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+    }
+  };
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div className={`grid ${getGridColumns()} gap-6`}>
       {mares.map((mare) => (
         <MareDetailCard
           key={mare.id}

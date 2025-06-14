@@ -1,8 +1,13 @@
 
+import { useState } from "react";
 import { useMareContext } from "@/contexts/MareContext";
-import { useEffect } from "react";
+import { ViewMode } from "../components/ViewSelector";
+import { GridSize } from "../components/GridSizeSelector";
 
 export const useMareManagement = () => {
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [gridSize, setGridSize] = useState<GridSize>(3);
+  
   const {
     searchTerm,
     setSearchTerm,
@@ -14,24 +19,18 @@ export const useMareManagement = () => {
     clearError
   } = useMareContext();
 
-  // Debug logging
-  useEffect(() => {
-    console.log('useMareManagement - Total mares:', mares.length);
-    console.log('useMareManagement - Filtered mares:', filteredMares.length);
-    console.log('useMareManagement - Search term:', searchTerm);
-    if (error) {
-      console.error('useMareManagement - Error:', error);
-    }
-  }, [mares.length, filteredMares.length, searchTerm, error]);
-
   return {
     searchTerm,
     setSearchTerm,
-    mares: filteredMares, // Use filteredMares as the main mares array
+    mares: filteredMares,
     filteredMares,
     updateMare,
     isLoading,
     error,
-    clearError
+    clearError,
+    viewMode,
+    setViewMode,
+    gridSize,
+    setGridSize,
   };
 };
