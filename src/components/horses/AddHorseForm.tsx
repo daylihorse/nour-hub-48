@@ -101,6 +101,11 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
     }
   };
 
+  const handleFormSubmit = () => {
+    console.log("Submit button clicked");
+    form.handleSubmit(handleSubmit)();
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       <FormProgressHeader 
@@ -124,7 +129,10 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
               <p className="text-muted-foreground">{formStages[currentStage].description}</p>
             </CardHeader>
             <CardContent>
-              <StageContentRenderer stage={formStages[currentStage]} />
+              <StageContentRenderer 
+                stage={formStages[currentStage]} 
+                onSubmit={handleFormSubmit}
+              />
             </CardContent>
           </Card>
 
@@ -134,7 +142,7 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
             onPrevious={handlePrevious}
             onNext={handleNext}
             onCancel={onCancel}
-            onSubmit={() => form.handleSubmit(handleSubmit)()}
+            onSubmit={handleFormSubmit}
             isSubmitting={isSubmitting}
           />
         </form>
