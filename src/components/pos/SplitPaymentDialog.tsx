@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { CreditCard, DollarSign, Building2, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -118,110 +119,112 @@ const SplitPaymentDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
+      <DialogContent className="max-w-md max-h-[90vh] flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle>Split Payment</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
-          <div className="text-center p-3 bg-muted rounded-lg">
-            <p className="text-sm text-muted-foreground">Total Amount</p>
-            <p className="text-2xl font-bold">${totalAmount.toFixed(2)}</p>
-          </div>
+        <ScrollArea className="flex-1 pr-4">
+          <div className="space-y-4">
+            <div className="text-center p-3 bg-muted rounded-lg">
+              <p className="text-sm text-muted-foreground">Total Amount</p>
+              <p className="text-2xl font-bold">${totalAmount.toFixed(2)}</p>
+            </div>
 
-          <div className="space-y-3">
-            {payments.map((payment, index) => {
-              const config = paymentMethodConfig[payment.method];
-              const Icon = config.icon;
-              const availableMethods = getAvailableMethods(index);
+            <div className="space-y-3">
+              {payments.map((payment, index) => {
+                const config = paymentMethodConfig[payment.method];
+                const Icon = config.icon;
+                const availableMethods = getAvailableMethods(index);
 
-              return (
-                <div key={index} className="p-3 border rounded-lg space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className={`p-1 rounded ${config.color} text-white`}>
-                        <Icon className="h-4 w-4" />
+                return (
+                  <div key={index} className="p-3 border rounded-lg space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className={`p-1 rounded ${config.color} text-white`}>
+                          <Icon className="h-4 w-4" />
+                        </div>
+                        <select
+                          value={payment.method}
+                          onChange={(e) => handlePaymentMethodChange(index, e.target.value)}
+                          className="border rounded px-2 py-1 text-sm"
+                        >
+                          <option value={payment.method}>{config.label}</option>
+                          {availableMethods.map(method => (
+                            <option key={method} value={method}>
+                              {paymentMethodConfig[method].label}
+                            </option>
+                          ))}
+                        </select>
                       </div>
-                      <select
-                        value={payment.method}
-                        onChange={(e) => handlePaymentMethodChange(index, e.target.value)}
-                        className="border rounded px-2 py-1 text-sm"
-                      >
-                        <option value={payment.method}>{config.label}</option>
-                        {availableMethods.map(method => (
-                          <option key={method} value={method}>
-                            {paymentMethodConfig[method].label}
-                          </option>
-                        ))}
-                      </select>
+                      {payments.length > 1 && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => removePayment(index)}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      )}
                     </div>
-                    {payments.length > 1 && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => removePayment(index)}
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    )}
+                    
+                    <div>
+                      <Label htmlFor={`amount-${index}`} className="text-sm">Amount</Label>
+                      <Input
+                        id={`amount-${index}`}
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        max={totalAmount}
+                        value={payment.amount || ''}
+                        onChange={(e) => updatePaymentAmount(index, parseFloat(e.target.value) || 0)}
+                        placeholder="0.00"
+                      />
+                    </div>
                   </div>
-                  
-                  <div>
-                    <Label htmlFor={`amount-${index}`} className="text-sm">Amount</Label>
-                    <Input
-                      id={`amount-${index}`}
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      max={totalAmount}
-                      value={payment.amount || ''}
-                      onChange={(e) => updatePaymentAmount(index, parseFloat(e.target.value) || 0)}
-                      placeholder="0.00"
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {payments.length < 3 && (
-            <Button
-              variant="outline"
-              onClick={addPaymentMethod}
-              className="w-full"
-              disabled={payments.length >= 3}
-            >
-              Add Payment Method
-            </Button>
-          )}
-
-          <Separator />
-
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span>Total Paid:</span>
-              <span>${getTotalPaid().toFixed(2)}</span>
+                );
+              })}
             </div>
-            <div className="flex justify-between text-sm">
-              <span>Remaining:</span>
-              <Badge variant={getRemainingAmount() <= 0 ? "default" : "destructive"}>
-                ${getRemainingAmount().toFixed(2)}
-              </Badge>
+
+            {payments.length < 3 && (
+              <Button
+                variant="outline"
+                onClick={addPaymentMethod}
+                className="w-full"
+                disabled={payments.length >= 3}
+              >
+                Add Payment Method
+              </Button>
+            )}
+
+            <Separator />
+
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>Total Paid:</span>
+                <span>${getTotalPaid().toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span>Remaining:</span>
+                <Badge variant={getRemainingAmount() <= 0 ? "default" : "destructive"}>
+                  ${getRemainingAmount().toFixed(2)}
+                </Badge>
+              </div>
             </div>
           </div>
+        </ScrollArea>
 
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={handleClose} className="flex-1">
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleConfirm} 
-              className="flex-1"
-              disabled={!isValidPayment()}
-            >
-              Confirm Payment
-            </Button>
-          </div>
+        <div className="flex gap-2 flex-shrink-0 pt-4">
+          <Button variant="outline" onClick={handleClose} className="flex-1">
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleConfirm} 
+            className="flex-1"
+            disabled={!isValidPayment()}
+          >
+            Confirm Payment
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
