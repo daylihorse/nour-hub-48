@@ -1,64 +1,90 @@
 
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Snowflake, 
-  Calendar,
-  MapPin,
-  Edit,
-  Trash2
-} from "lucide-react";
+import { Edit, Trash2, Snowflake } from "lucide-react";
 import { FrozenSemenInventory } from "@/types/breeding/stallion-detail";
 
 interface FrozenSemenListViewProps {
   frozenSemen: FrozenSemenInventory[];
   onEdit: (record: FrozenSemenInventory) => void;
   onDelete: (record: FrozenSemenInventory) => void;
-  getQualityColor: (quality: string) => "default" | "secondary" | "outline" | "destructive";
+  getQualityColor: (quality: string) => "default" | "secondary" | "outline";
 }
 
-const FrozenSemenListView = ({
-  frozenSemen,
-  onEdit,
-  onDelete,
-  getQualityColor
-}: FrozenSemenListViewProps) => {
+const FrozenSemenListView = ({ frozenSemen, onEdit, onDelete, getQualityColor }: FrozenSemenListViewProps) => {
+  if (frozenSemen.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <Snowflake className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+        <h3 className="text-lg font-semibold text-muted-foreground">No frozen semen records found</h3>
+        <p className="text-muted-foreground">Add some frozen semen inventory to get started.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-3">
-      {frozenSemen.map((semen) => (
-        <div key={semen.id} className="flex items-center justify-between p-4 border rounded-lg">
-          <div className="flex items-center gap-4">
-            <Snowflake className="h-5 w-5 text-blue-500" />
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-medium">{semen.id}</span>
-                <Badge variant={getQualityColor(semen.quality)} className="text-xs">
-                  {semen.quality}
-                </Badge>
+      {frozenSemen.map((record) => (
+        <Card key={record.id}>
+          <CardContent className="p-4">
+            <div className="flex justify-between items-start">
+              <div className="flex-1 space-y-2">
+                <div className="flex items-center gap-3">
+                  <h3 className="font-semibold">{record.id}</h3>
+                  <Badge variant={getQualityColor(record.quality)}>
+                    {record.quality}
+                  </Badge>
+                </div>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Tank:</span>
+                    <div className="text-muted-foreground">{record.tank}</div>
+                  </div>
+                  <div>
+                    <span className="font-medium">Location:</span>
+                    <div className="text-muted-foreground">{record.location}</div>
+                  </div>
+                  <div>
+                    <span className="font-medium">Straws:</span>
+                    <div className="text-muted-foreground">{record.straws}</div>
+                  </div>
+                  <div>
+                    <span className="font-medium">Viability:</span>
+                    <div className="text-muted-foreground">{record.viability}</div>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Freeze Date:</span>
+                    <div className="text-muted-foreground">{new Date(record.freezeDate).toLocaleDateString()}</div>
+                  </div>
+                  <div>
+                    <span className="font-medium">Expiry:</span>
+                    <div className="text-muted-foreground">{new Date(record.expiry).toLocaleDateString()}</div>
+                  </div>
+                  {record.batchNumber && (
+                    <div>
+                      <span className="font-medium">Batch:</span>
+                      <div className="text-muted-foreground">{record.batchNumber}</div>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-3 w-3" />
-                  <span>{semen.freezeDate}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <MapPin className="h-3 w-3" />
-                  <span>{semen.tank} - {semen.location}</span>
-                </div>
-                <span>{semen.straws} straws</span>
-                <span>{semen.viability} viability</span>
+              
+              <div className="flex gap-2 ml-4">
+                <Button size="sm" variant="outline" onClick={() => onEdit(record)}>
+                  <Edit className="h-4 w-4" />
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => onDelete(record)}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </div>
             </div>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="ghost" size="sm" onClick={() => onEdit(semen)}>
-              <Edit className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="sm" onClick={() => onDelete(semen)}>
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       ))}
     </div>
   );
