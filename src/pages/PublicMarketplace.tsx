@@ -6,7 +6,7 @@ import {
   Eye, 
   UserCheck, 
   ArrowRight, 
-  Horse,
+  House,
   Activity,
   Shield,
   Zap
@@ -30,7 +30,7 @@ const PublicMarketplace = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
-                <Horse className="h-6 w-6 text-white" />
+                <House className="h-6 w-6 text-white" />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">EquiSense</h1>
@@ -106,7 +106,7 @@ const PublicMarketplace = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <Card className="border-2 border-blue-200 bg-blue-50/50">
               <CardHeader>
-                <Horse className="h-12 w-12 text-blue-600 mb-4" />
+                <House className="h-12 w-12 text-blue-600 mb-4" />
                 <CardTitle>Horse Management</CardTitle>
               </CardHeader>
               <CardContent>
