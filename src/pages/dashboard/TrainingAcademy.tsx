@@ -8,10 +8,36 @@ import InstructorManagement from "@/components/training-academy/InstructorManage
 import HorseManagement from "@/components/training-academy/HorseManagement";
 import PaymentManagement from "@/components/training-academy/PaymentManagement";
 import RidingPOS from "@/components/training-academy/RidingPOS";
+import POSChoiceDialog from "@/components/pos/POSChoiceDialog";
+import { usePOSChoice } from "@/hooks/usePOSChoice";
 import { Rabbit, Users, Calendar, UserCheck, MapPin, CreditCard, ShoppingCart } from "lucide-react";
 
 const TrainingAcademy = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [showPOS, setShowPOS] = useState(false);
+  
+  const {
+    isDialogOpen,
+    openPOSChoice,
+    closePOSChoice,
+    handleUseHere,
+    handleOpenSeparate,
+  } = usePOSChoice("Riding Academy");
+
+  const handlePOSTabClick = () => {
+    openPOSChoice();
+  };
+
+  const handleUsePOSHere = () => {
+    handleUseHere(() => {
+      setActiveTab("pos");
+      setShowPOS(true);
+    });
+  };
+
+  const handleOpenPOSSeparate = () => {
+    handleOpenSeparate("/dashboard/academy?tab=pos");
+  };
 
   return (
     <div className="space-y-6">
@@ -44,7 +70,11 @@ const TrainingAcademy = () => {
             <Rabbit className="h-4 w-4" />
             Horses
           </TabsTrigger>
-          <TabsTrigger value="pos" className="flex items-center gap-2">
+          <TabsTrigger 
+            value="pos" 
+            className="flex items-center gap-2"
+            onClick={handlePOSTabClick}
+          >
             <ShoppingCart className="h-4 w-4" />
             Point of Sale
           </TabsTrigger>
@@ -74,14 +104,24 @@ const TrainingAcademy = () => {
           <HorseManagement />
         </TabsContent>
 
-        <TabsContent value="pos" className="mt-6">
-          <RidingPOS />
-        </TabsContent>
+        {showPOS && (
+          <TabsContent value="pos" className="mt-6">
+            <RidingPOS />
+          </TabsContent>
+        )}
         
         <TabsContent value="payments" className="mt-6">
           <PaymentManagement />
         </TabsContent>
       </Tabs>
+
+      <POSChoiceDialog
+        isOpen={isDialogOpen}
+        onClose={closePOSChoice}
+        departmentName="Riding Academy"
+        onUseHere={handleUsePOSHere}
+        onOpenSeparate={handleOpenPOSSeparate}
+      />
     </div>
   );
 };
