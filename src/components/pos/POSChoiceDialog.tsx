@@ -27,7 +27,7 @@ const POSChoiceDialog = ({
   onOpenSeparate,
 }: POSChoiceDialogProps) => {
   return (
-    <Dialog open={isOpen} onValueChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
