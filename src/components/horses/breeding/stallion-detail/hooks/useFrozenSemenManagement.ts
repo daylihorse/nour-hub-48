@@ -48,13 +48,14 @@ const mockFrozenSemen: FrozenSemenInventory[] = [
 ];
 
 export const useFrozenSemenManagement = (stallionId: string) => {
+  const [data, setData] = useState<FrozenSemenInventory[]>(mockFrozenSemen);
   const [filters, setFilters] = useState<StallionDetailFilters>({
     searchTerm: "",
     quality: [],
   });
 
   const frozenSemen = useMemo(() => {
-    let filtered = mockFrozenSemen.filter(item => item.stallionId === stallionId);
+    let filtered = data.filter(item => item.stallionId === stallionId);
 
     if (filters.searchTerm) {
       const searchTerm = filters.searchTerm.toLowerCase();
@@ -71,7 +72,17 @@ export const useFrozenSemenManagement = (stallionId: string) => {
     }
 
     return filtered;
-  }, [stallionId, filters]);
+  }, [stallionId, filters, data]);
+
+  const updateFrozenSemen = async (id: string, updatedRecord: FrozenSemenInventory) => {
+    setData(prev => 
+      prev.map(item => item.id === id ? { ...updatedRecord, id } : item)
+    );
+  };
+
+  const deleteFrozenSemen = async (id: string) => {
+    setData(prev => prev.filter(item => item.id !== id));
+  };
 
   const exportData = (format: 'csv' | 'excel' | 'pdf') => {
     console.log(`Exporting frozen semen data as ${format}`);
@@ -83,5 +94,7 @@ export const useFrozenSemenManagement = (stallionId: string) => {
     filters,
     setFilters,
     exportData,
+    updateFrozenSemen,
+    deleteFrozenSemen,
   };
 };

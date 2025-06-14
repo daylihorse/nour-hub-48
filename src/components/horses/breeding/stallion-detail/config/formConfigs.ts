@@ -25,3 +25,38 @@ export const frozenEmbryoStageOptions = [
   { value: "Hatching Blastocyst", label: "Hatching Blastocyst" },
   { value: "Hatched Blastocyst", label: "Hatched Blastocyst" }
 ];
+
+// Additional options for breeding record forms
+export const breedingMethodOptions = [
+  { value: "natural", label: "Natural Cover" },
+  { value: "artificial_insemination", label: "Artificial Insemination" },
+  { value: "embryo_transfer", label: "Embryo Transfer" }
+];
+
+export const breedingResultOptions = [
+  { value: "successful", label: "Successful" },
+  { value: "unsuccessful", label: "Unsuccessful" },
+  { value: "pending", label: "Pending" }
+];
+
+export const breedingStatusOptions = [
+  { value: "planned", label: "Planned" },
+  { value: "in_progress", label: "In Progress" },
+  { value: "completed", label: "Completed" },
+  { value: "cancelled", label: "Cancelled" }
+];
+
+// Additional options for collected semen forms
+export const qualityOptions = [
+  { value: "excellent", label: "Excellent" },
+  { value: "good", label: "Good" },
+  { value: "fair", label: "Fair" },
+  { value: "poor", label: "Poor" }
+];
+
+export const statusOptions = [
+  { value: "fresh", label: "Fresh" },
+  { value: "frozen", label: "Frozen" },
+  { value: "used", label: "Used" },
+  { value: "expired", label: "Expired" }
+];
