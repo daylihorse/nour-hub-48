@@ -1,12 +1,11 @@
 
 import { useAuth } from './useAuth';
-import { TenantSettings, SubscriptionTier } from '@/types/tenant';
 
 export interface FeatureDefinition {
   id: string;
   name: string;
   description: string;
-  requiredSubscription: SubscriptionTier[];
+  requiredSubscription: string[];
   icon?: string;
 }
 
@@ -140,7 +139,7 @@ export const useTenantFeatures = () => {
     return FEATURE_MATRIX[featureId];
   };
 
-  const getSubscriptionTierFeatures = (tier: SubscriptionTier): FeatureDefinition[] => {
+  const getSubscriptionTierFeatures = (tier: string): FeatureDefinition[] => {
     return Object.values(FEATURE_MATRIX).filter(feature => 
       feature.requiredSubscription.includes(tier)
     );

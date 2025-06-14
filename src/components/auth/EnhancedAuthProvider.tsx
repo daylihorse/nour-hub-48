@@ -41,7 +41,7 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
     
     setIsLoading(true);
     try {
-      const { error } = await authService.signInWithPassword(email, password);
+      const { error } = await authService.login(email, password);
       if (error) throw error;
     } catch (error) {
       console.error('Login error:', error);
@@ -60,7 +60,7 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
     }
     
     try {
-      const { error } = await authService.signOut();
+      const { error } = await authService.logout();
       if (error) throw error;
     } catch (error) {
       console.error('Logout error:', error);
@@ -101,6 +101,7 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
     switchDemoAccount,
     hasPermission,
     hasRole,
+    isAuthenticated: !!user,
   };
 
   return (

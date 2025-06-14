@@ -1,33 +1,37 @@
 
 import { User, Tenant, TenantUser } from '@/types/tenant';
 
-class PublicDemoService {
+export const publicDemoService = {
   createPublicUser(): User {
-    const publicUser: User = {
+    return {
       id: 'public-user-id',
-      email: 'demo@dailyhorse.com',
+      email: 'demo@example.com',
+      first_name: 'Demo',
+      last_name: 'User',
       firstName: 'Demo',
       lastName: 'User',
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      avatar: null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
       tenants: [{
         id: 'public-tenant-user-id',
+        tenant_id: 'public-tenant-id',
         tenantId: 'public-tenant-id',
-        userId: 'public-user-id',
+        user_id: 'public-user-id',
         role: 'owner',
         permissions: ['*'],
         status: 'active',
-        joinedAt: new Date(),
-      }],
+        joined_at: new Date().toISOString(),
+      }]
     };
-    return publicUser;
-  }
+  },
 
   createPublicTenant(): Tenant {
-    const publicTenant: Tenant = {
+    return {
       id: 'public-tenant-id',
-      name: 'Public Demo - Elite Equestrian Center',
+      name: 'Demo Stable',
       type: 'stable',
+      subscription_tier: 'premium',
       subscriptionTier: 'premium',
       status: 'active',
       createdAt: new Date(),
@@ -51,86 +55,43 @@ class PublicDemoService {
           messages: true,
         }
       },
-      metadata: {
-        address: {
-          street: '123 Demo Street',
-          city: 'Demo City',
-          state: 'Demo State',
-          zipCode: '12345',
-          country: 'USA'
-        },
-        contact: {
-          phone: '+1 (555) 123-4567',
-          email: 'info@demo-stable.com',
-          website: 'https://demo-stable.com'
-        }
-      }
+      metadata: {}
     };
-    return publicTenant;
-  }
+  },
 
   getDemoAccounts() {
     return [
       {
-        email: 'owner@eliteequestrian.com',
-        password: 'password123',
+        tenantName: 'Green Valley Stables',
         tenantType: 'stable',
-        role: 'owner',
-        tenantName: 'Elite Equestrian Center',
-        description: 'Premium stable with full features enabled',
+        email: 'owner@greenvalley.com',
+        password: 'demo123',
+        role: 'owner'
       },
       {
-        email: 'director@advancedvetclinic.com',
-        password: 'password123',
+        tenantName: 'Elite Veterinary Clinic',
         tenantType: 'clinic',
-        role: 'owner',
-        tenantName: 'Advanced Veterinary Clinic',
-        description: 'Professional clinic with medical features',
+        email: 'vet@eliteclinic.com',
+        password: 'demo123',
+        role: 'admin'
       },
       {
-        email: 'director@equinediagnostics.com',
-        password: 'password123',
+        tenantName: 'Arabian Horse Laboratory',
         tenantType: 'laboratory',
-        role: 'owner',
-        tenantName: 'Equine Diagnostics Lab',
-        description: 'Professional laboratory with diagnostic tools',
-      },
-      {
-        email: 'admin@regionalequinehospital.com',
-        password: 'password123',
-        tenantType: 'hospital',
-        role: 'owner',
-        tenantName: 'Regional Equine Hospital',
-        description: 'Enterprise hospital with all features',
-      },
-      {
-        email: 'admin@horsetrader.com',
-        password: 'password123',
-        tenantType: 'marketplace',
-        role: 'owner',
-        tenantName: 'HorseTrader Marketplace',
-        description: 'Premium marketplace platform',
-      },
-      {
-        email: 'ceo@globalequinesolutions.com',
-        password: 'password123',
-        tenantType: 'enterprise',
-        role: 'owner',
-        tenantName: 'Global Equine Solutions',
-        description: 'Enterprise solution with complete feature set',
+        email: 'lab@arabianlab.com',
+        password: 'demo123',
+        role: 'manager'
       }
     ];
-  }
+  },
 
-  // Method to create a tenant from demo account data
   createTenantFromDemoAccount(account: any): Tenant {
-    const baseId = account.email.split('@')[0];
-    
     return {
-      id: `${baseId}-tenant-id`,
+      id: `demo-tenant-${account.tenantType}`,
       name: account.tenantName,
       type: account.tenantType,
-      subscriptionTier: this.getSubscriptionTierForType(account.tenantType),
+      subscription_tier: 'premium',
+      subscriptionTier: 'premium',
       status: 'active',
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -138,80 +99,10 @@ class PublicDemoService {
         timezone: 'UTC',
         currency: 'USD',
         language: 'en',
-        features: this.getFeaturesForType(account.tenantType),
-      },
-      metadata: this.getMetadataForType(account.tenantType, account.tenantName),
-    };
-  }
-
-  // Method to create a user from demo account data
-  createUserFromDemoAccount(account: any, tenant: Tenant): User {
-    const baseId = account.email.split('@')[0];
-    const [firstName, ...lastNameParts] = account.description.split(' ');
-    
-    return {
-      id: `${baseId}-user-id`,
-      email: account.email,
-      firstName: firstName || 'Demo',
-      lastName: lastNameParts.join(' ') || 'User',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      tenants: [{
-        id: `${baseId}-tenant-user-id`,
-        tenantId: tenant.id,
-        userId: `${baseId}-user-id`,
-        role: account.role,
-        permissions: ['*'],
-        status: 'active',
-        joinedAt: new Date(),
-      }],
-    };
-  }
-
-  private getSubscriptionTierForType(type: string) {
-    switch (type) {
-      case 'stable': return 'premium';
-      case 'clinic': return 'professional';
-      case 'laboratory': return 'professional';
-      case 'hospital': return 'enterprise';
-      case 'marketplace': return 'premium';
-      case 'enterprise': return 'enterprise';
-      default: return 'basic';
-    }
-  }
-
-  private getFeaturesForType(type: string) {
-    const baseFeatures = {
-      horses: true,
-      laboratory: false,
-      clinic: false,
-      pharmacy: false,
-      marketplace: false,
-      finance: true,
-      hr: true,
-      inventory: true,
-      training: true,
-      rooms: true,
-      maintenance: true,
-      messages: true,
-    };
-
-    switch (type) {
-      case 'stable':
-        return { ...baseFeatures, horses: true, training: true, rooms: true };
-      case 'clinic':
-        return { ...baseFeatures, clinic: true, pharmacy: true, laboratory: true };
-      case 'laboratory':
-        return { ...baseFeatures, laboratory: true, clinic: true };
-      case 'hospital':
-        return { ...baseFeatures, clinic: true, pharmacy: true, laboratory: true, hr: true };
-      case 'marketplace':
-        return { ...baseFeatures, marketplace: true, inventory: true, finance: true };
-      case 'enterprise':
-        return {
+        features: {
           horses: true,
-          laboratory: true,
-          clinic: true,
+          laboratory: account.tenantType === 'laboratory',
+          clinic: account.tenantType === 'clinic',
           pharmacy: true,
           marketplace: true,
           finance: true,
@@ -221,28 +112,33 @@ class PublicDemoService {
           rooms: true,
           maintenance: true,
           messages: true,
-        };
-      default:
-        return baseFeatures;
-    }
-  }
-
-  private getMetadataForType(type: string, name: string) {
-    return {
-      address: {
-        street: '123 Demo Street',
-        city: 'Demo City',
-        state: 'Demo State',
-        zipCode: '12345',
-        country: 'USA'
+        }
       },
-      contact: {
-        phone: '+1 (555) 123-4567',
-        email: `info@${name.toLowerCase().replace(/\s+/g, '-')}.com`,
-        website: `https://${name.toLowerCase().replace(/\s+/g, '-')}.com`
-      }
+      metadata: {}
+    };
+  },
+
+  createUserFromDemoAccount(account: any, tenant: Tenant): User {
+    return {
+      id: `demo-user-${account.tenantType}`,
+      email: account.email,
+      first_name: 'Demo',
+      last_name: 'User',
+      firstName: 'Demo',
+      lastName: 'User',
+      avatar: null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      tenants: [{
+        id: `demo-tenant-user-${account.tenantType}`,
+        tenant_id: tenant.id,
+        tenantId: tenant.id,
+        user_id: `demo-user-${account.tenantType}`,
+        role: account.role,
+        permissions: account.role === 'owner' ? ['*'] : ['read', 'write'],
+        status: 'active',
+        joined_at: new Date().toISOString(),
+      }]
     };
   }
-}
-
-export const publicDemoService = new PublicDemoService();
+};

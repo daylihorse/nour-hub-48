@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const { error } = await authService.signInWithPassword(email, password);
+      const { error } = await authService.login(email, password);
       if (error) throw error;
     } catch (error) {
       console.error('Login error:', error);
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = async () => {
     try {
-      const { error } = await authService.signOut();
+      const { error } = await authService.logout();
       if (error) throw error;
     } catch (error) {
       console.error('Logout error:', error);
@@ -55,6 +55,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     switchTenant,
     hasPermission,
     hasRole,
+    isAuthenticated: !!user,
   };
 
   return (

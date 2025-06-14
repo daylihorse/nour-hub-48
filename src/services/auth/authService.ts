@@ -17,6 +17,11 @@ export const authService = {
     return { data, error };
   },
 
+  // Sign in with password (alias for login)
+  async signInWithPassword(email: string, password: string) {
+    return this.login(email, password);
+  },
+
   // Sign up with email and password
   async signUp(email: string, password: string, firstName?: string, lastName?: string) {
     const redirectUrl = `${window.location.origin}/dashboard`;
@@ -41,6 +46,11 @@ export const authService = {
     return { error };
   },
 
+  // Sign out (alias for logout)
+  async signOut() {
+    return this.logout();
+  },
+
   // Listen to auth state changes
   onAuthStateChange(callback: (event: string, session: Session | null) => void) {
     return supabase.auth.onAuthStateChange(callback);
@@ -50,5 +60,16 @@ export const authService = {
   async getCurrentUser(): Promise<User | null> {
     const { data: { session } } = await supabase.auth.getSession();
     return session?.user || null;
+  },
+
+  // Create sample user if not exists (for dev login)
+  async createSampleUserIfNotExists(email: string, password: string) {
+    try {
+      const { data, error } = await this.signUp(email, password);
+      return { data, error };
+    } catch (error) {
+      console.error('Error creating sample user:', error);
+      return { data: null, error };
+    }
   }
 };

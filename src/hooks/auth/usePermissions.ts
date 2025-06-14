@@ -1,5 +1,5 @@
 
-import { User, Tenant, UserRole } from '@/types/tenant';
+import { User, Tenant } from '@/types/tenant';
 
 export const usePermissions = (user: User | null, currentTenant: Tenant | null) => {
   const hasPermission = (permission: string): boolean => {
@@ -19,7 +19,7 @@ export const usePermissions = (user: User | null, currentTenant: Tenant | null) 
     return tenantUser.permissions.includes(permission);
   };
 
-  const hasRole = (role: UserRole): boolean => {
+  const hasRole = (role: string): boolean => {
     if (!user || !currentTenant) return false;
     
     const tenantUser = user.tenants.find(t => t.tenantId === currentTenant.id);

@@ -69,11 +69,14 @@ export const userDataService = {
       name: tu.tenants.name,
       type: tu.tenants.type,
       subscription_tier: tu.tenants.subscription_tier,
+      subscriptionTier: tu.tenants.subscription_tier,
       status: tu.tenants.status,
       settings: tu.tenants.settings,
       metadata: tu.tenants.metadata,
       user_role: tu.role,
-      user_permissions: tu.permissions
+      user_permissions: tu.permissions,
+      createdAt: new Date(),
+      updatedAt: new Date()
     })) || [];
 
     const user: User = {
@@ -81,9 +84,21 @@ export const userDataService = {
       email: authUser.email,
       first_name: profile?.first_name || authUser.user_metadata?.first_name || '',
       last_name: profile?.last_name || authUser.user_metadata?.last_name || '',
+      firstName: profile?.first_name || authUser.user_metadata?.first_name || '',
+      lastName: profile?.last_name || authUser.user_metadata?.last_name || '',
       avatar: profile?.avatar || null,
       created_at: profile?.created_at || authUser.created_at,
-      updated_at: profile?.updated_at || authUser.updated_at
+      updated_at: profile?.updated_at || authUser.updated_at,
+      tenants: tenantUsers?.map((tu: any) => ({
+        id: tu.id || `tenant-user-${tu.tenant_id}`,
+        tenant_id: tu.tenant_id,
+        tenantId: tu.tenant_id,
+        user_id: authUser.id,
+        role: tu.role,
+        permissions: tu.permissions || [],
+        status: 'active',
+        joined_at: new Date().toISOString(),
+      })) || []
     };
 
     console.log('User data loaded successfully:', { user, tenants: tenants.length });
