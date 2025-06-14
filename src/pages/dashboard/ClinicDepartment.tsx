@@ -34,11 +34,6 @@ const ClinicDepartment = () => {
         {/* Quick Stats */}
         <ClinicStats />
 
-        {/* Integration Panel */}
-        <ClinicIntegrationSection />
-
-        <Separator className="my-8" />
-
         {/* Navigation Tabs and Content Combined */}
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -58,6 +53,11 @@ const ClinicDepartment = () => {
             </div>
           </Tabs>
         </div>
+
+        <Separator className="my-8" />
+
+        {/* Integration Panel */}
+        <ClinicIntegrationSection />
       </div>
 
       {/* POS Choice Dialog */}
