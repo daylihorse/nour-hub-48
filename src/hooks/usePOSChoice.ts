@@ -18,7 +18,15 @@ export const usePOSChoice = (departmentName: string) => {
   };
 
   const handleOpenSeparate = (posPath: string) => {
-    window.open(posPath, '_blank');
+    // Map department names to standalone POS URLs
+    const posRoutes: { [key: string]: string } = {
+      "Riding Academy": "/pos/academy",
+      "Pharmacy": "/pos/pharmacy", 
+      "Marketplace": "/pos/marketplace"
+    };
+    
+    const route = posRoutes[departmentName] || posPath;
+    window.open(route, '_blank');
     closePOSChoice();
   };
 

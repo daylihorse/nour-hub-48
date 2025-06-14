@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -47,7 +46,7 @@ const PharmacyDepartment = () => {
   };
 
   const handleOpenPOSSeparate = () => {
-    handleOpenSeparate("/dashboard/pharmacy?tab=pos");
+    handleOpenSeparate("");
   };
 
   return (
