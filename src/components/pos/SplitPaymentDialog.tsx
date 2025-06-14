@@ -22,6 +22,8 @@ interface SplitPaymentDialogProps {
   onConfirmPayment: (payments: SplitPayment[]) => void;
 }
 
+type PaymentMethod = 'cash' | 'card' | 'bank_transfer';
+
 const SplitPaymentDialog = ({
   isOpen,
   onClose,
@@ -42,8 +44,8 @@ const SplitPaymentDialog = ({
   const addPaymentMethod = () => {
     const usedMethods = payments.map(p => p.method);
     const availableMethods = ['cash', 'card', 'bank_transfer'].filter(
-      method => !usedMethods.includes(method as any)
-    ) as ('cash' | 'card' | 'bank_transfer')[];
+      method => !usedMethods.includes(method as PaymentMethod)
+    ) as PaymentMethod[];
 
     if (availableMethods.length > 0) {
       setPayments([...payments, { method: availableMethods[0], amount: 0 }]);
@@ -62,7 +64,7 @@ const SplitPaymentDialog = ({
     setPayments(updatedPayments);
   };
 
-  const updatePaymentMethod = (index: number, method: 'cash' | 'card' | 'bank_transfer') => {
+  const updatePaymentMethod = (index: number, method: PaymentMethod) => {
     const updatedPayments = [...payments];
     updatedPayments[index].method = method;
     setPayments(updatedPayments);
@@ -107,13 +109,16 @@ const SplitPaymentDialog = ({
       .filter(Boolean);
     return ['cash', 'card', 'bank_transfer'].filter(
       method => !usedMethods.includes(method)
-    ) as ('cash' | 'card' | 'bank_transfer')[];
+    ) as PaymentMethod[];
+  };
+
+  const isValidPaymentMethod = (value: string): value is PaymentMethod => {
+    return value === 'cash' || value === 'card' || value === 'bank_transfer';
   };
 
   const handlePaymentMethodChange = (index: number, value: string) => {
-    // Validate that the value is one of the allowed payment methods
-    if (value === 'cash' || value === 'card' || value === 'bank_transfer') {
-      updatePaymentMethod(index, value as 'cash' | 'card' | 'bank_transfer');
+    if (isValidPaymentMethod(value)) {
+      updatePaymentMethod(index, value);
     }
   };
 
