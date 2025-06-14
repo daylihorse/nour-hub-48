@@ -8,5 +8,5 @@ export const PAYMENT_METHOD_CONFIG: Record<PaymentMethod, PaymentMethodConfig> =
   cash: { icon: DollarSign, label: 'Cash', color: 'bg-green-500' },
   card: { icon: CreditCard, label: 'Credit Card', color: 'bg-blue-500' },
   bank_transfer: { icon: Building2, label: 'Bank Transfer', color: 'bg-purple-500' },
-  futures_debt: { icon: Clock, label: 'Futures Debt', color: 'bg-orange-500' }
+  futures_debt: { icon: Clock, label: 'Debt', color: 'bg-orange-500' }
 };

@@ -55,7 +55,7 @@ const CheckoutSection = ({
       cash: 'Cash',
       card: 'Card',
       bank_transfer: 'Bank Transfer',
-      futures_debt: 'Futures Debt'
+      futures_debt: 'Debt'
     };
 
     return posState.splitPayments.map((payment, index) => (
