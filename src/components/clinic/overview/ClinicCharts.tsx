@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell, LineChart, Line, AreaChart, Area } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell, LineChart, Line, AreaChart, Area, ResponsiveContainer } from "recharts";
 
 const ClinicCharts = () => {
   const appointmentData = [
@@ -38,16 +38,6 @@ const ClinicCharts = () => {
     { time: "18:00", appointments: 4, capacity: 6 },
   ];
 
-  const chartConfig = {
-    routine: { color: "#8884d8" },
-    emergency: { color: "#ff7300" },
-    surgery: { color: "#82ca9d" },
-    wellness: { color: "#ffc658" },
-    recoveryRate: { color: "#82ca9d" },
-    satisfaction: { color: "#8884d8" },
-    complications: { color: "#ff7300" },
-  };
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Appointment Trends */}
@@ -56,17 +46,52 @@ const ClinicCharts = () => {
           <CardTitle>Appointment Trends</CardTitle>
         </CardHeader>
         <CardContent>
-          <ChartContainer config={chartConfig} className="h-[300px]">
-            <AreaChart data={appointmentData}>
-              <XAxis dataKey="month" />
-              <YAxis />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <Area dataKey="routine" stackId="1" stroke="var(--color-routine)" fill="var(--color-routine)" fillOpacity={0.6} />
-              <Area dataKey="emergency" stackId="1" stroke="var(--color-emergency)" fill="var(--color-emergency)" fillOpacity={0.6} />
-              <Area dataKey="surgery" stackId="1" stroke="var(--color-surgery)" fill="var(--color-surgery)" fillOpacity={0.6} />
-              <Area dataKey="wellness" stackId="1" stroke="var(--color-wellness)" fill="var(--color-wellness)" fillOpacity={0.6} />
-            </AreaChart>
-          </ChartContainer>
+          <div className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={appointmentData}>
+                <XAxis 
+                  dataKey="month" 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12 }}
+                />
+                <YAxis 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12 }}
+                />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Area 
+                  dataKey="routine" 
+                  stackId="1" 
+                  stroke="#8884d8" 
+                  fill="#8884d8" 
+                  fillOpacity={0.6} 
+                />
+                <Area 
+                  dataKey="emergency" 
+                  stackId="1" 
+                  stroke="#ff7300" 
+                  fill="#ff7300" 
+                  fillOpacity={0.6} 
+                />
+                <Area 
+                  dataKey="surgery" 
+                  stackId="1" 
+                  stroke="#82ca9d" 
+                  fill="#82ca9d" 
+                  fillOpacity={0.6} 
+                />
+                <Area 
+                  dataKey="wellness" 
+                  stackId="1" 
+                  stroke="#ffc658" 
+                  fill="#ffc658" 
+                  fillOpacity={0.6} 
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
         </CardContent>
       </Card>
 
@@ -76,23 +101,25 @@ const ClinicCharts = () => {
           <CardTitle>Treatment Type Distribution</CardTitle>
         </CardHeader>
         <CardContent>
-          <ChartContainer config={{}} className="h-[300px]">
-            <PieChart>
-              <Pie
-                data={treatmentTypes}
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                dataKey="count"
-                label={({ type, percentage }) => `${type}: ${percentage}%`}
-              >
-                {treatmentTypes.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <ChartTooltip content={<ChartTooltipContent />} />
-            </PieChart>
-          </ChartContainer>
+          <div className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={treatmentTypes}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  dataKey="count"
+                  label={({ type, percentage }) => `${type}: ${percentage}%`}
+                >
+                  {treatmentTypes.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <ChartTooltip content={<ChartTooltipContent />} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
         </CardContent>
       </Card>
 
@@ -102,15 +129,26 @@ const ClinicCharts = () => {
           <CardTitle>Today's Schedule Capacity</CardTitle>
         </CardHeader>
         <CardContent>
-          <ChartContainer config={{}} className="h-[300px]">
-            <BarChart data={dailySchedule}>
-              <XAxis dataKey="time" />
-              <YAxis />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar dataKey="appointments" fill="#8884d8" name="Scheduled" />
-              <Bar dataKey="capacity" fill="#82ca9d" name="Capacity" />
-            </BarChart>
-          </ChartContainer>
+          <div className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={dailySchedule}>
+                <XAxis 
+                  dataKey="time" 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12 }}
+                />
+                <YAxis 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12 }}
+                />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="appointments" fill="#8884d8" name="Scheduled" />
+                <Bar dataKey="capacity" fill="#82ca9d" name="Capacity" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </CardContent>
       </Card>
 
@@ -120,16 +158,45 @@ const ClinicCharts = () => {
           <CardTitle>Health Outcome Metrics</CardTitle>
         </CardHeader>
         <CardContent>
-          <ChartContainer config={chartConfig} className="h-[300px]">
-            <LineChart data={healthMetrics}>
-              <XAxis dataKey="month" />
-              <YAxis />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <Line dataKey="recoveryRate" stroke="var(--color-recoveryRate)" name="Recovery Rate %" strokeWidth={2} />
-              <Line dataKey="satisfaction" stroke="var(--color-satisfaction)" name="Satisfaction %" strokeWidth={2} />
-              <Line dataKey="complications" stroke="var(--color-complications)" name="Complications %" strokeWidth={2} />
-            </LineChart>
-          </ChartContainer>
+          <div className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={healthMetrics}>
+                <XAxis 
+                  dataKey="month" 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12 }}
+                />
+                <YAxis 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12 }}
+                />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Line 
+                  dataKey="recoveryRate" 
+                  stroke="#82ca9d" 
+                  name="Recovery Rate %" 
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                />
+                <Line 
+                  dataKey="satisfaction" 
+                  stroke="#8884d8" 
+                  name="Satisfaction %" 
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                />
+                <Line 
+                  dataKey="complications" 
+                  stroke="#ff7300" 
+                  name="Complications %" 
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </CardContent>
       </Card>
     </div>
