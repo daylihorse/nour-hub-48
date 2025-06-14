@@ -1,16 +1,16 @@
 
 import { useState, useMemo } from 'react';
-import { StallionDetailRecord, StallionDetailFilters } from '@/types/breeding/stallion-detail';
+import { StallionDetailFilters, StallionDetailRecord } from '@/types/breeding/stallion-detail';
 
 interface UseGenericManagementProps<T extends StallionDetailRecord> {
   initialData: T[];
   filterFn: (item: T, filters: StallionDetailFilters) => boolean;
 }
 
-export function useGenericManagement<T extends StallionDetailRecord>({
+export const useGenericManagement = <T extends StallionDetailRecord>({
   initialData,
   filterFn
-}: UseGenericManagementProps<T>) {
+}: UseGenericManagementProps<T>) => {
   const [data, setData] = useState<T[]>(initialData);
   const [filters, setFilters] = useState<StallionDetailFilters>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -19,39 +19,23 @@ export function useGenericManagement<T extends StallionDetailRecord>({
     return data.filter(item => filterFn(item, filters));
   }, [data, filters, filterFn]);
 
-  const addRecord = async (newData: Omit<T, 'id' | 'createdAt'>) => {
-    setIsLoading(true);
-    try {
-      const newRecord = {
-        ...newData,
-        id: `${Date.now()}`,
-        createdAt: new Date()
-      } as T;
-      setData(prev => [newRecord, ...prev]);
-      return newRecord;
-    } finally {
-      setIsLoading(false);
-    }
+  const addRecord = (record: Omit<T, 'id' | 'createdAt'>) => {
+    const newRecord = {
+      ...record,
+      id: `${Date.now()}`,
+      createdAt: new Date()
+    } as T;
+    setData(prev => [...prev, newRecord]);
   };
 
-  const updateRecord = async (id: string, updateData: Partial<T>) => {
-    setIsLoading(true);
-    try {
-      setData(prev => 
-        prev.map(item => item.id === id ? { ...item, ...updateData } : item)
-      );
-    } finally {
-      setIsLoading(false);
-    }
+  const updateRecord = (id: string, updates: Partial<T>) => {
+    setData(prev => prev.map(item => 
+      item.id === id ? { ...item, ...updates } : item
+    ));
   };
 
-  const deleteRecord = async (id: string) => {
-    setIsLoading(true);
-    try {
-      setData(prev => prev.filter(item => item.id !== id));
-    } finally {
-      setIsLoading(false);
-    }
+  const deleteRecord = (id: string) => {
+    setData(prev => prev.filter(item => item.id !== id));
   };
 
   const exportData = (format: 'csv' | 'excel' | 'pdf') => {
@@ -68,4 +52,4 @@ export function useGenericManagement<T extends StallionDetailRecord>({
     deleteRecord,
     exportData
   };
-}
+};
