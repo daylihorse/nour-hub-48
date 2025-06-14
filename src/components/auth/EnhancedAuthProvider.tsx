@@ -31,8 +31,14 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
     isLoading,
     switchTenant,
     setIsLoading,
-    switchDemoAccount: authSwitchDemoAccount,
   } = currentAuth;
+
+  console.log('EnhancedAuthProvider: Current auth state:', {
+    user: user?.email,
+    tenant: currentTenant?.name,
+    isLoading,
+    accessMode
+  });
 
   const { hasPermission, hasRole } = usePermissions(user, currentTenant);
 
@@ -104,6 +110,13 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
     hasPermission,
     hasRole,
   };
+
+  console.log('EnhancedAuthProvider: Providing context value:', {
+    hasUser: !!user,
+    hasTenant: !!currentTenant,
+    isLoading,
+    hasSwitchDemoAccount: !!switchDemoAccount
+  });
 
   return (
     <AuthContextProvider.Provider value={value}>

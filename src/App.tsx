@@ -11,6 +11,8 @@ import OnboardingEntry from '@/pages/onboarding/OnboardingEntry';
 import './App.css';
 
 function App() {
+  console.log('App: Component rendering');
+  
   return (
     <AccessModeProvider>
       <EnhancedAuthProvider>
