@@ -15,15 +15,11 @@ interface EnhancedAuthProviderProps {
 export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) => {
   const { accessMode, setAccessMode } = useAccessMode();
   
-  console.log('EnhancedAuthProvider: Current access mode:', accessMode);
-  
   // Use different auth states based on access mode
   const regularAuth = useAuthState();
   const publicAuth = usePublicAuthState();
   
-  // Choose which auth state to use based on access mode
-  const currentAuth = accessMode === 'public' ? publicAuth : regularAuth;
-  
+  // Choose which auth state to use
   const {
     user,
     currentTenant,
@@ -31,19 +27,14 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
     isLoading,
     switchTenant,
     setIsLoading,
-  } = currentAuth;
-
-  console.log('EnhancedAuthProvider: Current auth state:', {
-    user: user?.email,
-    tenant: currentTenant?.name,
-    isLoading,
-    accessMode
-  });
+    switchDemoAccount: authSwitchDemoAccount,
+  } = accessMode === 'public' ? publicAuth : regularAuth;
 
   const { hasPermission, hasRole } = usePermissions(user, currentTenant);
 
   const login = async (email: string, password: string) => {
     if (accessMode === 'public') {
+      // In public mode, login is not needed
       console.log('Login not required in public mode');
       return;
     }
@@ -62,6 +53,8 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
 
   const logout = async () => {
     if (accessMode === 'public') {
+      // In public mode, logout doesn't need to call auth service
+      // Navigation will be handled by the calling component
       console.log('Logout from public mode');
       return;
     }
@@ -71,29 +64,28 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
       if (error) throw error;
     } catch (error) {
       console.error('Logout error:', error);
+      // Don't re-throw logout errors to prevent app crashes
     }
   };
 
   const switchDemoAccount = async (account: any) => {
-    console.log('EnhancedAuthProvider: Switching to demo account:', account);
+    console.log('Switching to demo account:', account);
     
     try {
       // Set to demo mode first
       setAccessMode('demo');
       
-      // Wait for access mode to update
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Wait a bit for the access mode to propagate
+      await new Promise(resolve => setTimeout(resolve, 50));
       
-      // Use the regular auth hook's switchDemoAccount function (works for both modes)
-      if (regularAuth.switchDemoAccount) {
-        await regularAuth.switchDemoAccount(account);
-        console.log('EnhancedAuthProvider: Demo account switch completed for:', account.tenantName);
-      } else {
-        console.error('EnhancedAuthProvider: switchDemoAccount function not available');
+      // Use the auth hook's switchDemoAccount function
+      if (authSwitchDemoAccount) {
+        await authSwitchDemoAccount(account);
+        console.log('Demo account switch completed for:', account.tenantName);
       }
       
     } catch (error) {
-      console.error('EnhancedAuthProvider: Demo account switch error:', error);
+      console.error('Demo account switch error:', error);
       throw error;
     }
   };
@@ -110,13 +102,6 @@ export const EnhancedAuthProvider = ({ children }: EnhancedAuthProviderProps) =>
     hasPermission,
     hasRole,
   };
-
-  console.log('EnhancedAuthProvider: Providing context value:', {
-    hasUser: !!user,
-    hasTenant: !!currentTenant,
-    isLoading,
-    hasSwitchDemoAccount: !!switchDemoAccount
-  });
 
   return (
     <AuthContextProvider.Provider value={value}>

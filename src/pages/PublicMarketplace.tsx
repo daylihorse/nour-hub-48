@@ -23,7 +23,7 @@ import { TenantType } from '@/types/tenant';
 import { publicMarketplaceService } from '@/services/publicMarketplaceService';
 import EnhancedProductCard from '@/components/marketplace/EnhancedProductCard';
 import ProductSearchFilters from '@/components/marketplace/ProductSearchFilters';
-import { AccessModeToggle } from '@/components/marketplace/AccessModeToggle';
+import AccessModeToggle from '@/components/marketplace/AccessModeToggle';
 
 interface FilterState {
   query: string;
@@ -35,8 +35,6 @@ interface FilterState {
 }
 
 const PublicMarketplace = () => {
-  console.log('PublicMarketplace: Component rendering');
-  
   const [selectedType, setSelectedType] = useState<TenantType | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'access' | 'products' | 'services'>('overview');
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
@@ -163,8 +161,6 @@ const PublicMarketplace = () => {
     console.log('Added to cart:', item.name);
     // In a real app, this would add to cart state or context
   };
-
-  console.log('PublicMarketplace: About to render JSX');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
