@@ -1,5 +1,5 @@
 
-import { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode, useState } from "react";
 
 interface Stallion {
   id: string;
@@ -19,6 +19,8 @@ interface Stallion {
 
 interface StallionContextValue {
   stallions: Stallion[];
+  error: string | null;
+  clearError: () => void;
 }
 
 const StallionContext = createContext<StallionContextValue | undefined>(undefined);
@@ -36,6 +38,12 @@ interface StallionProviderProps {
 }
 
 export const StallionProvider = ({ children }: StallionProviderProps) => {
+  const [error, setError] = useState<string | null>(null);
+
+  const clearError = () => {
+    setError(null);
+  };
+
   // Mock data for stallions
   const stallions: Stallion[] = [
     {
@@ -131,7 +139,9 @@ export const StallionProvider = ({ children }: StallionProviderProps) => {
   ];
 
   const value = {
-    stallions
+    stallions,
+    error,
+    clearError
   };
 
   return (
