@@ -31,23 +31,30 @@ interface CollectedSemenFormProps {
   onSubmit: (data: Omit<CollectedSemen, 'id' | 'createdAt'>) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
+  initialData?: CollectedSemen;
 }
 
-const CollectedSemenForm = ({ stallionId, onSubmit, onCancel, isLoading }: CollectedSemenFormProps) => {
+const CollectedSemenForm = ({ 
+  stallionId, 
+  onSubmit, 
+  onCancel, 
+  isLoading,
+  initialData 
+}: CollectedSemenFormProps) => {
   const form = useForm<FormData>({
     resolver: zodResolver(collectedSemenSchema),
     defaultValues: {
       stallionId,
-      collectionDate: new Date().toISOString().split('T')[0],
-      status: 'Fresh',
-      quality: 'Good',
-      volume: '',
-      concentration: '',
-      motility: '',
-      technician: '',
-      temperature: '',
-      ph: '',
-      notes: '',
+      collectionDate: initialData?.collectionDate || new Date().toISOString().split('T')[0],
+      status: initialData?.status || 'Fresh',
+      quality: initialData?.quality || 'Good',
+      volume: initialData?.volume || '',
+      concentration: initialData?.concentration || '',
+      motility: initialData?.motility || '',
+      technician: initialData?.technician || '',
+      temperature: initialData?.temperature || '',
+      ph: initialData?.ph || '',
+      notes: initialData?.notes || '',
     },
   });
 
@@ -74,7 +81,7 @@ const CollectedSemenForm = ({ stallionId, onSubmit, onCancel, isLoading }: Colle
       onSubmit={handleSubmit}
       onCancel={onCancel}
       isLoading={isLoading}
-      submitLabel="Save Collection"
+      submitLabel={initialData ? "Update Collection" : "Save Collection"}
     >
       <DateField
         control={form.control}

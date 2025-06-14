@@ -16,10 +16,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { CollectedSemen } from "@/types/breeding/stallion-detail";
+import { ViewMode } from "./BreedingRecordViewSelector";
+import BreedingRecordViewSelector from "./BreedingRecordViewSelector";
+import CollectedSemenGridView from "./CollectedSemenGridView";
+import CollectedSemenListView from "./CollectedSemenListView";
+import CollectedSemenTableView from "./CollectedSemenTableView";
+import EditCollectedSemenDialog from "./EditCollectedSemenDialog";
+import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 import { useCollectedSemenManagement } from "../../hooks/useCollectedSemenManagement";
 import CollectedSemenForm from "../../forms/CollectedSemenForm";
 import StallionDetailFilters from "../filters/StallionDetailFilters";
 import ExportButtons from "@/components/inventory/ExportButtons";
+import { useToast } from "@/hooks/use-toast";
 
 interface CollectedSemenTabProps {
   stallionId: string;
@@ -28,6 +37,10 @@ interface CollectedSemenTabProps {
 
 const CollectedSemenTab = ({ stallionId, onActionClick }: CollectedSemenTabProps) => {
   const [showForm, setShowForm] = useState(false);
+  const [editRecord, setEditRecord] = useState<CollectedSemen | null>(null);
+  const [deleteRecord, setDeleteRecord] = useState<CollectedSemen | null>(null);
+  const [currentView, setCurrentView] = useState<ViewMode>("grid");
+  const { toast } = useToast();
   
   const {
     collectedSemen,
@@ -35,6 +48,8 @@ const CollectedSemenTab = ({ stallionId, onActionClick }: CollectedSemenTabProps
     setFilters,
     isLoading,
     addCollectedSemen,
+    updateCollectedSemen,
+    deleteCollectedSemen,
     exportData
   } = useCollectedSemenManagement(stallionId);
 
@@ -43,11 +58,67 @@ const CollectedSemenTab = ({ stallionId, onActionClick }: CollectedSemenTabProps
   };
 
   const handleFormSubmit = async (data: any) => {
-    await addCollectedSemen(data);
-    setShowForm(false);
+    try {
+      await addCollectedSemen(data);
+      setShowForm(false);
+      toast({
+        title: "Success",
+        description: "Semen collection record created successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create semen collection record.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const getStatusColor = (status: string) => {
+  const handleEdit = (record: CollectedSemen) => {
+    setEditRecord(record);
+  };
+
+  const handleEditSave = async (updatedRecord: CollectedSemen) => {
+    try {
+      await updateCollectedSemen(updatedRecord.id, updatedRecord);
+      setEditRecord(null);
+      toast({
+        title: "Success",
+        description: "Semen collection record updated successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update semen collection record.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDelete = (record: CollectedSemen) => {
+    setDeleteRecord(record);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (deleteRecord) {
+      try {
+        await deleteCollectedSemen(deleteRecord.id);
+        setDeleteRecord(null);
+        toast({
+          title: "Success",
+          description: "Semen collection record deleted successfully.",
+        });
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to delete semen collection record.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
+  const getStatusColor = (status: string): "default" | "secondary" | "outline" | "destructive" => {
     switch (status) {
       case 'Fresh': return 'default';
       case 'Used': return 'secondary';
@@ -63,6 +134,44 @@ const CollectedSemenTab = ({ stallionId, onActionClick }: CollectedSemenTabProps
     technician: ['Dr. Smith', 'Dr. Johnson', 'Dr. Wilson']
   };
 
+  const renderContent = () => {
+    if (collectedSemen.length === 0) {
+      return (
+        <Card>
+          <CardContent className="p-8 text-center">
+            <TestTube className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">No Collections Found</h3>
+            <p className="text-muted-foreground mb-4">
+              No semen collection records found. Add your first collection to get started.
+            </p>
+            <Button onClick={handleAddNew}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add First Collection
+            </Button>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    const viewProps = {
+      collectedSemen,
+      onEdit: handleEdit,
+      onDelete: handleDelete,
+      getStatusColor
+    };
+
+    switch (currentView) {
+      case "grid":
+        return <CollectedSemenGridView {...viewProps} />;
+      case "list":
+        return <CollectedSemenListView {...viewProps} />;
+      case "table":
+        return <CollectedSemenTableView {...viewProps} />;
+      default:
+        return <CollectedSemenGridView {...viewProps} />;
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -70,10 +179,16 @@ const CollectedSemenTab = ({ stallionId, onActionClick }: CollectedSemenTabProps
           <h3 className="text-lg font-semibold">Collected Semen</h3>
           <p className="text-muted-foreground">Fresh semen collections and quality data</p>
         </div>
-        <Button onClick={handleAddNew}>
-          <Plus className="h-4 w-4 mr-2" />
-          New Collection
-        </Button>
+        <div className="flex gap-2">
+          <BreedingRecordViewSelector
+            currentView={currentView}
+            onViewChange={setCurrentView}
+          />
+          <Button onClick={handleAddNew}>
+            <Plus className="h-4 w-4 mr-2" />
+            New Collection
+          </Button>
+        </div>
       </div>
 
       <StallionDetailFilters
@@ -82,65 +197,7 @@ const CollectedSemenTab = ({ stallionId, onActionClick }: CollectedSemenTabProps
         filterOptions={filterOptions}
       />
 
-      <div className="grid gap-4">
-        {collectedSemen.map((collection) => (
-          <Card key={collection.id}>
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="text-base">{collection.id}</CardTitle>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4" />
-                    <span>{collection.collectionDate}</span>
-                    <span>•</span>
-                    <span>{collection.technician}</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge variant={getStatusColor(collection.status)}>
-                    {collection.status}
-                  </Badge>
-                  <Button variant="ghost" size="sm">
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="flex items-center gap-2">
-                  <TestTube className="h-4 w-4 text-blue-500" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Volume</p>
-                    <p className="font-medium">{collection.volume}</p>
-                  </div>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Concentration</p>
-                  <p className="font-medium">{collection.concentration}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Motility</p>
-                  <p className="font-medium">{collection.motility}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Quality</p>
-                  <p className="font-medium">{collection.quality}</p>
-                </div>
-              </div>
-              {collection.notes && (
-                <div className="mt-4">
-                  <p className="text-sm text-muted-foreground">Notes</p>
-                  <p className="text-sm">{collection.notes}</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {renderContent()}
 
       <div className="flex justify-between items-center">
         <div className="text-sm text-muted-foreground">
@@ -172,6 +229,21 @@ const CollectedSemenTab = ({ stallionId, onActionClick }: CollectedSemenTabProps
           />
         </DialogContent>
       </Dialog>
+
+      <EditCollectedSemenDialog
+        isOpen={!!editRecord}
+        onClose={() => setEditRecord(null)}
+        record={editRecord}
+        onSave={handleEditSave}
+      />
+
+      <DeleteConfirmationDialog
+        open={!!deleteRecord}
+        onOpenChange={(open) => !open && setDeleteRecord(null)}
+        onConfirm={handleDeleteConfirm}
+        recordId={deleteRecord?.id}
+        recordType="semen collection"
+      />
     </div>
   );
 };
