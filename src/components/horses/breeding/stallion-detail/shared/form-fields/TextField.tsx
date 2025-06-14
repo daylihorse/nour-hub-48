@@ -1,41 +1,54 @@
 
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Control } from "react-hook-form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Control, FieldPath, FieldValues } from "react-hook-form";
 
-interface TextFieldProps<T extends FieldValues> {
-  control: Control<T>;
-  name: FieldPath<T>;
+interface TextFieldProps {
+  control: Control<any>;
+  name: string;
   label: string;
-  placeholder?: string;
-  required?: boolean;
   type?: string;
+  required?: boolean;
+  placeholder?: string;
 }
 
-export function TextField<T extends FieldValues>({ 
+export const TextField = ({ 
   control, 
   name, 
   label, 
-  placeholder,
+  type = "text",
   required = false,
-  type = "text"
-}: TextFieldProps<T>) {
+  placeholder 
+}: TextFieldProps) => {
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}{required && " *"}</FormLabel>
+          <FormLabel>
+            {label}
+            {required && <span className="text-red-500 ml-1">*</span>}
+          </FormLabel>
           <FormControl>
-            <Input 
+            <Input
               type={type}
               placeholder={placeholder}
-              {...field} 
-              onChange={type === "number" 
-                ? (e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)
-                : field.onChange
-              }
+              {...field}
+              value={type === "number" ? field.value || "" : field.value}
+              onChange={(e) => {
+                if (type === "number") {
+                  field.onChange(e.target.value ? parseInt(e.target.value) : "");
+                } else {
+                  field.onChange(e.target.value);
+                }
+              }}
             />
           </FormControl>
           <FormMessage />
@@ -43,4 +56,4 @@ export function TextField<T extends FieldValues>({
       )}
     />
   );
-}
+};

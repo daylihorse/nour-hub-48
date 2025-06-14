@@ -1,42 +1,52 @@
 
-import { ReactNode } from "react";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
+import React from "react";
 import { UseFormReturn } from "react-hook-form";
+import { Form } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
-interface FormLayoutProps<T> {
-  form: UseFormReturn<T>;
-  onSubmit: (data: T) => Promise<void>;
+interface FormLayoutProps {
+  form: UseFormReturn<any>;
+  onSubmit: (data: any) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
   submitLabel?: string;
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
-export function FormLayout<T>({ 
-  form, 
-  onSubmit, 
-  onCancel, 
+export const FormLayout = ({
+  form,
+  onSubmit,
+  onCancel,
   isLoading = false,
   submitLabel = "Save",
-  children 
-}: FormLayoutProps<T>) {
+  children
+}: FormLayoutProps) => {
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {children}
         </div>
-
-        <div className="flex justify-end gap-2">
-          <Button type="button" variant="outline" onClick={onCancel}>
+        
+        <div className="flex justify-end gap-2 pt-4 border-t">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            disabled={isLoading}
+          >
             Cancel
           </Button>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Saving...' : submitLabel}
+          <Button
+            type="submit"
+            disabled={isLoading}
+          >
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {submitLabel}
           </Button>
         </div>
       </form>
     </Form>
   );
-}
+};

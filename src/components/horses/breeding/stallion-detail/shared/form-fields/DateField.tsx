@@ -1,35 +1,44 @@
 
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Control } from "react-hook-form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Control, FieldPath, FieldValues } from "react-hook-form";
 
-interface DateFieldProps<T extends FieldValues> {
-  control: Control<T>;
-  name: FieldPath<T>;
+interface DateFieldProps {
+  control: Control<any>;
+  name: string;
   label: string;
-  placeholder?: string;
   required?: boolean;
+  placeholder?: string;
 }
 
-export function DateField<T extends FieldValues>({ 
+export const DateField = ({ 
   control, 
   name, 
   label, 
-  placeholder,
-  required = false 
-}: DateFieldProps<T>) {
+  required = false,
+  placeholder 
+}: DateFieldProps) => {
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}{required && " *"}</FormLabel>
+          <FormLabel>
+            {label}
+            {required && <span className="text-red-500 ml-1">*</span>}
+          </FormLabel>
           <FormControl>
-            <Input 
-              type="date" 
+            <Input
+              type="date"
               placeholder={placeholder}
-              {...field} 
+              {...field}
             />
           </FormControl>
           <FormMessage />
@@ -37,4 +46,4 @@ export function DateField<T extends FieldValues>({
       )}
     />
   );
-}
+};

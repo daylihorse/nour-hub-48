@@ -1,37 +1,52 @@
 
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Control, FieldPath, FieldValues } from "react-hook-form";
+import { Control } from "react-hook-form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface SelectOption {
   value: string;
   label: string;
 }
 
-interface SelectFieldProps<T extends FieldValues> {
-  control: Control<T>;
-  name: FieldPath<T>;
+interface SelectFieldProps {
+  control: Control<any>;
+  name: string;
   label: string;
-  placeholder?: string;
   options: SelectOption[];
   required?: boolean;
+  placeholder?: string;
 }
 
-export function SelectField<T extends FieldValues>({ 
+export const SelectField = ({ 
   control, 
   name, 
   label, 
-  placeholder = "Select an option",
   options,
-  required = false
-}: SelectFieldProps<T>) {
+  required = false,
+  placeholder = "Select an option..."
+}: SelectFieldProps) => {
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}{required && " *"}</FormLabel>
+          <FormLabel>
+            {label}
+            {required && <span className="text-red-500 ml-1">*</span>}
+          </FormLabel>
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl>
               <SelectTrigger>
@@ -51,4 +66,4 @@ export function SelectField<T extends FieldValues>({
       )}
     />
   );
-}
+};
