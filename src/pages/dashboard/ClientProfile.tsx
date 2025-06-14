@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -125,7 +126,7 @@ const ClientProfile = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
       <div className="container mx-auto py-6 space-y-4">
-        {/* Breadcrumb Navigation - Moved here */}
+        {/* Breadcrumb Navigation */}
         <div className="flex items-center space-x-2">
           <Button 
             variant="ghost" 
@@ -172,22 +173,24 @@ const ClientProfile = () => {
           </CardHeader>
         </Card>
 
-        {/* 2. Contact Card - Smaller */}
+        {/* 2. Contact Card - Compact */}
         <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center">
               <Phone className="h-4 w-4 mr-2 text-blue-500" />
-              Contact
+              Contact Information
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 pt-0">
-            <div className="flex items-center p-2 rounded-lg bg-gray-50">
-              <Phone className="h-3 w-3 mr-2 text-gray-500" />
-              <span className="text-sm">{client.phone}</span>
-            </div>
-            <div className="flex items-center p-2 rounded-lg bg-gray-50">
-              <Mail className="h-3 w-3 mr-2 text-gray-500" />
-              <span className="text-sm">{client.email}</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div className="flex items-center p-2 rounded-lg bg-gray-50">
+                <Phone className="h-3 w-3 mr-2 text-gray-500" />
+                <span className="text-sm">{client.phone}</span>
+              </div>
+              <div className="flex items-center p-2 rounded-lg bg-gray-50">
+                <Mail className="h-3 w-3 mr-2 text-gray-500" />
+                <span className="text-sm">{client.email}</span>
+              </div>
             </div>
             {client.address && (
               <div className="flex items-start p-2 rounded-lg bg-gray-50">
@@ -198,54 +201,58 @@ const ClientProfile = () => {
           </CardContent>
         </Card>
 
-        {/* 3. Quick Actions - Smaller */}
+        {/* 3. Quick Actions - Compact */}
         <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm">Quick Actions</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-1 pt-0">
-            <Button variant="outline" size="sm" className="w-full justify-start h-8" onClick={handleSendMessage}>
-              <Mail className="h-3 w-3 mr-2" /> Message
-            </Button>
-            <Button variant="outline" size="sm" className="w-full justify-start h-8" onClick={handleScheduleMeeting}>
-              <Calendar className="h-3 w-3 mr-2" /> Schedule
-            </Button>
-            <Button variant="outline" size="sm" className="w-full justify-start h-8" onClick={() => setActiveTab("notes")}>
-              <FileText className="h-3 w-3 mr-2" /> Add Note
-            </Button>
-            <Button variant="outline" size="sm" className="w-full justify-start h-8" onClick={handleUploadDocument}>
-              <Upload className="h-3 w-3 mr-2" /> Upload
-            </Button>
-            {isHorseOwner && (
-              <Button variant="outline" size="sm" className="w-full justify-start h-8" onClick={handleViewHorses}>
-                <LinkIcon className="h-3 w-3 mr-2" /> View Horses
+          <CardContent className="pt-0">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+              <Button variant="outline" size="sm" className="h-8" onClick={handleSendMessage}>
+                <Mail className="h-3 w-3 mr-1" /> Message
               </Button>
-            )}
+              <Button variant="outline" size="sm" className="h-8" onClick={handleScheduleMeeting}>
+                <Calendar className="h-3 w-3 mr-1" /> Schedule
+              </Button>
+              <Button variant="outline" size="sm" className="h-8" onClick={() => setActiveTab("notes")}>
+                <FileText className="h-3 w-3 mr-1" /> Add Note
+              </Button>
+              <Button variant="outline" size="sm" className="h-8" onClick={handleUploadDocument}>
+                <Upload className="h-3 w-3 mr-1" /> Upload
+              </Button>
+              {isHorseOwner && (
+                <Button variant="outline" size="sm" className="h-8" onClick={handleViewHorses}>
+                  <LinkIcon className="h-3 w-3 mr-1" /> View Horses
+                </Button>
+              )}
+            </div>
           </CardContent>
         </Card>
 
-        {/* 4. Timeline - Smaller */}
+        {/* 4. Timeline - Compact */}
         <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm">Timeline</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2 pt-0">
-            <div className="text-center p-2 rounded-lg bg-blue-50">
-              <div className="text-xs font-medium text-blue-600">Client Since</div>
-              <div className="text-sm font-bold text-blue-800">
-                {format(new Date(client.createdAt), 'MMM yyyy')}
+          <CardContent className="pt-0">
+            <div className="grid grid-cols-2 gap-2">
+              <div className="text-center p-2 rounded-lg bg-blue-50">
+                <div className="text-xs font-medium text-blue-600">Client Since</div>
+                <div className="text-sm font-bold text-blue-800">
+                  {format(new Date(client.createdAt), 'MMM yyyy')}
+                </div>
               </div>
-            </div>
-            <div className="text-center p-2 rounded-lg bg-green-50">
-              <div className="text-xs font-medium text-green-600">Last Contact</div>
-              <div className="text-sm font-bold text-green-800">
-                {formatDistanceToNow(new Date(client.lastInteraction), { addSuffix: true })}
+              <div className="text-center p-2 rounded-lg bg-green-50">
+                <div className="text-xs font-medium text-green-600">Last Contact</div>
+                <div className="text-sm font-bold text-green-800">
+                  {formatDistanceToNow(new Date(client.lastInteraction), { addSuffix: true })}
+                </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* 5. Stats Card for Horse Owners - Smaller */}
+        {/* 5. Statistics Card for Horse Owners - Compact */}
         {isHorseOwner && (
           <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
             <CardHeader className="pb-2">
@@ -277,7 +284,7 @@ const ClientProfile = () => {
           </Card>
         )}
 
-        {/* Main Content Area - Tabs */}
+        {/* 6. Main Content Area - Tabs */}
         <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="p-4 pb-0">
