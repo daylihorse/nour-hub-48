@@ -10,10 +10,33 @@ import ResultComparison from "@/components/laboratory/ResultComparison";
 import QualityControl from "@/components/laboratory/QualityControl";
 import TemplateManagement from "@/components/laboratory/TemplateManagement";
 import StoreManagement from "@/components/store/StoreManagement";
-import { Store, FlaskRound, TestTube, Microscope, FileText, Settings, TrendingUp, Shield, File } from "lucide-react";
+import POSChoiceDialog from "@/components/pos/POSChoiceDialog";
+import { usePOSChoice } from "@/hooks/usePOSChoice";
+import POSSystem from "@/components/pos/POSSystem";
+import { Store, FlaskRound, TestTube, Microscope, FileText, Settings, TrendingUp, Shield, File, ShoppingCart } from "lucide-react";
 
 const LaboratoryDepartment = () => {
   const [activeTab, setActiveTab] = useState("overview");
+  const [showPOS, setShowPOS] = useState(false);
+  
+  const {
+    isDialogOpen,
+    openPOSChoice,
+    closePOSChoice,
+    handleUseHere,
+    handleOpenSeparate,
+  } = usePOSChoice("Laboratory");
+
+  const handlePOSTabClick = () => {
+    openPOSChoice();
+  };
+
+  const handleUsePOSHere = () => {
+    handleUseHere(() => {
+      setActiveTab("pos");
+      setShowPOS(true);
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -23,7 +46,7 @@ const LaboratoryDepartment = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-9">
+        <TabsList className="grid w-full grid-cols-10">
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <FlaskRound className="h-4 w-4" />
             Overview
@@ -55,6 +78,14 @@ const LaboratoryDepartment = () => {
           <TabsTrigger value="documents" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
             Documents
+          </TabsTrigger>
+          <TabsTrigger 
+            value="pos" 
+            className="flex items-center gap-2"
+            onClick={handlePOSTabClick}
+          >
+            <ShoppingCart className="h-4 w-4" />
+            Point of Sale
           </TabsTrigger>
           <TabsTrigger value="store" className="flex items-center gap-2">
             <Store className="h-4 w-4" />
@@ -94,10 +125,24 @@ const LaboratoryDepartment = () => {
           <LaboratoryDocumentManager />
         </TabsContent>
 
+        {showPOS && (
+          <TabsContent value="pos" className="mt-6">
+            <POSSystem department="laboratory" />
+          </TabsContent>
+        )}
+
         <TabsContent value="store" className="mt-6">
           <StoreManagement department="laboratory" departmentName="Laboratory" />
         </TabsContent>
       </Tabs>
+
+      <POSChoiceDialog
+        isOpen={isDialogOpen}
+        onClose={closePOSChoice}
+        departmentName="Laboratory"
+        onUseHere={handleUsePOSHere}
+        onOpenSeparate={handleOpenSeparate}
+      />
     </div>
   );
 };
