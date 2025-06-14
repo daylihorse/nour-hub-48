@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { BaseRecord, RecordFilters, RecordStats, RecordType, RecordStatus, RecordPriority } from "@/types/breeding/unified-records";
 
@@ -74,6 +73,7 @@ export const useUnifiedRecords = (initialRecords: BaseRecord[] = []) => {
       foaling: 0,
       health_assessment: 0,
       heat_cycle: 0,
+      stallion: 0,
     };
 
     const byStatus: Record<RecordStatus, number> = {

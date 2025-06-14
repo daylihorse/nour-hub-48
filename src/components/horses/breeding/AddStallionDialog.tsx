@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -100,7 +99,7 @@ const AddStallionDialog = ({
       type: 'stallion',
       title: `${formData.stallionName} - ${formData.breed}`,
       description: formData.notes || undefined,
-      status: 'active',
+      status: 'completed',
       priority: formData.requiresSpecialHandling ? 'high' : 'medium',
       horseId: stallionId || "default-horse-id",
       horseName: stallionName || "Stallion",
