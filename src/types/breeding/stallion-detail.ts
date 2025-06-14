@@ -36,6 +36,8 @@ export interface CollectedSemen {
   motility: string;
   quality: string;
   status: string;
+  temperature?: string;
+  ph?: string;
   notes?: string;
   createdAt: Date;
 }
@@ -75,6 +77,7 @@ export interface BreedingRecord {
   id: string;
   stallionId: string;
   mareName: string;
+  mareId?: string;
   mareOwner: string;
   date: string;
   method: string;
@@ -82,6 +85,8 @@ export interface BreedingRecord {
   status: string;
   result: string;
   expectedFoaling?: string;
+  contractId?: string;
+  studFee?: number;
   notes?: string;
   createdAt: Date;
 }
