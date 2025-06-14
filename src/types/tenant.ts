@@ -49,3 +49,16 @@ export interface TenantUser {
   joined_at: string;
   last_login_at?: string;
 }
+
+export interface AuthContext {
+  user: User | null;
+  currentTenant: Tenant | null;
+  availableTenants: Tenant[];
+  isLoading: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  switchTenant: (tenantId: string) => Promise<void>;
+  switchDemoAccount?: (account: any) => Promise<void>;
+  hasPermission: (permission: string) => boolean;
+  hasRole: (role: string) => boolean;
+}
