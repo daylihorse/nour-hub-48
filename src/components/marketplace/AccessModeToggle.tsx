@@ -19,14 +19,14 @@ export const AccessModeToggle = () => {
   const demoAccounts = publicDemoService.getDemoAccounts();
 
   const handleModeChange = (checked: boolean) => {
-    const newMode = checked ? 'demo' : 'authenticated';
+    const newMode = checked ? 'demo' : 'public';
     setAccessMode(newMode);
     
     toast({
-      title: newMode === 'demo' ? 'Demo Mode Enabled' : 'Authenticated Mode Enabled',
+      title: newMode === 'demo' ? 'Demo Mode Enabled' : 'Public Mode Enabled',
       description: newMode === 'demo' 
-        ? 'You can now explore the marketplace without authentication'
-        : 'You need to log in to access marketplace features',
+        ? 'You can now explore the marketplace with sample accounts'
+        : 'You are viewing the marketplace in public mode',
     });
   };
 
@@ -59,7 +59,7 @@ export const AccessModeToggle = () => {
           Access Mode
         </CardTitle>
         <CardDescription>
-          Toggle between authenticated and demo mode
+          Toggle between public and demo mode
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -70,14 +70,14 @@ export const AccessModeToggle = () => {
             onCheckedChange={handleModeChange}
           />
           <Label htmlFor="access-mode">
-            {accessMode === 'demo' ? 'Demo Mode' : 'Authenticated Mode'}
+            {accessMode === 'demo' ? 'Demo Mode' : 'Public Mode'}
           </Label>
         </div>
         
         <div className="text-sm text-muted-foreground">
           {accessMode === 'demo' 
-            ? 'Explore marketplace features with sample data'
-            : 'Full authentication required for marketplace access'
+            ? 'Explore marketplace features with sample accounts and data'
+            : 'Browse marketplace products and services publicly'
           }
         </div>
 

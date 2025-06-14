@@ -23,7 +23,7 @@ import { TenantType } from '@/types/tenant';
 import { publicMarketplaceService } from '@/services/publicMarketplaceService';
 import EnhancedProductCard from '@/components/marketplace/EnhancedProductCard';
 import ProductSearchFilters from '@/components/marketplace/ProductSearchFilters';
-import AccessModeToggle from '@/components/marketplace/AccessModeToggle';
+import { AccessModeToggle } from '@/components/marketplace/AccessModeToggle';
 
 interface FilterState {
   query: string;
