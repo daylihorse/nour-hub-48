@@ -6,7 +6,9 @@ export interface BreedingTab {
 }
 
 export const breedingTabsConfig = [
-  { value: "dashboard", label: "Overview" },
+  { value: "dashboard", label: "Dashboard" },
+  { value: "stallions", label: "Stallions" },
+  { value: "mares", label: "Mares" },
   { value: "breeding", label: "Records" },
   { value: "pregnancies", label: "Pregnancies" },
   { value: "foaling", label: "Foaling" },
