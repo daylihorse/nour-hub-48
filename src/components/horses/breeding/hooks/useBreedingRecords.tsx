@@ -1,12 +1,16 @@
 
 import { useState } from "react";
 import { BreedingRecord } from "@/types/breeding";
+import { ViewMode } from "../components/ViewSelector";
+import { GridSize } from "../components/GridSizeSelector";
 
 export const useBreedingRecords = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [gridSize, setGridSize] = useState<GridSize>(3);
 
   // Mock breeding records data
   const breedingRecords: BreedingRecord[] = [
@@ -85,5 +89,9 @@ export const useBreedingRecords = () => {
     breedingRecords,
     filteredRecords,
     stats,
+    viewMode,
+    setViewMode,
+    gridSize,
+    setGridSize,
   };
 };

@@ -1,103 +1,39 @@
 
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Search, Calendar, Baby, Heart, AlertTriangle, Stethoscope } from "lucide-react";
-import PregnancyCard from "./PregnancyCard";
+import { Plus, Search, Calendar, Baby, Heart, AlertTriangle } from "lucide-react";
+import PregnancyGridView from "./components/PregnancyGridView";
+import PregnancyListView from "./components/PregnancyListView";
+import PregnancyTableView from "./components/PregnancyTableView";
+import ViewSelector from "./components/ViewSelector";
 import AddPregnancyDialog from "./AddPregnancyDialog";
 import UltrasoundDialog from "./UltrasoundDialog";
 import VetCheckupDialog from "./VetCheckupDialog";
-import { PregnancyRecord } from "@/types/breeding";
+import { usePregnancyManagement } from "./hooks/usePregnancyManagement";
 
 const PregnancyManagement = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [showAddDialog, setShowAddDialog] = useState(false);
-  const [showUltrasoundDialog, setShowUltrasoundDialog] = useState(false);
-  const [showCheckupDialog, setShowCheckupDialog] = useState(false);
-  const [selectedPregnancy, setSelectedPregnancy] = useState<string | null>(null);
-
-  // Mock pregnancy data
-  const pregnancies: PregnancyRecord[] = [
-    {
-      id: "P001",
-      mareId: "M001",
-      stallionId: "S001",
-      breedingDate: new Date("2023-07-15"),
-      expectedDueDate: new Date("2024-05-15"),
-      status: "confirmed",
-      ultrasounds: [
-        {
-          id: "U001",
-          pregnancyId: "P001",
-          date: new Date("2023-08-15"),
-          gestationDay: 30,
-          findings: "Healthy fetal development confirmed",
-          veterinarian: "Dr. Smith"
-        }
-      ],
-      checkups: [
-        {
-          id: "C001",
-          pregnancyId: "P001",
-          date: new Date("2023-09-15"),
-          type: "routine",
-          findings: "Mare and foal progressing well",
-          veterinarian: "Dr. Smith"
-        }
-      ],
-      notes: "First pregnancy for this mare",
-      createdAt: new Date("2023-07-15"),
-      updatedAt: new Date("2023-09-15"),
-    },
-    {
-      id: "P002",
-      mareId: "M002",
-      stallionId: "S002",
-      breedingDate: new Date("2023-06-10"),
-      expectedDueDate: new Date("2024-04-10"),
-      status: "monitoring",
-      ultrasounds: [],
-      checkups: [],
-      notes: "Regular monitoring required",
-      createdAt: new Date("2023-06-10"),
-      updatedAt: new Date("2023-06-10"),
-    }
-  ];
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "confirmed":
-        return "default";
-      case "monitoring":
-        return "secondary";
-      case "delivered":
-        return "outline";
-      case "lost":
-        return "destructive";
-      default:
-        return "secondary";
-    }
-  };
-
-  const filteredPregnancies = pregnancies.filter(pregnancy => {
-    const matchesSearch = searchTerm === "" || 
-      pregnancy.id.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === "all" || pregnancy.status === statusFilter;
-    
-    return matchesSearch && matchesStatus;
-  });
-
-  const stats = {
-    total: pregnancies.length,
-    confirmed: pregnancies.filter(p => p.status === "confirmed").length,
-    monitoring: pregnancies.filter(p => p.status === "monitoring").length,
-    delivered: pregnancies.filter(p => p.status === "delivered").length,
-  };
+  const {
+    searchTerm,
+    setSearchTerm,
+    statusFilter,
+    setStatusFilter,
+    showAddDialog,
+    setShowAddDialog,
+    showUltrasoundDialog,
+    setShowUltrasoundDialog,
+    showCheckupDialog,
+    setShowCheckupDialog,
+    selectedPregnancy,
+    setSelectedPregnancy,
+    filteredPregnancies,
+    stats,
+    viewMode,
+    setViewMode,
+    gridSize,
+    setGridSize,
+  } = usePregnancyManagement();
 
   const handleScheduleUltrasound = (pregnancyId: string) => {
     setSelectedPregnancy(pregnancyId);
@@ -109,6 +45,26 @@ const PregnancyManagement = () => {
     setShowCheckupDialog(true);
   };
 
+  const renderView = () => {
+    const commonProps = {
+      pregnancies: filteredPregnancies,
+      onScheduleUltrasound: handleScheduleUltrasound,
+      onScheduleCheckup: handleScheduleCheckup,
+      onEditPregnancy: (pregnancyId: string) => console.log('Edit pregnancy:', pregnancyId),
+    };
+
+    switch (viewMode) {
+      case "grid":
+        return <PregnancyGridView {...commonProps} gridSize={gridSize} />;
+      case "list":
+        return <PregnancyListView {...commonProps} />;
+      case "table":
+        return <PregnancyTableView {...commonProps} />;
+      default:
+        return <PregnancyGridView {...commonProps} gridSize={gridSize} />;
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -117,10 +73,18 @@ const PregnancyManagement = () => {
           <h2 className="text-2xl font-bold">Pregnancy Tracking</h2>
           <p className="text-muted-foreground">Monitor pregnancies and veterinary care</p>
         </div>
-        <Button onClick={() => setShowAddDialog(true)} className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          Add Pregnancy
-        </Button>
+        <div className="flex items-center gap-4">
+          <ViewSelector 
+            currentView={viewMode}
+            onViewChange={setViewMode}
+            gridSize={gridSize}
+            onGridSizeChange={setGridSize}
+          />
+          <Button onClick={() => setShowAddDialog(true)} className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Add Pregnancy
+          </Button>
+        </div>
       </div>
 
       {/* Statistics Cards */}
@@ -203,17 +167,7 @@ const PregnancyManagement = () => {
         </TabsList>
         
         <TabsContent value="active" className="mt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {filteredPregnancies.map((pregnancy) => (
-              <PregnancyCard 
-                key={pregnancy.id} 
-                pregnancy={pregnancy}
-                statusColor={getStatusColor(pregnancy.status)}
-                onScheduleUltrasound={handleScheduleUltrasound}
-                onScheduleCheckup={handleScheduleCheckup}
-              />
-            ))}
-          </div>
+          {renderView()}
         </TabsContent>
         
         <TabsContent value="history" className="mt-6">
