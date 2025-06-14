@@ -1,12 +1,10 @@
 
 import { useState } from 'react';
-import { PharmacyPOSState, PharmacySale, MedicationPickupNotification } from '@/types/pharmacyPOS';
+import { PharmacyPOSState, PharmacySale, InsuranceClaim, MedicationPickupNotification } from '@/types/pharmacyPOS';
 import { useToast } from '@/hooks/use-toast';
 
 export const usePharmacySalesManagement = () => {
   const { toast } = useToast();
-  const [sales, setSales] = useState<PharmacySale[]>([]);
-  const [notifications, setNotifications] = useState<MedicationPickupNotification[]>([]);
 
   const completeSale = async (
     posState: PharmacyPOSState,
@@ -23,92 +21,38 @@ export const usePharmacySalesManagement = () => {
       return false;
     }
 
-    // Validate prescription items if sale type is prescription
-    if (posState.saleType === 'prescription' && !posState.prescriptionId) {
-      toast({
-        title: "Missing Prescription",
-        description: "Please select a prescription for prescription sales.",
-        variant: "destructive",
-      });
-      return false;
-    }
+    // Simulate sale processing
+    const sale: PharmacySale = {
+      id: `pharm_sale_${Date.now()}`,
+      items: posState.cart,
+      subtotal,
+      tax,
+      total,
+      paymentMethod: posState.paymentMethod as any,
+      saleDate: new Date(),
+      department: 'pharmacy',
+      saleType: posState.saleType,
+      prescriptionId: posState.prescriptionId,
+      clientId: posState.client?.id,
+      requiresFollowUp: posState.requiresConsultation,
+    };
 
-    try {
-      const newSale: PharmacySale = {
-        id: `PSALE_${Date.now()}`,
-        items: posState.cart,
-        subtotal,
-        tax,
-        total,
-        paymentMethod: posState.paymentMethod as 'cash' | 'card' | 'bank_transfer',
-        customerName: posState.client?.name,
-        customerContact: posState.client?.email,
-        saleDate: new Date(),
-        department: 'pharmacy',
-        saleType: posState.saleType,
-        prescriptionId: posState.prescriptionId,
-        clientId: posState.client?.id,
-        requiresFollowUp: posState.requiresConsultation,
-      };
+    toast({
+      title: "Sale Completed",
+      description: `Pharmacy sale ${sale.id} completed successfully. Total: $${sale.total.toFixed(2)}`,
+    });
 
-      setSales(prev => [...prev, newSale]);
-
-      // Process insurance claim if applicable
-      if (posState.paymentMethod === 'insurance' && posState.insuranceInfo) {
-        await processInsuranceClaim({
-          clientId: posState.client?.id,
-          insuranceInfo: posState.insuranceInfo,
-          items: posState.cart,
-          totalAmount: total,
-          coveredAmount: total * (posState.insuranceInfo.coveragePercentage / 100),
-          patientAmount: total - (total * (posState.insuranceInfo.coveragePercentage / 100)),
-        });
-      }
-
-      // Send pickup notification if it's a prescription
-      if (posState.saleType === 'prescription' && posState.client) {
-        await sendPickupNotification(posState.client.id, posState.prescriptionId!);
-      }
-
-      toast({
-        title: "Sale Completed",
-        description: `Sale ${newSale.id} completed successfully. Total: $${total.toFixed(2)}`,
-      });
-
-      return true;
-    } catch (error) {
-      toast({
-        title: "Sale Failed",
-        description: "There was an error processing the sale. Please try again.",
-        variant: "destructive",
-      });
-      return false;
-    }
+    return true;
   };
 
-  const processInsuranceClaim = async (claimData: any) => {
-    // Mock insurance claim processing
-    console.log('Processing insurance claim:', claimData);
-    
+  const processInsuranceClaim = (claimData: any) => {
     toast({
-      title: "Insurance Claim Submitted",
+      title: "Insurance Claim Processed",
       description: "Insurance claim has been submitted for processing.",
     });
   };
 
-  const sendPickupNotification = async (clientId: string, prescriptionId: string) => {
-    const notification: MedicationPickupNotification = {
-      id: `NOTIF_${Date.now()}`,
-      clientId,
-      prescriptionId,
-      medication: "Prescription medication", // Would be dynamic
-      readyForPickup: new Date(),
-      notificationSent: true,
-      pickedUp: false,
-    };
-
-    setNotifications(prev => [...prev, notification]);
-
+  const sendPickupNotification = (clientId: string, prescriptionId: string) => {
     toast({
       title: "Pickup Notification Sent",
       description: "Client has been notified that their prescription is ready for pickup.",
@@ -116,8 +60,6 @@ export const usePharmacySalesManagement = () => {
   };
 
   return {
-    sales,
-    notifications,
     completeSale,
     processInsuranceClaim,
     sendPickupNotification,

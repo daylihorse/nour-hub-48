@@ -5,7 +5,7 @@ export interface StoreProduct {
   description: string;
   price: number;
   category: string;
-  department: 'inventory' | 'laboratory' | 'clinic' | 'marketplace';
+  department: 'inventory' | 'laboratory' | 'clinic' | 'marketplace' | 'academy';
   stock: number;
   images: string[];
   isActive: boolean;
@@ -19,7 +19,7 @@ export interface StoreService {
   description: string;
   price: number;
   category: string;
-  department: 'inventory' | 'laboratory' | 'clinic' | 'marketplace';
+  department: 'inventory' | 'laboratory' | 'clinic' | 'marketplace' | 'academy';
   duration?: number; // in minutes
   isActive: boolean;
   availability: {
