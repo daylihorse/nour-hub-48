@@ -91,240 +91,282 @@ const ClientProfile = () => {
   };
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      <div className="flex items-center space-x-2">
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={() => navigate("/dashboard/clients")}
-        >
-          <ArrowLeft className="h-4 w-4 mr-1" />
-          Back to Clients
-        </Button>
-      </div>
-      
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Left Column - Client Profile Card */}
-        <div className="w-full lg:w-1/3 space-y-6">
-          <Card className="overflow-hidden">
-            <div className={`h-12 ${isHorseOwner ? 'bg-purple-500' : 'bg-blue-500'}`}></div>
-            <CardHeader className="pt-4">
-              <div className="flex justify-between items-start">
-                <div className="flex items-center">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white mr-4 ${isHorseOwner ? 'bg-purple-500' : 'bg-blue-500'}`}>
-                    {isHorseOwner ? (
-                      <User className="h-6 w-6" />
-                    ) : (
-                      <User className="h-6 w-6" />
-                    )}
-                  </div>
-                  <div>
-                    <CardTitle>{client.name}</CardTitle>
-                    <CardDescription>
-                      <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                        client.type === "Horse Owner" 
-                          ? "bg-purple-100 text-purple-800" 
-                          : "bg-blue-100 text-blue-800"
-                      }`}>
-                        {client.type}
-                      </span>
-                      <span className={`inline-block ml-2 px-2 py-1 rounded-full text-xs font-medium ${
-                        client.status === "Active" 
-                          ? "bg-green-100 text-green-800" 
-                          : "bg-red-100 text-red-800"
-                      }`}>
-                        {client.status}
-                      </span>
-                    </CardDescription>
-                  </div>
-                </div>
-                <div className="flex">
-                  <ClientChatButton client={client} />
-                  <Button size="sm" variant="outline" onClick={() => navigate(`/dashboard/clients/${client.id}/edit`)} className="ml-2">
-                    <Edit className="h-4 w-4 mr-1" /> Edit
-                  </Button>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
+      <div className="container mx-auto py-6 space-y-6">
+        {/* Header Section */}
+        <div className="flex items-center space-x-2">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => navigate("/dashboard/clients")}
+            className="hover:bg-white/60"
+          >
+            <ArrowLeft className="h-4 w-4 mr-1" />
+            Back to Clients
+          </Button>
+        </div>
+        
+        {/* Enhanced Profile Header Card */}
+        <Card className="overflow-hidden shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+          <div className={`h-24 bg-gradient-to-r ${isHorseOwner ? 'from-purple-500 to-purple-600' : 'from-blue-500 to-blue-600'}`}>
+            <div className="absolute top-16 left-8">
+              <div className={`w-20 h-20 rounded-full flex items-center justify-center text-white shadow-xl border-4 border-white ${isHorseOwner ? 'bg-purple-500' : 'bg-blue-500'}`}>
+                <User className="h-10 w-10" />
+              </div>
+            </div>
+          </div>
+          <CardHeader className="pt-12 pb-4">
+            <div className="flex justify-between items-start">
+              <div className="ml-28">
+                <CardTitle className="text-2xl font-bold text-gray-900">{client.name}</CardTitle>
+                <div className="flex gap-2 mt-2">
+                  <Badge className={`${
+                    client.type === "Horse Owner" 
+                      ? "bg-purple-100 text-purple-800 border-purple-200" 
+                      : "bg-blue-100 text-blue-800 border-blue-200"
+                  }`}>
+                    {client.type}
+                  </Badge>
+                  <Badge variant={client.status === "Active" ? "default" : "secondary"}>
+                    {client.status}
+                  </Badge>
                 </div>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <h3 className="text-sm font-medium text-muted-foreground mb-2">Contact Information</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <Phone className="h-4 w-4 mr-2 text-muted-foreground" />
-                    <span>{client.phone}</span>
+              <div className="flex gap-2">
+                <ClientChatButton client={client} />
+                <Button size="sm" variant="outline" onClick={() => navigate(`/dashboard/clients/${client.id}/edit`)}>
+                  <Edit className="h-4 w-4 mr-1" /> Edit
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Left Sidebar - Client Info & Quick Actions */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Contact Information Card */}
+            <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center">
+                  <Phone className="h-5 w-5 mr-2 text-blue-500" />
+                  Contact Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="flex items-center p-3 rounded-lg bg-gray-50">
+                    <Phone className="h-4 w-4 mr-3 text-gray-500" />
+                    <span className="text-sm">{client.phone}</span>
                   </div>
-                  <div className="flex items-center">
-                    <Mail className="h-4 w-4 mr-2 text-muted-foreground" />
-                    <span>{client.email}</span>
+                  <div className="flex items-center p-3 rounded-lg bg-gray-50">
+                    <Mail className="h-4 w-4 mr-3 text-gray-500" />
+                    <span className="text-sm">{client.email}</span>
                   </div>
                   {client.address && (
-                    <div className="flex items-center">
-                      <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
-                      <span>{client.address}</span>
+                    <div className="flex items-start p-3 rounded-lg bg-gray-50">
+                      <MapPin className="h-4 w-4 mr-3 text-gray-500 mt-0.5" />
+                      <span className="text-sm">{client.address}</span>
                     </div>
                   )}
                 </div>
-              </div>
+              </CardContent>
+            </Card>
 
-              {isHorseOwner && (
-                <div>
-                  <h3 className="text-sm font-medium text-muted-foreground mb-2">Horse Owner Details</h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center">
-                      <span className="text-sm">Horses Owned:</span>
-                      <Badge className="ml-2">{horseOwner.horsesOwned}</Badge>
+            {/* Horse Owner Details */}
+            {isHorseOwner && (
+              <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center">
+                    <User className="h-5 w-5 mr-2 text-purple-500" />
+                    Horse Owner Details
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center p-3 rounded-lg bg-purple-50">
+                      <div className="text-2xl font-bold text-purple-600">{horseOwner.horsesOwned}</div>
+                      <div className="text-xs text-purple-600">Horses Owned</div>
                     </div>
-                    {horseOwner.stableAssignment && (
-                      <div className="flex items-center">
-                        <span className="text-sm">Stable Assignment:</span>
-                        <Badge variant="outline" className="ml-2">{horseOwner.stableAssignment}</Badge>
-                      </div>
-                    )}
                     {horseOwner.billingInfo && (
-                      <div className="flex items-center">
-                        <DollarSign className="h-4 w-4 mr-1 text-muted-foreground" />
-                        <span className="text-sm">Outstanding Balance:</span>
-                        <span className="ml-2 font-medium">
-                          ${horseOwner.billingInfo.outstanding.toFixed(2)}
-                        </span>
+                      <div className="text-center p-3 rounded-lg bg-red-50">
+                        <div className="text-2xl font-bold text-red-600">${horseOwner.billingInfo.outstanding.toFixed(0)}</div>
+                        <div className="text-xs text-red-600">Outstanding</div>
                       </div>
                     )}
                   </div>
-                </div>
-              )}
+                  {horseOwner.stableAssignment && (
+                    <div className="p-3 rounded-lg bg-gray-50">
+                      <div className="text-sm font-medium text-gray-700">Stable Assignment</div>
+                      <div className="text-sm text-gray-600">{horseOwner.stableAssignment}</div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
 
-              <div>
-                <h3 className="text-sm font-medium text-muted-foreground mb-2">Client Since</h3>
-                <span>{format(new Date(client.createdAt), 'MMM dd, yyyy')}</span>
-              </div>
-            </CardContent>
-            <CardFooter className="border-t bg-muted/50 p-3">
-              <div className="flex justify-center w-full gap-2">
-                <Button size="sm" variant="ghost" onClick={handleSendMessage}>
-                  <Mail className="h-4 w-4 mr-1" /> Message
+            {/* Quick Actions Card */}
+            <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleSendMessage}>
+                  <Mail className="h-4 w-4 mr-2" /> Send Message
                 </Button>
-                <Button size="sm" variant="ghost" onClick={handleScheduleMeeting}>
-                  <Calendar className="h-4 w-4 mr-1" /> Meeting
+                <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleScheduleMeeting}>
+                  <Calendar className="h-4 w-4 mr-2" /> Schedule Meeting
                 </Button>
-              </div>
-            </CardFooter>
-          </Card>
+                <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => setActiveTab("notes")}>
+                  <FileText className="h-4 w-4 mr-2" /> Add Note
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleUploadDocument}>
+                  <Upload className="h-4 w-4 mr-2" /> Upload Document
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleAssignTask}>
+                  <ClipboardList className="h-4 w-4 mr-2" /> Assign Task
+                </Button>
+                {isHorseOwner && (
+                  <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => navigate(`/dashboard/horses?ownerId=${client.id}`)}>
+                    <LinkIcon className="h-4 w-4 mr-2" /> View Horses
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          </div>
 
-          {/* Quick Actions Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Button variant="outline" className="w-full justify-start" onClick={handleSendMessage}>
-                <Mail className="h-4 w-4 mr-2" /> Send Message
-              </Button>
-              <Button variant="outline" className="w-full justify-start" onClick={handleScheduleMeeting}>
-                <Calendar className="h-4 w-4 mr-2" /> Schedule Meeting
-              </Button>
-              <Button variant="outline" className="w-full justify-start" onClick={() => setActiveTab("notes")}>
-                <FileText className="h-4 w-4 mr-2" /> Add Note
-              </Button>
-              <Button variant="outline" className="w-full justify-start" onClick={handleUploadDocument}>
-                <Upload className="h-4 w-4 mr-2" /> Upload Document
-              </Button>
-              <Button variant="outline" className="w-full justify-start" onClick={handleAssignTask}>
-                <ClipboardList className="h-4 w-4 mr-2" /> Assign Task
-              </Button>
-              {isHorseOwner && (
-                <Button variant="outline" className="w-full justify-start" onClick={() => navigate(`/dashboard/horses?ownerId=${client.id}`)}>
-                  <LinkIcon className="h-4 w-4 mr-2" /> View Horses
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Right Column - Tabs & Content */}
-        <div className="w-full lg:w-2/3">
-          <Card>
-            <CardContent className="p-0">
+          {/* Main Content Area */}
+          <div className="lg:col-span-3">
+            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <div className="p-6 pb-3 border-b">
-                  <TabsList className="grid grid-cols-5 w-full">
-                    <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger value="notes">Notes</TabsTrigger>
-                    <TabsTrigger value="communication">Communication</TabsTrigger>
-                    <TabsTrigger value="files">Files</TabsTrigger>
-                    <TabsTrigger value="tasks">Tasks</TabsTrigger>
+                <div className="p-6 pb-0">
+                  <TabsList className="grid grid-cols-5 w-full bg-gray-100/50">
+                    <TabsTrigger value="overview" className="data-[state=active]:bg-white">Overview</TabsTrigger>
+                    <TabsTrigger value="notes" className="data-[state=active]:bg-white">Notes</TabsTrigger>
+                    <TabsTrigger value="communication" className="data-[state=active]:bg-white">Communication</TabsTrigger>
+                    <TabsTrigger value="files" className="data-[state=active]:bg-white">Files</TabsTrigger>
+                    <TabsTrigger value="tasks" className="data-[state=active]:bg-white">Tasks</TabsTrigger>
                   </TabsList>
                 </div>
                 
                 <div className="p-6">
-                  <TabsContent value="overview" className="space-y-4 mt-0">
+                  <TabsContent value="overview" className="space-y-6 mt-0">
+                    {/* Client Since & Last Interaction */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Card className="bg-gradient-to-br from-blue-50 to-blue-100/50">
+                        <CardContent className="p-4">
+                          <div className="text-sm text-blue-600 font-medium">Client Since</div>
+                          <div className="text-lg font-bold text-blue-800">
+                            {format(new Date(client.createdAt), 'MMM dd, yyyy')}
+                          </div>
+                        </CardContent>
+                      </Card>
+                      <Card className="bg-gradient-to-br from-green-50 to-green-100/50">
+                        <CardContent className="p-4">
+                          <div className="text-sm text-green-600 font-medium">Last Interaction</div>
+                          <div className="text-lg font-bold text-green-800">
+                            {formatDistanceToNow(new Date(client.lastInteraction), { addSuffix: true })}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    {/* Recent Notes */}
                     <div>
-                      <h3 className="font-medium mb-2">Recent Notes</h3>
+                      <h3 className="font-semibold text-lg mb-4 flex items-center">
+                        <FileText className="h-5 w-5 mr-2 text-blue-500" />
+                        Recent Notes
+                      </h3>
                       {notes.length ? (
-                        <div className="border rounded-md">
+                        <div className="space-y-3">
                           {notes.slice(-3).map((note) => (
-                            <div key={note.id} className="p-3 border-b last:border-0">
-                              <p className="text-sm">{note.content}</p>
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {formatDistanceToNow(new Date(note.createdAt), { addSuffix: true })}
-                              </p>
-                            </div>
+                            <Card key={note.id} className="bg-gradient-to-r from-gray-50 to-gray-100/50">
+                              <CardContent className="p-4">
+                                <p className="text-sm text-gray-700">{note.content}</p>
+                                <p className="text-xs text-gray-500 mt-2">
+                                  {formatDistanceToNow(new Date(note.createdAt), { addSuffix: true })}
+                                </p>
+                              </CardContent>
+                            </Card>
                           ))}
                         </div>
                       ) : (
-                        <p className="text-sm text-muted-foreground">No notes available</p>
+                        <Card className="bg-gray-50/50">
+                          <CardContent className="p-6 text-center">
+                            <FileText className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                            <p className="text-sm text-gray-500">No notes available</p>
+                          </CardContent>
+                        </Card>
                       )}
                     </div>
 
+                    {/* Recent Communications */}
                     <div>
-                      <h3 className="font-medium mb-2">Recent Communications</h3>
+                      <h3 className="font-semibold text-lg mb-4 flex items-center">
+                        <MessageSquare className="h-5 w-5 mr-2 text-green-500" />
+                        Recent Communications
+                      </h3>
                       {communications && communications.length ? (
-                        <div className="border rounded-md">
+                        <div className="space-y-3">
                           {communications.slice(-3).map((comm) => (
-                            <div key={comm.id} className="p-3 border-b last:border-0">
-                              <div className="flex items-center">
-                                {comm.type === "call" && <Phone className="h-3 w-3 mr-1" />}
-                                {comm.type === "email" && <Mail className="h-3 w-3 mr-1" />}
-                                {comm.type === "message" && <MessageSquare className="h-3 w-3 mr-1" />}
-                                {comm.type === "meeting" && <Calendar className="h-3 w-3 mr-1" />}
-                                <span className="text-sm font-medium capitalize">{comm.type}</span>
-                              </div>
-                              <p className="text-sm">{comm.description}</p>
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {formatDistanceToNow(new Date(comm.date), { addSuffix: true })}
-                              </p>
-                            </div>
+                            <Card key={comm.id} className="bg-gradient-to-r from-green-50 to-green-100/50">
+                              <CardContent className="p-4">
+                                <div className="flex items-center mb-2">
+                                  {comm.type === "call" && <Phone className="h-4 w-4 mr-2 text-green-600" />}
+                                  {comm.type === "email" && <Mail className="h-4 w-4 mr-2 text-green-600" />}
+                                  {comm.type === "message" && <MessageSquare className="h-4 w-4 mr-2 text-green-600" />}
+                                  {comm.type === "meeting" && <Calendar className="h-4 w-4 mr-2 text-green-600" />}
+                                  <span className="text-sm font-medium capitalize text-green-700">{comm.type}</span>
+                                </div>
+                                <p className="text-sm text-gray-700">{comm.description}</p>
+                                <p className="text-xs text-gray-500 mt-2">
+                                  {formatDistanceToNow(new Date(comm.date), { addSuffix: true })}
+                                </p>
+                              </CardContent>
+                            </Card>
                           ))}
                         </div>
                       ) : (
-                        <p className="text-sm text-muted-foreground">No communication logs available</p>
+                        <Card className="bg-gray-50/50">
+                          <CardContent className="p-6 text-center">
+                            <MessageSquare className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                            <p className="text-sm text-gray-500">No communication logs available</p>
+                          </CardContent>
+                        </Card>
                       )}
                     </div>
 
+                    {/* Linked Horses for Horse Owners */}
                     {isHorseOwner && horseOwner.linkedHorses && horseOwner.linkedHorses.length > 0 && (
                       <div>
-                        <h3 className="font-medium mb-2">Linked Horses</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <h3 className="font-semibold text-lg mb-4 flex items-center">
+                          <User className="h-5 w-5 mr-2 text-purple-500" />
+                          Linked Horses
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {horseOwner.linkedHorses.map((horseId) => (
-                            <div 
+                            <Card 
                               key={horseId}
-                              className="border rounded-md p-3 flex items-center hover:bg-muted/50 cursor-pointer transition-colors"
+                              className="bg-gradient-to-br from-purple-50 to-purple-100/50 hover:shadow-md transition-all cursor-pointer"
                               onClick={() => navigate(`/dashboard/horses/${horseId}`)}
                             >
-                              <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mr-3">
-                                <User className="h-5 w-5 text-purple-600" />
-                              </div>
-                              <div>
-                                <p className="font-medium">Horse #{horseId.split('-')[1]}</p>
-                                <p className="text-xs text-muted-foreground">View details</p>
-                              </div>
-                            </div>
+                              <CardContent className="p-4 flex items-center">
+                                <div className="w-12 h-12 rounded-full bg-purple-200 flex items-center justify-center mr-4">
+                                  <User className="h-6 w-6 text-purple-600" />
+                                </div>
+                                <div>
+                                  <p className="font-medium text-purple-800">Horse #{horseId.split('-')[1]}</p>
+                                  <p className="text-xs text-purple-600">Click to view details</p>
+                                </div>
+                              </CardContent>
+                            </Card>
                           ))}
                         </div>
                       </div>
                     )}
                   </TabsContent>
 
+                  {/* Other tab contents remain the same */}
                   <TabsContent value="notes" className="space-y-4 mt-0">
                     <div className="flex items-center justify-between">
                       <h3 className="font-medium">Client Notes</h3>
@@ -526,8 +568,8 @@ const ClientProfile = () => {
                   </TabsContent>
                 </div>
               </Tabs>
-            </CardContent>
-          </Card>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
