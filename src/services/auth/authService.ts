@@ -17,6 +17,11 @@ export const authService = {
     return { data, error };
   },
 
+  // Alternative method name for compatibility
+  async signInWithPassword(email: string, password: string) {
+    return this.login(email, password);
+  },
+
   // Sign up with email and password
   async signUp(email: string, password: string, firstName?: string, lastName?: string) {
     const redirectUrl = `${window.location.origin}/dashboard`;
@@ -41,6 +46,11 @@ export const authService = {
     return { error };
   },
 
+  // Alternative method name for compatibility
+  async signOut() {
+    return this.logout();
+  },
+
   // Listen to auth state changes
   onAuthStateChange(callback: (event: string, session: Session | null) => void) {
     return supabase.auth.onAuthStateChange(callback);
@@ -50,5 +60,19 @@ export const authService = {
   async getCurrentUser(): Promise<User | null> {
     const { data: { session } } = await supabase.auth.getSession();
     return session?.user || null;
+  },
+
+  // Create sample user if not exists (for dev purposes)
+  async createSampleUserIfNotExists(email: string, password: string, firstName?: string, lastName?: string) {
+    // First try to sign up
+    const { data, error } = await this.signUp(email, password, firstName, lastName);
+    
+    // If user already exists, that's fine - they can just login
+    if (error && error.message.includes('User already registered')) {
+      console.log(`User ${email} already exists`);
+      return { data: null, error: null };
+    }
+    
+    return { data, error };
   }
 };

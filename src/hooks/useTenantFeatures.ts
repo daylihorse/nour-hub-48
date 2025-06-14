@@ -91,7 +91,7 @@ export const useTenantFeatures = () => {
   
   // Check if a feature is enabled both in tenant settings and by subscription tier
   const isFeatureEnabled = (featureId: string): boolean => {
-    if (!currentTenant?.settings?.features || !currentTenant.subscriptionTier) return false;
+    if (!currentTenant?.settings?.features || !currentTenant.subscription_tier) return false;
     
     // First check if it's enabled in tenant settings
     const isEnabledInSettings = currentTenant.settings.features[featureId as keyof typeof currentTenant.settings.features] || false;
@@ -100,7 +100,7 @@ export const useTenantFeatures = () => {
     const featureDefinition = FEATURE_MATRIX[featureId];
     if (!featureDefinition) return false;
     
-    const isAllowedBySubscription = featureDefinition.requiredSubscription.includes(currentTenant.subscriptionTier);
+    const isAllowedBySubscription = featureDefinition.requiredSubscription.includes(currentTenant.subscription_tier);
     
     // Feature must be both enabled in settings and allowed by subscription
     return isEnabledInSettings && isAllowedBySubscription;
@@ -119,20 +119,20 @@ export const useTenantFeatures = () => {
   };
 
   const getAvailableFeatures = () => {
-    if (!currentTenant?.subscriptionTier) return [];
+    if (!currentTenant?.subscription_tier) return [];
     
     // Return features available on current subscription tier
     return Object.values(FEATURE_MATRIX).filter(feature => 
-      feature.requiredSubscription.includes(currentTenant.subscriptionTier)
+      feature.requiredSubscription.includes(currentTenant.subscription_tier)
     );
   };
 
   const getUnavailableFeatures = () => {
-    if (!currentTenant?.subscriptionTier) return [];
+    if (!currentTenant?.subscription_tier) return [];
     
     // Return features not available on current subscription tier
     return Object.values(FEATURE_MATRIX).filter(feature => 
-      !feature.requiredSubscription.includes(currentTenant.subscriptionTier)
+      !feature.requiredSubscription.includes(currentTenant.subscription_tier)
     );
   };
 
@@ -155,7 +155,7 @@ export const useTenantFeatures = () => {
     getFeatureDefinition,
     getSubscriptionTierFeatures,
     features: currentTenant?.settings?.features,
-    subscriptionTier: currentTenant?.subscriptionTier,
+    subscriptionTier: currentTenant?.subscription_tier,
     featureMatrix: FEATURE_MATRIX,
   };
 };

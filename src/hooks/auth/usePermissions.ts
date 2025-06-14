@@ -6,7 +6,7 @@ export const usePermissions = (user: User | null, currentTenant: Tenant | null) 
     if (!user || !currentTenant) return false;
     
     // Find user's role in current tenant
-    const tenantUser = user.tenants.find(t => t.tenantId === currentTenant.id);
+    const tenantUser = user.tenants.find(t => t.tenant_id === currentTenant.id);
     if (!tenantUser) return false;
 
     // Owner has all permissions
@@ -22,7 +22,7 @@ export const usePermissions = (user: User | null, currentTenant: Tenant | null) 
   const hasRole = (role: UserRole): boolean => {
     if (!user || !currentTenant) return false;
     
-    const tenantUser = user.tenants.find(t => t.tenantId === currentTenant.id);
+    const tenantUser = user.tenants.find(t => t.tenant_id === currentTenant.id);
     return tenantUser?.role === role;
   };
 
