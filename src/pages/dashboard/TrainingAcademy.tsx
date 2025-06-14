@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,7 +16,6 @@ import { Rabbit, Users, Calendar, UserCheck, MapPin, CreditCard, ShoppingCart } 
 const TrainingAcademy = () => {
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [showPOS, setShowPOS] = useState(false);
   
   const {
     isDialogOpen,
@@ -30,18 +30,19 @@ const TrainingAcademy = () => {
     const tabParam = searchParams.get('tab');
     if (tabParam === 'pos') {
       setActiveTab('pos');
-      setShowPOS(true);
     }
   }, [searchParams]);
 
   const handlePOSTabClick = () => {
-    openPOSChoice();
+    // If we're not already on the POS tab, show the dialog
+    if (activeTab !== "pos") {
+      openPOSChoice();
+    }
   };
 
   const handleUsePOSHere = () => {
     handleUseHere(() => {
       setActiveTab("pos");
-      setShowPOS(true);
     });
   };
 
@@ -83,7 +84,7 @@ const TrainingAcademy = () => {
           <TabsTrigger 
             value="pos" 
             className="flex items-center gap-2"
-            onClick={activeTab !== "pos" ? handlePOSTabClick : undefined}
+            onClick={handlePOSTabClick}
           >
             <ShoppingCart className="h-4 w-4" />
             Point of Sale
@@ -114,11 +115,9 @@ const TrainingAcademy = () => {
           <HorseManagement />
         </TabsContent>
 
-        {showPOS && (
-          <TabsContent value="pos" className="mt-6">
-            <RidingPOS />
-          </TabsContent>
-        )}
+        <TabsContent value="pos" className="mt-6">
+          <RidingPOS />
+        </TabsContent>
         
         <TabsContent value="payments" className="mt-6">
           <PaymentManagement />
