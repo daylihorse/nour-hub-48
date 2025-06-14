@@ -1,110 +1,115 @@
 
-import { StallionDetailFilters, CollectedSemen, FrozenSemenInventory, FrozenEmbryoInventory, BreedingRecord } from '@/types/breeding/stallion-detail';
+import { StallionDetailFilters, BreedingRecord, CollectedSemen, FrozenSemenInventory, FrozenEmbryoInventory } from '@/types/breeding/stallion-detail';
 
-export const filterCollectedSemen = (item: CollectedSemen, filters: StallionDetailFilters): boolean => {
-  if (filters.searchTerm && 
-      !item.id.toLowerCase().includes(filters.searchTerm.toLowerCase()) &&
-      !item.technician.toLowerCase().includes(filters.searchTerm.toLowerCase())) {
-    return false;
-  }
-  
-  if (filters.status?.length && !filters.status.includes(item.status)) {
-    return false;
-  }
-  
-  if (filters.quality?.length && !filters.quality.includes(item.quality)) {
-    return false;
-  }
-  
-  if (filters.technician?.length && !filters.technician.includes(item.technician)) {
-    return false;
-  }
-  
-  if (filters.dateRange) {
-    const itemDate = new Date(item.collectionDate);
-    const startDate = new Date(filters.dateRange.start);
-    const endDate = new Date(filters.dateRange.end);
-    if (itemDate < startDate || itemDate > endDate) {
+export const filterBreedingRecord = (record: BreedingRecord, filters: StallionDetailFilters): boolean => {
+  if (filters.searchTerm) {
+    const searchTerm = filters.searchTerm.toLowerCase();
+    const searchableFields = [
+      record.mareName,
+      record.mareOwner,
+      record.veterinarian,
+      record.method,
+      record.result,
+      record.id
+    ].filter(Boolean);
+    
+    if (!searchableFields.some(field => field.toLowerCase().includes(searchTerm))) {
       return false;
     }
   }
-  
+
+  if (filters.status && filters.status.length > 0) {
+    if (!filters.status.includes(record.status)) {
+      return false;
+    }
+  }
+
+  if (filters.method && filters.method.length > 0) {
+    if (!filters.method.includes(record.method)) {
+      return false;
+    }
+  }
+
   return true;
 };
 
-export const filterFrozenSemen = (item: FrozenSemenInventory, filters: StallionDetailFilters): boolean => {
-  if (filters.searchTerm && 
-      !item.id.toLowerCase().includes(filters.searchTerm.toLowerCase()) &&
-      !item.tank.toLowerCase().includes(filters.searchTerm.toLowerCase()) &&
-      !item.location.toLowerCase().includes(filters.searchTerm.toLowerCase())) {
-    return false;
-  }
-  
-  if (filters.quality?.length && !filters.quality.includes(item.quality)) {
-    return false;
-  }
-  
-  if (filters.dateRange) {
-    const itemDate = new Date(item.freezeDate);
-    const startDate = new Date(filters.dateRange.start);
-    const endDate = new Date(filters.dateRange.end);
-    if (itemDate < startDate || itemDate > endDate) {
+export const filterCollectedSemen = (record: CollectedSemen, filters: StallionDetailFilters): boolean => {
+  if (filters.searchTerm) {
+    const searchTerm = filters.searchTerm.toLowerCase();
+    const searchableFields = [
+      record.technician,
+      record.quality,
+      record.status,
+      record.id
+    ].filter(Boolean);
+    
+    if (!searchableFields.some(field => field.toLowerCase().includes(searchTerm))) {
       return false;
     }
   }
-  
+
+  if (filters.status && filters.status.length > 0) {
+    if (!filters.status.includes(record.status)) {
+      return false;
+    }
+  }
+
+  if (filters.quality && filters.quality.length > 0) {
+    if (!filters.quality.includes(record.quality)) {
+      return false;
+    }
+  }
+
+  if (filters.technician && filters.technician.length > 0) {
+    if (!filters.technician.includes(record.technician)) {
+      return false;
+    }
+  }
+
   return true;
 };
 
-export const filterFrozenEmbryo = (item: FrozenEmbryoInventory, filters: StallionDetailFilters): boolean => {
-  if (filters.searchTerm && 
-      !item.id.toLowerCase().includes(filters.searchTerm.toLowerCase()) &&
-      !item.mareName.toLowerCase().includes(filters.searchTerm.toLowerCase()) &&
-      !item.tank.toLowerCase().includes(filters.searchTerm.toLowerCase())) {
-    return false;
-  }
-  
-  if (filters.quality?.length && !filters.quality.includes(item.grade)) {
-    return false;
-  }
-  
-  if (filters.dateRange) {
-    const itemDate = new Date(item.creationDate);
-    const startDate = new Date(filters.dateRange.start);
-    const endDate = new Date(filters.dateRange.end);
-    if (itemDate < startDate || itemDate > endDate) {
+export const filterFrozenSemen = (record: FrozenSemenInventory, filters: StallionDetailFilters): boolean => {
+  if (filters.searchTerm) {
+    const searchTerm = filters.searchTerm.toLowerCase();
+    const searchableFields = [
+      record.tank,
+      record.location,
+      record.batchNumber,
+      record.quality,
+      record.id
+    ].filter(Boolean);
+    
+    if (!searchableFields.some(field => field.toLowerCase().includes(searchTerm))) {
       return false;
     }
   }
-  
+
+  if (filters.quality && filters.quality.length > 0) {
+    if (!filters.quality.includes(record.quality)) {
+      return false;
+    }
+  }
+
   return true;
 };
 
-export const filterBreedingRecord = (item: BreedingRecord, filters: StallionDetailFilters): boolean => {
-  if (filters.searchTerm && 
-      !item.id.toLowerCase().includes(filters.searchTerm.toLowerCase()) &&
-      !item.mareName.toLowerCase().includes(filters.searchTerm.toLowerCase()) &&
-      !item.mareOwner.toLowerCase().includes(filters.searchTerm.toLowerCase()) &&
-      !item.veterinarian.toLowerCase().includes(filters.searchTerm.toLowerCase())) {
-    return false;
-  }
-  
-  if (filters.status?.length && !filters.status.includes(item.status)) {
-    return false;
-  }
-  
-  if (filters.method?.length && !filters.method.includes(item.method)) {
-    return false;
-  }
-  
-  if (filters.dateRange) {
-    const itemDate = new Date(item.date);
-    const startDate = new Date(filters.dateRange.start);
-    const endDate = new Date(filters.dateRange.end);
-    if (itemDate < startDate || itemDate > endDate) {
+export const filterFrozenEmbryo = (record: FrozenEmbryoInventory, filters: StallionDetailFilters): boolean => {
+  if (filters.searchTerm) {
+    const searchTerm = filters.searchTerm.toLowerCase();
+    const searchableFields = [
+      record.mareName,
+      record.tank,
+      record.location,
+      record.grade,
+      record.stage,
+      record.id
+    ].filter(Boolean);
+    
+    if (!searchableFields.some(field => field.toLowerCase().includes(searchTerm))) {
       return false;
     }
   }
-  
+
   return true;
 };

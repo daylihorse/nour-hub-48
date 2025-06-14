@@ -1,6 +1,5 @@
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
@@ -12,14 +11,12 @@ import {
 } from "lucide-react";
 import { useFrozenSemenManagement } from "../../hooks/useFrozenSemenManagement";
 import { FrozenSemenInventory } from "@/types/breeding/stallion-detail";
-import ViewModeSelector from "./ViewModeSelector";
+import ViewModeSelector, { ViewMode } from "./ViewModeSelector";
 import FrozenSemenGridView from "./FrozenSemenGridView";
 import FrozenSemenListView from "./FrozenSemenListView";
 import FrozenSemenTableView from "./FrozenSemenTableView";
 import EditFrozenSemenDialog from "./EditFrozenSemenDialog";
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
-
-export type ViewMode = "grid" | "list" | "table";
 
 interface EnhancedFrozenSemenTabProps {
   stallionId: string;
@@ -50,7 +47,6 @@ const EnhancedFrozenSemenTab = ({ stallionId, onActionClick }: EnhancedFrozenSem
   };
 
   const handleSave = (updatedRecord: FrozenSemenInventory) => {
-    // TODO: Implement actual save logic
     console.log('Saving frozen semen record:', updatedRecord);
     setShowEditDialog(false);
     setSelectedRecord(null);
@@ -58,7 +54,6 @@ const EnhancedFrozenSemenTab = ({ stallionId, onActionClick }: EnhancedFrozenSem
 
   const confirmDelete = () => {
     if (selectedRecord) {
-      // TODO: Implement actual delete logic
       console.log('Deleting frozen semen record:', selectedRecord.id);
       setShowDeleteDialog(false);
       setSelectedRecord(null);

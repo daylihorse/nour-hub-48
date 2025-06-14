@@ -2,7 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Heart, Edit, Trash2 } from "lucide-react";
+import { Snowflake, Calendar, User, MapPin, Edit, Trash2 } from "lucide-react";
 import { FrozenEmbryoInventory } from "@/types/breeding/stallion-detail";
 
 interface FrozenEmbryoListViewProps {
@@ -18,46 +18,60 @@ const FrozenEmbryoListView = ({
   onDelete,
   getGradeColor
 }: FrozenEmbryoListViewProps) => {
+  if (frozenEmbryos.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <Snowflake className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+        <h3 className="text-lg font-semibold text-muted-foreground">No records found</h3>
+        <p className="text-muted-foreground">No frozen embryo records match your criteria.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-3">
-      {frozenEmbryos.map((embryo) => (
-        <Card key={embryo.id}>
+    <div className="space-y-4">
+      {frozenEmbryos.map((record) => (
+        <Card key={record.id}>
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <Heart className="h-4 w-4 text-pink-500" />
-                  <span className="font-medium">{embryo.id}</span>
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <Snowflake className="h-4 w-4 text-purple-500" />
+                  <span className="font-medium">{record.id}</span>
+                  <Badge variant={getGradeColor(record.grade)}>
+                    {record.grade}
+                  </Badge>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Calendar className="h-4 w-4" />
-                  <span>{embryo.creationDate}</span>
-                </div>
-                <span className="text-sm text-muted-foreground">{embryo.mareName}</span>
-                <div className="flex gap-4 text-sm">
-                  <span>Stage: {embryo.stage}</span>
-                  <span>Viability: {embryo.viability}</span>
-                  <span>Tank: {embryo.tank}</span>
-                  <span>Location: {embryo.location}</span>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-3 w-3 text-muted-foreground" />
+                    <span>{record.creationDate}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <User className="h-3 w-3 text-muted-foreground" />
+                    <span>{record.mareName}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-3 w-3 text-muted-foreground" />
+                    <span>{record.tank}</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Stage: </span>
+                    <span className="font-medium">{record.stage}</span>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Badge variant={getGradeColor(embryo.grade)}>
-                  {embryo.grade}
-                </Badge>
-                <Button variant="ghost" size="sm" onClick={() => onEdit(embryo)}>
+              
+              <div className="flex gap-2 ml-4">
+                <Button variant="ghost" size="sm" onClick={() => onEdit(record)}>
                   <Edit className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => onDelete(embryo)}>
+                <Button variant="ghost" size="sm" onClick={() => onDelete(record)}>
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
             </div>
-            {embryo.diameter && (
-              <div className="mt-2">
-                <p className="text-sm text-muted-foreground">Diameter: {embryo.diameter}</p>
-              </div>
-            )}
           </CardContent>
         </Card>
       ))}

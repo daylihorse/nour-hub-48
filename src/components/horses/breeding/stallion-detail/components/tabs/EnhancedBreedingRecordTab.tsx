@@ -1,34 +1,20 @@
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { 
-  Calendar, 
-  Heart,
-  CheckCircle,
-  Clock,
   Plus,
   Filter,
   Search,
-  Download,
-  LayoutGrid,
-  List,
-  Table as TableIcon,
-  Eye,
-  Edit2,
-  Trash2
+  Download
 } from "lucide-react";
 import { useBreedingRecordManagement } from "../../hooks/useBreedingRecordManagement";
 import { BreedingRecord } from "@/types/breeding/stallion-detail";
-import BreedingRecordViewSelector from "./BreedingRecordViewSelector";
+import BreedingRecordViewSelector, { ViewMode } from "./BreedingRecordViewSelector";
 import BreedingRecordGridView from "./BreedingRecordGridView";
 import BreedingRecordListView from "./BreedingRecordListView";
 import BreedingRecordTableView from "./BreedingRecordTableView";
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
-
-export type ViewMode = "grid" | "list" | "table";
 
 interface EnhancedBreedingRecordTabProps {
   stallionId: string;
@@ -62,7 +48,6 @@ const EnhancedBreedingRecordTab = ({ stallionId, onActionClick }: EnhancedBreedi
 
   const confirmDelete = () => {
     if (selectedRecordForDelete) {
-      // TODO: Implement actual delete logic
       console.log('Deleting record:', selectedRecordForDelete.id);
       setShowDeleteDialog(false);
       setSelectedRecordForDelete(null);

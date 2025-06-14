@@ -25,8 +25,17 @@ const FrozenEmbryoTableView = ({
   onDelete,
   getGradeColor
 }: FrozenEmbryoTableViewProps) => {
+  if (frozenEmbryos.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <h3 className="text-lg font-semibold text-muted-foreground">No records found</h3>
+        <p className="text-muted-foreground">No frozen embryo records match your criteria.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="rounded-md border">
+    <div className="border rounded-md">
       <Table>
         <TableHeader>
           <TableRow>
@@ -35,35 +44,33 @@ const FrozenEmbryoTableView = ({
             <TableHead>Mare Name</TableHead>
             <TableHead>Grade</TableHead>
             <TableHead>Stage</TableHead>
-            <TableHead>Viability</TableHead>
             <TableHead>Tank</TableHead>
             <TableHead>Location</TableHead>
-            <TableHead>Diameter</TableHead>
+            <TableHead>Viability</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {frozenEmbryos.map((embryo) => (
-            <TableRow key={embryo.id}>
-              <TableCell className="font-medium">{embryo.id}</TableCell>
-              <TableCell>{embryo.creationDate}</TableCell>
-              <TableCell>{embryo.mareName}</TableCell>
+          {frozenEmbryos.map((record) => (
+            <TableRow key={record.id}>
+              <TableCell className="font-medium">{record.id}</TableCell>
+              <TableCell>{record.creationDate}</TableCell>
+              <TableCell>{record.mareName}</TableCell>
               <TableCell>
-                <Badge variant={getGradeColor(embryo.grade)}>
-                  {embryo.grade}
+                <Badge variant={getGradeColor(record.grade)}>
+                  {record.grade}
                 </Badge>
               </TableCell>
-              <TableCell>{embryo.stage}</TableCell>
-              <TableCell>{embryo.viability}</TableCell>
-              <TableCell>{embryo.tank}</TableCell>
-              <TableCell>{embryo.location}</TableCell>
-              <TableCell>{embryo.diameter || '-'}</TableCell>
+              <TableCell>{record.stage}</TableCell>
+              <TableCell>{record.tank}</TableCell>
+              <TableCell>{record.location}</TableCell>
+              <TableCell>{record.viability}</TableCell>
               <TableCell>
                 <div className="flex gap-2">
-                  <Button variant="ghost" size="sm" onClick={() => onEdit(embryo)}>
+                  <Button variant="ghost" size="sm" onClick={() => onEdit(record)}>
                     <Edit className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="sm" onClick={() => onDelete(embryo)}>
+                  <Button variant="ghost" size="sm" onClick={() => onDelete(record)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
