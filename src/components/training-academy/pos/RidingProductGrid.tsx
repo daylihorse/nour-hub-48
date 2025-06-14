@@ -13,12 +13,26 @@ interface RidingProductGridProps {
   showAddToCart: boolean;
 }
 
+interface RidingExperience {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  duration: string;
+  maxRiders: number;
+  difficulty: string;
+  isActive: boolean;
+  department: "academy";
+  routes: string[];
+}
+
 const RidingProductGrid = ({ onAddToCart, showAddToCart }: RidingProductGridProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
 
   // Riding experiences data
-  const ridingExperiences = [
+  const ridingExperiences: RidingExperience[] = [
     {
       id: "ride_1",
       name: "Scenic Trail Ride",
@@ -110,8 +124,8 @@ const RidingProductGrid = ({ onAddToCart, showAddToCart }: RidingProductGridProp
     }
   };
 
-  const isRidingExperience = (item: any) => {
-    return item.duration && item.maxRiders;
+  const isRidingExperience = (item: any): item is RidingExperience => {
+    return 'duration' in item && 'maxRiders' in item && 'difficulty' in item && 'routes' in item;
   };
 
   return (
