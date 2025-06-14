@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CollectedSemenTab from "./tabs/CollectedSemenTab";
 import FrozenSemenInventoryTab from "./tabs/FrozenSemenInventoryTab";
 import FrozenEmbryoInventoryTab from "./tabs/FrozenEmbryoInventoryTab";
-import BreedingRecordTab from "./tabs/BreedingRecordTab";
+import EnhancedBreedingRecordTab from "./tabs/EnhancedBreedingRecordTab";
 
 interface StallionDetailTabsProps {
   stallionId: string;
@@ -60,7 +60,7 @@ const StallionDetailTabs = ({
       </TabsContent>
       
       <TabsContent value="breeding-record" className="mt-6">
-        <BreedingRecordTab stallionId={stallionId} onActionClick={onActionClick} />
+        <EnhancedBreedingRecordTab stallionId={stallionId} onActionClick={onActionClick} />
       </TabsContent>
     </Tabs>
   );
