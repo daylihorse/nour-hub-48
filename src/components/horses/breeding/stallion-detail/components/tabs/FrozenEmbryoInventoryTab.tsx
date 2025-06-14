@@ -44,7 +44,7 @@ const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInv
 
   const handleSaveEdit = async (updatedRecord: FrozenEmbryoInventory) => {
     try {
-      await updateFrozenEmbryo(updatedRecord);
+      await updateFrozenEmbryo(updatedRecord.id, updatedRecord);
       setEditDialogOpen(false);
       setSelectedRecord(null);
       toast({
@@ -64,7 +64,7 @@ const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInv
     if (!selectedRecord) return;
     
     try {
-      await deleteFrozenEmbryo(selectedRecord.id, selectedRecord);
+      await deleteFrozenEmbryo(selectedRecord.id);
       setDeleteDialogOpen(false);
       setSelectedRecord(null);
       toast({

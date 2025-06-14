@@ -1,4 +1,3 @@
-
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -39,8 +38,8 @@ const FrozenEmbryoForm = ({ stallionId, onSubmit, onCancel, isLoading, initialDa
     defaultValues: {
       stallionId,
       creationDate: initialData?.creationDate || new Date().toISOString().split('T')[0],
-      grade: initialData?.grade || 'Grade 1',
-      stage: initialData?.stage || 'Blastocyst',
+      grade: (initialData?.grade as FormData['grade']) || 'Grade 1',
+      stage: (initialData?.stage as FormData['stage']) || 'Blastocyst',
       mareName: initialData?.mareName || '',
       mareId: initialData?.mareId || '',
       viability: initialData?.viability || '',
