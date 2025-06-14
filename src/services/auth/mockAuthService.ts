@@ -22,10 +22,8 @@ class MockAuthService {
   private authCallbacks: Array<(event: string, session: MockSession | null) => void> = [];
 
   constructor() {
-    // Initialize with sample users
     this.initializeSampleUsers();
     
-    // Check for existing session in localStorage
     const savedSession = localStorage.getItem('mock_auth_session');
     if (savedSession) {
       try {
@@ -72,7 +70,7 @@ class MockAuthService {
       user,
       access_token: 'mock_access_token_' + this.generateId(),
       refresh_token: 'mock_refresh_token_' + this.generateId(),
-      expires_at: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+      expires_at: Date.now() + (24 * 60 * 60 * 1000)
     };
   }
 
@@ -97,7 +95,6 @@ class MockAuthService {
   async signInWithPassword(email: string, password: string) {
     console.log('Mock sign in attempt:', email);
     
-    // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 500));
     
     const userRecord = this.users.get(email);
@@ -121,7 +118,6 @@ class MockAuthService {
   async signUp(email: string, password: string, options?: { data?: any }) {
     console.log('Mock sign up attempt:', email);
     
-    // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 500));
     
     if (this.users.has(email)) {
