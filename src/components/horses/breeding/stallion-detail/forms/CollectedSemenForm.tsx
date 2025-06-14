@@ -1,166 +1,170 @@
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { CollectedSemen } from '@/types/breeding/stallion-detail';
-import { FormLayout } from '../shared/FormLayout';
-import { DateField } from '../shared/form-fields/DateField';
-import { TextField } from '../shared/form-fields/TextField';
-import { SelectField } from '../shared/form-fields/SelectField';
-import { TextareaField } from '../shared/form-fields/TextareaField';
-import { qualityOptions, statusOptions } from '../config/formConfigs';
-
-const collectedSemenSchema = z.object({
-  stallionId: z.string().min(1, 'Stallion ID is required'),
-  collectionDate: z.string().min(1, 'Collection date is required'),
-  volume: z.string().min(1, 'Volume is required'),
-  concentration: z.string().min(1, 'Concentration is required'),
-  motility: z.string().min(1, 'Motility is required'),
-  quality: z.enum(['Excellent', 'Good', 'Fair', 'Poor']),
-  technician: z.string().min(1, 'Technician is required'),
-  status: z.enum(['Fresh', 'Used', 'Frozen', 'Discarded']),
-  temperature: z.string().optional(),
-  ph: z.string().optional(),
-  notes: z.string().optional(),
-});
-
-type FormData = z.infer<typeof collectedSemenSchema>;
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface CollectedSemenFormProps {
   stallionId: string;
-  onSubmit: (data: Omit<CollectedSemen, 'id' | 'createdAt'>) => Promise<void>;
+  onSubmit: (data: any) => void;
   onCancel: () => void;
   isLoading?: boolean;
-  initialData?: CollectedSemen;
 }
 
 const CollectedSemenForm = ({ 
   stallionId, 
   onSubmit, 
   onCancel, 
-  isLoading,
-  initialData 
+  isLoading = false 
 }: CollectedSemenFormProps) => {
-  const form = useForm<FormData>({
-    resolver: zodResolver(collectedSemenSchema),
-    defaultValues: {
-      stallionId,
-      collectionDate: initialData?.collectionDate || new Date().toISOString().split('T')[0],
-      status: (initialData?.status as "Fresh" | "Used" | "Frozen" | "Discarded") || 'Fresh',
-      quality: (initialData?.quality as "Excellent" | "Good" | "Fair" | "Poor") || 'Good',
-      volume: initialData?.volume || '',
-      concentration: initialData?.concentration || '',
-      motility: initialData?.motility || '',
-      technician: initialData?.technician || '',
-      temperature: initialData?.temperature || '',
-      ph: initialData?.ph || '',
-      notes: initialData?.notes || '',
-    },
+  const [formData, setFormData] = useState({
+    stallionId,
+    collectionDate: new Date().toISOString().split('T')[0],
+    volume: "",
+    concentration: "",
+    motility: "",
+    quality: "",
+    technician: "",
+    status: "Fresh",
+    temperature: "37°C",
+    ph: "",
+    notes: ""
   });
 
-  const handleSubmit = async (data: FormData) => {
-    const submissionData: Omit<CollectedSemen, 'id' | 'createdAt'> = {
-      stallionId: data.stallionId,
-      collectionDate: data.collectionDate,
-      volume: data.volume,
-      concentration: data.concentration,
-      motility: data.motility,
-      quality: data.quality,
-      technician: data.technician,
-      status: data.status,
-      temperature: data.temperature || undefined,
-      ph: data.ph || undefined,
-      notes: data.notes || undefined,
-    };
-    await onSubmit(submissionData);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(formData);
+  };
+
+  const handleChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   return (
-    <FormLayout
-      form={form}
-      onSubmit={handleSubmit}
-      onCancel={onCancel}
-      isLoading={isLoading}
-      submitLabel={initialData ? "Update Collection" : "Save Collection"}
-    >
-      <DateField
-        control={form.control}
-        name="collectionDate"
-        label="Collection Date"
-        required
-      />
-
-      <TextField
-        control={form.control}
-        name="technician"
-        label="Technician"
-        placeholder="Dr. Smith"
-        required
-      />
-
-      <TextField
-        control={form.control}
-        name="volume"
-        label="Volume"
-        placeholder="50ml"
-        required
-      />
-
-      <TextField
-        control={form.control}
-        name="concentration"
-        label="Concentration"
-        placeholder="150M/ml"
-        required
-      />
-
-      <TextField
-        control={form.control}
-        name="motility"
-        label="Motility"
-        placeholder="85%"
-        required
-      />
-
-      <SelectField
-        control={form.control}
-        name="quality"
-        label="Quality"
-        options={qualityOptions}
-        required
-      />
-
-      <SelectField
-        control={form.control}
-        name="status"
-        label="Status"
-        options={statusOptions}
-        required
-      />
-
-      <TextField
-        control={form.control}
-        name="temperature"
-        label="Temperature (Optional)"
-        placeholder="37°C"
-      />
-
-      <TextField
-        control={form.control}
-        name="ph"
-        label="pH (Optional)"
-        placeholder="7.2"
-      />
-
-      <div className="md:col-span-2">
-        <TextareaField
-          control={form.control}
-          name="notes"
-          label="Notes (Optional)"
-          placeholder="Additional notes..."
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="collectionDate">Collection Date</Label>
+          <Input
+            id="collectionDate"
+            type="date"
+            value={formData.collectionDate}
+            onChange={(e) => handleChange('collectionDate', e.target.value)}
+            required
+          />
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="technician">Technician</Label>
+          <Select value={formData.technician} onValueChange={(value) => handleChange('technician', value)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select technician" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Dr. Smith">Dr. Smith</SelectItem>
+              <SelectItem value="Dr. Johnson">Dr. Johnson</SelectItem>
+              <SelectItem value="Dr. Wilson">Dr. Wilson</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="volume">Volume</Label>
+          <Input
+            id="volume"
+            placeholder="e.g., 50ml"
+            value={formData.volume}
+            onChange={(e) => handleChange('volume', e.target.value)}
+            required
+          />
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="concentration">Concentration</Label>
+          <Input
+            id="concentration"
+            placeholder="e.g., 150M/ml"
+            value={formData.concentration}
+            onChange={(e) => handleChange('concentration', e.target.value)}
+            required
+          />
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="motility">Motility</Label>
+          <Input
+            id="motility"
+            placeholder="e.g., 85%"
+            value={formData.motility}
+            onChange={(e) => handleChange('motility', e.target.value)}
+            required
+          />
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="quality">Quality</Label>
+          <Select value={formData.quality} onValueChange={(value) => handleChange('quality', value)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select quality" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Excellent">Excellent</SelectItem>
+              <SelectItem value="Good">Good</SelectItem>
+              <SelectItem value="Fair">Fair</SelectItem>
+              <SelectItem value="Poor">Poor</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="temperature">Temperature</Label>
+          <Input
+            id="temperature"
+            value={formData.temperature}
+            onChange={(e) => handleChange('temperature', e.target.value)}
+            required
+          />
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="ph">pH Level</Label>
+          <Input
+            id="ph"
+            placeholder="e.g., 7.2"
+            value={formData.ph}
+            onChange={(e) => handleChange('ph', e.target.value)}
+          />
+        </div>
+      </div>
+      
+      <div className="space-y-2">
+        <Label htmlFor="notes">Notes</Label>
+        <Textarea
+          id="notes"
+          placeholder="Additional notes about the collection..."
+          value={formData.notes}
+          onChange={(e) => handleChange('notes', e.target.value)}
+          rows={3}
         />
       </div>
-    </FormLayout>
+      
+      <div className="flex justify-end gap-2">
+        <Button type="button" variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? "Saving..." : "Save Collection"}
+        </Button>
+      </div>
+    </form>
   );
 };
 

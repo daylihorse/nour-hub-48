@@ -9,40 +9,34 @@ interface BreedingRecordViewSelectorProps {
   onViewChange: (view: ViewMode) => void;
 }
 
-const BreedingRecordViewSelector = ({ 
-  currentView, 
-  onViewChange 
-}: BreedingRecordViewSelectorProps) => {
+const BreedingRecordViewSelector = ({ currentView, onViewChange }: BreedingRecordViewSelectorProps) => {
   return (
     <div className="flex border rounded-md overflow-hidden">
       <Button
         variant={currentView === "grid" ? "secondary" : "ghost"}
-        className={`rounded-none ${currentView === "grid" ? "" : "bg-background"}`}
-        onClick={() => onViewChange("grid")}
         size="sm"
+        className="rounded-none"
+        onClick={() => onViewChange("grid")}
       >
-        <LayoutGrid className="h-4 w-4 mr-1" />
-        Grid
+        <LayoutGrid className="h-4 w-4" />
       </Button>
       
       <Button
         variant={currentView === "list" ? "secondary" : "ghost"}
-        className={`rounded-none ${currentView === "list" ? "" : "bg-background"}`}
-        onClick={() => onViewChange("list")}
         size="sm"
+        className="rounded-none"
+        onClick={() => onViewChange("list")}
       >
-        <List className="h-4 w-4 mr-1" />
-        List
+        <List className="h-4 w-4" />
       </Button>
       
       <Button
         variant={currentView === "table" ? "secondary" : "ghost"}
-        className={`rounded-none ${currentView === "table" ? "" : "bg-background"}`}
-        onClick={() => onViewChange("table")}
         size="sm"
+        className="rounded-none"
+        onClick={() => onViewChange("table")}
       >
-        <TableIcon className="h-4 w-4 mr-1" />
-        Table
+        <TableIcon className="h-4 w-4" />
       </Button>
     </div>
   );

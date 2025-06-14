@@ -1,15 +1,8 @@
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Calendar, 
-  TestTube, 
-  Plus,
-  Edit,
-  Trash2
-} from "lucide-react";
+import { Plus, TestTube } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -27,7 +20,6 @@ import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 import { useCollectedSemenManagement } from "../../hooks/useCollectedSemenManagement";
 import CollectedSemenForm from "../../forms/CollectedSemenForm";
 import StallionDetailFilters from "../filters/StallionDetailFilters";
-import ExportButtons from "@/components/inventory/ExportButtons";
 import { useToast } from "@/hooks/use-toast";
 
 interface CollectedSemenTabProps {

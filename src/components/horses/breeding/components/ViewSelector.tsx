@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { LayoutGrid, List, Table } from "lucide-react";
+import { LayoutGrid, List, Table as TableIcon } from "lucide-react";
 import GridSizeSelector, { GridSize } from "./GridSizeSelector";
 
 export type ViewMode = "grid" | "list" | "table";
@@ -12,43 +12,45 @@ interface ViewSelectorProps {
   onGridSizeChange?: (size: GridSize) => void;
 }
 
-const ViewSelector = ({ currentView, onViewChange, gridSize, onGridSizeChange }: ViewSelectorProps) => {
+const ViewSelector = ({ 
+  currentView, 
+  onViewChange, 
+  gridSize, 
+  onGridSizeChange 
+}: ViewSelectorProps) => {
   return (
     <div className="flex items-center gap-2">
       <div className="flex border rounded-md overflow-hidden">
         <Button
           variant={currentView === "grid" ? "secondary" : "ghost"}
-          className={`rounded-none ${currentView === "grid" ? "" : "bg-background"}`}
-          onClick={() => onViewChange("grid")}
           size="sm"
+          className="rounded-none"
+          onClick={() => onViewChange("grid")}
         >
-          <LayoutGrid className="h-4 w-4 mr-1" />
-          Grid
+          <LayoutGrid className="h-4 w-4" />
         </Button>
         
         <Button
           variant={currentView === "list" ? "secondary" : "ghost"}
-          className={`rounded-none ${currentView === "list" ? "" : "bg-background"}`}
-          onClick={() => onViewChange("list")}
           size="sm"
+          className="rounded-none"
+          onClick={() => onViewChange("list")}
         >
-          <List className="h-4 w-4 mr-1" />
-          List
+          <List className="h-4 w-4" />
         </Button>
         
         <Button
           variant={currentView === "table" ? "secondary" : "ghost"}
-          className={`rounded-none ${currentView === "table" ? "" : "bg-background"}`}
-          onClick={() => onViewChange("table")}
           size="sm"
+          className="rounded-none"
+          onClick={() => onViewChange("table")}
         >
-          <Table className="h-4 w-4 mr-1" />
-          Table
+          <TableIcon className="h-4 w-4" />
         </Button>
       </div>
-
+      
       {gridSize && onGridSizeChange && (
-        <GridSizeSelector 
+        <GridSizeSelector
           gridSize={gridSize}
           setGridSize={onGridSizeChange}
           viewMode={currentView}
