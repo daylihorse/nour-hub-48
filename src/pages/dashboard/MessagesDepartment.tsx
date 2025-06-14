@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { 
   Card, 
   CardContent, 
@@ -29,6 +30,7 @@ interface ConversationPreview {
 }
 
 const MessagesDepartment = () => {
+  const { id: clientIdFromUrl } = useParams<{ id: string }>();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeClient, setActiveClient] = useState<Client | null>(null);
   
@@ -47,6 +49,16 @@ const MessagesDepartment = () => {
     timestamp: new Date(Date.now() - (index * 3600000)).toISOString(), // Hours ago
     unread: index % 4 === 0,
   }));
+
+  // Auto-select client if accessed via client profile
+  useEffect(() => {
+    if (clientIdFromUrl) {
+      const client = clients.find(c => c.id === clientIdFromUrl);
+      if (client) {
+        setActiveClient(client);
+      }
+    }
+  }, [clientIdFromUrl, clients]);
   
   const filteredConversations = conversations.filter(conv => 
     conv.clientName.toLowerCase().includes(searchQuery.toLowerCase())
@@ -69,7 +81,10 @@ const MessagesDepartment = () => {
         <div>
           <h1 className="text-2xl font-bold">Messages</h1>
           <p className="text-muted-foreground">
-            Manage all your client communications in one place
+            {clientIdFromUrl 
+              ? `Chatting with ${activeClient?.name || 'client'}` 
+              : "Manage all your client communications in one place"
+            }
           </p>
         </div>
         <Button onClick={handleNewConversation}>
