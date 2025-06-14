@@ -29,22 +29,23 @@ interface FrozenSemenFormProps {
   onSubmit: (data: Omit<FrozenSemenInventory, 'id' | 'createdAt'>) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
+  initialData?: FrozenSemenInventory;
 }
 
-const FrozenSemenForm = ({ stallionId, onSubmit, onCancel, isLoading }: FrozenSemenFormProps) => {
+const FrozenSemenForm = ({ stallionId, onSubmit, onCancel, isLoading, initialData }: FrozenSemenFormProps) => {
   const form = useForm<FormData>({
     resolver: zodResolver(frozenSemenSchema),
     defaultValues: {
-      stallionId,
-      freezeDate: new Date().toISOString().split('T')[0],
-      quality: 'Grade A',
-      straws: 1,
-      tank: '',
-      viability: '',
-      location: '',
-      expiry: new Date(Date.now() + 5 * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      batchNumber: '',
-      freezingProtocol: '',
+      stallionId: initialData?.stallionId || stallionId,
+      freezeDate: initialData?.freezeDate || new Date().toISOString().split('T')[0],
+      quality: initialData?.quality || 'Grade A',
+      straws: initialData?.straws || 1,
+      tank: initialData?.tank || '',
+      viability: initialData?.viability || '',
+      location: initialData?.location || '',
+      expiry: initialData?.expiry || new Date(Date.now() + 5 * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      batchNumber: initialData?.batchNumber || '',
+      freezingProtocol: initialData?.freezingProtocol || '',
     },
   });
 
@@ -70,7 +71,7 @@ const FrozenSemenForm = ({ stallionId, onSubmit, onCancel, isLoading }: FrozenSe
       onSubmit={handleSubmit}
       onCancel={onCancel}
       isLoading={isLoading}
-      submitLabel="Save to Inventory"
+      submitLabel={initialData ? "Update Record" : "Save to Inventory"}
     >
       <DateField
         control={form.control}
