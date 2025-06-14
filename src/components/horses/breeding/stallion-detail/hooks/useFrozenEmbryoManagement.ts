@@ -1,6 +1,7 @@
 
-import { useState, useMemo } from 'react';
-import { FrozenEmbryoInventory, StallionDetailFilters } from '@/types/breeding/stallion-detail';
+import { FrozenEmbryoInventory } from '@/types/breeding/stallion-detail';
+import { useGenericManagement } from './useGenericManagement';
+import { filterFrozenEmbryo } from '../utils/filterUtils';
 
 const mockFrozenEmbryos: FrozenEmbryoInventory[] = [
   {
@@ -32,72 +33,23 @@ const mockFrozenEmbryos: FrozenEmbryoInventory[] = [
     diameter: "200μm",
     freezingMethod: "Vitrification",
     createdAt: new Date("2023-11-20")
-  },
-  {
-    id: "FE003",
-    stallionId: "1",
-    creationDate: "2023-10-05",
-    mareName: "Black Diamond",
-    mareId: "M003",
-    grade: "Grade 1",
-    stage: "Morula",
-    viability: "92%",
-    tank: "Tank C-3",
-    location: "Section 1B",
-    diameter: "160μm",
-    freezingMethod: "Slow Freeze",
-    createdAt: new Date("2023-10-05")
   }
 ];
 
 export const useFrozenEmbryoManagement = (stallionId: string) => {
-  const [data, setData] = useState<FrozenEmbryoInventory[]>(mockFrozenEmbryos);
-  const [filters, setFilters] = useState<StallionDetailFilters>({
-    searchTerm: "",
-    quality: [],
+  const result = useGenericManagement<FrozenEmbryoInventory>({
+    initialData: mockFrozenEmbryos,
+    filterFn: filterFrozenEmbryo
   });
 
-  const frozenEmbryos = useMemo(() => {
-    let filtered = data.filter(item => item.stallionId === stallionId);
-
-    if (filters.searchTerm) {
-      const searchTerm = filters.searchTerm.toLowerCase();
-      filtered = filtered.filter(item =>
-        item.id.toLowerCase().includes(searchTerm) ||
-        item.mareName.toLowerCase().includes(searchTerm) ||
-        item.tank.toLowerCase().includes(searchTerm) ||
-        item.location.toLowerCase().includes(searchTerm) ||
-        item.grade.toLowerCase().includes(searchTerm)
-      );
-    }
-
-    if (filters.quality && filters.quality.length > 0) {
-      filtered = filtered.filter(item => filters.quality!.includes(item.grade));
-    }
-
-    return filtered;
-  }, [stallionId, filters, data]);
-
-  const updateFrozenEmbryo = async (id: string, updatedRecord: FrozenEmbryoInventory) => {
-    setData(prev => 
-      prev.map(item => item.id === id ? { ...updatedRecord, id } : item)
-    );
-  };
-
-  const deleteFrozenEmbryo = async (id: string) => {
-    setData(prev => prev.filter(item => item.id !== id));
-  };
-
-  const exportData = (format: 'csv' | 'excel' | 'pdf') => {
-    console.log(`Exporting frozen embryo data as ${format}`);
-  };
-
   return {
-    frozenEmbryos,
-    filters,
-    setFilters,
-    exportData,
-    updateFrozenEmbryo,
-    deleteFrozenEmbryo,
+    frozenEmbryos: result.data,
+    filters: result.filters,
+    setFilters: result.setFilters,
+    isLoading: result.isLoading,
+    addFrozenEmbryo: result.addRecord,
+    updateFrozenEmbryo: result.updateRecord,
+    deleteFrozenEmbryo: result.deleteRecord,
+    exportData: result.exportData
   };
 };

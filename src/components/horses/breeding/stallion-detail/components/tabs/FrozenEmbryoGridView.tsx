@@ -4,38 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Heart, Edit, Trash2, Snowflake } from "lucide-react";
 import { FrozenEmbryoInventory } from "@/types/breeding/stallion-detail";
-import { GridSize } from "../../../components/GridSizeSelector";
 
 interface FrozenEmbryoGridViewProps {
   frozenEmbryos: FrozenEmbryoInventory[];
   onEdit: (record: FrozenEmbryoInventory) => void;
   onDelete: (record: FrozenEmbryoInventory) => void;
   getGradeColor: (grade: string) => "default" | "secondary" | "outline" | "destructive";
-  gridSize?: GridSize;
 }
 
 const FrozenEmbryoGridView = ({
   frozenEmbryos,
   onEdit,
   onDelete,
-  getGradeColor,
-  gridSize = 3
+  getGradeColor
 }: FrozenEmbryoGridViewProps) => {
-  const getGridColumns = () => {
-    switch (gridSize) {
-      case 2:
-        return "grid-cols-1 md:grid-cols-2";
-      case 3:
-        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
-      case 4:
-        return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
-      default:
-        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
-    }
-  };
-
   return (
-    <div className={`grid ${getGridColumns()} gap-4`}>
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {frozenEmbryos.map((embryo) => (
         <Card key={embryo.id}>
           <CardHeader>
@@ -57,14 +41,12 @@ const FrozenEmbryoGridView = ({
                 <Badge variant={getGradeColor(embryo.grade)}>
                   {embryo.grade}
                 </Badge>
-                <div className="flex gap-1">
-                  <Button variant="ghost" size="sm" onClick={() => onEdit(embryo)}>
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={() => onDelete(embryo)}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
+                <Button variant="ghost" size="sm" onClick={() => onEdit(embryo)}>
+                  <Edit className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => onDelete(embryo)}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </div>
             </div>
           </CardHeader>

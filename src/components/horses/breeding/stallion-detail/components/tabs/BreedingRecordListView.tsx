@@ -6,18 +6,27 @@ import { Calendar, Heart, CheckCircle, Clock, Eye, Edit2, Trash2 } from "lucide-
 import { BreedingRecord } from "@/types/breeding/stallion-detail";
 
 interface BreedingRecordListViewProps {
-  breedingRecords: BreedingRecord[];
-  onEdit: (record: BreedingRecord) => void;
-  onDelete: (record: BreedingRecord) => void;
-  getStatusColor: (status: string) => "default" | "secondary" | "outline";
+  records: BreedingRecord[];
+  onViewDetails: (record: BreedingRecord) => void;
+  onEditRecord: (record: BreedingRecord) => void;
+  onDeleteRecord: (record: BreedingRecord) => void;
 }
 
 const BreedingRecordListView = ({ 
-  breedingRecords,
-  onEdit,
-  onDelete,
-  getStatusColor
+  records, 
+  onViewDetails, 
+  onEditRecord, 
+  onDeleteRecord 
 }: BreedingRecordListViewProps) => {
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Active': return 'default';
+      case 'Completed': return 'secondary';
+      case 'Monitoring': return 'outline';
+      default: return 'secondary';
+    }
+  };
+
   const getResultColor = (result: string) => {
     switch (result) {
       case 'Confirmed Pregnant': return 'text-green-600';
@@ -40,7 +49,7 @@ const BreedingRecordListView = ({
     <Card>
       <CardContent className="p-0">
         <div className="divide-y">
-          {breedingRecords.map((record) => (
+          {records.map((record) => (
             <div key={record.id} className="p-4 hover:bg-muted/50 transition-colors">
               <div className="flex items-center justify-between">
                 <div className="flex-1 space-y-2">
@@ -81,13 +90,13 @@ const BreedingRecordListView = ({
                 </div>
                 
                 <div className="flex gap-1 ml-4">
-                  <Button variant="ghost" size="sm" onClick={() => console.log('View details:', record)}>
+                  <Button variant="ghost" size="sm" onClick={() => onViewDetails(record)}>
                     <Eye className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="sm" onClick={() => onEdit(record)}>
+                  <Button variant="ghost" size="sm" onClick={() => onEditRecord(record)}>
                     <Edit2 className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="sm" onClick={() => onDelete(record)}>
+                  <Button variant="ghost" size="sm" onClick={() => onDeleteRecord(record)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>

@@ -14,8 +14,6 @@ const mockCollectedSemen: CollectedSemen[] = [
     motility: "85%",
     quality: "Excellent",
     status: "Fresh",
-    temperature: "37°C",
-    ph: "7.2",
     notes: "High quality sample",
     createdAt: new Date("2024-01-15")
   },
@@ -29,8 +27,6 @@ const mockCollectedSemen: CollectedSemen[] = [
     motility: "78%",
     quality: "Good",
     status: "Processed",
-    temperature: "36°C",
-    ph: "7.1",
     createdAt: new Date("2024-02-01")
   }
 ];

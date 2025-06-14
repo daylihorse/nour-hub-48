@@ -16,6 +16,8 @@ const mockBreedingRecords: BreedingRecord[] = [
     status: "Active",
     expectedFoaling: "2025-01-15",
     veterinarian: "Dr. Wilson",
+    contractId: "C001",
+    studFee: 5000,
     notes: "Excellent breeding session",
     createdAt: new Date("2024-01-20")
   },
@@ -31,6 +33,8 @@ const mockBreedingRecords: BreedingRecord[] = [
     status: "Monitoring",
     expectedFoaling: "TBD",
     veterinarian: "Dr. Brown",
+    contractId: "C002",
+    studFee: 5000,
     createdAt: new Date("2024-01-15")
   },
   {
@@ -45,6 +49,8 @@ const mockBreedingRecords: BreedingRecord[] = [
     status: "Completed",
     expectedFoaling: "2024-12-05",
     veterinarian: "Dr. Davis",
+    contractId: "C003",
+    studFee: 5000,
     createdAt: new Date("2024-01-10")
   }
 ];

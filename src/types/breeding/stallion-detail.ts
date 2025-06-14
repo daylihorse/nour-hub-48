@@ -36,8 +36,6 @@ export interface CollectedSemen {
   motility: string;
   quality: string;
   status: string;
-  temperature?: string;
-  ph?: string;
   notes?: string;
   createdAt: Date;
 }
@@ -57,27 +55,10 @@ export interface FrozenSemenInventory {
   createdAt: Date;
 }
 
-export interface FrozenEmbryoInventory {
-  id: string;
-  stallionId: string;
-  creationDate: string;
-  mareName: string;
-  mareId?: string;
-  grade: string;
-  stage: string;
-  viability: string;
-  tank: string;
-  location: string;
-  diameter?: string;
-  freezingMethod?: string;
-  createdAt: Date;
-}
-
 export interface BreedingRecord {
   id: string;
   stallionId: string;
   mareName: string;
-  mareId?: string;
   mareOwner: string;
   date: string;
   method: string;
@@ -85,15 +66,7 @@ export interface BreedingRecord {
   status: string;
   result: string;
   expectedFoaling?: string;
-  contractId?: string;
-  studFee?: number;
   notes?: string;
-  createdAt: Date;
-}
-
-export interface StallionDetailRecord {
-  id: string;
-  stallionId: string;
   createdAt: Date;
 }
 
@@ -101,10 +74,8 @@ export interface StallionDetailFilters {
   searchTerm?: string;
   quality?: string[];
   status?: string[];
-  technician?: string[];
-  method?: string[];
   dateRange?: {
-    start: string;
-    end: string;
+    from: Date;
+    to: Date;
   };
 }
