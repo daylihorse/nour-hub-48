@@ -146,8 +146,6 @@ const AccessModeToggle = () => {
                     </Badge>
                   </div>
                   
-                  <p className="text-xs text-muted-foreground">{account.description}</p>
-                  
                   <div className="space-y-1">
                     <p className="text-xs"><strong>Email:</strong> {account.email}</p>
                     <p className="text-xs"><strong>Password:</strong> {account.password}</p>

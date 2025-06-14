@@ -20,9 +20,7 @@ export const useDevLogin = () => {
       
       await authService.createSampleUserIfNotExists(
         account.email, 
-        account.password, 
-        account.firstName, 
-        account.lastName
+        account.password
       );
       
       await login(account.email, account.password);
@@ -61,9 +59,7 @@ export const useDevLogin = () => {
         try {
           await authService.createSampleUserIfNotExists(
             account.email,
-            account.password,
-            account.firstName,
-            account.lastName
+            account.password
           );
           console.log(`Created/verified user: ${account.email}`);
           setOperationStatus(prev => ({ ...prev, [account.email]: 'success' }));
