@@ -17,8 +17,30 @@ export const usePOSChoice = (departmentName: string) => {
     closePOSChoice();
   };
 
-  const handleOpenSeparate = (posPath: string) => {
-    window.open(posPath, '_blank');
+  const handleOpenSeparate = () => {
+    // Generate the correct POS URL based on department
+    let posUrl = '';
+    switch (departmentName.toLowerCase()) {
+      case 'marketplace':
+        posUrl = '/pos/marketplace';
+        break;
+      case 'riding academy':
+        posUrl = '/pos/academy';
+        break;
+      case 'inventory':
+        posUrl = '/pos/inventory';
+        break;
+      case 'clinic':
+        posUrl = '/pos/clinic';
+        break;
+      case 'laboratory':
+        posUrl = '/pos/laboratory';
+        break;
+      default:
+        posUrl = `/pos/${departmentName.toLowerCase()}`;
+    }
+    
+    window.open(posUrl, '_blank');
     closePOSChoice();
   };
 

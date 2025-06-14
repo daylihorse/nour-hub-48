@@ -31,10 +31,6 @@ const MarketplaceDepartment = () => {
     });
   };
 
-  const handleOpenPOSSeparate = () => {
-    handleOpenSeparate("/dashboard/marketplace?tab=pos");
-  };
-
   return (
     <div className="space-y-6">
       <div>
@@ -117,7 +113,7 @@ const MarketplaceDepartment = () => {
         onClose={closePOSChoice}
         departmentName="Marketplace"
         onUseHere={handleUsePOSHere}
-        onOpenSeparate={handleOpenPOSSeparate}
+        onOpenSeparate={handleOpenSeparate}
       />
     </div>
   );

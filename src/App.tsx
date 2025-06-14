@@ -54,6 +54,13 @@ import StallionDetailView from "./components/horses/breeding/stallion-detail/Sta
 // Tenant Settings import
 import TenantSettings from "./pages/dashboard/TenantSettings";
 
+// POS Page imports
+import MarketplacePOSPage from "./pages/pos/MarketplacePOSPage";
+import AcademyPOSPage from "./pages/pos/AcademyPOSPage";
+import InventoryPOSPage from "./pages/pos/InventoryPOSPage";
+import ClinicPOSPage from "./pages/pos/ClinicPOSPage";
+import LaboratoryPOSPage from "./pages/pos/LaboratoryPOSPage";
+
 // Create a new QueryClient instance
 const queryClient = new QueryClient();
 
@@ -82,6 +89,13 @@ const App = () => {
                       {/* Onboarding flow */}
                       <Route path="/onboarding" element={<OnboardingEntry />} />
                       <Route path="/onboarding/:tenantType" element={<OnboardingEntry />} />
+                      
+                      {/* Standalone POS Pages - No auth required for dedicated POS use */}
+                      <Route path="/pos/marketplace" element={<MarketplacePOSPage />} />
+                      <Route path="/pos/academy" element={<AcademyPOSPage />} />
+                      <Route path="/pos/inventory" element={<InventoryPOSPage />} />
+                      <Route path="/pos/clinic" element={<ClinicPOSPage />} />
+                      <Route path="/pos/laboratory" element={<LaboratoryPOSPage />} />
                       
                       {/* Protected dashboard routes - now with enhanced auth guard */}
                       <Route path="/dashboard" element={
