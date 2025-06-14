@@ -1,19 +1,17 @@
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { 
-  Snowflake, 
-  Calendar,
-  Heart,
-  Plus,
-  Filter,
-  Search,
-  Download
-} from "lucide-react";
+import { Search, Plus, Download, Filter } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import { useFrozenEmbryoManagement } from "../../hooks/useFrozenEmbryoManagement";
+import { FrozenEmbryoInventory } from "@/types/breeding/stallion-detail";
+import ViewSelector, { ViewMode } from "../../../components/ViewSelector";
+import FrozenEmbryoGridView from "./FrozenEmbryoGridView";
+import FrozenEmbryoListView from "./FrozenEmbryoListView";
+import FrozenEmbryoTableView from "./FrozenEmbryoTableView";
+import EditFrozenEmbryoDialog from "./EditFrozenEmbryoDialog";
+import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 
 interface FrozenEmbryoInventoryTabProps {
   stallionId: string;
@@ -21,12 +19,66 @@ interface FrozenEmbryoInventoryTabProps {
 }
 
 const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInventoryTabProps) => {
-  const { frozenEmbryos, filters, setFilters, exportData } = useFrozenEmbryoManagement(stallionId);
+  const { toast } = useToast();
+  const { frozenEmbryos, filters, setFilters, exportData, updateFrozenEmbryo, deleteFrozenEmbryo } = useFrozenEmbryoManagement(stallionId);
+  
   const [searchTerm, setSearchTerm] = useState(filters.searchTerm || "");
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<FrozenEmbryoInventory | null>(null);
 
   const handleSearch = (value: string) => {
     setSearchTerm(value);
     setFilters({ ...filters, searchTerm: value });
+  };
+
+  const handleEdit = (record: FrozenEmbryoInventory) => {
+    setSelectedRecord(record);
+    setEditDialogOpen(true);
+  };
+
+  const handleDelete = (record: FrozenEmbryoInventory) => {
+    setSelectedRecord(record);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleSaveEdit = async (updatedRecord: FrozenEmbryoInventory) => {
+    try {
+      await updateFrozenEmbryo(updatedRecord);
+      setEditDialogOpen(false);
+      setSelectedRecord(null);
+      toast({
+        title: "Success",
+        description: "Frozen embryo record updated successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update frozen embryo record",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!selectedRecord) return;
+    
+    try {
+      await deleteFrozenEmbryo(selectedRecord.id);
+      setDeleteDialogOpen(false);
+      setSelectedRecord(null);
+      toast({
+        title: "Success",
+        description: "Frozen embryo record deleted successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete frozen embryo record",
+        variant: "destructive",
+      });
+    }
   };
 
   const getGradeColor = (grade: string) => {
@@ -35,6 +87,26 @@ const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInv
       case 'Grade 2': return 'secondary';
       case 'Grade 3': return 'outline';
       default: return 'secondary';
+    }
+  };
+
+  const renderContent = () => {
+    const commonProps = {
+      frozenEmbryos,
+      onEdit: handleEdit,
+      onDelete: handleDelete,
+      getGradeColor
+    };
+
+    switch (viewMode) {
+      case "grid":
+        return <FrozenEmbryoGridView {...commonProps} />;
+      case "list":
+        return <FrozenEmbryoListView {...commonProps} />;
+      case "table":
+        return <FrozenEmbryoTableView {...commonProps} />;
+      default:
+        return <FrozenEmbryoGridView {...commonProps} />;
     }
   };
 
@@ -60,75 +132,47 @@ const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInv
         </div>
       </div>
 
-      <div className="flex gap-4 items-center">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
-            placeholder="Search by ID, mare name, or tank..."
-            value={searchTerm}
-            onChange={(e) => handleSearch(e.target.value)}
-            className="pl-10"
-          />
+      <div className="flex justify-between items-center gap-4">
+        <div className="flex gap-4 items-center flex-1">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              placeholder="Search by ID, mare name, or tank..."
+              value={searchTerm}
+              onChange={(e) => handleSearch(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <Button variant="outline" size="sm">
+            <Filter className="h-4 w-4 mr-2" />
+            Filter
+          </Button>
         </div>
-        <Button variant="outline" size="sm">
-          <Filter className="h-4 w-4 mr-2" />
-          Filter
-        </Button>
+        <ViewSelector 
+          currentView={viewMode}
+          onViewChange={setViewMode}
+        />
       </div>
 
-      <div className="grid gap-4">
-        {frozenEmbryos.map((embryo) => (
-          <Card key={embryo.id}>
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <Heart className="h-4 w-4 text-pink-500" />
-                    {embryo.id}
-                  </CardTitle>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4" />
-                    <span>Created: {embryo.creationDate}</span>
-                    <span>•</span>
-                    <span>Mare: {embryo.mareName}</span>
-                  </div>
-                </div>
-                <Badge variant={getGradeColor(embryo.grade)}>
-                  {embryo.grade}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="flex items-center gap-2">
-                  <Snowflake className="h-4 w-4 text-blue-500" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Stage</p>
-                    <p className="font-medium">{embryo.stage}</p>
-                  </div>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Viability</p>
-                  <p className="font-medium">{embryo.viability}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Tank</p>
-                  <p className="font-medium">{embryo.tank}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Location</p>
-                  <p className="font-medium">{embryo.location}</p>
-                </div>
-              </div>
-              {embryo.diameter && (
-                <div className="mt-2">
-                  <p className="text-sm text-muted-foreground">Diameter: {embryo.diameter}</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {renderContent()}
+
+      <EditFrozenEmbryoDialog
+        isOpen={editDialogOpen}
+        onClose={() => {
+          setEditDialogOpen(false);
+          setSelectedRecord(null);
+        }}
+        record={selectedRecord}
+        onSave={handleSaveEdit}
+      />
+
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={handleConfirmDelete}
+        recordId={selectedRecord?.id}
+        recordType="Frozen Embryo"
+      />
     </div>
   );
 };
