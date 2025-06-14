@@ -109,6 +109,13 @@ const SplitPaymentDialog = ({
     ) as ('cash' | 'card' | 'bank_transfer')[];
   };
 
+  const handlePaymentMethodChange = (index: number, value: string) => {
+    // Validate that the value is one of the allowed payment methods
+    if (value === 'cash' || value === 'card' || value === 'bank_transfer') {
+      updatePaymentMethod(index, value);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-md">
@@ -137,7 +144,7 @@ const SplitPaymentDialog = ({
                       </div>
                       <select
                         value={payment.method}
-                        onChange={(e) => updatePaymentMethod(index, e.target.value as 'cash' | 'card' | 'bank_transfer')}
+                        onChange={(e) => handlePaymentMethodChange(index, e.target.value)}
                         className="border rounded px-2 py-1 text-sm"
                       >
                         <option value={payment.method}>{config.label}</option>
