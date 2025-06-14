@@ -1,14 +1,25 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, Baby, Calendar, AlertCircle } from "lucide-react";
-import { BreedingRecord } from "@/types/breeding";
+import { BreedingRecord } from "@/types/breeding/records";
 import BreedingRecordCard from "../BreedingRecordCard";
+import { GridSize } from "./GridSizeSelector";
 
 interface BreedingRecordsGridProps {
   records: BreedingRecord[];
+  gridSize?: GridSize;
+  onViewDetails?: (record: BreedingRecord) => void;
+  onEditRecord?: (record: BreedingRecord) => void;
+  onDeleteRecord?: (record: BreedingRecord) => void;
 }
 
-const BreedingRecordsGrid = ({ records }: BreedingRecordsGridProps) => {
+const BreedingRecordsGrid = ({ 
+  records, 
+  gridSize = 3,
+  onViewDetails = () => {},
+  onEditRecord = () => {},
+  onDeleteRecord = () => {},
+}: BreedingRecordsGridProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
@@ -39,6 +50,20 @@ const BreedingRecordsGrid = ({ records }: BreedingRecordsGridProps) => {
     }
   };
 
+  // Determine grid columns based on grid size
+  const getGridColumns = () => {
+    switch (gridSize) {
+      case 2:
+        return "grid-cols-1 md:grid-cols-2";
+      case 3:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+      case 4:
+        return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+      default:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+    }
+  };
+
   if (records.length === 0) {
     return (
       <Card>
@@ -54,13 +79,16 @@ const BreedingRecordsGrid = ({ records }: BreedingRecordsGridProps) => {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className={`grid ${getGridColumns()} gap-6`}>
       {records.map((record) => (
         <BreedingRecordCard 
           key={record.id} 
           record={record}
           statusColor={getStatusColor(record.status)}
           typeIcon={getTypeIcon(record.type)}
+          onViewDetails={() => onViewDetails(record)}
+          onEditRecord={() => onEditRecord(record)}
+          onDeleteRecord={() => onDeleteRecord(record)}
         />
       ))}
     </div>
