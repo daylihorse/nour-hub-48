@@ -1,4 +1,3 @@
-
 export type RecordType = 
   | 'veterinary_checkup'
   | 'ultrasound'
@@ -8,7 +7,8 @@ export type RecordType =
   | 'pregnancy'
   | 'foaling'
   | 'health_assessment'
-  | 'heat_cycle';
+  | 'heat_cycle'
+  | 'stallion';
 
 export type RecordStatus = 
   | 'draft'
@@ -126,6 +126,23 @@ export interface AppointmentRecord extends BaseRecord {
   duration: number;
   provider: string;
   reminderBefore: number;
+}
+
+export interface StallionRecord extends BaseRecord {
+  type: 'stallion';
+  stallionName: string;
+  breed: string;
+  age: number;
+  registrationNumber?: string;
+  studFee?: number;
+  availabilityStatus: string;
+  lastServiceDate?: Date;
+  nextAvailableDate?: Date;
+  temperament?: string;
+  healthStatus: string;
+  geneticTesting?: string;
+  requiresSpecialHandling: boolean;
+  isActiveStud: boolean;
 }
 
 export interface RecordFilters {

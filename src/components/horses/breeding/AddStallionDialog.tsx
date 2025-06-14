@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/date-picker";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Horse, Plus, AlertTriangle } from "lucide-react";
+import { Crown, Plus, AlertTriangle } from "lucide-react";
 import BaseRecordDialog from "./records/BaseRecordDialog";
 import { useRecords } from "./records/RecordsProvider";
 import { StallionRecord } from "@/types/breeding/unified-records";
@@ -154,7 +154,7 @@ const AddStallionDialog = ({
       open={open}
       onOpenChange={onOpenChange}
       title="Add Stallion"
-      icon={<Horse className="h-5 w-5" />}
+      icon={<Crown className="h-5 w-5" />}
       horseId={stallionId}
       horseName={stallionName}
       onSubmit={handleSubmit}
