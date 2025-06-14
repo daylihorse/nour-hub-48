@@ -44,7 +44,7 @@ export interface CartItem {
 }
 
 export interface SplitPayment {
-  method: 'cash' | 'card' | 'bank_transfer';
+  method: 'cash' | 'card' | 'bank_transfer' | 'futures_debt';
   amount: number;
 }
 
@@ -54,7 +54,7 @@ export interface Sale {
   subtotal: number;
   tax: number;
   total: number;
-  paymentMethod?: 'cash' | 'card' | 'bank_transfer'; // For single payments
+  paymentMethod?: 'cash' | 'card' | 'bank_transfer' | 'futures_debt'; // For single payments
   splitPayments?: SplitPayment[]; // For split payments
   clientId?: string; // Reference to client ID
   customerName?: string; // Fallback for walk-in customers
@@ -70,7 +70,7 @@ export interface POSState {
     name: string;
     contact: string;
   };
-  paymentMethod: 'cash' | 'card' | 'bank_transfer';
+  paymentMethod: 'cash' | 'card' | 'bank_transfer' | 'futures_debt';
   discount: number;
   useSplitPayment?: boolean;
   splitPayments?: SplitPayment[];

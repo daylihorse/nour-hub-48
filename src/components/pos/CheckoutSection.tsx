@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { CreditCard, User, UserPlus, DollarSign, Building2 } from "lucide-react";
+import { CreditCard, User, UserPlus, DollarSign, Building2, Clock } from "lucide-react";
 import { POSState, SplitPayment } from "@/types/store";
 import { Client } from "@/types/client";
 import { useState } from "react";
@@ -54,7 +54,8 @@ const CheckoutSection = ({
     const paymentMethodLabels = {
       cash: 'Cash',
       card: 'Card',
-      bank_transfer: 'Bank Transfer'
+      bank_transfer: 'Bank Transfer',
+      futures_debt: 'Futures Debt'
     };
 
     return posState.splitPayments.map((payment, index) => (
@@ -68,7 +69,8 @@ const CheckoutSection = ({
   const paymentMethodIcons = {
     cash: DollarSign,
     card: CreditCard,
-    bank_transfer: Building2
+    bank_transfer: Building2,
+    futures_debt: Clock
   };
 
   return (
@@ -151,6 +153,7 @@ const CheckoutSection = ({
             <SelectItem value="cash">Cash</SelectItem>
             <SelectItem value="card">Card</SelectItem>
             <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
+            <SelectItem value="futures_debt">Futures Debt</SelectItem>
           </SelectContent>
         </Select>
       )}
