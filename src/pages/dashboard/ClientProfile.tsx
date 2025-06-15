@@ -12,25 +12,55 @@ import ClientQuickActions from "@/components/clients/profile/actions/ClientQuick
 import ClientStatistics from "@/components/clients/profile/statistics/ClientStatistics";
 import ClientTabsContent from "@/components/clients/profile/ClientTabsContent";
 
+/**
+ * ClientProfile Component
+ * 
+ * Main component for displaying detailed client information and managing client interactions.
+ * This component serves as the central hub for all client-related operations including:
+ * - Viewing client details and contact information
+ * - Managing notes, communications, tasks, and files
+ * - Quick actions for common client operations
+ * - Statistics display for horse owners
+ * - Navigation between different client data views
+ * 
+ * The component uses a tabbed interface to organize different types of client data
+ * and provides quick access to frequently used actions.
+ */
 const ClientProfile = () => {
+  // Extract client ID from URL parameters for data retrieval
   const { id } = useParams();
   const navigate = useNavigate();
+  
+  // Fetch client data using the ID from URL params
+  // Returns null if client is not found, handled in the component
   const client = getClientById(id as string);
   
+  // State management for active tab - controls which content section is displayed
+  // Defaults to "overview" which shows a summary of recent activity
   const [activeTab, setActiveTab] = useState("overview");
+  
+  // Local state for client-related data arrays
+  // These allow for real-time updates without refetching from the data source
   const [notes, setNotes] = useState<ClientNote[]>(client?.notes || []);
   const [communications, setCommunications] = useState<CommunicationLog[]>(client?.communication || []);
   const [tasks, setTasks] = useState<ClientTask[]>(client?.tasks || []);
   const [files, setFiles] = useState<ClientFile[]>(client?.files || []);
 
+  // Early return if client is not found - prevents rendering with null data
   if (!client) {
     return <div className="p-6">Client not found</div>;
   }
 
+  // Type checking for horse owner specific features
+  // Horse owners have additional properties and functionality
   const isHorseOwner = client.type === "Horse Owner";
   const horseOwner = client as HorseOwner;
 
-  // Quick Actions handlers
+  /**
+   * Navigation handler for messages
+   * Attempts to navigate to the messages page for this specific client
+   * Includes error handling with user feedback via toast notifications
+   */
   const handleSendMessage = () => {
     try {
       navigate(`/dashboard/messages/${client.id}`);
@@ -40,18 +70,35 @@ const ClientProfile = () => {
     }
   };
   
+  /**
+   * Placeholder handler for scheduling meetings
+   * Currently shows a success toast - would integrate with calendar system
+   */
   const handleScheduleMeeting = () => {
     toast.success("Schedule meeting function triggered for " + client.name);
   };
   
+  /**
+   * Placeholder handler for document uploads
+   * Currently shows a success toast - would open file upload dialog
+   */
   const handleUploadDocument = () => {
     toast.success("Upload document function triggered for " + client.name);
   };
   
+  /**
+   * Handler for adding new notes
+   * Switches to the notes tab to provide immediate access to note creation
+   */
   const handleAddNote = () => {
     setActiveTab("notes");
   };
 
+  /**
+   * Navigation handler for viewing linked horses
+   * Redirects to the horses page where users can see all horses
+   * Includes error handling for navigation failures
+   */
   const handleViewHorses = () => {
     try {
       navigate("/dashboard/horses");
@@ -61,6 +108,10 @@ const ClientProfile = () => {
     }
   };
 
+  /**
+   * Navigation handler for editing client information
+   * Redirects to the client edit form with the current client's ID
+   */
   const handleEditClient = () => {
     try {
       navigate(`/dashboard/clients/${client.id}/edit`);
@@ -70,6 +121,10 @@ const ClientProfile = () => {
     }
   };
 
+  /**
+   * Navigation handler for returning to the clients list
+   * Provides a way back to the main clients overview page
+   */
   const handleBackToClients = () => {
     try {
       navigate("/dashboard/clients");
@@ -82,7 +137,7 @@ const ClientProfile = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
       <div className="container mx-auto py-6 space-y-4">
-        {/* Breadcrumb Navigation */}
+        {/* Breadcrumb Navigation - provides context and easy way back to clients list */}
         <div className="flex items-center space-x-2">
           <Button 
             variant="ghost" 
@@ -95,16 +150,16 @@ const ClientProfile = () => {
           </Button>
         </div>
         
-        {/* Profile Header */}
+        {/* Profile Header - displays client name, type, status and primary actions */}
         <ClientProfileHeader 
           client={client} 
           onEditClient={handleEditClient} 
         />
 
-        {/* Basic Information */}
+        {/* Basic Information Section - shows contact details and timeline */}
         <ClientBasicInfo client={client} />
 
-        {/* Quick Actions */}
+        {/* Quick Actions Panel - provides fast access to common operations */}
         <ClientQuickActions 
           client={client}
           onSendMessage={handleSendMessage}
@@ -114,7 +169,8 @@ const ClientProfile = () => {
           onViewHorses={isHorseOwner ? handleViewHorses : undefined}
         />
 
-        {/* Statistics for Horse Owners */}
+        {/* Statistics Section - only shown for horse owners */}
+        {/* Displays horse count, billing info, and linked horses */}
         {isHorseOwner && (
           <ClientStatistics 
             horseOwner={horseOwner} 
@@ -122,7 +178,8 @@ const ClientProfile = () => {
           />
         )}
 
-        {/* Main Content Area - Tabs */}
+        {/* Main Content Area - Tabbed interface for detailed client data */}
+        {/* Includes overview, notes, communications, files, and tasks */}
         <ClientTabsContent 
           client={client}
           activeTab={activeTab}
