@@ -3,11 +3,11 @@ import { Phone, Mail, MapPin } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Client } from "@/types/client";
 
-interface ClientContactCardProps {
+interface ClientContactInfoProps {
   client: Client;
 }
 
-const ClientContactCard = ({ client }: ClientContactCardProps) => {
+const ClientContactInfo = ({ client }: ClientContactInfoProps) => {
   return (
     <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
       <CardHeader className="pb-2">
@@ -38,4 +38,4 @@ const ClientContactCard = ({ client }: ClientContactCardProps) => {
   );
 };
 
-export default ClientContactCard;
+export default ClientContactInfo;

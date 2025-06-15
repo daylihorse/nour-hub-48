@@ -4,11 +4,10 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card, CardContent } from "@/components/ui/card";
-import { formatDistanceToNow } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 import { ClientNote } from "@/types/client";
+import NotesList from "./NotesList";
 
 interface ClientNotesTabProps {
   notes: ClientNote[];
@@ -55,22 +54,7 @@ const ClientNotesTab = ({ notes, setNotes }: ClientNotesTabProps) => {
       </div>
 
       <ScrollArea className="h-[300px] pr-4">
-        {notes.length ? (
-          <div className="space-y-3">
-            {[...notes].reverse().map((note) => (
-              <Card key={note.id}>
-                <CardContent className="pt-4">
-                  <p>{note.content}</p>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    {formatDistanceToNow(new Date(note.createdAt), { addSuffix: true })}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <p className="text-muted-foreground">No notes available for this client.</p>
-        )}
+        <NotesList notes={notes} />
       </ScrollArea>
     </>
   );

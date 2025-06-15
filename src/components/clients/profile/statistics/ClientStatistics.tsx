@@ -2,6 +2,7 @@
 import { User } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HorseOwner } from "@/types/client";
+import LinkedHorsesList from "./LinkedHorsesList";
 
 interface ClientStatisticsProps {
   horseOwner: HorseOwner;
@@ -37,31 +38,10 @@ const ClientStatistics = ({ horseOwner, onViewHorses }: ClientStatisticsProps) =
           </div>
         )}
         
-        {/* Linked Horses Section */}
-        {horseOwner.linkedHorses && horseOwner.linkedHorses.length > 0 && (
-          <div className="mt-4">
-            <h3 className="text-sm font-medium mb-2">Linked Horses</h3>
-            <div className="grid grid-cols-1 gap-2">
-              {horseOwner.linkedHorses.map((horseId) => (
-                <Card 
-                  key={horseId}
-                  className="bg-gradient-to-br from-purple-50 to-purple-100/50 hover:shadow-md transition-all cursor-pointer"
-                  onClick={onViewHorses}
-                >
-                  <CardContent className="p-2 flex items-center">
-                    <div className="w-8 h-8 rounded-full bg-purple-200 flex items-center justify-center mr-2">
-                      <User className="h-4 w-4 text-purple-600" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-purple-800">Horse #{horseId.split('-')[1]}</p>
-                      <p className="text-xs text-purple-600">Click to view details</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
+        <LinkedHorsesList 
+          linkedHorses={horseOwner.linkedHorses} 
+          onViewHorses={onViewHorses} 
+        />
       </CardContent>
     </Card>
   );

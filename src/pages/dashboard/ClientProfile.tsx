@@ -6,11 +6,10 @@ import { getClientById } from "@/data/clients";
 import { Button } from "@/components/ui/button";
 import { ClientNote, ClientTask, ClientFile, CommunicationLog, HorseOwner } from "@/types/client";
 import { toast } from "sonner";
-import ClientProfileHeader from "@/components/clients/profile/ClientProfileHeader";
-import ClientContactCard from "@/components/clients/profile/ClientContactCard";
-import ClientQuickActions from "@/components/clients/profile/ClientQuickActions";
-import ClientTimeline from "@/components/clients/profile/ClientTimeline";
-import ClientStatistics from "@/components/clients/profile/ClientStatistics";
+import ClientProfileHeader from "@/components/clients/profile/header/ClientProfileHeader";
+import ClientBasicInfo from "@/components/clients/profile/basic-info/ClientBasicInfo";
+import ClientQuickActions from "@/components/clients/profile/actions/ClientQuickActions";
+import ClientStatistics from "@/components/clients/profile/statistics/ClientStatistics";
 import ClientTabsContent from "@/components/clients/profile/ClientTabsContent";
 
 const ClientProfile = () => {
@@ -102,8 +101,8 @@ const ClientProfile = () => {
           onEditClient={handleEditClient} 
         />
 
-        {/* Contact Information */}
-        <ClientContactCard client={client} />
+        {/* Basic Information */}
+        <ClientBasicInfo client={client} />
 
         {/* Quick Actions */}
         <ClientQuickActions 
@@ -114,9 +113,6 @@ const ClientProfile = () => {
           onUploadDocument={handleUploadDocument}
           onViewHorses={isHorseOwner ? handleViewHorses : undefined}
         />
-
-        {/* Timeline */}
-        <ClientTimeline client={client} />
 
         {/* Statistics for Horse Owners */}
         {isHorseOwner && (

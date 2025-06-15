@@ -1,13 +1,12 @@
 
-import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Client, HorseOwner } from "@/types/client";
-import ClientOverviewTab from "./tabs/ClientOverviewTab";
-import ClientNotesTab from "./tabs/ClientNotesTab";
-import ClientCommunicationTab from "./tabs/ClientCommunicationTab";
-import ClientFilesTab from "./tabs/ClientFilesTab";
-import ClientTasksTab from "./tabs/ClientTasksTab";
+import ClientOverviewTab from "./tabs/overview/ClientOverviewTab";
+import ClientNotesTab from "./tabs/notes/ClientNotesTab";
+import ClientCommunicationTab from "./tabs/communication/ClientCommunicationTab";
+import ClientFilesTab from "./tabs/files/ClientFilesTab";
+import ClientTasksTab from "./tabs/tasks/ClientTasksTab";
 
 interface ClientTabsContentProps {
   client: Client;
