@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +6,7 @@ import { Plus, Search, Calendar, Baby, Heart, AlertTriangle } from "lucide-react
 import PregnancyGridView from "./components/PregnancyGridView";
 import PregnancyListView from "./components/PregnancyListView";
 import PregnancyTableView from "./components/PregnancyTableView";
-import ViewSelector from "./components/ViewSelector";
+import BreedingRecordsViewSelector from "./components/BreedingRecordsViewSelector";
 import AddPregnancyDialog from "./AddPregnancyDialog";
 import UltrasoundDialog from "./UltrasoundDialog";
 import VetCheckupDialog from "./VetCheckupDialog";
@@ -74,7 +73,7 @@ const PregnancyManagement = () => {
           <p className="text-muted-foreground">Monitor pregnancies and veterinary care</p>
         </div>
         <div className="flex items-center gap-4">
-          <ViewSelector 
+          <BreedingRecordsViewSelector 
             currentView={viewMode}
             onViewChange={setViewMode}
             gridSize={gridSize}

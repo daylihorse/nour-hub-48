@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +5,7 @@ import { Search, Plus, Download, Filter } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useFrozenEmbryoManagement } from "../../hooks/useFrozenEmbryoManagement";
 import { FrozenEmbryoInventory } from "@/types/breeding/stallion-detail";
-import ViewSelector, { ViewMode } from "../../../components/ViewSelector";
+import BreedingRecordsViewSelector, { ViewMode } from "../../../components/BreedingRecordsViewSelector";
 import FrozenEmbryoGridView from "./FrozenEmbryoGridView";
 import FrozenEmbryoListView from "./FrozenEmbryoListView";
 import FrozenEmbryoTableView from "./FrozenEmbryoTableView";
@@ -15,7 +14,7 @@ import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 
 interface FrozenEmbryoInventoryTabProps {
   stallionId: string;
-  onActionClick: (action: string, title: string) => void;
+  onActionClick: (action: string, title: string, data?: any) => void;
 }
 
 const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInventoryTabProps) => {
@@ -31,6 +30,10 @@ const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInv
   const handleSearch = (value: string) => {
     setSearchTerm(value);
     setFilters({ ...filters, searchTerm: value });
+  };
+
+  const handleView = (record: FrozenEmbryoInventory) => {
+    onActionClick("view-frozen-embryo", `Frozen Embryo Details ${record.id}`, { record });
   };
 
   const handleEdit = (record: FrozenEmbryoInventory) => {
@@ -93,6 +96,7 @@ const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInv
   const renderContent = () => {
     const commonProps = {
       frozenEmbryos,
+      onView: handleView,
       onEdit: handleEdit,
       onDelete: handleDelete,
       getGradeColor
@@ -148,9 +152,11 @@ const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInv
             Filter
           </Button>
         </div>
-        <ViewSelector 
+        <BreedingRecordsViewSelector 
           currentView={viewMode}
           onViewChange={setViewMode}
+          gridSize={3}
+          onGridSizeChange={() => {}}
         />
       </div>
 

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,8 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { CollectedSemen } from "@/types/breeding/stallion-detail";
-import { ViewMode } from "./BreedingRecordViewSelector";
-import BreedingRecordViewSelector from "./BreedingRecordViewSelector";
+import BreedingRecordViewSelector, { ViewMode, GridSize } from "./BreedingRecordViewSelector";
 import CollectedSemenGridView from "./CollectedSemenGridView";
 import CollectedSemenListView from "./CollectedSemenListView";
 import CollectedSemenTableView from "./CollectedSemenTableView";
@@ -24,7 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 
 interface CollectedSemenTabProps {
   stallionId: string;
-  onActionClick: (action: string, title: string) => void;
+  onActionClick: (action: string, title: string, data?: any) => void;
 }
 
 const CollectedSemenTab = ({ stallionId, onActionClick }: CollectedSemenTabProps) => {
@@ -32,6 +30,7 @@ const CollectedSemenTab = ({ stallionId, onActionClick }: CollectedSemenTabProps
   const [editRecord, setEditRecord] = useState<CollectedSemen | null>(null);
   const [deleteRecord, setDeleteRecord] = useState<CollectedSemen | null>(null);
   const [currentView, setCurrentView] = useState<ViewMode>("grid");
+  const [gridSize, setGridSize] = useState<GridSize>(3);
   const { toast } = useToast();
   
   const {
@@ -64,6 +63,10 @@ const CollectedSemenTab = ({ stallionId, onActionClick }: CollectedSemenTabProps
         variant: "destructive",
       });
     }
+  };
+
+  const handleView = (record: CollectedSemen) => {
+    onActionClick("view-collected-semen", `Collected Semen Details ${record.id}`, { record });
   };
 
   const handleEdit = (record: CollectedSemen) => {
@@ -147,6 +150,7 @@ const CollectedSemenTab = ({ stallionId, onActionClick }: CollectedSemenTabProps
 
     const viewProps = {
       collectedSemen,
+      onView: handleView,
       onEdit: handleEdit,
       onDelete: handleDelete,
       getStatusColor
@@ -154,13 +158,13 @@ const CollectedSemenTab = ({ stallionId, onActionClick }: CollectedSemenTabProps
 
     switch (currentView) {
       case "grid":
-        return <CollectedSemenGridView {...viewProps} />;
+        return <CollectedSemenGridView {...viewProps} gridSize={gridSize} />;
       case "list":
         return <CollectedSemenListView {...viewProps} />;
       case "table":
         return <CollectedSemenTableView {...viewProps} />;
       default:
-        return <CollectedSemenGridView {...viewProps} />;
+        return <CollectedSemenGridView {...viewProps} gridSize={gridSize} />;
     }
   };
 
@@ -175,6 +179,8 @@ const CollectedSemenTab = ({ stallionId, onActionClick }: CollectedSemenTabProps
           <BreedingRecordViewSelector
             currentView={currentView}
             onViewChange={setCurrentView}
+            gridSize={gridSize}
+            onGridSizeChange={setGridSize}
           />
           <Button onClick={handleAddNew}>
             <Plus className="h-4 w-4 mr-2" />

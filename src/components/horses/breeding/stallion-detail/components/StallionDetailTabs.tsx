@@ -1,4 +1,3 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CollectedSemenTab from "./tabs/CollectedSemenTab";
 import FrozenSemenInventoryTab from "./tabs/FrozenSemenInventoryTab";
@@ -9,7 +8,7 @@ interface StallionDetailTabsProps {
   stallionId: string;
   activeTab: string;
   onActiveTabChange: (tab: string) => void;
-  onActionClick: (action: string, title: string) => void;
+  onActionClick: (action: string, title: string, data?: any) => void;
 }
 
 const StallionDetailTabs = ({ 

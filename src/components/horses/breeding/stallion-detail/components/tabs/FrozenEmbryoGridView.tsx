@@ -1,14 +1,14 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Snowflake, Calendar, User, MapPin, Edit, Trash2 } from "lucide-react";
+import { Snowflake, Calendar, User, MapPin, Edit, Trash2, Eye } from "lucide-react";
 import { FrozenEmbryoInventory } from "@/types/breeding/stallion-detail";
 
 interface FrozenEmbryoGridViewProps {
   frozenEmbryos: FrozenEmbryoInventory[];
   onEdit: (record: FrozenEmbryoInventory) => void;
   onDelete: (record: FrozenEmbryoInventory) => void;
+  onView?: (record: FrozenEmbryoInventory) => void;
   getGradeColor: (grade: string) => "default" | "secondary" | "outline" | "destructive";
 }
 
@@ -16,6 +16,7 @@ const FrozenEmbryoGridView = ({
   frozenEmbryos,
   onEdit,
   onDelete,
+  onView,
   getGradeColor
 }: FrozenEmbryoGridViewProps) => {
   if (frozenEmbryos.length === 0) {
@@ -82,6 +83,11 @@ const FrozenEmbryoGridView = ({
             </div>
             
             <div className="flex gap-2">
+              {onView && (
+                <Button variant="ghost" size="sm" onClick={() => onView(record)}>
+                  <Eye className="h-4 w-4" />
+                </Button>
+              )}
               <Button variant="ghost" size="sm" onClick={() => onEdit(record)}>
                 <Edit className="h-4 w-4" />
               </Button>

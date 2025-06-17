@@ -1,22 +1,24 @@
-
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Heart, CheckCircle, Clock, Eye, Edit2, Trash2 } from "lucide-react";
 import { BreedingRecord } from "@/types/breeding/stallion-detail";
+import { GridSize } from "./BreedingRecordViewSelector";
 
 interface BreedingRecordGridViewProps {
   records: BreedingRecord[];
   onViewDetails: (record: BreedingRecord) => void;
   onEditRecord: (record: BreedingRecord) => void;
   onDeleteRecord: (record: BreedingRecord) => void;
+  gridSize?: GridSize;
 }
 
 const BreedingRecordGridView = ({ 
   records, 
   onViewDetails, 
   onEditRecord, 
-  onDeleteRecord 
+  onDeleteRecord,
+  gridSize = 3
 }: BreedingRecordGridViewProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -45,8 +47,21 @@ const BreedingRecordGridView = ({
     }
   };
 
+  const getGridColumns = () => {
+    switch (gridSize) {
+      case 2:
+        return "grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2";
+      case 3:
+        return "grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+      case 4:
+        return "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
+      default:
+        return "grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+    }
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className={`grid ${getGridColumns()} gap-4`}>
       {records.map((record) => (
         <Card key={record.id} className="hover:shadow-md transition-shadow">
           <CardHeader>

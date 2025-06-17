@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +9,7 @@ import {
 } from "lucide-react";
 import { useBreedingRecordManagement } from "../../hooks/useBreedingRecordManagement";
 import { BreedingRecord } from "@/types/breeding/stallion-detail";
-import BreedingRecordViewSelector, { ViewMode } from "./BreedingRecordViewSelector";
+import BreedingRecordViewSelector, { ViewMode, GridSize } from "./BreedingRecordViewSelector";
 import BreedingRecordGridView from "./BreedingRecordGridView";
 import BreedingRecordListView from "./BreedingRecordListView";
 import BreedingRecordTableView from "./BreedingRecordTableView";
@@ -18,13 +17,14 @@ import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 
 interface EnhancedBreedingRecordTabProps {
   stallionId: string;
-  onActionClick: (action: string, title: string) => void;
+  onActionClick: (action: string, title: string, data?: any) => void;
 }
 
 const EnhancedBreedingRecordTab = ({ stallionId, onActionClick }: EnhancedBreedingRecordTabProps) => {
   const { breedingRecords, filters, setFilters, exportData } = useBreedingRecordManagement(stallionId);
   const [searchTerm, setSearchTerm] = useState(filters.searchTerm || "");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [gridSize, setGridSize] = useState<GridSize>(3);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedRecordForDelete, setSelectedRecordForDelete] = useState<BreedingRecord | null>(null);
 
@@ -34,11 +34,11 @@ const EnhancedBreedingRecordTab = ({ stallionId, onActionClick }: EnhancedBreedi
   };
 
   const handleEditRecord = (record: BreedingRecord) => {
-    onActionClick("edit-breeding", `Edit Breeding Record ${record.id}`);
+    onActionClick("edit-breeding", `Edit Breeding Record ${record.id}`, { record });
   };
 
   const handleViewDetails = (record: BreedingRecord) => {
-    onActionClick("view-breeding", `Breeding Record Details ${record.id}`);
+    onActionClick("view-breeding", `Breeding Record Details ${record.id}`, { record });
   };
 
   const handleDeleteRecord = (record: BreedingRecord) => {
@@ -64,13 +64,13 @@ const EnhancedBreedingRecordTab = ({ stallionId, onActionClick }: EnhancedBreedi
 
     switch (viewMode) {
       case "grid":
-        return <BreedingRecordGridView {...commonProps} />;
+        return <BreedingRecordGridView {...commonProps} gridSize={gridSize} />;
       case "list":
         return <BreedingRecordListView {...commonProps} />;
       case "table":
         return <BreedingRecordTableView {...commonProps} />;
       default:
-        return <BreedingRecordGridView {...commonProps} />;
+        return <BreedingRecordGridView {...commonProps} gridSize={gridSize} />;
     }
   };
 
@@ -85,6 +85,8 @@ const EnhancedBreedingRecordTab = ({ stallionId, onActionClick }: EnhancedBreedi
           <BreedingRecordViewSelector
             currentView={viewMode}
             onViewChange={setViewMode}
+            gridSize={gridSize}
+            onGridSizeChange={setGridSize}
           />
           <Button variant="outline" size="sm" onClick={() => exportData('csv')}>
             <Download className="h-4 w-4 mr-2" />

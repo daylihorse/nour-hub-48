@@ -1,11 +1,10 @@
-
 import StallionHeader from "./components/StallionHeader";
 import StallionFilters from "./components/StallionFilters";
 import StallionGrid from "./components/StallionGrid";
 import StallionList from "./components/StallionList";
 import StallionTable from "./components/StallionTable";
 import StallionStats from "./components/StallionStats";
-import ViewSelector from "./components/ViewSelector";
+import BreedingRecordsViewSelector from "./components/BreedingRecordsViewSelector";
 import { useStallionManagement } from "./hooks/useStallionManagement";
 
 const StallionManagement = () => {
@@ -36,7 +35,7 @@ const StallionManagement = () => {
     <div className="space-y-6">
       <StallionHeader 
         viewSelector={
-          <ViewSelector 
+          <BreedingRecordsViewSelector 
             currentView={viewMode}
             onViewChange={setViewMode}
             gridSize={gridSize}

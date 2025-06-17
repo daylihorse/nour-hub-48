@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import MareFilters from "./components/MareFilters";
 import MareStats from "./components/MareStats";
@@ -6,7 +5,7 @@ import MareHeader from "./components/MareHeader";
 import MareGridView from "./components/MareGridView";
 import MareListView from "./components/MareListView";
 import MareTableView from "./components/MareTableView";
-import ViewSelector from "./components/ViewSelector";
+import BreedingRecordsViewSelector from "./components/BreedingRecordsViewSelector";
 import EditMareDialog from "./components/EditMareDialog";
 import AddMareDialog from "./AddMareDialog";
 import VetCheckupDialog from "./VetCheckupDialog";
@@ -119,7 +118,7 @@ const MareManagement = () => {
     <div className="space-y-6">
       <MareHeader 
         viewSelector={
-          <ViewSelector 
+          <BreedingRecordsViewSelector 
             currentView={viewMode}
             onViewChange={setViewMode}
             gridSize={gridSize}

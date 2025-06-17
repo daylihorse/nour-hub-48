@@ -1,22 +1,26 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { TestTube, Calendar, User, Edit, Trash2 } from "lucide-react";
+import { TestTube, Calendar, User, Edit, Trash2, Eye } from "lucide-react";
 import { CollectedSemen } from "@/types/breeding/stallion-detail";
+import { GridSize } from "./BreedingRecordViewSelector";
 
 interface CollectedSemenGridViewProps {
   collectedSemen: CollectedSemen[];
   onEdit: (record: CollectedSemen) => void;
   onDelete: (record: CollectedSemen) => void;
+  onView?: (record: CollectedSemen) => void;
   getStatusColor: (status: string) => "default" | "secondary" | "outline" | "destructive";
+  gridSize?: GridSize;
 }
 
 const CollectedSemenGridView = ({
   collectedSemen,
   onEdit,
   onDelete,
-  getStatusColor
+  onView,
+  getStatusColor,
+  gridSize = 3
 }: CollectedSemenGridViewProps) => {
   if (collectedSemen.length === 0) {
     return (
@@ -28,8 +32,21 @@ const CollectedSemenGridView = ({
     );
   }
 
+  const getGridColumns = () => {
+    switch (gridSize) {
+      case 2:
+        return "grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2";
+      case 3:
+        return "grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+      case 4:
+        return "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
+      default:
+        return "grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+    }
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className={`grid ${getGridColumns()} gap-4`}>
       {collectedSemen.map((collection) => (
         <Card key={collection.id} className="hover:shadow-md transition-shadow">
           <CardContent className="p-4">
@@ -80,6 +97,11 @@ const CollectedSemenGridView = ({
             )}
             
             <div className="flex gap-2">
+              {onView && (
+                <Button variant="ghost" size="sm" onClick={() => onView(collection)}>
+                  <Eye className="h-4 w-4" />
+                </Button>
+              )}
               <Button variant="ghost" size="sm" onClick={() => onEdit(collection)}>
                 <Edit className="h-4 w-4" />
               </Button>

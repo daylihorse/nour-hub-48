@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +5,7 @@ import { Search, Plus, Download, Filter } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useFrozenSemenManagement } from "../../hooks/useFrozenSemenManagement";
 import { FrozenSemenInventory } from "@/types/breeding/stallion-detail";
-import ViewSelector, { ViewMode } from "../../../components/ViewSelector";
+import BreedingRecordsViewSelector, { ViewMode } from "../../../components/BreedingRecordsViewSelector";
 import FrozenSemenGridView from "./FrozenSemenGridView";
 import FrozenSemenListView from "./FrozenSemenListView";
 import FrozenSemenTableView from "./FrozenSemenTableView";
@@ -148,9 +147,11 @@ const FrozenSemenInventoryTab = ({ stallionId, onActionClick }: FrozenSemenInven
             Filter
           </Button>
         </div>
-        <ViewSelector 
+        <BreedingRecordsViewSelector 
           currentView={viewMode}
           onViewChange={setViewMode}
+          gridSize={3}
+          onGridSizeChange={() => {}}
         />
       </div>
 

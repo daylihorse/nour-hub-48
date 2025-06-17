@@ -1,7 +1,7 @@
-
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useEffect } from 'react';
 import { BreedingRecord } from '@/types/breeding/stallion-detail';
 import { FormLayout } from '../shared/FormLayout';
 import { DateField } from '../shared/form-fields/DateField';
@@ -33,9 +33,18 @@ interface BreedingRecordFormProps {
   onSubmit: (data: Omit<BreedingRecord, 'id' | 'createdAt'>) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
+  initialData?: Partial<BreedingRecord> | null;
 }
 
-const BreedingRecordForm = ({ stallionId, onSubmit, onCancel, isLoading }: BreedingRecordFormProps) => {
+const BreedingRecordForm = ({ 
+  stallionId, 
+  onSubmit, 
+  onCancel, 
+  isLoading, 
+  initialData 
+}: BreedingRecordFormProps) => {
+  const isEditing = !!initialData?.id;
+  
   const form = useForm<FormData>({
     resolver: zodResolver(breedingRecordSchema),
     defaultValues: {
@@ -54,6 +63,22 @@ const BreedingRecordForm = ({ stallionId, onSubmit, onCancel, isLoading }: Breed
       notes: '',
     },
   });
+  
+  // Update form values when initialData changes
+  useEffect(() => {
+    if (initialData) {
+      const formData: any = {
+        ...initialData,
+        studFee: initialData.studFee || 0
+      };
+      
+      Object.keys(formData).forEach(key => {
+        if (key !== 'id' && key !== 'createdAt' && formData[key] !== undefined) {
+          form.setValue(key as any, formData[key]);
+        }
+      });
+    }
+  }, [initialData, form]);
 
   const handleSubmit = async (data: FormData) => {
     const submissionData: Omit<BreedingRecord, 'id' | 'createdAt'> = {
@@ -80,7 +105,7 @@ const BreedingRecordForm = ({ stallionId, onSubmit, onCancel, isLoading }: Breed
       onSubmit={handleSubmit}
       onCancel={onCancel}
       isLoading={isLoading}
-      submitLabel="Save Record"
+      submitLabel={isEditing ? "Update Record" : "Save Record"}
     >
       <DateField
         control={form.control}

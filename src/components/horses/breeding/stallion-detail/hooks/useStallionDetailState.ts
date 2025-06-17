@@ -1,10 +1,10 @@
-
 import { useState } from "react";
 
 interface ActionDialog {
   isOpen: boolean;
   type: string;
   title: string;
+  data?: any;
 }
 
 export const useStallionDetailState = () => {
@@ -15,11 +15,12 @@ export const useStallionDetailState = () => {
     title: ""
   });
 
-  const openActionDialog = (type: string, title: string) => {
+  const openActionDialog = (type: string, title: string, data?: any) => {
     setActionDialog({
       isOpen: true,
       type,
-      title
+      title,
+      data
     });
   };
 
@@ -27,7 +28,8 @@ export const useStallionDetailState = () => {
     setActionDialog({
       isOpen: false,
       type: "",
-      title: ""
+      title: "",
+      data: undefined
     });
   };
 

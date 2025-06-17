@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useStallionContext } from "@/contexts/StallionContext";
@@ -44,6 +43,37 @@ const StallionDetailView = () => {
       clearError();
     }
   }, [stallion, stallionId, error, clearError, stallions]);
+
+  // Listen for the custom event to edit records from the details view
+  useEffect(() => {
+    const handleEditRecord = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      const { record, title, type } = customEvent.detail;
+      
+      if (record && title && type) {
+        openActionDialog(type, title, { record });
+      }
+    };
+
+    document.addEventListener('edit-record', handleEditRecord);
+    
+    // For backwards compatibility
+    const handleEditBreedingRecord = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      const { record, title } = customEvent.detail;
+      
+      if (record && title) {
+        openActionDialog('edit-breeding', title, { record });
+      }
+    };
+
+    document.addEventListener('edit-breeding-record', handleEditBreedingRecord);
+    
+    return () => {
+      document.removeEventListener('edit-record', handleEditRecord);
+      document.removeEventListener('edit-breeding-record', handleEditBreedingRecord);
+    };
+  }, [openActionDialog]);
 
   return (
     <StallionDetailErrorBoundary
@@ -101,6 +131,7 @@ const StallionDetailView = () => {
             actionType={actionDialog.type}
             title={actionDialog.title}
             stallionId={stallion.id}
+            initialData={actionDialog.data}
           />
         </div>
       )}

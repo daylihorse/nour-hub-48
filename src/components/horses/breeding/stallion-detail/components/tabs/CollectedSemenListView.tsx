@@ -1,14 +1,14 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, TestTube, Edit, Trash2 } from "lucide-react";
+import { Calendar, TestTube, Edit, Trash2, Eye } from "lucide-react";
 import { CollectedSemen } from "@/types/breeding/stallion-detail";
 
 interface CollectedSemenListViewProps {
   collectedSemen: CollectedSemen[];
   onEdit: (record: CollectedSemen) => void;
   onDelete: (record: CollectedSemen) => void;
+  onView?: (record: CollectedSemen) => void;
   getStatusColor: (status: string) => "default" | "secondary" | "outline" | "destructive";
 }
 
@@ -16,6 +16,7 @@ const CollectedSemenListView = ({
   collectedSemen,
   onEdit,
   onDelete,
+  onView,
   getStatusColor
 }: CollectedSemenListViewProps) => {
   return (
@@ -45,6 +46,11 @@ const CollectedSemenListView = ({
                 <Badge variant={getStatusColor(collection.status)}>
                   {collection.status}
                 </Badge>
+                {onView && (
+                  <Button variant="ghost" size="sm" onClick={() => onView(collection)}>
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                )}
                 <Button variant="ghost" size="sm" onClick={() => onEdit(collection)}>
                   <Edit className="h-4 w-4" />
                 </Button>
