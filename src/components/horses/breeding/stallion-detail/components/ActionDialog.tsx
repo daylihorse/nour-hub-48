@@ -13,6 +13,9 @@ import { BreedingRecord, CollectedSemen, FrozenEmbryo } from "@/types/breeding/s
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import BreedingRecordDetails from "./details/BreedingRecordDetails";
+import CollectedSemenDetails from "./details/CollectedSemenDetails";
+import FrozenEmbryoDetails from "./details/FrozenEmbryoDetails";
 
 interface ActionDialogProps {
   isOpen: boolean;
@@ -144,211 +147,7 @@ const ActionDialog = ({
             onCancel={onClose}
           />
         );
-      case 'view-breeding':
-        return existingRecord ? (
-          <div className="p-4">
-            <div className="flex justify-between items-start mb-4">
-              <h2 className="text-xl font-semibold">Breeding Record Details</h2>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleEditFromView(existingRecord)}
-              >
-                Edit Record
-              </Button>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="flex justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Record ID</p>
-                  <p className="font-medium">{existingRecord.id}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Status</p>
-                  <Badge variant="outline">{existingRecord.status}</Badge>
-                </div>
-              </div>
-              
-              <div>
-                <p className="text-sm text-muted-foreground">Breeding Date</p>
-                <p className="font-medium">{existingRecord.date}</p>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Mare Name</p>
-                  <p className="font-medium">{existingRecord.mareName}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Mare Owner</p>
-                  <p className="font-medium">{existingRecord.mareOwner}</p>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Method</p>
-                  <p className="font-medium">{existingRecord.method}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Result</p>
-                  <Badge variant={existingRecord.result === 'Positive' ? 'default' : 'secondary'}>
-                    {existingRecord.result}
-                  </Badge>
-                </div>
-              </div>
-              
-              <div>
-                <p className="text-sm text-muted-foreground">Veterinarian</p>
-                <p className="font-medium">{existingRecord.veterinarian}</p>
-              </div>
-            </div>
-            
-            <div className="flex justify-end mt-6">
-              <Button variant="outline" onClick={onClose}>
-                Close
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="p-4">
-            <p className="text-muted-foreground">Record details not available.</p>
-          </div>
-        );
-      case 'view-frozen-embryo':
-        return existingRecord ? (
-          <div className="p-4">
-            <h2 className="text-xl font-semibold mb-4">Frozen Embryo Details</h2>
-            <div className="space-y-4">
-              <div className="flex justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">ID</p>
-                  <p className="font-medium">{existingRecord.id}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Status</p>
-                  <p className="font-medium">{existingRecord.status}</p>
-                </div>
-              </div>
-              
-              <div>
-                <p className="text-sm text-muted-foreground">Collection Date</p>
-                <p className="font-medium">{existingRecord.collectionDate}</p>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Mare</p>
-                  <p className="font-medium">{existingRecord.mareName}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Mare Owner</p>
-                  <p className="font-medium">{existingRecord.mareOwner}</p>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Storage Facility</p>
-                  <p className="font-medium">{existingRecord.storageFacility}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Container ID</p>
-                  <p className="font-medium">{existingRecord.containerId}</p>
-                </div>
-              </div>
-              
-              <div className="flex justify-between mt-6">
-                <button 
-                  className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200"
-                  onClick={onClose}
-                >
-                  Close
-                </button>
-                <button 
-                  className="px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200"
-                  onClick={() => handleEditFromView(existingRecord)}
-                >
-                  Edit Record
-                </button>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="p-4">
-            <p className="text-muted-foreground">Embryo details not available.</p>
-          </div>
-        );
-      case 'view-collected-semen':
-        return existingRecord ? (
-          <div className="p-4">
-            <h2 className="text-xl font-semibold mb-4">Collected Semen Details</h2>
-            <div className="space-y-4">
-              <div className="flex justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">ID</p>
-                  <p className="font-medium">{existingRecord.id}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Type</p>
-                  <p className="font-medium">{existingRecord.frozen ? "Frozen" : "Fresh"}</p>
-                </div>
-              </div>
-              
-              <div>
-                <p className="text-sm text-muted-foreground">Collection Date</p>
-                <p className="font-medium">{existingRecord.collectionDate}</p>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Volume</p>
-                  <p className="font-medium">{existingRecord.volume} ml</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Collected By</p>
-                  <p className="font-medium">{existingRecord.collectedBy}</p>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Concentration</p>
-                  <p className="font-medium">{existingRecord.concentration} million/ml</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Motility</p>
-                  <p className="font-medium">{existingRecord.motility}%</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Quality</p>
-                  <p className="font-medium">{existingRecord.quality}</p>
-                </div>
-              </div>
-              
-              <div className="flex justify-between mt-6">
-                <button 
-                  className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200"
-                  onClick={onClose}
-                >
-                  Close
-                </button>
-                <button 
-                  className="px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200"
-                  onClick={() => handleEditFromView(existingRecord)}
-                >
-                  Edit Record
-                </button>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="p-4">
-            <p className="text-muted-foreground">Semen collection details not available.</p>
-          </div>
-        );
-      case 'new-breeding':
+      case 'add-breeding':
       case 'edit-breeding':
         return (
           <BreedingRecordForm
@@ -358,30 +157,76 @@ const ActionDialog = ({
             onCancel={onClose}
           />
         );
+      case 'view-breeding':
+        return existingRecord ? (
+          <>
+            <BreedingRecordDetails 
+              record={existingRecord as BreedingRecord} 
+              onEdit={() => handleEditFromView(existingRecord)} 
+            />
+            <div className="flex justify-end mt-6">
+              <Button variant="outline" onClick={onClose}>
+                Close
+              </Button>
+            </div>
+          </>
+        ) : (
+          <div className="p-4">
+            <p className="text-muted-foreground">Record details not available.</p>
+          </div>
+        );
+      case 'view-frozen-embryo':
+        return existingRecord ? (
+          <>
+            <FrozenEmbryoDetails 
+              record={existingRecord as FrozenEmbryo} 
+              onEdit={() => handleEditFromView(existingRecord)} 
+            />
+            <div className="flex justify-end mt-6">
+              <Button variant="outline" onClick={onClose}>
+                Close
+              </Button>
+            </div>
+          </>
+        ) : (
+          <div className="p-4">
+            <p className="text-muted-foreground">Record details not available.</p>
+          </div>
+        );
+      case 'view-collected-semen':
+        return existingRecord ? (
+          <>
+            <CollectedSemenDetails 
+              record={existingRecord as CollectedSemen} 
+              onEdit={() => handleEditFromView(existingRecord)} 
+            />
+            <div className="flex justify-end mt-6">
+              <Button variant="outline" onClick={onClose}>
+                Close
+              </Button>
+            </div>
+          </>
+        ) : (
+          <div className="p-4">
+            <p className="text-muted-foreground">Record details not available.</p>
+          </div>
+        );
       default:
         return (
           <div className="p-4">
-            <p className="text-muted-foreground">
-              {actionType} functionality will be implemented here.
-            </p>
+            <p className="text-muted-foreground">Unknown action type: {actionType}</p>
           </div>
         );
     }
   };
 
-  const isViewMode = actionType.startsWith('view-');
-
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={`${isViewMode ? 'max-w-4xl' : 'max-w-3xl'} max-h-[90vh] overflow-y-auto`}>
-        {!isViewMode && (
-          <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
-          </DialogHeader>
-        )}
-        <div className="py-2">
-          {renderFormContent()}
-        </div>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+        </DialogHeader>
+        {renderFormContent()}
       </DialogContent>
     </Dialog>
   );
