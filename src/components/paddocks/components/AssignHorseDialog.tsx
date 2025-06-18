@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Horse, Heart } from "lucide-react";
+import { Zap, Heart } from "lucide-react";
 
 // Mock horse data - in a real app this would come from an API or context
 const mockHorses = [
@@ -81,7 +81,7 @@ const AssignHorseDialog = ({
         <DialogHeader>
           <DialogTitle>
             <div className="flex items-center gap-2">
-              <Horse className="h-5 w-5" />
+              <Zap className="h-5 w-5" />
               Assign Horse to {paddock.name}
             </div>
           </DialogTitle>
@@ -167,4 +167,4 @@ const AssignHorseDialog = ({
   );
 };
 
-export default AssignHorseDialog; 
+export default AssignHorseDialog;
