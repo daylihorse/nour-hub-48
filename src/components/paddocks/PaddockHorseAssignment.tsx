@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -82,7 +83,9 @@ const PaddockHorseAssignment = () => {
         assignmentType: data.assignmentType,
         status: 'active',
         assignedBy: "current-user", // In a real app, this would be the current user
-        notes: data.notes
+        notes: data.notes,
+        createdAt: new Date(),
+        updatedAt: new Date()
       });
       
       // Update local assignments state
@@ -90,28 +93,20 @@ const PaddockHorseAssignment = () => {
       
       toast({
         title: "Success",
-        description: `${selectedHorse.name} has been assigned to the paddock`
+        description: `${selectedHorse.name} has been assigned to the paddock successfully`,
       });
       
+      // Reset form
       form.reset();
+      
     } catch (error) {
+      console.error("Error assigning horse to paddock:", error);
       toast({
-        title: "Error",
-        description: "Failed to assign horse to paddock",
+        title: "Error", 
+        description: "Failed to assign horse to paddock. Please try again.",
         variant: "destructive"
       });
     }
-  };
-  
-  // Display current horse location
-  const getHorseLocation = (horseId: string) => {
-    const location = housingService.getHorseLocation(horseId);
-    
-    if (location.locationType === 'unknown') {
-      return "Not assigned";
-    }
-    
-    return `${location.locationType === 'paddock' ? 'Paddock' : 'Stable'}: ${location.locationId}`;
   };
   
   return (
@@ -123,56 +118,58 @@ const PaddockHorseAssignment = () => {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="horseId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Horse</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a horse" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {mockHorses.map(horse => (
-                          <SelectItem key={horse.id} value={horse.id}>
-                            {horse.name} ({horse.breed})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="paddockId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Paddock</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a paddock" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {availablePaddocks.map(paddock => (
-                          <SelectItem key={paddock.id} value={paddock.id}>
-                            {paddock.name} ({paddock.currentOccupancy}/{paddock.capacity})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="horseId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Select Horse</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Choose a horse" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {mockHorses.map((horse) => (
+                            <SelectItem key={horse.id} value={horse.id}>
+                              {horse.name} - {horse.breed}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="paddockId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Select Paddock</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Choose a paddock" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {availablePaddocks.map((paddock) => (
+                            <SelectItem key={paddock.id} value={paddock.id}>
+                              {paddock.name} - Available Space: {paddock.capacity - paddock.currentOccupancy}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <FormField
                 control={form.control}
                 name="assignmentType"
@@ -182,7 +179,7 @@ const PaddockHorseAssignment = () => {
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select type" />
+                          <SelectValue placeholder="Select assignment type" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -198,52 +195,52 @@ const PaddockHorseAssignment = () => {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="notes"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Notes</FormLabel>
+                    <FormLabel>Notes (Optional)</FormLabel>
                     <FormControl>
                       <Textarea 
-                        placeholder="Add any special instructions or notes" 
-                        className="resize-none" 
-                        {...field} 
+                        placeholder="Any additional notes about this assignment..."
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
-              <Button type="submit">Assign Horse</Button>
+
+              <Button type="submit" className="w-full">
+                Assign Horse to Paddock
+              </Button>
             </form>
           </Form>
         </CardContent>
       </Card>
-      
-      {/* Current Horse Locations */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Current Horse Locations</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            {mockHorses.map(horse => (
-              <div key={horse.id} className="flex justify-between items-center border-b pb-2">
-                <div>
-                  <p className="font-medium">{horse.name}</p>
-                  <p className="text-sm text-muted-foreground">{horse.breed}</p>
+
+      {/* Current assignments display */}
+      {assignments.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Assignments</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {assignments.slice(-5).map((assignment, index) => (
+                <div key={index} className="flex justify-between items-center p-2 bg-muted rounded">
+                  <span>{assignment.horseName}</span>
+                  <span className="text-sm text-muted-foreground">
+                    Assigned to {assignment.paddockId}
+                  </span>
                 </div>
-                <div>
-                  <p className="text-sm">{getHorseLocation(horse.id)}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
