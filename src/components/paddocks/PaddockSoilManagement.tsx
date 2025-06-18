@@ -59,6 +59,7 @@ import { CalendarIcon, Download, Filter, Plus, Search, Upload } from "lucide-rea
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { usePaddockData } from "@/hooks/usePaddockData";
+import { DateRange } from "react-day-picker";
 import { 
   Bar, 
   BarChart, 
@@ -107,10 +108,7 @@ const PaddockSoilManagement = () => {
   const { paddocks } = usePaddockData();
   const [selectedPaddock, setSelectedPaddock] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [dateRange, setDateRange] = useState<{
-    from: Date | undefined;
-    to: Date | undefined;
-  }>({
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: undefined,
     to: undefined,
   });
@@ -297,7 +295,7 @@ const PaddockSoilManagement = () => {
                     className="w-[250px] justify-start text-left font-normal"
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {dateRange.from ? (
+                    {dateRange?.from ? (
                       dateRange.to ? (
                         <>
                           {format(dateRange.from, "LLL dd, y")} -{" "}
@@ -315,7 +313,7 @@ const PaddockSoilManagement = () => {
                   <Calendar
                     initialFocus
                     mode="range"
-                    defaultMonth={dateRange.from}
+                    defaultMonth={dateRange?.from}
                     selected={dateRange}
                     onSelect={setDateRange}
                     numberOfMonths={2}

@@ -5,7 +5,6 @@ import { format } from 'date-fns';
 // Import types
 import { Paddock, PaddockAssignment } from '@/types/paddocks';
 import { Assignment } from '@/types/stableRooms';
-import { Horse } from '@/types/horse';
 
 // This service integrates paddock management with stable rooms and horse movements
 export const useHousingService = () => {

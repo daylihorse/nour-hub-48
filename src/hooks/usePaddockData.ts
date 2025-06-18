@@ -51,7 +51,8 @@ import {
   Paddock, 
   PaddockMaintenanceRecord, 
   PaddockRotationPlan, 
-  HorseAssignment 
+  HorseAssignment,
+  PaddockStatus 
 } from '@/types/paddocks';
 import { useHousingService } from '@/services/housing';
 
@@ -438,10 +439,21 @@ export const usePaddockData = () => {
   const assignHorseToPaddock = (horseId: string, horseName: string, paddockId: string, reason?: string) => {
     try {
       // Use the housing service to handle the assignment
-      const result = housingService.assignHorseToPaddock(horseId, paddockId, reason);
+      const result = housingService.assignHorseToPaddock({
+        paddockId,
+        horseId,
+        horseName,
+        assignedDate: new Date(),
+        assignmentType: 'general',
+        status: 'active' as const,
+        assignedBy: "current-user",
+        reason,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
       
-      if (!result.success) {
-        throw new Error(result.message);
+      if (!result) {
+        throw new Error("Failed to assign horse to paddock");
       }
       
       // Create assignment record
@@ -453,7 +465,7 @@ export const usePaddockData = () => {
         assignedDate: new Date(),
         assignedBy: "current-user", // In a real app, this would come from auth context
         reason,
-        status: "active",
+        status: 'active',
         createdAt: new Date(),
         updatedAt: new Date()
       };
@@ -477,7 +489,7 @@ export const usePaddockData = () => {
             ...paddock,
             assignedHorses: updatedAssignedHorses,
             currentOccupancy: paddock.currentOccupancy + 1,
-            status: "occupied",
+            status: "occupied" as PaddockStatus,
             updatedAt: new Date()
           };
         }
@@ -505,19 +517,12 @@ export const usePaddockData = () => {
   
   const removeHorseFromPaddock = (horseId: string, paddockId: string) => {
     try {
-      // Use the housing service to handle the removal
-      const result = housingService.removeHorseFromPaddock(horseId, paddockId);
-      
-      if (!result.success) {
-        throw new Error(result.message);
-      }
-      
       // Update assignment status
       const updatedAssignments = horseAssignments.map(assignment => {
         if (assignment.horseId === horseId && assignment.paddockId === paddockId && assignment.status === "active") {
           return {
             ...assignment,
-            status: "completed",
+            status: "completed" as const,
             updatedAt: new Date()
           };
         }
@@ -539,7 +544,7 @@ export const usePaddockData = () => {
             ...paddock,
             assignedHorses: updatedAssignedHorses,
             currentOccupancy: newOccupancy,
-            status: newOccupancy === 0 ? "available" : "occupied",
+            status: (newOccupancy === 0 ? "available" : "occupied") as PaddockStatus,
             updatedAt: new Date()
           };
         }
@@ -581,7 +586,7 @@ export const usePaddockData = () => {
         if (paddock.id === maintenanceData.paddockId && paddock.status !== "maintenance") {
           return {
             ...paddock,
-            status: "maintenance",
+            status: "maintenance" as PaddockStatus,
             maintenanceHistory: {
               lastMaintenance: paddock.maintenanceHistory?.lastMaintenance || new Date(),
               nextScheduledMaintenance: maintenanceData.scheduledDate,
@@ -619,7 +624,7 @@ export const usePaddockData = () => {
         if (record.id === recordId) {
           return {
             ...record,
-            status: "completed",
+            status: "completed" as const,
             completedDate: new Date()
           };
         }
@@ -645,7 +650,7 @@ export const usePaddockData = () => {
             if (paddock.id === completedRecord.paddockId) {
               return {
                 ...paddock,
-                status: paddock.currentOccupancy > 0 ? "occupied" : "available",
+                status: (paddock.currentOccupancy > 0 ? "occupied" : "available") as PaddockStatus,
                 maintenanceHistory: {
                   lastMaintenance: new Date(),
                   nextScheduledMaintenance: completedRecord.nextMaintenanceDate,

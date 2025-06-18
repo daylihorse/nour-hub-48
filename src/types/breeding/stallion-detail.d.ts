@@ -29,6 +29,7 @@ export interface CollectedSemen {
   technician: string;
   status: string;
   quality: string;
+  qualityGrade: string;
   temperature?: string;
   ph?: string;
   notes?: string;
@@ -56,9 +57,12 @@ export interface FrozenEmbryo {
   stallionId: string;
   embryoId: string;
   donorMare: string;
+  mareName: string;
+  mareOwner: string;
   collectionDate: string;
   freezingDate: string;
   grade: string;
+  qualityGrade: string;
   stage: string;
   storageLocation: string;
   recipientMare?: string;
