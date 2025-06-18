@@ -1,9 +1,10 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Horse, Plus, Search, CheckCircle, AlertCircle } from "lucide-react";
+import { Zap, Plus, Search, CheckCircle, AlertCircle } from "lucide-react";
 import ExistingHorseSelector from "./ExistingHorseSelector";
 import QuickHorseForm from "./QuickHorseForm";
 
@@ -53,7 +54,7 @@ const HorseLinkingSection = ({
     <Card className="border-amber-200 bg-amber-50/50">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Horse className="h-5 w-5 text-amber-600" />
+          <Zap className="h-5 w-5 text-amber-600" />
           Horse Management
           <Badge variant="secondary" className="ml-2">
             {linkedHorses.length} horse{linkedHorses.length !== 1 ? 's' : ''}

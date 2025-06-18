@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Client } from '@/types/client';
+import { Client, HorseOwner } from '@/types/client';
 import ChatMessage, { Message, AttachmentType } from './ChatMessage';
 import ChatInput from './ChatInput';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -124,6 +125,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ client }) => {
     }
   };
 
+  // Type guard to check if client is a HorseOwner
+  const isHorseOwner = (client: Client): client is HorseOwner => {
+    return client.type === 'Horse Owner';
+  };
+
   return (
     <div className="flex flex-col h-full">
       {/* Enhanced Chat Header with Client Info */}
@@ -222,7 +228,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ client }) => {
                 </div>
 
                 {/* Horse Owner Specific Info */}
-                {client.type === 'Horse Owner' && 'horsesOwned' in client && (
+                {isHorseOwner(client) && (
                   <div>
                     <h3 className="font-medium mb-3">Horse Information</h3>
                     <div className="space-y-2 text-sm">
