@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { format } from 'date-fns';
@@ -161,7 +162,9 @@ export const useHousingService = () => {
       assignmentType: 'quarantine',
       status: 'active',
       assignedBy,
-      notes: `Quarantine reason: ${reason}`
+      notes: `Quarantine reason: ${reason}`,
+      createdAt: new Date(),
+      updatedAt: new Date()
     });
     
     // Update horse health status to quarantine
@@ -190,7 +193,9 @@ export const useHousingService = () => {
       assignedDate: new Date(),
       assignmentType: 'breeding',
       status: 'active',
-      assignedBy
+      assignedBy,
+      createdAt: new Date(),
+      updatedAt: new Date()
     });
     
     const mareAssignment = assignHorseToPaddock({
@@ -200,7 +205,9 @@ export const useHousingService = () => {
       assignedDate: new Date(),
       assignmentType: 'breeding',
       status: 'active',
-      assignedBy
+      assignedBy,
+      createdAt: new Date(),
+      updatedAt: new Date()
     });
     
     // Create breeding record in the breeding system

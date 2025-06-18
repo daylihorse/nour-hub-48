@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { 
   Dialog, 
@@ -98,6 +97,8 @@ const CreateAssignmentDialog = ({ onCreateAssignment, availableRooms }: CreateAs
         status: 'active',
         assignedBy: formData.assignedBy,
         notes: formData.notes || undefined,
+        createdAt: new Date(),
+        updatedAt: new Date(),
         cost: formData.dailyRate > 0 ? {
           dailyRate: formData.dailyRate,
           totalCost: 0,
@@ -179,7 +180,6 @@ const CreateAssignmentDialog = ({ onCreateAssignment, availableRooms }: CreateAs
                 <SelectContent>
                   <SelectItem value="horse">Horse</SelectItem>
                   <SelectItem value="equipment">Equipment</SelectItem>
-                  <SelectItem value="supplies">Supplies</SelectItem>
                 </SelectContent>
               </Select>
             </div>

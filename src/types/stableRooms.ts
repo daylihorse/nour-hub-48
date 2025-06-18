@@ -8,7 +8,7 @@ export interface Room {
   id: string;
   number: string;
   name: string;
-  type: 'stall' | 'paddock' | 'quarantine' | 'breeding' | 'foaling' | 'recovery' | 'warehouse' | 'feed_storage' | 'equipment' | 'office' | 'medical';
+  type: 'stall' | 'paddock' | 'quarantine' | 'breeding' | 'foaling' | 'recovery' | 'warehouse' | 'feed_storage' | 'equipment' | 'office' | 'medical' | 'tack_room';
   status: 'available' | 'occupied' | 'maintenance' | 'reserved' | 'out_of_order';
   capacity: number;
   currentOccupancy: number;

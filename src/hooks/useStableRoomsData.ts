@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from 'react';
 import { Room, Assignment, MaintenanceRecord } from '@/types/stableRooms';
 import { v4 as uuidv4 } from 'uuid';
@@ -77,6 +78,8 @@ const initialAssignments: Assignment[] = [
     status: "active",
     assignedBy: "John Smith",
     notes: "Premium stall for breeding stallion",
+    createdAt: new Date("2024-01-15"),
+    updatedAt: new Date("2024-01-15"),
     cost: {
       dailyRate: 50,
       totalCost: 3000,
@@ -92,7 +95,9 @@ const initialAssignments: Assignment[] = [
     assignedDate: new Date("2024-01-01"),
     status: "active",
     assignedBy: "Sarah Johnson",
-    notes: "Long-term storage for training equipment"
+    notes: "Long-term storage for training equipment",
+    createdAt: new Date("2024-01-01"),
+    updatedAt: new Date("2024-01-01")
   }
 ];
 
