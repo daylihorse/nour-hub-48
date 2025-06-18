@@ -9,8 +9,6 @@ import { usePaddockData } from "@/hooks/usePaddockData";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import PaddockHorseAssignment from "./PaddockHorseAssignment";
-import PaddockRotationPlanner from "./PaddockRotationPlanner";
-import PaddockMaintenanceScheduler from "./PaddockMaintenanceScheduler";
 import PaddockAnalytics from "./PaddockAnalytics";
 import PaddockEnvironmentalMonitoring from "./PaddockEnvironmentalMonitoring";
 import PaddockViewSelector, { ViewMode, GridSize } from "./components/PaddockViewSelector";
@@ -279,11 +277,9 @@ const PaddockManagement = () => {
       </div>
 
       <Tabs defaultValue="paddocks">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="paddocks">Paddocks</TabsTrigger>
           <TabsTrigger value="assignments">Horse Assignments</TabsTrigger>
-          <TabsTrigger value="rotation">Rotation Planning</TabsTrigger>
-          <TabsTrigger value="maintenance">Maintenance</TabsTrigger>
           <TabsTrigger value="environmental">Environmental</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
         </TabsList>
@@ -355,14 +351,6 @@ const PaddockManagement = () => {
         
         <TabsContent value="assignments">
           <PaddockHorseAssignment />
-        </TabsContent>
-        
-        <TabsContent value="rotation">
-          <PaddockRotationPlanner />
-        </TabsContent>
-        
-        <TabsContent value="maintenance">
-          <PaddockMaintenanceScheduler />
         </TabsContent>
         
         <TabsContent value="environmental">

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { 
@@ -76,7 +75,7 @@ const MessagesDepartment = () => {
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6 h-screen flex flex-col">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold">Messages</h1>
@@ -93,10 +92,10 @@ const MessagesDepartment = () => {
         </Button>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
         {/* Left Panel - Conversations List */}
-        <Card className="lg:col-span-1">
-          <CardHeader className="pb-3">
+        <Card className="lg:col-span-1 flex flex-col">
+          <CardHeader className="pb-3 flex-shrink-0">
             <CardTitle className="text-lg">Conversations</CardTitle>
             <div className="relative mt-2">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -108,8 +107,8 @@ const MessagesDepartment = () => {
               />
             </div>
           </CardHeader>
-          <CardContent className="p-0">
-            <ScrollArea className="h-[65vh]">
+          <CardContent className="p-0 flex-1 min-h-0">
+            <ScrollArea className="h-full">
               {filteredConversations.length > 0 ? (
                 <div className="divide-y">
                   {filteredConversations.map((conv) => (
@@ -158,7 +157,7 @@ const MessagesDepartment = () => {
         </Card>
         
         {/* Right Panel - Chat Interface or Empty State */}
-        <Card className="lg:col-span-2 flex flex-col h-[70vh] overflow-hidden">
+        <Card className="lg:col-span-2 flex flex-col overflow-hidden">
           {activeClient ? (
             <ChatInterface client={activeClient} />
           ) : (

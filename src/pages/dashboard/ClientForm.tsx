@@ -25,6 +25,17 @@ import { ArrowLeft, Save } from "lucide-react";
 import { getClientById } from "@/data/clients";
 import { ClientType, ClientStatus } from "@/types/client";
 import { toast } from "sonner";
+import HorseLinkingSection from "@/components/clients/HorseLinkingSection";
+
+interface LinkedHorse {
+  id: string;
+  name: string;
+  breed: string;
+  gender: 'stallion' | 'mare' | 'gelding';
+  age?: number;
+  isComplete: boolean;
+  status: 'active' | 'incomplete';
+}
 
 const clientFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -43,6 +54,7 @@ const ClientForm = () => {
   const navigate = useNavigate();
   const isEditing = Boolean(id);
   const [isLoading, setIsLoading] = useState(false);
+  const [linkedHorses, setLinkedHorses] = useState<LinkedHorse[]>([]);
 
   const {
     register,
@@ -116,6 +128,29 @@ const ClientForm = () => {
       console.error("Navigation error:", error);
       toast.error("Unable to navigate back");
     }
+  };
+
+  // Horse management handlers
+  const handleAddExistingHorse = (horse: LinkedHorse) => {
+    if (linkedHorses.find(h => h.id === horse.id)) {
+      toast.error("This horse is already linked to this client");
+      return;
+    }
+    setLinkedHorses(prev => [...prev, horse]);
+  };
+
+  const handleAddNewHorse = (horseData: Omit<LinkedHorse, 'id' | 'isComplete' | 'status'>) => {
+    const newHorse: LinkedHorse = {
+      id: `incomplete-${Date.now()}`,
+      ...horseData,
+      isComplete: false,
+      status: 'incomplete'
+    };
+    setLinkedHorses(prev => [...prev, newHorse]);
+  };
+
+  const handleRemoveHorse = (horseId: string) => {
+    setLinkedHorses(prev => prev.filter(h => h.id !== horseId));
   };
 
   return (
@@ -234,6 +269,40 @@ const ClientForm = () => {
                 rows={4}
               />
             </div>
+
+            {/* Horse Linking Section - Only show for Horse Owner */}
+            {watchedType === "Horse Owner" && (
+              <div className="space-y-4">
+                <div className="border-t pt-6">
+                  <h3 className="text-lg font-semibold mb-4">Horse Management</h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Link existing horses or add new incomplete horse records that can be completed later in the Horse Department.
+                  </p>
+                  <HorseLinkingSection
+                    linkedHorses={linkedHorses}
+                    onAddExistingHorse={(horse) => {
+                      if (linkedHorses.find(h => h.id === horse.id)) {
+                        toast.error("This horse is already linked to this client");
+                        return;
+                      }
+                      setLinkedHorses(prev => [...prev, horse]);
+                    }}
+                    onAddNewHorse={(horseData) => {
+                      const newHorse: LinkedHorse = {
+                        id: `incomplete-${Date.now()}`,
+                        ...horseData,
+                        isComplete: false,
+                        status: 'incomplete'
+                      };
+                      setLinkedHorses(prev => [...prev, newHorse]);
+                    }}
+                    onRemoveHorse={(horseId) => {
+                      setLinkedHorses(prev => prev.filter(h => h.id !== horseId));
+                    }}
+                  />
+                </div>
+              </div>
+            )}
 
             <div className="flex justify-end space-x-4">
               <Button type="button" variant="outline" onClick={handleBack}>

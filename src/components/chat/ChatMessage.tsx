@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { File, Image, Mic } from 'lucide-react';
@@ -52,12 +51,12 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         );
       case 'file':
         return (
-          <div className="flex items-center p-2 bg-accent/30 rounded-md mb-2">
-            <File className="h-5 w-5 mr-2 text-blue-500" />
+          <div className="flex items-center p-2 bg-amber-700/30 rounded-md mb-2">
+            <File className="h-5 w-5 mr-2 text-amber-200" />
             <div className="overflow-hidden">
               <p className="text-sm font-medium truncate">{message.attachment.filename}</p>
               {message.attachment.size && (
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-amber-200/80">
                   {(message.attachment.size / 1024).toFixed(1)} KB
                 </p>
               )}
@@ -66,8 +65,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         );
       case 'audio':
         return (
-          <div className="flex items-center p-2 bg-accent/30 rounded-md mb-2">
-            <Mic className="h-5 w-5 mr-2 text-purple-500" />
+          <div className="flex items-center p-2 bg-amber-700/30 rounded-md mb-2">
+            <Mic className="h-5 w-5 mr-2 text-amber-200" />
             <div className="overflow-hidden">
               <p className="text-sm font-medium truncate">Voice message</p>
               <audio controls className="mt-1 max-w-[200px]">
@@ -90,7 +89,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       {!message.isOwn && (
         <Avatar className="h-8 w-8 mr-2">
           <AvatarImage src={message.sender.avatar} />
-          <AvatarFallback className="bg-primary/10 text-primary">
+          <AvatarFallback className="bg-amber-100 text-amber-800 border border-amber-200">
             {message.sender.name.substring(0, 2).toUpperCase()}
           </AvatarFallback>
         </Avatar>
@@ -104,7 +103,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           "rounded-xl p-3",
           message.isOwn 
             ? "bg-primary text-primary-foreground rounded-br-sm" 
-            : "bg-muted rounded-bl-sm"
+            : "bg-amber-800 text-amber-50 rounded-bl-sm border border-amber-700"
         )}>
           {renderAttachment()}
           

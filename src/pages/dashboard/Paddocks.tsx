@@ -1,8 +1,9 @@
-
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PaddockDashboard from "@/components/paddocks/PaddockDashboard";
 import PaddockManagement from "@/components/paddocks/PaddockManagement";
+import PaddockMaintenanceScheduler from "@/components/paddocks/PaddockMaintenanceScheduler";
+import PaddockRotationPlanner from "@/components/paddocks/PaddockRotationPlanner";
 import { BarChart3, MapPin, Calendar, Settings } from "lucide-react";
 
 const Paddocks = () => {
@@ -44,15 +45,11 @@ const Paddocks = () => {
         </TabsContent>
         
         <TabsContent value="rotation" className="mt-6">
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">Rotation planning feature coming soon...</p>
-          </div>
+          <PaddockRotationPlanner />
         </TabsContent>
         
         <TabsContent value="maintenance" className="mt-6">
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">Paddock maintenance feature coming soon...</p>
-          </div>
+          <PaddockMaintenanceScheduler />
         </TabsContent>
       </Tabs>
     </div>
