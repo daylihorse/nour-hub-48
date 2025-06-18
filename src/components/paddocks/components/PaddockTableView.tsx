@@ -1,3 +1,4 @@
+
 import {
   Table,
   TableBody,
@@ -10,20 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Eye, Edit2, Trash2, UserPlus } from "lucide-react";
-
-interface Paddock {
-  id: string;
-  name: string;
-  number: string;
-  status: string;
-  type: string;
-  location: { section: string };
-  currentOccupancy: number;
-  capacity: number;
-  size: { length: number; width: number; unit: string };
-  assignedHorses?: { horseId: string; horseName: string }[];
-  rotationSchedule?: { nextRotation: Date };
-}
+import { Paddock } from "@/types/paddocks";
 
 interface PaddockTableViewProps {
   paddocks: Paddock[];
@@ -103,7 +91,7 @@ const PaddockTableView = ({
                   )}
                 </TableCell>
                 <TableCell>
-                  {paddock.rotationSchedule ? (
+                  {paddock.rotationSchedule?.nextRotation ? (
                     <span className="text-sm">
                       {paddock.rotationSchedule.nextRotation.toLocaleDateString()}
                     </span>
@@ -159,4 +147,4 @@ const PaddockTableView = ({
   );
 };
 
-export default PaddockTableView; 
+export default PaddockTableView;

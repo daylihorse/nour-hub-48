@@ -1,21 +1,9 @@
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Edit2, Trash2, Users, Calendar, Eye, UserPlus } from "lucide-react";
-
-interface Paddock {
-  id: string;
-  name: string;
-  number: string;
-  status: string;
-  type: string;
-  location: { section: string };
-  currentOccupancy: number;
-  capacity: number;
-  size: { length: number; width: number; unit: string };
-  assignedHorses?: { horseId: string; horseName: string }[];
-  rotationSchedule?: { nextRotation: Date };
-}
+import { Paddock } from "@/types/paddocks";
 
 interface PaddockListViewProps {
   paddocks: Paddock[];
@@ -96,7 +84,7 @@ const PaddockListView = ({
                 )}
 
                 {/* Next Rotation */}
-                {paddock.rotationSchedule && (
+                {paddock.rotationSchedule?.nextRotation && (
                   <div className="flex items-center gap-2 mt-3 text-sm text-muted-foreground">
                     <Calendar className="h-4 w-4" />
                     <span>Next rotation: {paddock.rotationSchedule.nextRotation.toLocaleDateString()}</span>
@@ -151,4 +139,4 @@ const PaddockListView = ({
   );
 };
 
-export default PaddockListView; 
+export default PaddockListView;
