@@ -1,10 +1,11 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, Horse, CheckCircle } from "lucide-react";
+import { Search, Zap, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 
 // Mock horse data - replace with actual API call
@@ -138,7 +139,7 @@ const ExistingHorseSelector = ({ onHorseSelect, excludeHorseIds }: ExistingHorse
             <Card>
               <CardContent className="pt-6">
                 <div className="text-center text-gray-500">
-                  <Horse className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <Zap className="h-8 w-8 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">
                     {searchTerm ? "No horses found matching your search" : "No available horses to link"}
                   </p>
