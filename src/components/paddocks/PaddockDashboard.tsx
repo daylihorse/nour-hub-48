@@ -8,7 +8,7 @@ import {
   CheckCircle2, 
   CircleDashed, 
   Clock, 
-  Grass, 
+  Leaf, 
   LayoutGrid, 
   RotateCw, 
   Users
@@ -382,7 +382,7 @@ const PaddockDashboard = () => {
             </Button>
             
             <Button variant="outline" className="h-auto flex flex-col items-center py-4 gap-2">
-              <Grass className="h-5 w-5" />
+              <Leaf className="h-5 w-5" />
               <span>Soil Analysis</span>
             </Button>
           </div>
