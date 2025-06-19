@@ -1,9 +1,10 @@
+
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Check, X, Horse, Clipboard, Award, Dna } from "lucide-react";
+import { Check, X, Users, Clipboard, Award, Dna } from "lucide-react";
 import { 
   Accordion,
   AccordionContent,
@@ -219,7 +220,7 @@ const HorseModuleAccessCenter: React.FC = () => {
       case "Performance & Training":
         return <Award className="h-4 w-4 mr-2" />;
       case "Core Features":
-        return <Horse className="h-4 w-4 mr-2" />;
+        return <Users className="h-4 w-4 mr-2" />;
       default:
         return <Clipboard className="h-4 w-4 mr-2" />;
     }
@@ -230,7 +231,7 @@ const HorseModuleAccessCenter: React.FC = () => {
       <Card className="w-full">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-xl font-bold flex items-center">
-            <Horse className="h-6 w-6 mr-2" />
+            <Users className="h-6 w-6 mr-2" />
             {moduleConfig.name}
           </CardTitle>
           <div className="flex items-center space-x-2">
@@ -326,4 +327,4 @@ const HorseModuleAccessCenter: React.FC = () => {
   );
 };
 
-export default HorseModuleAccessCenter; 
+export default HorseModuleAccessCenter;
