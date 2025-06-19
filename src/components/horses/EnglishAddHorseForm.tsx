@@ -1,5 +1,6 @@
+
 import RedesignedHorseForm from "./redesigned-form/RedesignedHorseForm";
-import { HorseFormData } from "@/types/horse";
+import { HorseFormData } from "@/types/horse-unified";
 
 /**
  * Component: EnglishAddHorseForm
