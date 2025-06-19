@@ -20,7 +20,11 @@ const RedesignedHorseForm = ({ onSave, onCancel, editData }: RedesignedHorseForm
     visitedStages,
     progress,
     handleNext,
-    handlePrevious,
+    handleP
+
+
+
+,
     handleStageClick,
     handleSubmit,
   } = useEnglishHorseForm({ onSave, editData });

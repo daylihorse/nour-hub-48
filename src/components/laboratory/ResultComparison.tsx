@@ -1,252 +1,267 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TrendingUp, TrendingDown, Minus, Calendar, TestTube, Activity } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ArrowLeft, TrendingUp, BarChart3, Download, History, FileText, Activity } from "lucide-react";
 import HorseSelectionDialog from "./result-comparison/HorseSelectionDialog";
 import AnalysisTypeDialog from "./result-comparison/AnalysisTypeDialog";
+import HistoricalComparisonTable from "./result-comparison/HistoricalComparisonTable";
+import AIAnalysisOverlay from "./result-comparison/AIAnalysisOverlay";
+import TrendAnalysisView from "./result-comparison/TrendAnalysisView";
 import ExportOptionsDialog from "./result-comparison/ExportOptionsDialog";
 
 const ResultComparison = () => {
-  const [showHorseDialog, setShowHorseDialog] = useState(false);
-  const [showAnalysisDialog, setShowAnalysisDialog] = useState(false);
-  const [showExportDialog, setShowExportDialog] = useState(false);
   const [selectedHorse, setSelectedHorse] = useState<string | null>(null);
-  const [selectedAnalysis, setSelectedAnalysis] = useState<string | null>(null);
+  const [selectedAnalysisType, setSelectedAnalysisType] = useState<string | null>(null);
+  const [currentAnalysisMode, setCurrentAnalysisMode] = useState<'historical' | 'trend' | 'export' | null>(null);
+  const [showHorseSelection, setShowHorseSelection] = useState(false);
+  const [showAnalysisSelection, setShowAnalysisSelection] = useState(false);
+  const [showComparison, setShowComparison] = useState(false);
+  const [showTrendAnalysis, setShowTrendAnalysis] = useState(false);
+  const [showExportDialog, setShowExportDialog] = useState(false);
+  const [showAIAnalysis, setShowAIAnalysis] = useState(false);
 
   const handleHorseSelect = (horseId: string, horseName: string) => {
     setSelectedHorse(horseName);
-    setShowHorseDialog(false);
-    setShowAnalysisDialog(true);
+    setShowHorseSelection(false);
+    
+    if (currentAnalysisMode === 'historical') {
+      setShowAnalysisSelection(true);
+    } else if (currentAnalysisMode === 'trend') {
+      setShowTrendAnalysis(true);
+    }
   };
 
   const handleAnalysisSelect = (analysisType: string) => {
-    setSelectedAnalysis(analysisType);
-    setShowAnalysisDialog(false);
-  };
-
-  const mockComparisonData = [
-    {
-      parameter: "White Blood Cells",
-      currentValue: "8.5",
-      previousValue: "7.2",
-      unit: "×10³/μL",
-      normalRange: "5.5-12.0",
-      trend: "up",
-      change: "+18%"
-    },
-    {
-      parameter: "Red Blood Cells",
-      currentValue: "7.8",
-      previousValue: "8.1",
-      unit: "×10⁶/μL",
-      normalRange: "6.5-12.5",
-      trend: "down",
-      change: "-4%"
-    },
-    {
-      parameter: "Hemoglobin",
-      currentValue: "13.2",
-      previousValue: "13.0",
-      unit: "g/dL",
-      normalRange: "11.0-19.0",
-      trend: "up",
-      change: "+2%"
-    },
-    {
-      parameter: "Glucose",
-      currentValue: "95",
-      previousValue: "102",
-      unit: "mg/dL",
-      normalRange: "75-115",
-      trend: "down",
-      change: "-7%"
-    }
-  ];
-
-  const getTrendIcon = (trend: string) => {
-    switch (trend) {
-      case "up":
-        return <TrendingUp className="h-4 w-4 text-green-600" />;
-      case "down":
-        return <TrendingDown className="h-4 w-4 text-red-600" />;
-      default:
-        return <Minus className="h-4 w-4 text-gray-500" />;
+    setSelectedAnalysisType(analysisType);
+    setShowAnalysisSelection(false);
+    
+    if (currentAnalysisMode === 'historical') {
+      setShowComparison(true);
     }
   };
 
-  const getTrendColor = (trend: string) => {
-    switch (trend) {
-      case "up":
-        return "text-green-600";
-      case "down":
-        return "text-red-600";
-      default:
-        return "text-gray-500";
-    }
+  const handleHistoricalAnalysis = () => {
+    setCurrentAnalysisMode('historical');
+    setShowHorseSelection(true);
   };
 
+  const handleTrendAnalysis = () => {
+    setCurrentAnalysisMode('trend');
+    setShowHorseSelection(true);
+  };
+
+  const handleExportOptions = () => {
+    setCurrentAnalysisMode('export');
+    setShowExportDialog(true);
+  };
+
+  const resetSelection = () => {
+    setSelectedHorse(null);
+    setSelectedAnalysisType(null);
+    setCurrentAnalysisMode(null);
+    setShowComparison(false);
+    setShowTrendAnalysis(false);
+    setShowExportDialog(false);
+    setShowAIAnalysis(false);
+  };
+
+  // Historical Analysis View
+  if (showComparison && currentAnalysisMode === 'historical') {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-bold">Historical Test Comparison</h2>
+            <p className="text-muted-foreground">
+              Comparing {selectedAnalysisType} results for {selectedHorse}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setShowAIAnalysis(true)}>
+              <Activity className="h-4 w-4 mr-2" />
+              AI Analysis
+            </Button>
+            <Button variant="outline">
+              <Download className="h-4 w-4 mr-2" />
+              Export Report
+            </Button>
+            <Button variant="outline" onClick={resetSelection}>
+              New Comparison
+            </Button>
+          </div>
+        </div>
+        
+        <HistoricalComparisonTable 
+          horse={selectedHorse!}
+          analysisType={selectedAnalysisType!}
+        />
+        
+        {showAIAnalysis && (
+          <AIAnalysisOverlay 
+            horse={selectedHorse!}
+            analysisType={selectedAnalysisType!}
+            onClose={() => setShowAIAnalysis(false)}
+          />
+        )}
+      </div>
+    );
+  }
+
+  // Trend Analysis View
+  if (showTrendAnalysis && currentAnalysisMode === 'trend') {
+    return (
+      <TrendAnalysisView 
+        horse={selectedHorse!}
+        onBack={resetSelection}
+      />
+    );
+  }
+
+  // Main Dashboard View
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Laboratory Result Comparison</h1>
-          <p className="text-muted-foreground">Compare test results across different time periods</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setShowExportDialog(true)}>
-            Export Results
-          </Button>
-          <Button onClick={() => setShowHorseDialog(true)}>
-            <TestTube className="mr-2 h-4 w-4" />
-            New Comparison
-          </Button>
-        </div>
+      <div>
+        <h2 className="text-2xl font-bold">Result Comparison</h2>
+        <p className="text-muted-foreground">
+          Compare historical test results and analyze trends for comprehensive health insights
+        </p>
       </div>
 
-      {/* Current Selection */}
-      {selectedHorse && selectedAnalysis && (
-        <Card className="border-blue-200 bg-blue-50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Activity className="h-5 w-5 text-blue-600" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={handleHistoricalAnalysis}>
+          <CardHeader className="text-center">
+            <div className="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-2">
+              <History className="h-6 w-6 text-blue-600" />
+            </div>
+            <CardTitle className="text-lg">Historical Analysis</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center">
+            <p className="text-muted-foreground mb-4">
+              Compare test results across different time periods to identify patterns and changes
+            </p>
+            <Button className="w-full">
+              Start Analysis
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={handleTrendAnalysis}>
+          <CardHeader className="text-center">
+            <div className="mx-auto w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-2">
+              <TrendingUp className="h-6 w-6 text-green-600" />
+            </div>
+            <CardTitle className="text-lg">Trend Analysis</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center">
+            <p className="text-muted-foreground mb-4">
+              Visualize health trends and parameter changes over time with detailed charts
+            </p>
+            <Button className="w-full">
+              View Trends
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={handleExportOptions}>
+          <CardHeader className="text-center">
+            <div className="mx-auto w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-2">
+              <FileText className="h-6 w-6 text-purple-600" />
+            </div>
+            <CardTitle className="text-lg">Export Options</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center">
+            <p className="text-muted-foreground mb-4">
+              Generate comprehensive reports and export data in various formats
+            </p>
+            <Button className="w-full">
+              Generate Report
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="h-5 w-5" />
+              Recent Comparisons
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded">
                 <div>
-                  <p className="font-medium text-blue-900">
-                    {selectedAnalysis} - {selectedHorse}
-                  </p>
-                  <p className="text-sm text-blue-700">
-                    Comparing latest results with previous month
-                  </p>
+                  <p className="font-medium">Thunder - Blood Chemistry</p>
+                  <p className="text-sm text-muted-foreground">3 months comparison</p>
                 </div>
+                <Button variant="outline" size="sm">View</Button>
               </div>
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-blue-700 border-blue-300">
-                  <Calendar className="h-3 w-3 mr-1" />
-                  June 2024 vs May 2024
-                </Badge>
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded">
+                <div>
+                  <p className="font-medium">Bella - Complete Blood Count</p>
+                  <p className="text-sm text-muted-foreground">6 months comparison</p>
+                </div>
+                <Button variant="outline" size="sm">View</Button>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded">
+                <div>
+                  <p className="font-medium">Shadow - Urinalysis</p>
+                  <p className="text-sm text-muted-foreground">1 year comparison</p>
+                </div>
+                <Button variant="outline" size="sm">View</Button>
               </div>
             </div>
           </CardContent>
         </Card>
-      )}
 
-      {/* Comparison Results */}
-      {selectedHorse && selectedAnalysis ? (
-        <Tabs defaultValue="parameters" className="w-full">
-          <TabsList>
-            <TabsTrigger value="parameters">Parameter Comparison</TabsTrigger>
-            <TabsTrigger value="trends">Trend Analysis</TabsTrigger>
-            <TabsTrigger value="charts">Visual Charts</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="parameters">
-            <Card>
-              <CardHeader>
-                <CardTitle>Parameter Comparison</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {mockComparisonData.map((item, index) => (
-                    <div key={index} className="border rounded-lg p-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-semibold">{item.parameter}</h4>
-                        <div className="flex items-center gap-2">
-                          {getTrendIcon(item.trend)}
-                          <span className={`text-sm font-medium ${getTrendColor(item.trend)}`}>
-                            {item.change}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                        <div>
-                          <p className="text-muted-foreground">Current</p>
-                          <p className="font-medium">{item.currentValue} {item.unit}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground">Previous</p>
-                          <p className="font-medium">{item.previousValue} {item.unit}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground">Normal Range</p>
-                          <p className="font-medium">{item.normalRange} {item.unit}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground">Status</p>
-                          <Badge variant="outline" className="text-green-600">
-                            Normal
-                          </Badge>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="trends">
-            <Card>
-              <CardHeader>
-                <CardTitle>Trend Analysis</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Trend analysis charts would be displayed here showing parameter changes over time.
-                </p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="charts">
-            <Card>
-              <CardHeader>
-                <CardTitle>Visual Charts</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Interactive charts comparing current vs previous results would be displayed here.
-                </p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      ) : (
         <Card>
-          <CardContent className="p-12 text-center">
-            <TestTube className="h-16 w-16 mx-auto text-gray-400 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              No Comparison Selected
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Select a horse and analysis type to start comparing laboratory results.
-            </p>
-            <Button onClick={() => setShowHorseDialog(true)}>
-              Start New Comparison
-            </Button>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Activity className="h-5 w-5" />
+              Quick Stats
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Total Horses Analyzed</span>
+                <span className="font-semibold">24</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Comparisons This Month</span>
+                <span className="font-semibold">18</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Trends Identified</span>
+                <span className="font-semibold">7</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Reports Generated</span>
+                <span className="font-semibold">12</span>
+              </div>
+            </div>
           </CardContent>
         </Card>
-      )}
+      </div>
 
-      {/* Dialogs */}
-      <HorseSelectionDialog
-        isOpen={showHorseDialog}
-        onClose={() => setShowHorseDialog(false)}
-        onSelect={handleHorseSelect}
+      <HorseSelectionDialog 
+        isOpen={showHorseSelection}
+        onClose={() => setShowHorseSelection(false)}
+        onHorseSelect={handleHorseSelect}
       />
 
-      <AnalysisTypeDialog
-        isOpen={showAnalysisDialog}
-        onClose={() => setShowAnalysisDialog(false)}
-        onSelect={handleAnalysisSelect}
-        horseName={selectedHorse}
+      <AnalysisTypeDialog 
+        isOpen={showAnalysisSelection}
+        onClose={() => setShowAnalysisSelection(false)}
+        onAnalysisSelect={handleAnalysisSelect}
+        horse={selectedHorse}
       />
 
-      <ExportOptionsDialog
+      <ExportOptionsDialog 
         isOpen={showExportDialog}
         onClose={() => setShowExportDialog(false)}
       />

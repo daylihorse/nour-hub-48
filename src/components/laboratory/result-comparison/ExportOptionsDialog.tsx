@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -254,21 +253,21 @@ const ExportOptionsDialog = ({ isOpen, onClose }: ExportOptionsDialogProps) => {
                     <div className="flex items-center space-x-2">
                       <Checkbox
                         checked={includeCharts}
-                        onCheckedChange={(checked) => setIncludeCharts(checked === true)}
+                        onCheckedChange={setIncludeCharts}
                       />
                       <Label>Include Charts and Graphs</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox
                         checked={includeTrends}
-                        onCheckedChange={(checked) => setIncludeTrends(checked === true)}
+                        onCheckedChange={setIncludeTrends}
                       />
                       <Label>Include Trend Analysis</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox
                         checked={includeRecommendations}
-                        onCheckedChange={(checked) => setIncludeRecommendations(checked === true)}
+                        onCheckedChange={setIncludeRecommendations}
                       />
                       <Label>Include Recommendations</Label>
                     </div>
@@ -386,4 +385,4 @@ const ExportOptionsDialog = ({ isOpen, onClose }: ExportOptionsDialogProps) => {
   );
 };
 
-export default ExportOptionsDialog;
+export default ExportOptionsDialog; 
