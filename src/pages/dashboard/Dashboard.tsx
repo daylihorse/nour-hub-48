@@ -1,15 +1,19 @@
-
 import DashboardHero from "@/components/dashboard/DashboardHero";
 import QuickStatsGrid from "@/components/dashboard/QuickStatsGrid";
 import EnhancedSubscriptionTierInfo from "@/components/dashboard/EnhancedSubscriptionTierInfo";
 import EnhancedFeatureMatrix from "@/components/dashboard/EnhancedFeatureMatrix";
 import EnhancedDepartmentGrid from "@/components/dashboard/EnhancedDepartmentGrid";
+import HorseModuleAccessCenter from "@/components/horses/HorseModuleAccessCenter";
+import PaddockModuleAccessCenter from "@/components/paddocks/PaddockModuleAccessCenter";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Settings } from "lucide-react";
 import { useTenantFeatures } from "@/hooks/useTenantFeatures";
+import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Dashboard = () => {
-  const { isFeatureEnabled } = useTenantFeatures();
+  const { isFeatureEnabled, getEnabledFeatures, getAvailableFeatures } = useTenantFeatures();
+  const [activeTab, setActiveTab] = useState<"all" | "horse" | "paddock">("all");
 
   // Calculate total alerts from available departments
   const departments = [
@@ -32,6 +36,11 @@ const Dashboard = () => {
   const totalAlerts = departments
     .filter(dept => !dept.feature || isFeatureEnabled(dept.feature))
     .reduce((sum, dept) => sum + dept.alerts, 0);
+    
+  const enabledFeatures = getEnabledFeatures();
+  const availableFeatures = getAvailableFeatures();
+  const activeModuleCount = enabledFeatures.length;
+  const totalModuleCount = availableFeatures.length;
 
   return (
     <div className="space-y-8">
@@ -56,6 +65,10 @@ const Dashboard = () => {
             <p className="text-brown-600">Manage your organization with powerful integrated modules</p>
           </div>
           <div className="flex gap-3">
+            <Button variant="outline" className="flex items-center gap-2 shadow-brown">
+              <Settings className="h-4 w-4" />
+              {activeModuleCount}/{totalModuleCount} Active Modules
+            </Button>
             {totalAlerts > 0 && (
               <Button variant="destructive" className="flex items-center gap-2 shadow-brown">
                 <AlertTriangle className="h-4 w-4" />
@@ -65,8 +78,29 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Enhanced Department Grid */}
-        <EnhancedDepartmentGrid />
+        {/* Module Tabs */}
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "all" | "horse" | "paddock")}>
+          <TabsList className="mb-6">
+            <TabsTrigger value="all">All Modules</TabsTrigger>
+            <TabsTrigger value="horse">Horse Module</TabsTrigger>
+            <TabsTrigger value="paddock">Paddock Module</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="all">
+            {/* Enhanced Department Grid */}
+            <EnhancedDepartmentGrid />
+          </TabsContent>
+          
+          <TabsContent value="horse">
+            {/* Horse Module Management */}
+            <HorseModuleAccessCenter />
+          </TabsContent>
+          
+          <TabsContent value="paddock">
+            {/* Paddock Module Management */}
+            <PaddockModuleAccessCenter />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

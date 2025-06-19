@@ -11,7 +11,7 @@ import HorseViewSelector, { ViewMode, GridSize } from "./components/HorseViewSel
 import HorseGridView from "./components/HorseGridView";
 import HorseListView from "./components/HorseListView";
 import HorseTableView from "./components/HorseTableView";
-import { HorseFormData } from "@/types/horse";
+import { HorseFormData } from "@/types/horse-unified";
 import { useToast } from "@/hooks/use-toast";
 import { getClientById } from "@/data/clients";
 

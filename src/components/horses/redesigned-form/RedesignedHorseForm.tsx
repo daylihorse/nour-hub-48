@@ -1,4 +1,3 @@
-
 import { FormProvider } from "react-hook-form";
 import { HorseFormData } from "@/types/horse-unified";
 import { useEnglishHorseForm } from "../hooks/useEnglishHorseForm";
@@ -20,11 +19,7 @@ const RedesignedHorseForm = ({ onSave, onCancel, editData }: RedesignedHorseForm
     visitedStages,
     progress,
     handleNext,
-    handleP
-
-
-
-,
+    handlePrevious,
     handleStageClick,
     handleSubmit,
   } = useEnglishHorseForm({ onSave, editData });
