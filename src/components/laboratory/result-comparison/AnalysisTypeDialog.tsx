@@ -1,3 +1,4 @@
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,11 +7,11 @@ import { TestTube, Heart, Droplets, Bug, Activity, Stethoscope, Zap, Shield } fr
 interface AnalysisTypeDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (analysisType: string) => void;
-  horseName: string | null;
+  onAnalysisSelect: (analysisType: string) => void;
+  horse: string | null;
 }
 
-const AnalysisTypeDialog = ({ isOpen, onClose, onSelect, horseName }: AnalysisTypeDialogProps) => {
+const AnalysisTypeDialog = ({ isOpen, onClose, onAnalysisSelect, horse }: AnalysisTypeDialogProps) => {
   const analysisTypes = [
     {
       name: "Complete Blood Count",
@@ -82,7 +83,7 @@ const AnalysisTypeDialog = ({ isOpen, onClose, onSelect, horseName }: AnalysisTy
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Select Analysis Type for {horseName}</DialogTitle>
+          <DialogTitle>Select Analysis Type for {horse}</DialogTitle>
         </DialogHeader>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -92,7 +93,7 @@ const AnalysisTypeDialog = ({ isOpen, onClose, onSelect, horseName }: AnalysisTy
               <div
                 key={analysis.name}
                 className="border rounded-lg p-4 hover:shadow-lg cursor-pointer transition-all hover:border-blue-300"
-                onClick={() => onSelect(analysis.name)}
+                onClick={() => onAnalysisSelect(analysis.name)}
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between">

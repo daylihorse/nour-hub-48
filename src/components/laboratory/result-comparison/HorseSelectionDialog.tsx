@@ -10,10 +10,10 @@ import { Search, Calendar, TestTube } from "lucide-react";
 interface HorseSelectionDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (horseId: string, horseName: string) => void;
+  onHorseSelect: (horseId: string, horseName: string) => void;
 }
 
-const HorseSelectionDialog = ({ isOpen, onClose, onSelect }: HorseSelectionDialogProps) => {
+const HorseSelectionDialog = ({ isOpen, onClose, onHorseSelect }: HorseSelectionDialogProps) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Mock data - would come from API
@@ -87,7 +87,7 @@ const HorseSelectionDialog = ({ isOpen, onClose, onSelect }: HorseSelectionDialo
               <div
                 key={horse.id}
                 className="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer transition-colors"
-                onClick={() => onSelect(horse.id, horse.name)}
+                onClick={() => onHorseSelect(horse.id, horse.name)}
               >
                 <div className="flex items-start gap-4">
                   <Avatar className="h-16 w-16">
