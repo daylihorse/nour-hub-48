@@ -9,11 +9,12 @@ import LaboratoryDocumentManager from "@/components/laboratory/LaboratoryDocumen
 import ResultComparison from "@/components/laboratory/ResultComparison";
 import QualityControl from "@/components/laboratory/QualityControl";
 import TemplateManagement from "@/components/laboratory/TemplateManagement";
+import LaboratoryModuleAccessCenter from "@/components/laboratory/LaboratoryModuleAccessCenter";
 import StoreManagement from "@/components/store/StoreManagement";
 import POSChoiceDialog from "@/components/pos/POSChoiceDialog";
 import { usePOSChoice } from "@/hooks/usePOSChoice";
 import POSSystem from "@/components/pos/POSSystem";
-import { Store, FlaskRound, TestTube, Microscope, FileText, Settings, TrendingUp, Shield, File, ShoppingCart } from "lucide-react";
+import { Store, FlaskRound, TestTube, Microscope, FileText, Settings, TrendingUp, Shield, File, ShoppingCart, Layers } from "lucide-react";
 
 const LaboratoryDepartment = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -46,7 +47,7 @@ const LaboratoryDepartment = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-10">
+        <TabsList className="grid w-full grid-cols-11">
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <FlaskRound className="h-4 w-4" />
             Overview
@@ -78,6 +79,10 @@ const LaboratoryDepartment = () => {
           <TabsTrigger value="documents" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
             Documents
+          </TabsTrigger>
+          <TabsTrigger value="modules" className="flex items-center gap-2">
+            <Layers className="h-4 w-4" />
+            Modules
           </TabsTrigger>
           <TabsTrigger 
             value="pos" 
@@ -123,6 +128,10 @@ const LaboratoryDepartment = () => {
 
         <TabsContent value="documents" className="mt-6">
           <LaboratoryDocumentManager />
+        </TabsContent>
+
+        <TabsContent value="modules" className="mt-6">
+          <LaboratoryModuleAccessCenter />
         </TabsContent>
 
         {showPOS && (
