@@ -16,7 +16,7 @@ import TrainingModuleAccessCenter from "@/components/training/TrainingModuleAcce
 import RidingReservationsModuleAccessCenter from "@/components/riding-reservations/RidingReservationsModuleAccessCenter";
 import StableRoomsModuleAccessCenter from "@/components/stable-rooms/StableRoomsModuleAccessCenter";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Settings, Home, Horse, Building2, FlaskConical, Stethoscope, Pill, DollarSign, Package, Users, TruckIcon, GraduationCap, Rabbit, Building } from "lucide-react";
+import { AlertTriangle, Settings, Home, Users, Building2, FlaskConical, Stethoscope, Pill, DollarSign, Package, TruckIcon, GraduationCap, Rabbit, Building } from "lucide-react";
 import { useTenantFeatures } from "@/hooks/useTenantFeatures";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -98,7 +98,7 @@ const Dashboard = () => {
                 All Modules
               </TabsTrigger>
               <TabsTrigger value="horse" className="flex items-center gap-2 whitespace-nowrap">
-                <Horse className="h-4 w-4" />
+                <Users className="h-4 w-4" />
                 Horse Module
               </TabsTrigger>
               <TabsTrigger value="paddock" className="flex items-center gap-2 whitespace-nowrap">
