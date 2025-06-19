@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import HorsesDashboard from "@/components/horses/HorsesDashboard";
 import HorseManagement from "@/components/horses/HorseManagement";
@@ -11,8 +10,12 @@ import AutomationRulesPanel from "@/components/integration/AutomationRulesPanel"
 
 const HorsesDepartment = () => {
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [breedingSubTab, setBreedingSubTab] = useState("dashboard");
+
+  // Extract clientId from URL parameters
+  const clientId = searchParams.get('clientId');
 
   // Handle navigation state from other components
   useEffect(() => {
@@ -25,7 +28,12 @@ const HorsesDepartment = () => {
         setBreedingSubTab(stateBreedingSubTab);
       }
     }
-  }, [location.state]);
+    
+    // If clientId is provided, automatically switch to horses tab to show filtered horses
+    if (clientId) {
+      setActiveTab("horses");
+    }
+  }, [location.state, clientId]);
 
   const handleNavigateToBreeding = (tab: string) => {
     setActiveTab("breeding");
@@ -111,7 +119,7 @@ const HorsesDepartment = () => {
         </TabsContent>
         
         <TabsContent value="horses" className="mt-6">
-          <HorseManagement />
+          <HorseManagement clientId={clientId} />
         </TabsContent>
         
         <TabsContent value="breeding" className="mt-6">

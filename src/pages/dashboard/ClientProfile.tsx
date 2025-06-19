@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -11,6 +10,11 @@ import ClientBasicInfo from "@/components/clients/profile/basic-info/ClientBasic
 import ClientQuickActions from "@/components/clients/profile/actions/ClientQuickActions";
 import ClientStatistics from "@/components/clients/profile/statistics/ClientStatistics";
 import ClientTabsContent from "@/components/clients/profile/ClientTabsContent";
+import ScheduleAppointmentDialog from "@/components/clients/profile/dialogs/ScheduleAppointmentDialog";
+import AddNoteDialog from "@/components/clients/profile/dialogs/AddNoteDialog";
+import UploadDocumentDialog from "@/components/clients/profile/dialogs/UploadDocumentDialog";
+import LogCommunicationDialog from "@/components/clients/profile/dialogs/LogCommunicationDialog";
+import AddTaskDialog from "@/components/clients/profile/dialogs/AddTaskDialog";
 
 /**
  * ClientProfile Component
@@ -46,6 +50,13 @@ const ClientProfile = () => {
   const [tasks, setTasks] = useState<ClientTask[]>(client?.tasks || []);
   const [files, setFiles] = useState<ClientFile[]>(client?.files || []);
 
+  // Dialog state management
+  const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
+  const [addNoteDialogOpen, setAddNoteDialogOpen] = useState(false);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [logCommunicationDialogOpen, setLogCommunicationDialogOpen] = useState(false);
+  const [addTaskDialogOpen, setAddTaskDialogOpen] = useState(false);
+
   // Early return if client is not found - prevents rendering with null data
   if (!client) {
     return <div className="p-6">Client not found</div>;
@@ -64,6 +75,7 @@ const ClientProfile = () => {
   const handleSendMessage = () => {
     try {
       navigate(`/dashboard/messages/${client.id}`);
+      toast.success(`Opening messages for ${client.name}`);
     } catch (error) {
       console.error("Navigation error:", error);
       toast.error("Unable to open messages");
@@ -71,27 +83,43 @@ const ClientProfile = () => {
   };
   
   /**
-   * Placeholder handler for scheduling meetings
-   * Currently shows a success toast - would integrate with calendar system
+   * Handler for scheduling appointments
+   * Opens the schedule appointment dialog
    */
   const handleScheduleMeeting = () => {
-    toast.success("Schedule meeting function triggered for " + client.name);
+    setScheduleDialogOpen(true);
   };
   
   /**
-   * Placeholder handler for document uploads
-   * Currently shows a success toast - would open file upload dialog
+   * Handler for document uploads
+   * Opens the upload document dialog
    */
   const handleUploadDocument = () => {
-    toast.success("Upload document function triggered for " + client.name);
+    setUploadDialogOpen(true);
   };
   
   /**
    * Handler for adding new notes
-   * Switches to the notes tab to provide immediate access to note creation
+   * Opens the add note dialog
    */
   const handleAddNote = () => {
-    setActiveTab("notes");
+    setAddNoteDialogOpen(true);
+  };
+
+  /**
+   * Handler for logging communications
+   * Opens the log communication dialog
+   */
+  const handleLogCommunication = () => {
+    setLogCommunicationDialogOpen(true);
+  };
+
+  /**
+   * Handler for adding tasks
+   * Opens the add task dialog
+   */
+  const handleAddTask = () => {
+    setAddTaskDialogOpen(true);
   };
 
   /**
@@ -101,11 +129,49 @@ const ClientProfile = () => {
    */
   const handleViewHorses = () => {
     try {
-      navigate("/dashboard/horses");
+      if (isHorseOwner) {
+        // Navigate to horses page with client filter
+        navigate(`/dashboard/horses?clientId=${client.id}`);
+        toast.success(`Viewing horses for ${client.name}`);
+      } else {
+        navigate("/dashboard/horses");
+      }
     } catch (error) {
       console.error("Navigation error:", error);
       toast.error("Unable to navigate to horses page");
     }
+  };
+
+  /**
+   * Handler for when a note is added
+   * Updates the local notes state
+   */
+  const handleNoteAdded = (note: any) => {
+    setNotes(prev => [note, ...prev]);
+  };
+
+  /**
+   * Handler for when a document is uploaded
+   * Updates the local files state
+   */
+  const handleDocumentUploaded = (document: any) => {
+    setFiles(prev => [document, ...prev]);
+  };
+
+  /**
+   * Handler for when a communication is logged
+   * Updates the local communications state
+   */
+  const handleCommunicationLogged = (communication: CommunicationLog) => {
+    setCommunications(prev => [communication, ...prev]);
+  };
+
+  /**
+   * Handler for when a task is added
+   * Updates the local tasks state
+   */
+  const handleTaskAdded = (task: ClientTask) => {
+    setTasks(prev => [task, ...prev]);
   };
 
   /**
@@ -190,6 +256,44 @@ const ClientProfile = () => {
           tasks={tasks}
           files={files}
           onViewHorses={handleViewHorses}
+          onLogCommunication={handleLogCommunication}
+          onUploadFile={handleUploadDocument}
+          onAddTask={handleAddTask}
+        />
+
+        {/* Dialog Components */}
+        <ScheduleAppointmentDialog
+          open={scheduleDialogOpen}
+          onOpenChange={setScheduleDialogOpen}
+          client={client}
+        />
+        
+        <AddNoteDialog
+          open={addNoteDialogOpen}
+          onOpenChange={setAddNoteDialogOpen}
+          client={client}
+          onNoteAdded={handleNoteAdded}
+        />
+        
+        <UploadDocumentDialog
+          open={uploadDialogOpen}
+          onOpenChange={setUploadDialogOpen}
+          client={client}
+          onDocumentUploaded={handleDocumentUploaded}
+        />
+
+        <LogCommunicationDialog
+          open={logCommunicationDialogOpen}
+          onOpenChange={setLogCommunicationDialogOpen}
+          client={client}
+          onCommunicationLogged={handleCommunicationLogged}
+        />
+
+        <AddTaskDialog
+          open={addTaskDialogOpen}
+          onOpenChange={setAddTaskDialogOpen}
+          client={client}
+          onTaskAdded={handleTaskAdded}
         />
       </div>
     </div>

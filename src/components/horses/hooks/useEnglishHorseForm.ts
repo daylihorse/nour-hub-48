@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -55,16 +54,17 @@ const horseFormSchema = z.object({
 
 interface UseEnglishHorseFormProps {
   onSave: (data: HorseFormData) => void;
+  editData?: HorseFormData; // Optional data for edit mode
 }
 
-export const useEnglishHorseForm = ({ onSave }: UseEnglishHorseFormProps) => {
+export const useEnglishHorseForm = ({ onSave, editData }: UseEnglishHorseFormProps) => {
   const [currentStage, setCurrentStage] = useState(0);
   const [completedStages, setCompletedStages] = useState<Set<number>>(new Set());
   const [visitedStages, setVisitedStages] = useState<Set<number>>(new Set([0])); // Track visited stages
 
   const form = useForm<HorseFormData>({
     resolver: zodResolver(horseFormSchema),
-    defaultValues: {
+    defaultValues: editData || {
       name: "",
       arabicName: "",
       breed: "",

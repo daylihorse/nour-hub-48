@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import EnhancedSampleHeader from "./sample-management/EnhancedSampleHeader";
 import SampleStats from "./sample-management/SampleStats";
@@ -11,10 +10,17 @@ const SampleManagement = () => {
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [analysisFilter, setAnalysisFilter] = useState("all");
   const [dateRangeFilter, setDateRangeFilter] = useState<{ start?: Date; end?: Date }>({});
+  const [samples, setSamples] = useState<EnhancedSample[]>(getEnhancedSamples());
 
-  const allSamples = getEnhancedSamples();
+  const handleSampleUpdate = (updatedSample: EnhancedSample) => {
+    setSamples(prevSamples => 
+      prevSamples.map(sample => 
+        sample.id === updatedSample.id ? updatedSample : sample
+      )
+    );
+  };
 
-  const filteredSamples = allSamples.filter((sample: EnhancedSample) => {
+  const filteredSamples = samples.filter((sample: EnhancedSample) => {
     // Search filter
     const matchesSearch = 
       sample.horseName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -60,13 +66,16 @@ const SampleManagement = () => {
         setDateRangeFilter={setDateRangeFilter}
         analysisFilter={analysisFilter}
         setAnalysisFilter={setAnalysisFilter}
-        totalSamples={allSamples.length}
+        totalSamples={samples.length}
         filteredCount={filteredSamples.length}
       />
 
       <SampleStats />
 
-      <EnhancedSampleTable samples={filteredSamples} />
+      <EnhancedSampleTable 
+        samples={filteredSamples} 
+        onSampleUpdate={handleSampleUpdate}
+      />
     </div>
   );
 };

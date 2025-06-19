@@ -1,4 +1,3 @@
-
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -7,14 +6,15 @@ import CommunicationLogList from "./CommunicationLogList";
 
 interface ClientCommunicationTabProps {
   communications: CommunicationLog[];
+  onLogCommunication?: () => void;
 }
 
-const ClientCommunicationTab = ({ communications }: ClientCommunicationTabProps) => {
+const ClientCommunicationTab = ({ communications, onLogCommunication }: ClientCommunicationTabProps) => {
   return (
     <>
       <div className="flex items-center justify-between">
         <h3 className="font-medium">Communication Log</h3>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={onLogCommunication}>
           <Plus className="h-4 w-4 mr-1" /> Log Communication
         </Button>
       </div>

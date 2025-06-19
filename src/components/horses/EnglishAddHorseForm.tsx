@@ -1,4 +1,3 @@
-
 import RedesignedHorseForm from "./redesigned-form/RedesignedHorseForm";
 import { HorseFormData } from "@/types/horse";
 
@@ -29,6 +28,7 @@ import { HorseFormData } from "@/types/horse";
  * PROPS EXPLANATION:
  * @param {Function} onSave - Callback fired when form is successfully submitted
  * @param {Function} onCancel - Callback fired when user cancels form submission
+ * @param {HorseFormData} editData - Optional horse data for edit mode
  */
 
 interface EnglishAddHorseFormProps {
@@ -49,6 +49,15 @@ interface EnglishAddHorseFormProps {
    * Should handle cleanup of any temporary data or navigation state.
    */
   onCancel: () => void;
+
+  /** 
+   * Optional horse data for edit mode. When provided, the form will be pre-populated
+   * with this data, allowing users to modify existing horse information.
+   * 
+   * IMPLEMENTATION NOTE:
+   * When editData is provided, the form operates in edit mode rather than add mode.
+   */
+  editData?: HorseFormData;
 }
 
 /**
@@ -70,8 +79,8 @@ interface EnglishAddHorseFormProps {
  * - Cultural formatting for dates/numbers
  * - Language-appropriate field layouts
  */
-const EnglishAddHorseForm = ({ onSave, onCancel }: EnglishAddHorseFormProps) => {
-  return <RedesignedHorseForm onSave={onSave} onCancel={onCancel} />;
+const EnglishAddHorseForm = ({ onSave, onCancel, editData }: EnglishAddHorseFormProps) => {
+  return <RedesignedHorseForm onSave={onSave} onCancel={onCancel} editData={editData} />;
 };
 
 export default EnglishAddHorseForm;

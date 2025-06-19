@@ -1,41 +1,75 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { TrendingUp, FileText, Download, BarChart3, Activity, History } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ArrowLeft, TrendingUp, BarChart3, Download, History, FileText, Activity } from "lucide-react";
 import HorseSelectionDialog from "./result-comparison/HorseSelectionDialog";
 import AnalysisTypeDialog from "./result-comparison/AnalysisTypeDialog";
 import HistoricalComparisonTable from "./result-comparison/HistoricalComparisonTable";
 import AIAnalysisOverlay from "./result-comparison/AIAnalysisOverlay";
+import TrendAnalysisView from "./result-comparison/TrendAnalysisView";
+import ExportOptionsDialog from "./result-comparison/ExportOptionsDialog";
 
 const ResultComparison = () => {
   const [selectedHorse, setSelectedHorse] = useState<string | null>(null);
   const [selectedAnalysisType, setSelectedAnalysisType] = useState<string | null>(null);
+  const [currentAnalysisMode, setCurrentAnalysisMode] = useState<'historical' | 'trend' | 'export' | null>(null);
   const [showHorseSelection, setShowHorseSelection] = useState(false);
   const [showAnalysisSelection, setShowAnalysisSelection] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
+  const [showTrendAnalysis, setShowTrendAnalysis] = useState(false);
+  const [showExportDialog, setShowExportDialog] = useState(false);
   const [showAIAnalysis, setShowAIAnalysis] = useState(false);
 
   const handleHorseSelect = (horseId: string, horseName: string) => {
     setSelectedHorse(horseName);
     setShowHorseSelection(false);
-    setShowAnalysisSelection(true);
+    
+    if (currentAnalysisMode === 'historical') {
+      setShowAnalysisSelection(true);
+    } else if (currentAnalysisMode === 'trend') {
+      setShowTrendAnalysis(true);
+    }
   };
 
   const handleAnalysisSelect = (analysisType: string) => {
     setSelectedAnalysisType(analysisType);
     setShowAnalysisSelection(false);
-    setShowComparison(true);
+    
+    if (currentAnalysisMode === 'historical') {
+      setShowComparison(true);
+    }
+  };
+
+  const handleHistoricalAnalysis = () => {
+    setCurrentAnalysisMode('historical');
+    setShowHorseSelection(true);
+  };
+
+  const handleTrendAnalysis = () => {
+    setCurrentAnalysisMode('trend');
+    setShowHorseSelection(true);
+  };
+
+  const handleExportOptions = () => {
+    setCurrentAnalysisMode('export');
+    setShowExportDialog(true);
   };
 
   const resetSelection = () => {
     setSelectedHorse(null);
     setSelectedAnalysisType(null);
+    setCurrentAnalysisMode(null);
     setShowComparison(false);
+    setShowTrendAnalysis(false);
+    setShowExportDialog(false);
     setShowAIAnalysis(false);
   };
 
-  if (showComparison) {
+  // Historical Analysis View
+  if (showComparison && currentAnalysisMode === 'historical') {
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
@@ -76,6 +110,17 @@ const ResultComparison = () => {
     );
   }
 
+  // Trend Analysis View
+  if (showTrendAnalysis && currentAnalysisMode === 'trend') {
+    return (
+      <TrendAnalysisView 
+        horse={selectedHorse!}
+        onBack={resetSelection}
+      />
+    );
+  }
+
+  // Main Dashboard View
   return (
     <div className="space-y-6">
       <div>
@@ -86,7 +131,7 @@ const ResultComparison = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setShowHorseSelection(true)}>
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={handleHistoricalAnalysis}>
           <CardHeader className="text-center">
             <div className="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-2">
               <History className="h-6 w-6 text-blue-600" />
@@ -103,7 +148,7 @@ const ResultComparison = () => {
           </CardContent>
         </Card>
 
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setShowHorseSelection(true)}>
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={handleTrendAnalysis}>
           <CardHeader className="text-center">
             <div className="mx-auto w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-2">
               <TrendingUp className="h-6 w-6 text-green-600" />
@@ -120,7 +165,7 @@ const ResultComparison = () => {
           </CardContent>
         </Card>
 
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setShowHorseSelection(true)}>
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={handleExportOptions}>
           <CardHeader className="text-center">
             <div className="mx-auto w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-2">
               <FileText className="h-6 w-6 text-purple-600" />
@@ -206,14 +251,19 @@ const ResultComparison = () => {
       <HorseSelectionDialog 
         isOpen={showHorseSelection}
         onClose={() => setShowHorseSelection(false)}
-        onSelect={handleHorseSelect}
+        onHorseSelect={handleHorseSelect}
       />
 
       <AnalysisTypeDialog 
         isOpen={showAnalysisSelection}
         onClose={() => setShowAnalysisSelection(false)}
-        onSelect={handleAnalysisSelect}
-        horseName={selectedHorse}
+        onAnalysisSelect={handleAnalysisSelect}
+        horse={selectedHorse}
+      />
+
+      <ExportOptionsDialog 
+        isOpen={showExportDialog}
+        onClose={() => setShowExportDialog(false)}
       />
     </div>
   );

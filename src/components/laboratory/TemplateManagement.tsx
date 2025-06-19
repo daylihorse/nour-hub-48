@@ -1,20 +1,22 @@
-
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, FileText, Beaker, Search, Filter } from "lucide-react";
+import { Plus, FileText, Beaker, Search, Filter, ClipboardCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import ResultTemplatesList from "./template-management/ResultTemplatesList";
 import ServiceTemplatesList from "./template-management/ServiceTemplatesList";
+import QCTemplatesList from "./template-management/QCTemplatesList";
 import CreateResultTemplateWizard from "./template-management/CreateResultTemplateWizard";
 import CreateServiceTemplateWizard from "./template-management/CreateServiceTemplateWizard";
+import CreateQCTemplateWizard from "./template-management/CreateQCTemplateWizard";
 import TemplateStats from "./template-management/TemplateStats";
 
 const TemplateManagement = () => {
   const [activeTab, setActiveTab] = useState("result-templates");
   const [showResultWizard, setShowResultWizard] = useState(false);
   const [showServiceWizard, setShowServiceWizard] = useState(false);
+  const [showQCWizard, setShowQCWizard] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
   return (
@@ -22,7 +24,7 @@ const TemplateManagement = () => {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold">Template Management</h2>
-          <p className="text-muted-foreground">Create and manage result and service templates</p>
+          <p className="text-muted-foreground">Create and manage result, service, and QC templates</p>
         </div>
         <div className="flex gap-2">
           <Button
@@ -39,6 +41,14 @@ const TemplateManagement = () => {
           >
             <Plus className="h-4 w-4" />
             New Service Template
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setShowQCWizard(true)}
+            className="flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            New QC Template
           </Button>
         </div>
       </div>
@@ -71,7 +81,7 @@ const TemplateManagement = () => {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="result-templates" className="flex items-center gap-2">
                 <Beaker className="h-4 w-4" />
                 Result Templates
@@ -79,6 +89,10 @@ const TemplateManagement = () => {
               <TabsTrigger value="service-templates" className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
                 Service Templates
+              </TabsTrigger>
+              <TabsTrigger value="qc-templates" className="flex items-center gap-2">
+                <ClipboardCheck className="h-4 w-4" />
+                QC Templates
               </TabsTrigger>
             </TabsList>
 
@@ -88,6 +102,10 @@ const TemplateManagement = () => {
 
             <TabsContent value="service-templates" className="mt-6">
               <ServiceTemplatesList searchTerm={searchTerm} />
+            </TabsContent>
+
+            <TabsContent value="qc-templates" className="mt-6">
+              <QCTemplatesList searchTerm={searchTerm} />
             </TabsContent>
           </Tabs>
         </CardContent>
@@ -101,6 +119,11 @@ const TemplateManagement = () => {
       <CreateServiceTemplateWizard
         isOpen={showServiceWizard}
         onClose={() => setShowServiceWizard(false)}
+      />
+
+      <CreateQCTemplateWizard
+        isOpen={showQCWizard}
+        onClose={() => setShowQCWizard(false)}
       />
     </div>
   );

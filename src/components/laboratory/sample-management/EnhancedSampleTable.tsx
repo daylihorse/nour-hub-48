@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,13 +5,21 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChevronDown, ChevronRight, Eye, Edit, Clock, User, Calendar, TestTube } from "lucide-react";
 import { EnhancedSample, getStatusColor, getPriorityColor, formatAnalysisList } from "./utils/enhancedMockData";
+import ViewSampleDialog from "./dialogs/ViewSampleDialog";
+import EditSampleDialog from "./dialogs/EditSampleDialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface EnhancedSampleTableProps {
   samples: EnhancedSample[];
+  onSampleUpdate?: (updatedSample: EnhancedSample) => void;
 }
 
-const EnhancedSampleTable = ({ samples }: EnhancedSampleTableProps) => {
+const EnhancedSampleTable = ({ samples, onSampleUpdate }: EnhancedSampleTableProps) => {
+  const { toast } = useToast();
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [selectedSample, setSelectedSample] = useState<EnhancedSample | null>(null);
 
   const toggleRowExpansion = (sampleId: string) => {
     const newExpanded = new Set(expandedRows);
@@ -150,88 +157,124 @@ const EnhancedSampleTable = ({ samples }: EnhancedSampleTableProps) => {
     </div>
   );
 
+  const handleViewSample = (sample: EnhancedSample) => {
+    setSelectedSample(sample);
+    setViewDialogOpen(true);
+  };
+
+  const handleEditSample = (sample: EnhancedSample) => {
+    setSelectedSample(sample);
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveEdit = (updatedSample: EnhancedSample) => {
+    if (onSampleUpdate) {
+      onSampleUpdate(updatedSample);
+    }
+    toast({
+      title: "Success",
+      description: `Sample ${updatedSample.id} has been updated successfully.`,
+    });
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Enhanced Sample Records</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-10"></TableHead>
-                <TableHead>Sample ID</TableHead>
-                <TableHead>Horse</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Collection Date</TableHead>
-                <TableHead>Collected By</TableHead>
-                <TableHead>Analysis Required</TableHead>
-                <TableHead>Priority</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Person Brought</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {samples.map((sample) => {
-                const isExpanded = expandedRows.has(sample.id);
-                return (
-                  <>
-                    <TableRow key={sample.id} className="hover:bg-gray-50">
-                      <TableCell>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => toggleRowExpansion(sample.id)}
-                          className="p-1"
-                        >
-                          {isExpanded ? (
-                            <ChevronDown className="w-4 h-4" />
-                          ) : (
-                            <ChevronRight className="w-4 h-4" />
-                          )}
-                        </Button>
-                      </TableCell>
-                      <TableCell className="font-medium">{sample.id}</TableCell>
-                      <TableCell>{sample.horseName}</TableCell>
-                      <TableCell>{sample.sampleType}</TableCell>
-                      <TableCell>{sample.collectionDate}</TableCell>
-                      <TableCell>{sample.collectedBy}</TableCell>
-                      <TableCell>
-                        <span className="text-sm" title={sample.requiredAnalysis.join(", ")}>
-                          {formatAnalysisList(sample.requiredAnalysis)}
-                        </span>
-                      </TableCell>
-                      <TableCell>{getPriorityBadge(sample.priority)}</TableCell>
-                      <TableCell>{getStatusBadge(sample.status)}</TableCell>
-                      <TableCell>{sample.personWhoBrought}</TableCell>
-                      <TableCell>
-                        <div className="flex gap-1">
-                          <Button variant="outline" size="sm">
-                            <Eye className="w-3 h-3" />
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle>Enhanced Sample Records</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-10"></TableHead>
+                  <TableHead>Sample ID</TableHead>
+                  <TableHead>Horse</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Collection Date</TableHead>
+                  <TableHead>Collected By</TableHead>
+                  <TableHead>Analysis Required</TableHead>
+                  <TableHead>Priority</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Person Brought</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {samples.map((sample) => {
+                  const isExpanded = expandedRows.has(sample.id);
+                  return (
+                    <>
+                      <TableRow key={sample.id} className="hover:bg-gray-50">
+                        <TableCell>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => toggleRowExpansion(sample.id)}
+                            className="p-1"
+                          >
+                            {isExpanded ? (
+                              <ChevronDown className="w-4 h-4" />
+                            ) : (
+                              <ChevronRight className="w-4 h-4" />
+                            )}
                           </Button>
-                          <Button variant="outline" size="sm">
-                            <Edit className="w-3 h-3" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                    {isExpanded && (
-                      <TableRow>
-                        <TableCell colSpan={11} className="p-0">
-                          {renderExpandedContent(sample)}
+                        </TableCell>
+                        <TableCell className="font-medium">{sample.id}</TableCell>
+                        <TableCell>{sample.horseName}</TableCell>
+                        <TableCell>{sample.sampleType}</TableCell>
+                        <TableCell>{sample.collectionDate}</TableCell>
+                        <TableCell>{sample.collectedBy}</TableCell>
+                        <TableCell>
+                          <span className="text-sm" title={sample.requiredAnalysis.join(", ")}>
+                            {formatAnalysisList(sample.requiredAnalysis)}
+                          </span>
+                        </TableCell>
+                        <TableCell>{getPriorityBadge(sample.priority)}</TableCell>
+                        <TableCell>{getStatusBadge(sample.status)}</TableCell>
+                        <TableCell>{sample.personWhoBrought}</TableCell>
+                        <TableCell>
+                          <div className="flex gap-1">
+                            <Button variant="outline" size="sm" onClick={() => handleViewSample(sample)}>
+                              <Eye className="w-3 h-3" />
+                            </Button>
+                            <Button variant="outline" size="sm" onClick={() => handleEditSample(sample)}>
+                              <Edit className="w-3 h-3" />
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
-                    )}
-                  </>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </div>
-      </CardContent>
-    </Card>
+                      {isExpanded && (
+                        <TableRow>
+                          <TableCell colSpan={11} className="p-0">
+                            {renderExpandedContent(sample)}
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+      
+      {/* Dialogs */}
+      <ViewSampleDialog
+        open={viewDialogOpen}
+        onOpenChange={setViewDialogOpen}
+        sample={selectedSample}
+      />
+      
+      <EditSampleDialog
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        sample={selectedSample}
+        onSaveEdit={handleSaveEdit}
+      />
+    </>
   );
 };
 

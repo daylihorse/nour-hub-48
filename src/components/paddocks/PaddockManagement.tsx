@@ -287,45 +287,45 @@ const PaddockManagement = () => {
         <TabsContent value="paddocks">
           {/* Filters and View Controls */}
           <Card className="mb-6">
-            <CardContent className="p-4">
+        <CardContent className="p-4">
               <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
                 <div className="flex flex-col sm:flex-row gap-4 flex-1">
-                  <div className="flex-1 relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                    <Input
-                      placeholder="Search paddocks..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-40">
-                      <SelectValue placeholder="Status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Status</SelectItem>
-                      <SelectItem value="available">Available</SelectItem>
-                      <SelectItem value="occupied">Occupied</SelectItem>
-                      <SelectItem value="maintenance">Maintenance</SelectItem>
-                      <SelectItem value="reserved">Reserved</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select value={typeFilter} onValueChange={setTypeFilter}>
-                    <SelectTrigger className="w-40">
-                      <SelectValue placeholder="Type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Types</SelectItem>
-                      <SelectItem value="grazing">Grazing</SelectItem>
-                      <SelectItem value="exercise">Exercise</SelectItem>
-                      <SelectItem value="turnout">Turnout</SelectItem>
-                      <SelectItem value="breeding">Breeding</SelectItem>
-                      <SelectItem value="quarantine">Quarantine</SelectItem>
-                      <SelectItem value="rehabilitation">Rehabilitation</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="Search paddocks..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="available">Available</SelectItem>
+                <SelectItem value="occupied">Occupied</SelectItem>
+                <SelectItem value="maintenance">Maintenance</SelectItem>
+                <SelectItem value="reserved">Reserved</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="grazing">Grazing</SelectItem>
+                <SelectItem value="exercise">Exercise</SelectItem>
+                <SelectItem value="turnout">Turnout</SelectItem>
+                <SelectItem value="breeding">Breeding</SelectItem>
+                <SelectItem value="quarantine">Quarantine</SelectItem>
+                <SelectItem value="rehabilitation">Rehabilitation</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
                 
                 <PaddockViewSelector
                   currentView={viewMode}
@@ -341,12 +341,12 @@ const PaddockManagement = () => {
           {filteredPaddocks.length > 0 ? (
             renderPaddockView()
           ) : (
-            <Card>
-              <CardContent className="p-8 text-center">
-                <p className="text-muted-foreground">No paddocks found matching your criteria.</p>
-              </CardContent>
-            </Card>
-          )}
+        <Card>
+          <CardContent className="p-8 text-center">
+            <p className="text-muted-foreground">No paddocks found matching your criteria.</p>
+          </CardContent>
+        </Card>
+      )}
         </TabsContent>
         
         <TabsContent value="assignments">

@@ -1,4 +1,3 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Client, HorseOwner } from "@/types/client";
@@ -18,6 +17,9 @@ interface ClientTabsContentProps {
   tasks: any[];
   files: any[];
   onViewHorses: () => void;
+  onLogCommunication?: () => void;
+  onUploadFile?: () => void;
+  onAddTask?: () => void;
 }
 
 const ClientTabsContent = ({ 
@@ -29,7 +31,10 @@ const ClientTabsContent = ({
   communications,
   tasks,
   files,
-  onViewHorses
+  onViewHorses,
+  onLogCommunication,
+  onUploadFile,
+  onAddTask
 }: ClientTabsContentProps) => {
   return (
     <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
@@ -59,15 +64,24 @@ const ClientTabsContent = ({
           </TabsContent>
 
           <TabsContent value="communication" className="space-y-4 mt-0">
-            <ClientCommunicationTab communications={communications} />
+            <ClientCommunicationTab 
+              communications={communications} 
+              onLogCommunication={onLogCommunication}
+            />
           </TabsContent>
 
           <TabsContent value="files" className="space-y-4 mt-0">
-            <ClientFilesTab files={files} />
+            <ClientFilesTab 
+              files={files} 
+              onUploadFile={onUploadFile}
+            />
           </TabsContent>
 
           <TabsContent value="tasks" className="space-y-4 mt-0">
-            <ClientTasksTab tasks={tasks} />
+            <ClientTasksTab 
+              tasks={tasks} 
+              onAddTask={onAddTask}
+            />
           </TabsContent>
         </div>
       </Tabs>
