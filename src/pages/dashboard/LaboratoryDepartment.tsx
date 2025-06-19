@@ -47,56 +47,58 @@ const LaboratoryDepartment = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-11">
-          <TabsTrigger value="overview" className="flex items-center gap-2">
-            <FlaskRound className="h-4 w-4" />
-            Overview
-          </TabsTrigger>
-          <TabsTrigger value="samples" className="flex items-center gap-2">
-            <TestTube className="h-4 w-4" />
-            Samples & Tests
-          </TabsTrigger>
-          <TabsTrigger value="results" className="flex items-center gap-2">
-            <Microscope className="h-4 w-4" />
-            Results
-          </TabsTrigger>
-          <TabsTrigger value="comparison" className="flex items-center gap-2">
-            <TrendingUp className="h-4 w-4" />
-            Comparison
-          </TabsTrigger>
-          <TabsTrigger value="quality" className="flex items-center gap-2">
-            <Shield className="h-4 w-4" />
-            Quality Control
-          </TabsTrigger>
-          <TabsTrigger value="templates" className="flex items-center gap-2">
-            <File className="h-4 w-4" />
-            Templates
-          </TabsTrigger>
-          <TabsTrigger value="equipment" className="flex items-center gap-2">
-            <Settings className="h-4 w-4" />
-            Equipment
-          </TabsTrigger>
-          <TabsTrigger value="documents" className="flex items-center gap-2">
-            <FileText className="h-4 w-4" />
-            Documents
-          </TabsTrigger>
-          <TabsTrigger value="modules" className="flex items-center gap-2">
-            <Layers className="h-4 w-4" />
-            Modules
-          </TabsTrigger>
-          <TabsTrigger 
-            value="pos" 
-            className="flex items-center gap-2"
-            onClick={handlePOSTabClick}
-          >
-            <ShoppingCart className="h-4 w-4" />
-            Point of Sale
-          </TabsTrigger>
-          <TabsTrigger value="store" className="flex items-center gap-2">
-            <Store className="h-4 w-4" />
-            Store
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto">
+          <TabsList className="grid w-max grid-cols-11 min-w-full">
+            <TabsTrigger value="overview" className="flex items-center gap-2 whitespace-nowrap">
+              <FlaskRound className="h-4 w-4" />
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="samples" className="flex items-center gap-2 whitespace-nowrap">
+              <TestTube className="h-4 w-4" />
+              Samples & Tests
+            </TabsTrigger>
+            <TabsTrigger value="results" className="flex items-center gap-2 whitespace-nowrap">
+              <Microscope className="h-4 w-4" />
+              Results
+            </TabsTrigger>
+            <TabsTrigger value="comparison" className="flex items-center gap-2 whitespace-nowrap">
+              <TrendingUp className="h-4 w-4" />
+              Comparison
+            </TabsTrigger>
+            <TabsTrigger value="quality" className="flex items-center gap-2 whitespace-nowrap">
+              <Shield className="h-4 w-4" />
+              Quality Control
+            </TabsTrigger>
+            <TabsTrigger value="templates" className="flex items-center gap-2 whitespace-nowrap">
+              <File className="h-4 w-4" />
+              Templates
+            </TabsTrigger>
+            <TabsTrigger value="equipment" className="flex items-center gap-2 whitespace-nowrap">
+              <Settings className="h-4 w-4" />
+              Equipment
+            </TabsTrigger>
+            <TabsTrigger value="documents" className="flex items-center gap-2 whitespace-nowrap">
+              <FileText className="h-4 w-4" />
+              Documents
+            </TabsTrigger>
+            <TabsTrigger value="modules" className="flex items-center gap-2 whitespace-nowrap">
+              <Layers className="h-4 w-4" />
+              Modules
+            </TabsTrigger>
+            <TabsTrigger 
+              value="pos" 
+              className="flex items-center gap-2 whitespace-nowrap"
+              onClick={handlePOSTabClick}
+            >
+              <ShoppingCart className="h-4 w-4" />
+              Point of Sale
+            </TabsTrigger>
+            <TabsTrigger value="store" className="flex items-center gap-2 whitespace-nowrap">
+              <Store className="h-4 w-4" />
+              Store
+            </TabsTrigger>
+          </TabsList>
+        </div>
         
         <TabsContent value="overview" className="mt-6">
           <LaboratoryOverview />
