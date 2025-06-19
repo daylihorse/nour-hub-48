@@ -13,17 +13,16 @@ import InventoryModuleAccessCenter from "@/components/inventory/InventoryModuleA
 import HRModuleAccessCenter from "@/components/hr/HRModuleAccessCenter";
 import MovementModuleAccessCenter from "@/components/movements/MovementModuleAccessCenter";
 import TrainingModuleAccessCenter from "@/components/training/TrainingModuleAccessCenter";
-import RidingReservationsModuleAccessCenter from "@/components/riding-reservations/RidingReservationsModuleAccessCenter";
-import StableRoomsModuleAccessCenter from "@/components/stable-rooms/StableRoomsModuleAccessCenter";
+import TrainingModuleAccessCenter from "@/components/training/TrainingModuleAccessCenter";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Settings, Home, Horse, Building2, FlaskConical, Stethoscope, Pill, DollarSign, Package, Users, TruckIcon, GraduationCap, Rabbit, Building } from "lucide-react";
+import { AlertTriangle, Settings } from "lucide-react";
 import { useTenantFeatures } from "@/hooks/useTenantFeatures";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Dashboard = () => {
   const { isFeatureEnabled, getEnabledFeatures, getAvailableFeatures } = useTenantFeatures();
-  const [activeTab, setActiveTab] = useState<"all" | "horse" | "paddock" | "lab" | "clinic" | "pharmacy" | "finance" | "inventory" | "hr" | "movement" | "training" | "riding-reservations" | "stable-rooms">("all");
+  const [activeTab, setActiveTab] = useState<"all" | "horse" | "paddock" | "lab" | "clinic" | "pharmacy" | "finance" | "inventory" | "hr" | "movement" | "training">("all");
 
   // Calculate total alerts from available departments
   const departments = [
@@ -38,8 +37,7 @@ const Dashboard = () => {
     { feature: "marketplace", alerts: 0 },
     { feature: null, alerts: 4 }, // movements
     { feature: "training", alerts: 0 },
-    { feature: "riding-reservations", alerts: 3 },
-    { feature: "stable-rooms", alerts: 2 },
+    { feature: "rooms", alerts: 2 },
     { feature: "maintenance", alerts: 1 },
     { feature: "messages", alerts: 0 }
   ];
@@ -89,64 +87,21 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Scrollable Module Tabs */}
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "all" | "horse" | "paddock" | "lab" | "clinic" | "pharmacy" | "finance" | "inventory" | "hr" | "movement" | "training" | "riding-reservations" | "stable-rooms")}>
-          <div className="overflow-x-auto">
-            <TabsList className="grid w-max grid-cols-13 min-w-full">
-              <TabsTrigger value="all" className="flex items-center gap-2 whitespace-nowrap">
-                <Home className="h-4 w-4" />
-                All Modules
-              </TabsTrigger>
-              <TabsTrigger value="horse" className="flex items-center gap-2 whitespace-nowrap">
-                <Horse className="h-4 w-4" />
-                Horse Module
-              </TabsTrigger>
-              <TabsTrigger value="paddock" className="flex items-center gap-2 whitespace-nowrap">
-                <Building2 className="h-4 w-4" />
-                Paddock Module
-              </TabsTrigger>
-              <TabsTrigger value="lab" className="flex items-center gap-2 whitespace-nowrap">
-                <FlaskConical className="h-4 w-4" />
-                Lab Module
-              </TabsTrigger>
-              <TabsTrigger value="clinic" className="flex items-center gap-2 whitespace-nowrap">
-                <Stethoscope className="h-4 w-4" />
-                Clinic Module
-              </TabsTrigger>
-              <TabsTrigger value="pharmacy" className="flex items-center gap-2 whitespace-nowrap">
-                <Pill className="h-4 w-4" />
-                Pharmacy Module
-              </TabsTrigger>
-              <TabsTrigger value="finance" className="flex items-center gap-2 whitespace-nowrap">
-                <DollarSign className="h-4 w-4" />
-                Finance Module
-              </TabsTrigger>
-              <TabsTrigger value="inventory" className="flex items-center gap-2 whitespace-nowrap">
-                <Package className="h-4 w-4" />
-                Inventory Module
-              </TabsTrigger>
-              <TabsTrigger value="hr" className="flex items-center gap-2 whitespace-nowrap">
-                <Users className="h-4 w-4" />
-                HR Module
-              </TabsTrigger>
-              <TabsTrigger value="movement" className="flex items-center gap-2 whitespace-nowrap">
-                <TruckIcon className="h-4 w-4" />
-                Movement Module
-              </TabsTrigger>
-              <TabsTrigger value="training" className="flex items-center gap-2 whitespace-nowrap">
-                <GraduationCap className="h-4 w-4" />
-                Training Module
-              </TabsTrigger>
-              <TabsTrigger value="riding-reservations" className="flex items-center gap-2 whitespace-nowrap">
-                <Rabbit className="h-4 w-4" />
-                Riding Reservations
-              </TabsTrigger>
-              <TabsTrigger value="stable-rooms" className="flex items-center gap-2 whitespace-nowrap">
-                <Building className="h-4 w-4" />
-                Stable Rooms
-              </TabsTrigger>
-            </TabsList>
-          </div>
+        {/* Module Tabs */}
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "all" | "horse" | "paddock" | "lab" | "clinic" | "pharmacy" | "finance" | "inventory" | "hr" | "movement" | "training")}>
+          <TabsList className="mb-6">
+            <TabsTrigger value="all">All Modules</TabsTrigger>
+            <TabsTrigger value="horse">Horse Module</TabsTrigger>
+            <TabsTrigger value="paddock">Paddock Module</TabsTrigger>
+            <TabsTrigger value="lab">Lab Module</TabsTrigger>
+            <TabsTrigger value="clinic">Clinic Module</TabsTrigger>
+            <TabsTrigger value="pharmacy">Pharmacy Module</TabsTrigger>
+            <TabsTrigger value="finance">Finance Module</TabsTrigger>
+            <TabsTrigger value="inventory">Inventory Module</TabsTrigger>
+            <TabsTrigger value="hr">HR Module</TabsTrigger>
+            <TabsTrigger value="movement">Movement Module</TabsTrigger>
+            <TabsTrigger value="training">Training Module</TabsTrigger>
+          </TabsList>
           
           <TabsContent value="all">
             {/* Enhanced Department Grid */}
@@ -201,16 +156,6 @@ const Dashboard = () => {
           <TabsContent value="training">
             {/* Training Center Module Management */}
             <TrainingModuleAccessCenter />
-          </TabsContent>
-          
-          <TabsContent value="riding-reservations">
-            {/* Riding Reservations Module Management */}
-            <RidingReservationsModuleAccessCenter />
-          </TabsContent>
-          
-          <TabsContent value="stable-rooms">
-            {/* Stable Rooms Module Management */}
-            <StableRoomsModuleAccessCenter />
           </TabsContent>
         </Tabs>
       </div>
