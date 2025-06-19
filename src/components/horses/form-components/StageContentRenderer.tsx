@@ -1,14 +1,14 @@
 
-import { FormStage } from "@/types/horse";
-import BasicInformationStage from "../form-stages/BasicInformationStage";
-import OwnershipDocumentationStage from "../form-stages/OwnershipDocumentationStage";
-import PedigreeStage from "../form-stages/PedigreeStage";
-import HealthMedicalStage from "../form-stages/HealthMedicalStage";
-import TrainingPerformanceStage from "../form-stages/TrainingPerformanceStage";
-import StableManagementStage from "../form-stages/StableManagementStage";
-import InsuranceFinancialStage from "../form-stages/InsuranceFinancialStage";
-import DocumentsImagesStage from "../form-stages/DocumentsImagesStage";
-import ReviewConfirmationStage from "../form-stages/ReviewConfirmationStage";
+import { FormStage } from "@/types/horse-unified";
+import BasicInformationStage from "./stages/BasicInformationStage";
+import OwnershipDocumentationStage from "./stages/OwnershipDocumentationStage";
+import PedigreeStage from "./stages/PedigreeStage";
+import HealthMedicalStage from "./stages/HealthMedicalStage";
+import TrainingPerformanceStage from "./stages/TrainingPerformanceStage";
+import StableManagementStage from "./stages/StableManagementStage";
+import InsuranceFinancialStage from "./stages/InsuranceFinancialStage";
+import DocumentsImagesStage from "./stages/DocumentsImagesStage";
+import ReviewSubmitStage from "./stages/ReviewSubmitStage";
 
 interface StageContentRendererProps {
   stage: FormStage;
@@ -34,9 +34,14 @@ const StageContentRenderer = ({ stage, onSubmit }: StageContentRendererProps) =>
     case "documents":
       return <DocumentsImagesStage />;
     case "review":
-      return <ReviewConfirmationStage onSubmit={onSubmit} />;
+      return <ReviewSubmitStage onSubmit={onSubmit} />;
     default:
-      return null;
+      return (
+        <div className="p-6 text-center">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Stage Not Found</h3>
+          <p className="text-gray-600">The requested form stage could not be found.</p>
+        </div>
+      );
   }
 };
 

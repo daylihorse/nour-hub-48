@@ -1,7 +1,7 @@
 
 import { UseFormReturn } from "react-hook-form";
-import { HorseFormData } from "@/types/horse";
-import { formStages } from "../config/formStages";
+import { HorseFormData } from "@/types/horse-unified";
+import { formStages } from "../config/consolidatedFormStages";
 import FormContentCard from "./FormContentCard";
 import FormNavigationFooter from "./FormNavigationFooter";
 

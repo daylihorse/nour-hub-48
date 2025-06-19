@@ -2,7 +2,7 @@
 import { UseFormReturn } from "react-hook-form";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { HorseFormData, FormStage } from "@/types/horse";
+import { HorseFormData, FormStage } from "@/types/horse-unified";
 import StageContentRenderer from "../form-components/StageContentRenderer";
 import ValidationFeedback from "../form-components/ValidationFeedback";
 

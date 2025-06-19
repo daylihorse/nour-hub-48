@@ -1,7 +1,7 @@
 
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { CheckCircle, AlertCircle, Info } from "lucide-react";
-import { FormStage } from "@/types/horse";
+import { FormStage } from "@/types/horse-unified";
+import { Badge } from "@/components/ui/badge";
+import { CheckCircle, AlertCircle, Clock } from "lucide-react";
 
 interface ValidationFeedbackProps {
   stage: FormStage;
@@ -11,37 +11,48 @@ interface ValidationFeedbackProps {
 
 const ValidationFeedback = ({ stage, currentStage, completedStages }: ValidationFeedbackProps) => {
   const isCompleted = completedStages.has(currentStage);
-  const isRequired = stage.isRequired;
-
+  
   if (isCompleted) {
     return (
-      <Alert className="border-green-200 bg-green-50">
-        <CheckCircle className="h-4 w-4 text-green-600" />
-        <AlertDescription className="text-green-800">
-          This stage has been completed successfully.
-        </AlertDescription>
-      </Alert>
+      <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+        <CheckCircle className="h-5 w-5 text-green-600" />
+        <div className="flex-1">
+          <p className="text-sm font-medium text-green-800">Stage Completed</p>
+          <p className="text-sm text-green-600">All required fields have been filled.</p>
+        </div>
+        <Badge variant="secondary" className="bg-green-100 text-green-800">
+          Complete
+        </Badge>
+      </div>
     );
   }
 
-  if (isRequired) {
+  if (stage.isRequired) {
     return (
-      <Alert className="border-orange-200 bg-orange-50">
-        <AlertCircle className="h-4 w-4 text-orange-600" />
-        <AlertDescription className="text-orange-800">
-          This stage is required. Please fill in all mandatory fields before proceeding.
-        </AlertDescription>
-      </Alert>
+      <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+        <AlertCircle className="h-5 w-5 text-amber-600" />
+        <div className="flex-1">
+          <p className="text-sm font-medium text-amber-800">Required Stage</p>
+          <p className="text-sm text-amber-600">Please complete all required fields to continue.</p>
+        </div>
+        <Badge variant="destructive" className="bg-amber-100 text-amber-800">
+          Required
+        </Badge>
+      </div>
     );
   }
 
   return (
-    <Alert className="border-blue-200 bg-blue-50">
-      <Info className="h-4 w-4 text-blue-600" />
-      <AlertDescription className="text-blue-800">
-        This stage is optional but recommended for complete horse registration.
-      </AlertDescription>
-    </Alert>
+    <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+      <Clock className="h-5 w-5 text-blue-600" />
+      <div className="flex-1">
+        <p className="text-sm font-medium text-blue-800">Optional Stage</p>
+        <p className="text-sm text-blue-600">This information can be added now or later.</p>
+      </div>
+      <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+        Optional
+      </Badge>
+    </div>
   );
 };
 

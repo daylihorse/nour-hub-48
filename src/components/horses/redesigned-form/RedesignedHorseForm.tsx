@@ -1,5 +1,6 @@
+
 import { FormProvider } from "react-hook-form";
-import { HorseFormData } from "@/types/horse";
+import { HorseFormData } from "@/types/horse-unified";
 import { useEnglishHorseForm } from "../hooks/useEnglishHorseForm";
 import FormSidebar from "./FormSidebar";
 import FormMainContent from "./FormMainContent";
@@ -8,7 +9,7 @@ import MobileFormHeader from "./MobileFormHeader";
 interface RedesignedHorseFormProps {
   onSave: (data: HorseFormData) => void;
   onCancel: () => void;
-  editData?: HorseFormData; // Optional data for edit mode
+  editData?: HorseFormData;
 }
 
 const RedesignedHorseForm = ({ onSave, onCancel, editData }: RedesignedHorseFormProps) => {
@@ -19,7 +20,11 @@ const RedesignedHorseForm = ({ onSave, onCancel, editData }: RedesignedHorseForm
     visitedStages,
     progress,
     handleNext,
-    handlePrevious,
+    handleP
+
+
+
+,
     handleStageClick,
     handleSubmit,
   } = useEnglishHorseForm({ onSave, editData });

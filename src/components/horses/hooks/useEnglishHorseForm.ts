@@ -1,66 +1,20 @@
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { HorseFormData } from "@/types/horse";
-import { formStages } from "../config/formStages";
-
-// Create a basic schema for validation
-const horseFormSchema = z.object({
-  name: z.string().min(1, "Horse name is required"),
-  arabicName: z.string().optional(),
-  breed: z.string().min(1, "Breed is required"),
-  gender: z.string().min(1, "Gender is required"),
-  ageClass: z.string().optional(),
-  adultMaleType: z.string().optional(),
-  castrationDate: z.string().optional(),
-  isPregnant: z.string().optional(),
-  pregnancyDuration: z.number().optional(),
-  color: z.string().min(1, "Color is required"),
-  height: z.number().optional(),
-  weight: z.number().optional(),
-  birthDate: z.string().optional(),
-  ownerType: z.string().min(1, "Owner type is required"),
-  ownerName: z.string().min(1, "Owner name is required"),
-  ownerContact: z.string().min(1, "Owner contact is required"),
-  registrationNumber: z.string().optional(),
-  passportNumber: z.string().optional(),
-  microchipId: z.string().optional(),
-  sire: z.string().optional(),
-  dam: z.string().optional(),
-  bloodlineOrigin: z.string().optional(),
-  healthStatus: z.string().min(1, "Health status is required"),
-  vaccinationStatus: z.string().min(1, "Vaccination status is required"),
-  lastVetCheckup: z.string().optional(),
-  medicalConditions: z.string().optional(),
-  allergies: z.string().optional(),
-  trainingLevel: z.string().optional(),
-  disciplines: z.string().optional(),
-  competitionHistory: z.string().optional(),
-  achievements: z.string().optional(),
-  stallNumber: z.string().optional(),
-  feedingSchedule: z.string().optional(),
-  exerciseRoutine: z.string().optional(),
-  specialNeeds: z.string().optional(),
-  insured: z.boolean().optional(),
-  insuranceProvider: z.string().optional(),
-  insuranceValue: z.number().optional(),
-  purchasePrice: z.number().optional(),
-  marketValue: z.number().optional(),
-  images: z.array(z.string()).optional(),
-  documents: z.array(z.string()).optional(),
-  status: z.string().min(1, "Status is required"),
-});
+import { HorseFormData } from "@/types/horse-unified";
+import { formStages } from "../config/consolidatedFormStages";
+import { horseFormSchema, stageValidationSchemas } from "../form-schema/ConsolidatedHorseFormSchema";
 
 interface UseEnglishHorseFormProps {
   onSave: (data: HorseFormData) => void;
-  editData?: HorseFormData; // Optional data for edit mode
+  editData?: HorseFormData;
 }
 
 export const useEnglishHorseForm = ({ onSave, editData }: UseEnglishHorseFormProps) => {
   const [currentStage, setCurrentStage] = useState(0);
   const [completedStages, setCompletedStages] = useState<Set<number>>(new Set());
-  const [visitedStages, setVisitedStages] = useState<Set<number>>(new Set([0])); // Track visited stages
+  const [visitedStages, setVisitedStages] = useState<Set<number>>(new Set([0]));
 
   const form = useForm<HorseFormData>({
     resolver: zodResolver(horseFormSchema),
@@ -68,80 +22,72 @@ export const useEnglishHorseForm = ({ onSave, editData }: UseEnglishHorseFormPro
       name: "",
       arabicName: "",
       breed: "",
-      gender: undefined,
+      gender: "mare",
       ageClass: "",
       adultMaleType: undefined,
       castrationDate: "",
       isPregnant: undefined,
       pregnancyDuration: undefined,
+      birthDate: "",
       color: "",
-      ownerType: undefined,
+      height: undefined,
+      weight: undefined,
+      ownerType: "individual",
       ownerName: "",
       ownerContact: "",
-      healthStatus: undefined,
-      vaccinationStatus: undefined,
+      registrationNumber: "",
+      passportNumber: "",
+      microchipId: "",
+      sire: "",
+      dam: "",
+      bloodlineOrigin: "",
+      healthStatus: "healthy",
+      vaccinationStatus: "up_to_date",
+      lastVetCheckup: "",
+      medicalConditions: "",
+      allergies: "",
+      trainingLevel: "",
+      disciplines: "",
+      competitionHistory: "",
+      achievements: "",
+      stallNumber: "",
+      feedingSchedule: "",
+      exerciseRoutine: "",
+      specialNeeds: "",
       insured: false,
+      insuranceProvider: "",
+      insuranceValue: undefined,
+      purchasePrice: undefined,
+      marketValue: undefined,
       images: [],
       documents: [],
-      status: undefined,
+      status: "active",
     },
   });
 
   const progress = ((completedStages.size) / formStages.length) * 100;
 
-  const validateCurrentStage = () => {
+  const validateCurrentStage = async () => {
     const currentStageData = formStages[currentStage];
     if (!currentStageData.isRequired) return true;
 
-    const formValues = form.getValues();
-    const requiredFields = currentStageData.fields.filter(field => {
-      // Define required fields for each stage
-      if (currentStageData.id === "basic") {
-        const basicRequiredFields = ["name", "breed", "gender", "color"];
-        
-        // Add conditional required fields based on gender selection
-        if (formValues.gender) {
-          basicRequiredFields.push("ageClass");
-          
-          if (formValues.gender === "male" && formValues.ageClass === "adult_male") {
-            basicRequiredFields.push("adultMaleType");
-            
-            if (formValues.adultMaleType === "gelding") {
-              basicRequiredFields.push("castrationDate");
-            }
-          }
-          
-          if (formValues.gender === "female" && formValues.ageClass === "mare") {
-            basicRequiredFields.push("isPregnant");
-            
-            if (formValues.isPregnant === "yes") {
-              basicRequiredFields.push("pregnancyDuration");
-            }
-          }
-        }
-        
-        return basicRequiredFields.includes(field);
-      }
-      if (currentStageData.id === "ownership") {
-        return ["ownerType", "ownerName", "ownerContact"].includes(field);
-      }
-      if (currentStageData.id === "health") {
-        return ["healthStatus", "vaccinationStatus"].includes(field);
-      }
-      if (currentStageData.id === "review") {
-        return ["status"].includes(field);
-      }
-      return false;
-    });
+    const stageSchema = stageValidationSchemas[currentStageData.id as keyof typeof stageValidationSchemas];
+    if (!stageSchema) return true;
 
-    return requiredFields.every(field => {
-      const value = formValues[field as keyof HorseFormData];
-      return value !== "" && value !== undefined && value !== null;
-    });
+    try {
+      const formValues = form.getValues();
+      await stageSchema.parseAsync(formValues);
+      return true;
+    } catch (error) {
+      // Trigger validation to show errors
+      await form.trigger(currentStageData.fields as any);
+      return false;
+    }
   };
 
-  const handleNext = () => {
-    if (validateCurrentStage()) {
+  const handleNext = async () => {
+    const isValid = await validateCurrentStage();
+    if (isValid) {
       setCompletedStages(prev => new Set([...prev, currentStage]));
     }
     
@@ -160,18 +106,20 @@ export const useEnglishHorseForm = ({ onSave, editData }: UseEnglishHorseFormPro
     }
   };
 
-  const handleStageClick = (stageIndex: number) => {
-    // Allow free navigation to any stage
+  const handleStageClick = async (stageIndex: number) => {
+    // Auto-validate current stage when navigating away
+    if (stageIndex !== currentStage) {
+      const isValid = await validateCurrentStage();
+      if (isValid) {
+        setCompletedStages(prev => new Set([...prev, currentStage]));
+      }
+    }
+    
     setCurrentStage(stageIndex);
     setVisitedStages(prev => new Set([...prev, stageIndex]));
-    
-    // Auto-validate and mark current stage as complete if valid when navigating away
-    if (stageIndex !== currentStage && validateCurrentStage()) {
-      setCompletedStages(prev => new Set([...prev, currentStage]));
-    }
   };
 
-  const handleSubmit = (data: HorseFormData) => {
+  const handleSubmit = async (data: HorseFormData) => {
     console.log("Submitting horse data:", data);
     onSave(data);
   };
