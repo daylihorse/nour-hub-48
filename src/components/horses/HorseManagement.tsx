@@ -11,7 +11,7 @@ import HorseViewSelector, { ViewMode, GridSize } from "./components/HorseViewSel
 import HorseGridView from "./components/HorseGridView";
 import HorseListView from "./components/HorseListView";
 import HorseTableView from "./components/HorseTableView";
-import { HorseFormData } from "@/types/horse-unified";
+import { HorseFormData } from "@/types/horse";
 import { useToast } from "@/hooks/use-toast";
 import { getClientById } from "@/data/clients";
 
@@ -47,7 +47,7 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
       id: "1",
       name: "Thunder",
       breed: "Arabian",
-      gender: "stallion" as const,
+      gender: "stallion",
       owner: "John Smith",
       ownerId: "client-001",
       status: "active",
@@ -59,7 +59,7 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
       id: "2", 
       name: "Lightning",
       breed: "Thoroughbred",
-      gender: "mare" as const,
+      gender: "mare",
       owner: "John Smith",
       ownerId: "client-001",
       status: "active",
@@ -71,7 +71,7 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
       id: "3",
       name: "Storm",
       breed: "Quarter Horse",
-      gender: "gelding" as const,
+      gender: "gelding",
       owner: "John Smith",
       ownerId: "client-001",
       status: "active",
@@ -83,7 +83,7 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
       id: "4",
       name: "Moonlight",
       breed: "Arabian",
-      gender: "mare" as const,
+      gender: "mare",
       owner: "Sarah Williams", 
       ownerId: "client-003",
       status: "active",
@@ -95,7 +95,7 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
       id: "5",
       name: "Spirit",
       breed: "Mustang",
-      gender: "stallion" as const,
+      gender: "stallion",
       owner: "Sarah Williams",
       ownerId: "client-003",
       status: "active",
@@ -107,7 +107,7 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
       id: "6",
       name: "Starlight",
       breed: "Arabian",
-      gender: "mare" as const,
+      gender: "mare",
       owner: "Lisa Martinez",
       ownerId: "client-007",
       status: "active",
@@ -119,7 +119,7 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
       id: "7",
       name: "Phoenix",
       breed: "Thoroughbred",
-      gender: "stallion" as const,
+      gender: "stallion",
       owner: "Lisa Martinez",
       ownerId: "client-007",
       status: "active",
@@ -144,7 +144,7 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
     horse.owner.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleSaveHorse = (data: HorseFormData) => {
+  const handleSaveHorse = async (data: HorseFormData) => {
     try {
       // Here you would typically save to a database
       console.log("Saving horse data:", data);
@@ -211,7 +211,7 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
       name: horse.name || "",
       arabicName: horse.arabicName || "",
       breed: horse.breed || "",
-      gender: horse.gender || "mare",
+      gender: horse.gender || undefined,
       ageClass: horse.ageClass || "",
       adultMaleType: horse.adultMaleType || undefined,
       castrationDate: horse.castrationDate || "",
@@ -221,7 +221,7 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
       height: horse.height || undefined,
       weight: horse.weight || undefined,
       birthDate: horse.birthDate || "",
-      ownerType: horse.ownerType || "individual",
+      ownerType: horse.ownerType || undefined,
       ownerName: horse.owner || "",
       ownerContact: horse.ownerContact || "",
       registrationNumber: horse.registrationNumber || "",
@@ -230,8 +230,8 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
       sire: horse.sire || "",
       dam: horse.dam || "",
       bloodlineOrigin: horse.bloodlineOrigin || "",
-      healthStatus: horse.healthStatus || "healthy",
-      vaccinationStatus: horse.vaccinationStatus || "up_to_date",
+      healthStatus: horse.healthStatus || undefined,
+      vaccinationStatus: horse.vaccinationStatus || undefined,
       lastVetCheckup: horse.lastVetCheckup || "",
       medicalConditions: horse.medicalConditions || "",
       allergies: horse.allergies || "",
@@ -250,7 +250,7 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
       marketValue: horse.marketValue || undefined,
       images: horse.images || [],
       documents: horse.documents || [],
-      status: horse.status || "active",
+      status: horse.status || undefined,
     };
   };
 
