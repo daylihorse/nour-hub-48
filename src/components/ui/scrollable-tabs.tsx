@@ -1,3 +1,4 @@
+
 import React, { useRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -98,25 +99,16 @@ export const ScrollableTabsList: React.FC<ScrollableTabsListProps> = ({
       <div
         ref={scrollContainerRef}
         className={cn(
-          "flex overflow-x-auto scroll-smooth",
+          "flex overflow-x-auto scroll-smooth scrollbar-hide",
           showLeftArrow && "pl-10",
           showRightArrow && "pr-10",
           className
         )}
         onScroll={checkScrollButtons}
-        style={{
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-        }}
       >
         <div className="flex bg-brown-50 p-1 rounded-md border border-brown-200 shadow-brown min-w-max">
           {children}
         </div>
-        <style jsx>{`
-          div::-webkit-scrollbar {
-            display: none;
-          }
-        `}</style>
       </div>
 
       {/* Right Arrow */}
@@ -180,4 +172,4 @@ export const ScrollableTabsContent: React.FC<{
       {children}
     </div>
   );
-}; 
+};

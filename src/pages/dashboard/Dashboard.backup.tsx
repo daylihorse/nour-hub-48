@@ -1,3 +1,4 @@
+
 import DashboardHero from "@/components/dashboard/DashboardHero";
 import QuickStatsGrid from "@/components/dashboard/QuickStatsGrid";
 import EnhancedSubscriptionTierInfo from "@/components/dashboard/EnhancedSubscriptionTierInfo";
@@ -12,7 +13,6 @@ import FinanceModuleAccessCenter from "@/components/finance/FinanceModuleAccessC
 import InventoryModuleAccessCenter from "@/components/inventory/InventoryModuleAccessCenter";
 import HRModuleAccessCenter from "@/components/hr/HRModuleAccessCenter";
 import MovementModuleAccessCenter from "@/components/movements/MovementModuleAccessCenter";
-import TrainingModuleAccessCenter from "@/components/training/TrainingModuleAccessCenter";
 import TrainingModuleAccessCenter from "@/components/training/TrainingModuleAccessCenter";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Settings } from "lucide-react";
