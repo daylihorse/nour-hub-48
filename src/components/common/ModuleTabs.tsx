@@ -24,7 +24,7 @@ const ModuleTabs: React.FC<ModuleTabsProps> = ({
   className
 }) => {
   return (
-    <ScrollableTabs value={defaultValue} onValueChange={onTabChange} className={className}>
+    <ScrollableTabs defaultValue={defaultValue} onValueChange={onTabChange} className={className}>
       <ScrollableTabsList>
         {tabs.map((tab) => (
           <ScrollableTabsTrigger key={tab.value} value={tab.value} className="flex items-center gap-2 whitespace-nowrap">
