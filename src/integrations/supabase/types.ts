@@ -1306,6 +1306,188 @@ export type Database = {
           },
         ]
       }
+      medical_alerts: {
+        Row: {
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          alert_type: string
+          auto_generated: boolean | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          due_date: string | null
+          horse_id: string
+          id: string
+          related_record_id: string | null
+          related_record_type: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: string
+          status: string
+          tenant_id: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          alert_type: string
+          auto_generated?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          horse_id: string
+          id?: string
+          related_record_id?: string | null
+          related_record_type?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
+          status?: string
+          tenant_id: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          alert_type?: string
+          auto_generated?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          horse_id?: string
+          id?: string
+          related_record_id?: string | null
+          related_record_type?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
+          status?: string
+          tenant_id?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_medical_alerts_horse"
+            columns: ["horse_id"]
+            isOneToOne: false
+            referencedRelation: "horses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_medical_alerts_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      medications: {
+        Row: {
+          cost: number | null
+          created_at: string | null
+          created_by: string | null
+          dosage: string
+          end_date: string | null
+          frequency: string
+          health_record_id: string | null
+          horse_id: string
+          id: string
+          instructions: string | null
+          medication_name: string
+          medication_type: string
+          prescribed_by: string
+          reason_for_treatment: string | null
+          route_of_administration: string | null
+          side_effects: string | null
+          start_date: string
+          status: string
+          tenant_id: string
+          updated_at: string | null
+          veterinarian_id: string | null
+        }
+        Insert: {
+          cost?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          dosage: string
+          end_date?: string | null
+          frequency: string
+          health_record_id?: string | null
+          horse_id: string
+          id?: string
+          instructions?: string | null
+          medication_name: string
+          medication_type: string
+          prescribed_by: string
+          reason_for_treatment?: string | null
+          route_of_administration?: string | null
+          side_effects?: string | null
+          start_date: string
+          status?: string
+          tenant_id: string
+          updated_at?: string | null
+          veterinarian_id?: string | null
+        }
+        Update: {
+          cost?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          dosage?: string
+          end_date?: string | null
+          frequency?: string
+          health_record_id?: string | null
+          horse_id?: string
+          id?: string
+          instructions?: string | null
+          medication_name?: string
+          medication_type?: string
+          prescribed_by?: string
+          reason_for_treatment?: string | null
+          route_of_administration?: string | null
+          side_effects?: string | null
+          start_date?: string
+          status?: string
+          tenant_id?: string
+          updated_at?: string | null
+          veterinarian_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_medications_health_record"
+            columns: ["health_record_id"]
+            isOneToOne: false
+            referencedRelation: "health_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_medications_horse"
+            columns: ["horse_id"]
+            isOneToOne: false
+            referencedRelation: "horses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_medications_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_medications_veterinarian"
+            columns: ["veterinarian_id"]
+            isOneToOne: false
+            referencedRelation: "veterinarians"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       nutrition_records: {
         Row: {
           appetite_rating: number | null
@@ -2218,6 +2400,165 @@ export type Database = {
           },
           {
             foreignKeyName: "training_records_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vaccinations: {
+        Row: {
+          administered_by: string
+          batch_number: string | null
+          certificate_number: string | null
+          cost: number | null
+          created_at: string | null
+          created_by: string | null
+          dose_amount: string | null
+          horse_id: string
+          id: string
+          manufacturer: string | null
+          next_due_date: string | null
+          reaction_notes: string | null
+          site_of_injection: string | null
+          status: string
+          tenant_id: string
+          updated_at: string | null
+          vaccination_date: string
+          vaccine_name: string
+          vaccine_type: string
+          veterinarian_id: string | null
+        }
+        Insert: {
+          administered_by: string
+          batch_number?: string | null
+          certificate_number?: string | null
+          cost?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          dose_amount?: string | null
+          horse_id: string
+          id?: string
+          manufacturer?: string | null
+          next_due_date?: string | null
+          reaction_notes?: string | null
+          site_of_injection?: string | null
+          status?: string
+          tenant_id: string
+          updated_at?: string | null
+          vaccination_date: string
+          vaccine_name: string
+          vaccine_type: string
+          veterinarian_id?: string | null
+        }
+        Update: {
+          administered_by?: string
+          batch_number?: string | null
+          certificate_number?: string | null
+          cost?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          dose_amount?: string | null
+          horse_id?: string
+          id?: string
+          manufacturer?: string | null
+          next_due_date?: string | null
+          reaction_notes?: string | null
+          site_of_injection?: string | null
+          status?: string
+          tenant_id?: string
+          updated_at?: string | null
+          vaccination_date?: string
+          vaccine_name?: string
+          vaccine_type?: string
+          veterinarian_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_vaccinations_horse"
+            columns: ["horse_id"]
+            isOneToOne: false
+            referencedRelation: "horses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_vaccinations_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_vaccinations_veterinarian"
+            columns: ["veterinarian_id"]
+            isOneToOne: false
+            referencedRelation: "veterinarians"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      veterinarians: {
+        Row: {
+          address: Json | null
+          clinic_name: string | null
+          consultation_fee: number | null
+          created_at: string | null
+          created_by: string | null
+          email: string | null
+          emergency_contact: boolean | null
+          id: string
+          license_number: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          specialty: string | null
+          status: string
+          tenant_id: string
+          travel_fee: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: Json | null
+          clinic_name?: string | null
+          consultation_fee?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          email?: string | null
+          emergency_contact?: boolean | null
+          id?: string
+          license_number?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          specialty?: string | null
+          status?: string
+          tenant_id: string
+          travel_fee?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: Json | null
+          clinic_name?: string | null
+          consultation_fee?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          email?: string | null
+          emergency_contact?: boolean | null
+          id?: string
+          license_number?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          specialty?: string | null
+          status?: string
+          tenant_id?: string
+          travel_fee?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_veterinarians_tenant"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
