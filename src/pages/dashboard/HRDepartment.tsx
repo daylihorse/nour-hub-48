@@ -17,9 +17,13 @@ import Payroll from "@/components/hr/Payroll";
 import PerformanceReviews from "@/components/hr/PerformanceReviews";
 import TrainingRecords from "@/components/hr/TrainingRecords";
 import { useEmployees } from "@/hooks/useEmployees";
+import { mapDatabaseEmployeesToEmployees } from "@/utils/employeeMapper";
 
 const HRDepartment = () => {
-  const { employees } = useEmployees();
+  const { employees: dbEmployees } = useEmployees();
+  
+  // Convert database employees to component employee type
+  const employees = mapDatabaseEmployeesToEmployees(dbEmployees);
 
   return (
     <div className="space-y-6">
