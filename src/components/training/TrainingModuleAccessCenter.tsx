@@ -1,306 +1,132 @@
 
-import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Check, X, GraduationCap, Calendar, Award, BookOpen, Users, Target } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { 
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+  Target, 
+  Users, 
+  MapPin, 
+  Trophy, 
+  Star,
+  BarChart3,
+  Award,
+  ArrowRight,
+  CheckCircle
+} from "lucide-react";
 
-interface SubModule {
-  id: string;
-  name: string;
-  description: string;
-  isActive: boolean;
-  isCore?: boolean;
-}
-
-interface ModuleCategory {
-  category: string;
-  modules: SubModule[];
-}
-
-interface TrainingModuleConfig {
-  id: string;
-  name: string;
-  description: string;
-  isActive: boolean;
-  submodules: ModuleCategory[];
-}
-
-const trainingModuleConfig: TrainingModuleConfig = {
-  id: "training",
-  name: "Training Programs",
-  description: "Comprehensive training management with schedules, progress tracking, and certifications",
-  isActive: true,
-  submodules: [
+const TrainingModuleAccessCenter = () => {
+  const trainingFeatures = [
     {
-      category: "Core Features",
-      modules: [
-        {
-          id: "training-overview",
-          name: "Training Overview",
-          description: "Dashboard with key training metrics and overview",
-          isActive: true,
-          isCore: true
-        },
-        {
-          id: "program-management",
-          name: "Program Management",
-          description: "Create and manage training programs",
-          isActive: true,
-          isCore: true
-        },
-        {
-          id: "schedule-management",
-          name: "Schedule Management",
-          description: "Plan and track training schedules",
-          isActive: true,
-          isCore: true
-        }
-      ]
+      icon: Target,
+      title: "Training Dashboard",
+      description: "Overview of all training activities, metrics, and performance indicators",
+      status: "active",
+      route: "/dashboard/training"
     },
     {
-      category: "Progress & Assessment",
-      modules: [
-        {
-          id: "progress-tracking",
-          name: "Progress Tracking",
-          description: "Monitor trainee progress and performance",
-          isActive: false
-        },
-        {
-          id: "assessments",
-          name: "Assessments & Evaluations",
-          description: "Create and conduct training assessments",
-          isActive: false
-        },
-        {
-          id: "skill-matrix",
-          name: "Skill Matrix",
-          description: "Track and visualize skill development",
-          isActive: false
-        }
-      ]
+      icon: BarChart3,
+      title: "Training Programs",
+      description: "Create and manage comprehensive training programs for different disciplines",
+      status: "active",
+      route: "/dashboard/training/programs"
     },
     {
-      category: "Certification & Records",
-      modules: [
-        {
-          id: "certifications",
-          name: "Certifications",
-          description: "Manage training certificates and credentials",
-          isActive: false
-        },
-        {
-          id: "training-records",
-          name: "Training Records",
-          description: "Maintain comprehensive training history",
-          isActive: false
-        },
-        {
-          id: "compliance-tracking",
-          name: "Compliance Tracking",
-          description: "Ensure training compliance and requirements",
-          isActive: false
-        }
-      ]
+      icon: Users,
+      title: "Trainer Management",
+      description: "Manage trainer profiles, schedules, and certifications",
+      status: "active", 
+      route: "/dashboard/training/trainers"
+    },
+    {
+      icon: MapPin,
+      title: "Facility Management",
+      description: "Track facility availability, bookings, and maintenance schedules",
+      status: "coming_soon",
+      route: "/dashboard/training/facilities"
+    },
+    {
+      icon: Trophy,
+      title: "Competition Tracking",
+      description: "Monitor competitions, events, and performance results",
+      status: "coming_soon",
+      route: "/dashboard/training/competitions"
+    },
+    {
+      icon: Award,
+      title: "Achievement Records",
+      description: "Track horse achievements, awards, and performance milestones",
+      status: "coming_soon",
+      route: "/dashboard/training/achievements"
+    },
+    {
+      icon: Star,
+      title: "Training Assessments",
+      description: "Conduct and manage training assessments and progress evaluations",
+      status: "coming_soon",
+      route: "/dashboard/training/assessments"
     }
-  ]
-};
+  ];
 
-const TrainingModuleAccessCenter: React.FC = () => {
-  const [moduleConfig, setModuleConfig] = useState<TrainingModuleConfig>(trainingModuleConfig);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [pendingChange, setPendingChange] = useState<{
-    submoduleId?: string;
-    newState: boolean;
-  } | null>(null);
-
-  const handleModuleToggle = (newState: boolean) => {
-    setPendingChange({ newState });
-    setDialogOpen(true);
-  };
-
-  const handleSubmoduleToggle = (submoduleId: string, newState: boolean) => {
-    setPendingChange({ submoduleId, newState });
-    setDialogOpen(true);
-  };
-
-  const confirmChange = () => {
-    if (!pendingChange) return;
-    
-    if (!pendingChange.submoduleId) {
-      setModuleConfig(prev => ({
-        ...prev,
-        isActive: pendingChange.newState,
-        submodules: prev.submodules.map(category => ({
-          ...category,
-          modules: category.modules.map(submodule => ({
-            ...submodule,
-            isActive: pendingChange.newState ? 
-              submodule.isActive : 
-              submodule.isCore || false
-          }))
-        }))
-      }));
-    } else {
-      setModuleConfig(prev => ({
-        ...prev,
-        submodules: prev.submodules.map(category => ({
-          ...category,
-          modules: category.modules.map(submodule => 
-            submodule.id === pendingChange.submoduleId
-              ? { ...submodule, isActive: pendingChange.newState }
-              : submodule
-          )
-        }))
-      }));
-    }
-    
-    setDialogOpen(false);
-    setPendingChange(null);
-  };
-
-  const cancelChange = () => {
-    setDialogOpen(false);
-    setPendingChange(null);
-  };
-
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case "Core Features":
-        return <GraduationCap className="h-4 w-4" />;
-      case "Progress & Assessment":
-        return <Target className="h-4 w-4" />;
-      case "Certification & Records":
-        return <Award className="h-4 w-4" />;
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'active':
+        return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Active</Badge>;
+      case 'coming_soon':
+        return <Badge variant="outline">Coming Soon</Badge>;
       default:
-        return <GraduationCap className="h-4 w-4" />;
+        return <Badge variant="secondary">Unknown</Badge>;
     }
   };
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <GraduationCap className="h-5 w-5" />
-            Training Module Access Center
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            <Card className="border-2">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div>
-                      <CardTitle className="text-lg">{moduleConfig.name}</CardTitle>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {moduleConfig.description}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant={moduleConfig.isActive ? "default" : "secondary"}>
-                      {moduleConfig.isActive ? (
-                        <><Check className="h-3 w-3 mr-1" /> Active</>
-                      ) : (
-                        <><X className="h-3 w-3 mr-1" /> Inactive</>
-                      )}
-                    </Badge>
-                    <Switch
-                      checked={moduleConfig.isActive}
-                      onCheckedChange={(checked) => handleModuleToggle(checked)}
-                    />
-                  </div>
-                </div>
-              </CardHeader>
+      <div className="text-center space-y-2">
+        <h1 className="text-3xl font-bold">Training & Performance Management</h1>
+        <p className="text-muted-foreground max-w-2xl mx-auto">
+          Comprehensive training management system for tracking programs, trainers, facilities, and performance metrics
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {trainingFeatures.map((feature) => (
+          <Card key={feature.title} className="relative group hover:shadow-lg transition-shadow">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <feature.icon className="h-8 w-8 text-primary mb-2" />
+                {getStatusBadge(feature.status)}
+              </div>
+              <CardTitle className="text-lg">{feature.title}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">{feature.description}</p>
               
-              {moduleConfig.isActive && (
-                <CardContent className="pt-0">
-                  <Accordion type="multiple" className="w-full">
-                    {moduleConfig.submodules.map((category, categoryIndex) => (
-                      <AccordionItem key={categoryIndex} value={`category-${categoryIndex}`}>
-                        <AccordionTrigger className="text-sm font-medium">
-                          <div className="flex items-center gap-2">
-                            {getCategoryIcon(category.category)}
-                            {category.category}
-                          </div>
-                        </AccordionTrigger>
-                        <AccordionContent>
-                          <div className="space-y-3 pt-2">
-                            {category.modules.map((submodule) => (
-                              <div
-                                key={submodule.id}
-                                className="flex items-center justify-between p-3 rounded-lg border bg-card"
-                              >
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-2">
-                                    <h4 className="font-medium text-sm">{submodule.name}</h4>
-                                    {submodule.isCore && (
-                                      <Badge variant="outline" className="text-xs">
-                                        Core
-                                      </Badge>
-                                    )}
-                                  </div>
-                                  <p className="text-xs text-muted-foreground mt-1">
-                                    {submodule.description}
-                                  </p>
-                                </div>
-                                <Switch
-                                  checked={submodule.isActive}
-                                  disabled={submodule.isCore}
-                                  onCheckedChange={(checked) => 
-                                    handleSubmoduleToggle(submodule.id, checked)
-                                  }
-                                />
-                              </div>
-                            ))}
-                          </div>
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
-                </CardContent>
-              )}
-            </Card>
+              <Button 
+                className="w-full" 
+                variant={feature.status === 'active' ? 'default' : 'outline'}
+                disabled={feature.status !== 'active'}
+              >
+                {feature.status === 'active' ? 'Access Module' : 'Coming Soon'}
+                {feature.status === 'active' && <ArrowRight className="h-4 w-4 ml-2" />}
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Card className="bg-blue-50 border-blue-200">
+        <CardContent className="p-6">
+          <div className="flex items-start gap-4">
+            <Target className="h-8 w-8 text-blue-600 flex-shrink-0 mt-1" />
+            <div className="space-y-2">
+              <h3 className="font-semibold text-blue-900">Training System Integration</h3>
+              <p className="text-blue-800 text-sm">
+                The training management system integrates seamlessly with horse profiles, health records, 
+                and performance tracking to provide comprehensive training oversight and progress monitoring.
+              </p>
+            </div>
           </div>
         </CardContent>
       </Card>
-
-      <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Module Change</AlertDialogTitle>
-            <AlertDialogDescription>
-              {pendingChange?.submoduleId ? 
-                `Are you sure you want to ${pendingChange.newState ? 'activate' : 'deactivate'} this submodule?` :
-                `Are you sure you want to ${pendingChange?.newState ? 'activate' : 'deactivate'} this module? This will affect all its submodules.`
-              }
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={cancelChange}>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmChange}>Confirm</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 };

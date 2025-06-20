@@ -9,6 +9,100 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          achievement_type: string
+          attachments: Json | null
+          certificate_url: string | null
+          competition_id: string | null
+          created_at: string | null
+          created_by: string | null
+          date_achieved: string
+          description: string | null
+          horse_id: string
+          id: string
+          judge_notes: string | null
+          level: string | null
+          ranking: number | null
+          score: number | null
+          tenant_id: string
+          time_recorded: unknown | null
+          title: string
+          trainer_id: string | null
+          updated_at: string | null
+          verification_date: string | null
+          verified: boolean | null
+        }
+        Insert: {
+          achievement_type: string
+          attachments?: Json | null
+          certificate_url?: string | null
+          competition_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          date_achieved: string
+          description?: string | null
+          horse_id: string
+          id?: string
+          judge_notes?: string | null
+          level?: string | null
+          ranking?: number | null
+          score?: number | null
+          tenant_id: string
+          time_recorded?: unknown | null
+          title: string
+          trainer_id?: string | null
+          updated_at?: string | null
+          verification_date?: string | null
+          verified?: boolean | null
+        }
+        Update: {
+          achievement_type?: string
+          attachments?: Json | null
+          certificate_url?: string | null
+          competition_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          date_achieved?: string
+          description?: string | null
+          horse_id?: string
+          id?: string
+          judge_notes?: string | null
+          level?: string | null
+          ranking?: number | null
+          score?: number | null
+          tenant_id?: string
+          time_recorded?: unknown | null
+          title?: string
+          trainer_id?: string | null
+          updated_at?: string | null
+          verification_date?: string | null
+          verified?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_achievements_competition"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_achievements_horse"
+            columns: ["horse_id"]
+            isOneToOne: false
+            referencedRelation: "horses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_achievements_trainer"
+            columns: ["trainer_id"]
+            isOneToOne: false
+            referencedRelation: "trainers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       appointments: {
         Row: {
           appointment_date: string
@@ -467,6 +561,87 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      competitions: {
+        Row: {
+          attachments: Json | null
+          categories: string[] | null
+          competition_type: string
+          contact_info: Json | null
+          created_at: string | null
+          created_by: string | null
+          current_participants: number | null
+          discipline: string
+          end_date: string
+          entry_fee: number | null
+          id: string
+          level: string | null
+          location: string
+          max_participants: number | null
+          name: string
+          organizer: string | null
+          prize_pool: number | null
+          registration_deadline: string | null
+          results: Json | null
+          rules_regulations: string | null
+          start_date: string
+          status: string
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          attachments?: Json | null
+          categories?: string[] | null
+          competition_type: string
+          contact_info?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          current_participants?: number | null
+          discipline: string
+          end_date: string
+          entry_fee?: number | null
+          id?: string
+          level?: string | null
+          location: string
+          max_participants?: number | null
+          name: string
+          organizer?: string | null
+          prize_pool?: number | null
+          registration_deadline?: string | null
+          results?: Json | null
+          rules_regulations?: string | null
+          start_date: string
+          status?: string
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          attachments?: Json | null
+          categories?: string[] | null
+          competition_type?: string
+          contact_info?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          current_participants?: number | null
+          discipline?: string
+          end_date?: string
+          entry_fee?: number | null
+          id?: string
+          level?: string | null
+          location?: string
+          max_participants?: number | null
+          name?: string
+          organizer?: string | null
+          prize_pool?: number | null
+          registration_deadline?: string | null
+          results?: Json | null
+          rules_regulations?: string | null
+          start_date?: string
+          status?: string
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       employees: {
         Row: {
@@ -2727,6 +2902,280 @@ export type Database = {
           status?: string
           subscription_tier?: string
           type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      trainers: {
+        Row: {
+          availability_schedule: Json | null
+          bio: string | null
+          certifications: string[] | null
+          created_at: string | null
+          created_by: string | null
+          email: string | null
+          emergency_contact: Json | null
+          experience_years: number | null
+          first_name: string
+          hourly_rate: number | null
+          id: string
+          last_name: string
+          phone: string | null
+          profile_image_url: string | null
+          specializations: string[] | null
+          status: string
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          availability_schedule?: Json | null
+          bio?: string | null
+          certifications?: string[] | null
+          created_at?: string | null
+          created_by?: string | null
+          email?: string | null
+          emergency_contact?: Json | null
+          experience_years?: number | null
+          first_name: string
+          hourly_rate?: number | null
+          id?: string
+          last_name: string
+          phone?: string | null
+          profile_image_url?: string | null
+          specializations?: string[] | null
+          status?: string
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          availability_schedule?: Json | null
+          bio?: string | null
+          certifications?: string[] | null
+          created_at?: string | null
+          created_by?: string | null
+          email?: string | null
+          emergency_contact?: Json | null
+          experience_years?: number | null
+          first_name?: string
+          hourly_rate?: number | null
+          id?: string
+          last_name?: string
+          phone?: string | null
+          profile_image_url?: string | null
+          specializations?: string[] | null
+          status?: string
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      training_assessments: {
+        Row: {
+          areas_for_improvement: string[] | null
+          assessment_date: string
+          assessment_type: string
+          attachments: Json | null
+          categories: Json
+          created_at: string | null
+          created_by: string | null
+          goals_met: boolean | null
+          horse_id: string
+          id: string
+          next_assessment_date: string | null
+          notes: string | null
+          overall_score: number | null
+          program_id: string | null
+          recommendations: string[] | null
+          session_count: number | null
+          strengths: string[] | null
+          tenant_id: string
+          trainer_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          areas_for_improvement?: string[] | null
+          assessment_date: string
+          assessment_type: string
+          attachments?: Json | null
+          categories?: Json
+          created_at?: string | null
+          created_by?: string | null
+          goals_met?: boolean | null
+          horse_id: string
+          id?: string
+          next_assessment_date?: string | null
+          notes?: string | null
+          overall_score?: number | null
+          program_id?: string | null
+          recommendations?: string[] | null
+          session_count?: number | null
+          strengths?: string[] | null
+          tenant_id: string
+          trainer_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          areas_for_improvement?: string[] | null
+          assessment_date?: string
+          assessment_type?: string
+          attachments?: Json | null
+          categories?: Json
+          created_at?: string | null
+          created_by?: string | null
+          goals_met?: boolean | null
+          horse_id?: string
+          id?: string
+          next_assessment_date?: string | null
+          notes?: string | null
+          overall_score?: number | null
+          program_id?: string | null
+          recommendations?: string[] | null
+          session_count?: number | null
+          strengths?: string[] | null
+          tenant_id?: string
+          trainer_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_assessments_horse"
+            columns: ["horse_id"]
+            isOneToOne: false
+            referencedRelation: "horses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_assessments_program"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "training_programs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_assessments_trainer"
+            columns: ["trainer_id"]
+            isOneToOne: false
+            referencedRelation: "trainers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      training_facilities: {
+        Row: {
+          booking_rules: Json | null
+          capacity: number
+          created_at: string | null
+          created_by: string | null
+          dimensions: string | null
+          equipment_available: string[] | null
+          facility_type: string
+          features: string[] | null
+          hourly_rate: number | null
+          id: string
+          location_details: string | null
+          maintenance_schedule: Json | null
+          name: string
+          status: string
+          surface_type: string | null
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          booking_rules?: Json | null
+          capacity?: number
+          created_at?: string | null
+          created_by?: string | null
+          dimensions?: string | null
+          equipment_available?: string[] | null
+          facility_type: string
+          features?: string[] | null
+          hourly_rate?: number | null
+          id?: string
+          location_details?: string | null
+          maintenance_schedule?: Json | null
+          name: string
+          status?: string
+          surface_type?: string | null
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          booking_rules?: Json | null
+          capacity?: number
+          created_at?: string | null
+          created_by?: string | null
+          dimensions?: string | null
+          equipment_available?: string[] | null
+          facility_type?: string
+          features?: string[] | null
+          hourly_rate?: number | null
+          id?: string
+          location_details?: string | null
+          maintenance_schedule?: Json | null
+          name?: string
+          status?: string
+          surface_type?: string | null
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      training_programs: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          discipline: string
+          duration_weeks: number
+          id: string
+          intensity_level: string
+          max_participants: number | null
+          name: string
+          objectives: string[] | null
+          prerequisites: string[] | null
+          pricing: Json | null
+          program_type: string
+          schedule_template: Json | null
+          status: string
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          discipline: string
+          duration_weeks?: number
+          id?: string
+          intensity_level?: string
+          max_participants?: number | null
+          name: string
+          objectives?: string[] | null
+          prerequisites?: string[] | null
+          pricing?: Json | null
+          program_type: string
+          schedule_template?: Json | null
+          status?: string
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          discipline?: string
+          duration_weeks?: number
+          id?: string
+          intensity_level?: string
+          max_participants?: number | null
+          name?: string
+          objectives?: string[] | null
+          prerequisites?: string[] | null
+          pricing?: Json | null
+          program_type?: string
+          schedule_template?: Json | null
+          status?: string
+          tenant_id?: string
           updated_at?: string | null
         }
         Relationships: []
