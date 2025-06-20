@@ -9,15 +9,33 @@ import ModuleTabs from "@/components/common/ModuleTabs";
 import { createDashboardModuleTabs } from "@/components/dashboard/DashboardModuleTabs";
 import { useTenantFeatures } from "@/hooks/useTenantFeatures";
 import { useDashboardAlerts } from "@/hooks/useDashboardAlerts";
+import { useIntegratedModuleAccess } from "@/hooks/useIntegratedModuleAccess";
 
 const Dashboard = () => {
   const { getEnabledFeatures, getAvailableFeatures } = useTenantFeatures();
   const { totalAlerts } = useDashboardAlerts();
+  const { isModuleAccessible } = useIntegratedModuleAccess();
   const [activeTab, setActiveTab] = useState("all");
 
   const enabledFeatures = getEnabledFeatures();
   const availableFeatures = getAvailableFeatures();
-  const activeModuleCount = enabledFeatures.length;
+  
+  // Count accessible modules using integrated access control
+  const accessibleModules = [
+    'horses', 'hr', 'inventory', 'movements', 'riding-reservations', 'stable-rooms'
+  ].filter(moduleId => {
+    const featureMap: Record<string, string> = {
+      'horses': 'horses',
+      'hr': 'hr',
+      'inventory': 'inventory',
+      'movements': 'movements',
+      'riding-reservations': 'riding-reservations',
+      'stable-rooms': 'rooms'
+    };
+    return isModuleAccessible(moduleId, featureMap[moduleId]);
+  });
+
+  const activeModuleCount = accessibleModules.length;
   const totalModuleCount = availableFeatures.length;
 
   const moduleTabs = createDashboardModuleTabs();
