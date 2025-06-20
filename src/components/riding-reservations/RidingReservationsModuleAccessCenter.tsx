@@ -274,7 +274,7 @@ const RidingReservationsModuleAccessCenter: React.FC = () => {
                             ))}
                           </div>
                         </AccordionContent>
-                      </Accordion>
+                      </AccordionItem>
                     ))}
                   </Accordion>
                 </CardContent>
