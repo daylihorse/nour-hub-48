@@ -52,7 +52,24 @@ export const useInvoices = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setInvoices(data as Invoice[] || []);
+      
+      // Transform the data to match our interface
+      const transformedData: Invoice[] = (data || []).map(item => ({
+        ...item,
+        subtotal: Number(item.subtotal) || 0,
+        tax_amount: Number(item.tax_amount) || 0,
+        discount_amount: Number(item.discount_amount) || 0,
+        total_amount: Number(item.total_amount) || 0,
+        paid_amount: Number(item.paid_amount) || 0,
+        invoice_items: item.invoice_items?.map((invoiceItem: any) => ({
+          ...invoiceItem,
+          quantity: Number(invoiceItem.quantity) || 0,
+          unit_price: Number(invoiceItem.unit_price) || 0,
+          line_total: Number(invoiceItem.line_total) || 0
+        })) || []
+      }));
+      
+      setInvoices(transformedData);
     } catch (error) {
       console.error('Error fetching invoices:', error);
       toast({
@@ -90,13 +107,22 @@ export const useInvoices = () => {
 
       if (error) throw error;
 
-      setInvoices(prev => [data as Invoice, ...prev]);
+      const transformedData: Invoice = {
+        ...data,
+        subtotal: Number(data.subtotal) || 0,
+        tax_amount: Number(data.tax_amount) || 0,
+        discount_amount: Number(data.discount_amount) || 0,
+        total_amount: Number(data.total_amount) || 0,
+        paid_amount: Number(data.paid_amount) || 0
+      };
+
+      setInvoices(prev => [transformedData, ...prev]);
       toast({
         title: 'Success',
         description: 'Invoice created successfully',
       });
 
-      return data;
+      return transformedData;
     } catch (error) {
       console.error('Error adding invoice:', error);
       toast({
@@ -119,13 +145,22 @@ export const useInvoices = () => {
 
       if (error) throw error;
 
-      setInvoices(prev => prev.map(inv => inv.id === id ? data as Invoice : inv));
+      const transformedData: Invoice = {
+        ...data,
+        subtotal: Number(data.subtotal) || 0,
+        tax_amount: Number(data.tax_amount) || 0,
+        discount_amount: Number(data.discount_amount) || 0,
+        total_amount: Number(data.total_amount) || 0,
+        paid_amount: Number(data.paid_amount) || 0
+      };
+
+      setInvoices(prev => prev.map(inv => inv.id === id ? transformedData : inv));
       toast({
         title: 'Success',
         description: 'Invoice updated successfully',
       });
 
-      return data;
+      return transformedData;
     } catch (error) {
       console.error('Error updating invoice:', error);
       toast({

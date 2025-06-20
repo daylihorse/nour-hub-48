@@ -36,7 +36,15 @@ export const useTasks = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setTasks(data as Task[] || []);
+      
+      // Transform the data to match our interface
+      const transformedData: Task[] = (data || []).map(item => ({
+        ...item,
+        estimated_duration: item.estimated_duration ? Number(item.estimated_duration) : undefined,
+        actual_duration: item.actual_duration ? Number(item.actual_duration) : undefined
+      }));
+      
+      setTasks(transformedData);
     } catch (error) {
       console.error('Error fetching tasks:', error);
       toast({
@@ -74,13 +82,19 @@ export const useTasks = () => {
 
       if (error) throw error;
 
-      setTasks(prev => [data as Task, ...prev]);
+      const transformedData: Task = {
+        ...data,
+        estimated_duration: data.estimated_duration ? Number(data.estimated_duration) : undefined,
+        actual_duration: data.actual_duration ? Number(data.actual_duration) : undefined
+      };
+
+      setTasks(prev => [transformedData, ...prev]);
       toast({
         title: 'Success',
         description: 'Task created successfully',
       });
 
-      return data;
+      return transformedData;
     } catch (error) {
       console.error('Error adding task:', error);
       toast({
@@ -103,13 +117,19 @@ export const useTasks = () => {
 
       if (error) throw error;
 
-      setTasks(prev => prev.map(task => task.id === id ? data as Task : task));
+      const transformedData: Task = {
+        ...data,
+        estimated_duration: data.estimated_duration ? Number(data.estimated_duration) : undefined,
+        actual_duration: data.actual_duration ? Number(data.actual_duration) : undefined
+      };
+
+      setTasks(prev => prev.map(task => task.id === id ? transformedData : task));
       toast({
         title: 'Success',
         description: 'Task updated successfully',
       });
 
-      return data;
+      return transformedData;
     } catch (error) {
       console.error('Error updating task:', error);
       toast({

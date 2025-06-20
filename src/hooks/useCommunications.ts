@@ -36,7 +36,15 @@ export const useCommunications = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setCommunications(data || []);
+      
+      // Transform the data to match our interface
+      const transformedData: Communication[] = (data || []).map(item => ({
+        ...item,
+        contact_info: item.contact_info || {},
+        attachments: Array.isArray(item.attachments) ? item.attachments : []
+      }));
+      
+      setCommunications(transformedData);
     } catch (error) {
       console.error('Error fetching communications:', error);
       toast({
@@ -74,13 +82,19 @@ export const useCommunications = () => {
 
       if (error) throw error;
 
-      setCommunications(prev => [data as Communication, ...prev]);
+      const transformedData: Communication = {
+        ...data,
+        contact_info: data.contact_info || {},
+        attachments: Array.isArray(data.attachments) ? data.attachments : []
+      };
+
+      setCommunications(prev => [transformedData, ...prev]);
       toast({
         title: 'Success',
         description: 'Communication logged successfully',
       });
 
-      return data;
+      return transformedData;
     } catch (error) {
       console.error('Error adding communication:', error);
       toast({
@@ -103,13 +117,19 @@ export const useCommunications = () => {
 
       if (error) throw error;
 
-      setCommunications(prev => prev.map(comm => comm.id === id ? data as Communication : comm));
+      const transformedData: Communication = {
+        ...data,
+        contact_info: data.contact_info || {},
+        attachments: Array.isArray(data.attachments) ? data.attachments : []
+      };
+
+      setCommunications(prev => prev.map(comm => comm.id === id ? transformedData : comm));
       toast({
         title: 'Success',
         description: 'Communication updated successfully',
       });
 
-      return data;
+      return transformedData;
     } catch (error) {
       console.error('Error updating communication:', error);
       toast({

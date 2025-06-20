@@ -31,7 +31,14 @@ export const useFinancialAccounts = () => {
         .order('account_code');
 
       if (error) throw error;
-      setAccounts(data as FinancialAccount[] || []);
+      
+      // Transform the data to match our interface
+      const transformedData: FinancialAccount[] = (data || []).map(item => ({
+        ...item,
+        balance: Number(item.balance) || 0
+      }));
+      
+      setAccounts(transformedData);
     } catch (error) {
       console.error('Error fetching financial accounts:', error);
       toast({
@@ -69,13 +76,18 @@ export const useFinancialAccounts = () => {
 
       if (error) throw error;
 
-      setAccounts(prev => [...prev, data as FinancialAccount]);
+      const transformedData: FinancialAccount = {
+        ...data,
+        balance: Number(data.balance) || 0
+      };
+
+      setAccounts(prev => [...prev, transformedData]);
       toast({
         title: 'Success',
         description: 'Financial account added successfully',
       });
 
-      return data;
+      return transformedData;
     } catch (error) {
       console.error('Error adding financial account:', error);
       toast({
@@ -98,13 +110,18 @@ export const useFinancialAccounts = () => {
 
       if (error) throw error;
 
-      setAccounts(prev => prev.map(acc => acc.id === id ? data as FinancialAccount : acc));
+      const transformedData: FinancialAccount = {
+        ...data,
+        balance: Number(data.balance) || 0
+      };
+
+      setAccounts(prev => prev.map(acc => acc.id === id ? transformedData : acc));
       toast({
         title: 'Success',
         description: 'Financial account updated successfully',
       });
 
-      return data;
+      return transformedData;
     } catch (error) {
       console.error('Error updating financial account:', error);
       toast({
