@@ -28,7 +28,7 @@ import {
   Wrench,
   MessageSquare
 } from "lucide-react";
-import { useTenantFeatures } from "@/hooks/useTenantFeatures";
+import { useIntegratedModuleAccess } from "@/hooks/useIntegratedModuleAccess";
 import ModuleDetailsDialog from "./ModuleDetailsDialog";
 
 interface DepartmentModule {
@@ -41,14 +41,8 @@ interface DepartmentModule {
   comingSoon?: boolean;
 }
 
-interface EnhancedDepartmentGridProps {
-  modules: DepartmentModule[];
-  isFeatureEnabled: (feature: string) => boolean;
-  onAccessModule: (module: DepartmentModule) => void;
-}
-
 // Enhanced module status types
-type ModuleStatus = 'active' | 'trial' | 'locked' | 'coming-soon' | 'premium-trial';
+type ModuleStatus = 'active' | 'trial' | 'locked' | 'coming-soon' | 'premium-trial' | 'disabled';
 
 // Simulated user subscription and trial data
 const moduleStatusData: Record<string, { status: ModuleStatus; trialDaysLeft?: number; plan?: string }> = {
@@ -230,6 +224,13 @@ const getStatusBadge = (status: ModuleStatus, trialDaysLeft?: number) => {
           Coming Soon
         </Badge>
       );
+    case 'disabled':
+      return (
+        <Badge variant="secondary" className="bg-red-100 text-red-600 border-red-300">
+          <Lock className="h-3 w-3 mr-1" />
+          Disabled
+        </Badge>
+      );
     default:
       return null;
   }
@@ -246,6 +247,8 @@ const getCardStyles = (status: ModuleStatus) => {
       return "border-gray-200 bg-gray-50/30 hover:shadow-md opacity-75";
     case 'coming-soon':
       return "border-orange-200 bg-orange-50/30 hover:shadow-md opacity-85";
+    case 'disabled':
+      return "border-red-200 bg-red-50/30 hover:shadow-md opacity-60";
     default:
       return "border-gray-200 hover:shadow-lg";
   }
@@ -320,6 +323,17 @@ const getActionButton = (
           Get Notified
         </Button>
       );
+    case 'disabled':
+      return (
+        <Button 
+          variant="outline" 
+          onClick={onLearnMore}
+          className="w-full border-red-200 text-red-700 hover:bg-red-50"
+        >
+          <Lock className="h-4 w-4 mr-2" />
+          Enable Module
+        </Button>
+      );
     default:
       return (
         <Button variant="outline" onClick={onLearnMore} className="w-full">
@@ -330,11 +344,26 @@ const getActionButton = (
 };
 
 const EnhancedDepartmentGrid: React.FC = () => {
-  const { isFeatureEnabled } = useTenantFeatures();
+  const { isModuleAccessible } = useIntegratedModuleAccess();
   const [selectedModule, setSelectedModule] = useState<DepartmentModule | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const getModuleStatus = (module: DepartmentModule): ModuleStatus => {
+    // First check if module is disabled in module access center
+    const moduleAccessMap: Record<string, string> = {
+      'horses': 'horses',
+      'hr': 'hr', 
+      'inventory': 'inventory',
+      'movements': 'movements',
+      'riding-reservations': 'riding-reservations',
+      'stable-rooms': 'stable-rooms'
+    };
+
+    const moduleId = moduleAccessMap[module.id];
+    if (moduleId && !isModuleAccessible(moduleId, module.feature)) {
+      return 'disabled';
+    }
+
     // Check if module has enhanced status data
     const statusData = moduleStatusData[module.id];
     if (statusData) {
@@ -343,7 +372,6 @@ const EnhancedDepartmentGrid: React.FC = () => {
     
     // Fallback to original logic
     if (module.comingSoon) return "coming-soon";
-    if (module.feature && !isFeatureEnabled(module.feature)) return "locked";
     return "active";
   };
 
@@ -356,8 +384,6 @@ const EnhancedDepartmentGrid: React.FC = () => {
     // This would navigate to the actual module or show upgrade dialog
     console.log(`Accessing module: ${module.title}`);
     setIsDialogOpen(false);
-    // You can implement actual navigation here if needed
-    // window.location.href = module.route;
   };
 
   const handleCloseDialog = () => {
@@ -370,7 +396,7 @@ const EnhancedDepartmentGrid: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {departmentModules.map((module) => {
           const status = getModuleStatus(module);
-          const isDisabled = status === "locked" || status === "coming-soon";
+          const isDisabled = status === "locked" || status === "coming-soon" || status === "disabled";
 
           return (
             <Card 
@@ -404,7 +430,7 @@ const EnhancedDepartmentGrid: React.FC = () => {
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
         onAccessModule={handleAccessModule}
-        isFeatureEnabled={isFeatureEnabled}
+        isFeatureEnabled={() => true}
       />
     </>
   );

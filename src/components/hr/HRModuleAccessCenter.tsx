@@ -20,116 +20,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-
-interface SubModule {
-  id: string;
-  name: string;
-  description: string;
-  isActive: boolean;
-  isCore?: boolean;
-}
-
-interface ModuleCategory {
-  category: string;
-  modules: SubModule[];
-}
-
-interface HRModuleConfig {
-  id: string;
-  name: string;
-  description: string;
-  isActive: boolean;
-  submodules: ModuleCategory[];
-}
-
-const hrModuleConfig: HRModuleConfig = {
-  id: "hr",
-  name: "Human Resources",
-  description: "Comprehensive HR management with employee records, payroll, and performance tracking",
-  isActive: true,
-  submodules: [
-    {
-      category: "Core Features",
-      modules: [
-        {
-          id: "hr-overview",
-          name: "HR Overview",
-          description: "Dashboard with key HR metrics and overview",
-          isActive: true,
-          isCore: true
-        },
-        {
-          id: "employee-records",
-          name: "Employee Records",
-          description: "Manage employee information and documentation",
-          isActive: true,
-          isCore: true
-        },
-        {
-          id: "work-schedules",
-          name: "Work Schedules",
-          description: "Staff scheduling and time management",
-          isActive: true,
-          isCore: true
-        }
-      ]
-    },
-    {
-      category: "Payroll & Benefits",
-      modules: [
-        {
-          id: "payroll-management",
-          name: "Payroll Management",
-          description: "Process payroll and manage compensation",
-          isActive: false
-        },
-        {
-          id: "benefits-admin",
-          name: "Benefits Administration",
-          description: "Manage employee benefits and insurance",
-          isActive: false
-        },
-        {
-          id: "time-tracking",
-          name: "Time Tracking",
-          description: "Track employee hours and attendance",
-          isActive: false
-        }
-      ]
-    },
-    {
-      category: "Performance & Training",
-      modules: [
-        {
-          id: "performance-reviews",
-          name: "Performance Reviews",
-          description: "Conduct and track employee performance evaluations",
-          isActive: false
-        },
-        {
-          id: "training-records",
-          name: "Training Records",
-          description: "Manage employee training and certifications",
-          isActive: false
-        },
-        {
-          id: "career-development",
-          name: "Career Development",
-          description: "Plan and track employee career progression",
-          isActive: false
-        }
-      ]
-    }
-  ]
-};
+import { useModuleAccess } from "@/contexts/ModuleAccessContext";
 
 const HRModuleAccessCenter: React.FC = () => {
-  const [moduleConfig, setModuleConfig] = useState<HRModuleConfig>(hrModuleConfig);
+  const { moduleConfigs, toggleModule, toggleSubmodule } = useModuleAccess();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [pendingChange, setPendingChange] = useState<{
     submoduleId?: string;
     newState: boolean;
   } | null>(null);
+
+  const moduleConfig = moduleConfigs["hr"];
 
   const handleModuleToggle = (newState: boolean) => {
     setPendingChange({ newState });
@@ -142,34 +43,12 @@ const HRModuleAccessCenter: React.FC = () => {
   };
 
   const confirmChange = () => {
-    if (!pendingChange) return;
+    if (!pendingChange || !moduleConfig) return;
     
     if (!pendingChange.submoduleId) {
-      setModuleConfig(prev => ({
-        ...prev,
-        isActive: pendingChange.newState,
-        submodules: prev.submodules.map(category => ({
-          ...category,
-          modules: category.modules.map(submodule => ({
-            ...submodule,
-            isActive: pendingChange.newState ? 
-              submodule.isActive : 
-              submodule.isCore || false
-          }))
-        }))
-      }));
+      toggleModule("hr", pendingChange.newState);
     } else {
-      setModuleConfig(prev => ({
-        ...prev,
-        submodules: prev.submodules.map(category => ({
-          ...category,
-          modules: category.modules.map(submodule => 
-            submodule.id === pendingChange.submoduleId
-              ? { ...submodule, isActive: pendingChange.newState }
-              : submodule
-          )
-        }))
-      }));
+      toggleSubmodule("hr", pendingChange.submoduleId, pendingChange.newState);
     }
     
     setDialogOpen(false);
@@ -193,6 +72,10 @@ const HRModuleAccessCenter: React.FC = () => {
         return <Users className="h-4 w-4" />;
     }
   };
+
+  if (!moduleConfig) {
+    return <div>Module configuration not found</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -290,8 +173,8 @@ const HRModuleAccessCenter: React.FC = () => {
             <AlertDialogTitle>Confirm Module Change</AlertDialogTitle>
             <AlertDialogDescription>
               {pendingChange?.submoduleId ? 
-                `Are you sure you want to ${pendingChange.newState ? 'activate' : 'deactivate'} this submodule?` :
-                `Are you sure you want to ${pendingChange?.newState ? 'activate' : 'deactivate'} this module? This will affect all its submodules.`
+                `Are you sure you want to ${pendingChange.newState ? 'activate' : 'deactivate'} this submodule? This will affect its visibility in the HR dashboard.` :
+                `Are you sure you want to ${pendingChange?.newState ? 'activate' : 'deactivate'} this module? This will affect its visibility in the sidebar and all its submodules.`
               }
             </AlertDialogDescription>
           </AlertDialogHeader>
