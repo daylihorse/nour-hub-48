@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { 
   Card, 
@@ -50,7 +49,7 @@ const HRDepartment = () => {
               <CardDescription>Overview of HR metrics and activities</CardDescription>
             </CardHeader>
             <CardContent>
-              <HRDashboard employees={employees} />
+              <HRDashboard />
             </CardContent>
           </Card>
         </TabsContent>
