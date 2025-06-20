@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { 
   Card, 
@@ -28,7 +29,13 @@ const HRDepartment = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">HR Department</h1>
-        <p className="text-muted-foreground">Manage employees, schedules, and payroll</p>
+        <p className="text-muted-foreground">Manage employees, schedules, and payroll (Standalone Mode)</p>
+      </div>
+
+      <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <p className="text-sm text-yellow-800">
+          <strong>Testing Mode:</strong> HR department is running independently to isolate TypeScript errors.
+        </p>
       </div>
       
       <Tabs defaultValue="dashboard">
