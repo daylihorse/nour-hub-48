@@ -1,49 +1,52 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { format } from "date-fns";
-import { CalendarIcon, Plus, Trash2 } from "lucide-react";
-import { Employee } from "@/types/employee";
+import { v4 as uuidv4 } from "uuid";
+import { UserPlus } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/hooks/use-toast";
-import { PersonalInfoSection } from "./form-sections/PersonalInfoSection";
-import { EmploymentDetailsSection } from "./form-sections/EmploymentDetailsSection";
-import { DepartmentsSection } from "./form-sections/DepartmentsSection";
-import { PhoneSection } from "./form-sections/PhoneSection";
+import { Employee } from "@/types/employee";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
-const employeeSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
+// Import form section components
+import { PersonalInfoSection } from "./form-sections/PersonalInfoSection";
+import { PhoneSection } from "./form-sections/PhoneSection";
+import { DepartmentsSection } from "./form-sections/DepartmentsSection";
+import { EmploymentDetailsSection } from "./form-sections/EmploymentDetailsSection";
+
+interface AddEmployeeProps {
+  onSubmit: (employee: Employee) => void;
+}
+
+// Create a form schema that matches our Employee interface
+const formSchema = z.object({
+  firstName: z.string().optional(),
   firstNameArabic: z.string().optional(),
-  lastName: z.string().min(1, "Last name is required"),
+  lastName: z.string().optional(),
   lastNameArabic: z.string().optional(),
   nickname: z.string().optional(),
   nicknameArabic: z.string().optional(),
-  email: z.string().email("Invalid email address").optional(),
-  position: z.string().min(1, "Position is required"),
+  email: z.string().email("Invalid email format").optional(),
+  phones: z.array(
+    z.object({
+      id: z.string(),
+      countryCode: z.string(),
+      number: z.string(),
+      hasWhatsapp: z.boolean(),
+      hasTelegram: z.boolean(),
+    })
+  ).default([]),
+  position: z.string().optional(),
   positions: z.string().optional(),
   otherPosition: z.string().optional(),
-  department: z.array(z.string()).min(1, "At least one department is required"),
+  department: z.array(z.string()),
   hireDate: z.date(),
-  salary: z.number().min(0).optional(),
-  currency: z.string().optional(),
-  salaryType: z.enum(["daily", "monthly"]).optional(),
   status: z.enum(["active", "inactive", "on-leave"]),
-  phones: z.array(z.object({
-    id: z.string(),
-    countryCode: z.string(),
-    number: z.string(),
-    hasWhatsapp: z.boolean(),
-    hasTelegram: z.boolean(),
-  })).optional(),
+  salary: z.number().optional(),
+  currency: z.string().optional(),
+  salaryType: z.enum(["daily", "monthly"]),
   address: z.object({
     street: z.string().optional(),
     city: z.string().optional(),
@@ -51,87 +54,145 @@ const employeeSchema = z.object({
     zipCode: z.string().optional(),
     country: z.string().optional(),
   }).optional(),
+}).refine(data => {
+  // Require at least first name or last name in one language
+  return (!!data.firstName || !!data.firstNameArabic) && 
+         (!!data.lastName || !!data.lastNameArabic);
+}, {
+  message: "You must provide at least first name and last name in English or Arabic",
+  path: ["firstName"],
 });
 
-interface AddEmployeeProps {
-  onSubmit: (employee: Employee) => void;
-}
+type FormValues = z.infer<typeof formSchema>;
 
 const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
-  const { toast } = useToast();
+  const [date, setDate] = useState<Date>(new Date());
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
-  const [hireDate, setHireDate] = useState<Date>(new Date());
-
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    watch,
-    reset
-  } = useForm({
-    resolver: zodResolver(employeeSchema),
+  
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      status: "active" as const,
+      firstName: "",
+      firstNameArabic: "",
+      lastName: "",
+      lastNameArabic: "",
+      nickname: "",
+      nicknameArabic: "",
+      email: "",
+      phones: [],
+      position: "",
+      positions: "",
+      otherPosition: "",
       department: [],
       hireDate: new Date(),
+      status: "active",
+      salary: undefined,
       currency: "USD",
-      salaryType: "monthly" as const,
-      phones: [{
-        id: "1",
-        countryCode: "1",
-        number: "",
-        hasWhatsapp: false,
-        hasTelegram: false
-      }]
-    }
+      salaryType: "monthly",
+      address: {
+        street: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        country: "",
+      },
+    },
   });
 
-  const handleFormSubmit = (data: any) => {
-    const employeeData: Employee = {
-      id: crypto.randomUUID(),
+  const handleSubmit = form.handleSubmit((data) => {
+    // Parse positions if it exists
+    let positions: string[] = [];
+    try {
+      if (data.positions) {
+        positions = JSON.parse(data.positions);
+      }
+    } catch (e) {
+      console.error("Error parsing positions:", e);
+    }
+
+    // Ensure each phone object has all required fields with default values if missing
+    const formattedPhones = data.phones.map(phone => ({
+      id: phone.id || uuidv4(),
+      countryCode: phone.countryCode || "",
+      number: phone.number || "",
+      hasWhatsapp: phone.hasWhatsapp || false,
+      hasTelegram: phone.hasTelegram || false
+    }));
+
+    const newEmployee: Employee = {
+      id: uuidv4(),
       ...data,
       department: selectedDepartments,
-      hireDate: hireDate,
-      phones: data.phones?.filter((phone: any) => phone.number.trim() !== "") || []
+      // Add positions to the employee
+      position: positions.length > 0 ? positions.join(", ") : data.position || "",
+      phones: formattedPhones,
+      // Ensure hireDate is explicitly assigned
+      hireDate: data.hireDate || new Date(),
+      // Ensure status is explicitly assigned
+      status: data.status || "active"
     };
-
-    onSubmit(employeeData);
-    reset();
-    setSelectedDepartments([]);
-    setHireDate(new Date());
+    
+    onSubmit(newEmployee);
     
     toast({
       title: "Employee Added",
-      description: `${data.firstName} ${data.lastName} has been added successfully.`,
+      description: `${data.firstName || data.firstNameArabic} ${data.lastName || data.lastNameArabic} has been added successfully.`,
     });
-  };
+    
+    form.reset();
+    setDate(new Date());
+    setSelectedDepartments([]);
+  });
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
-      <PersonalInfoSection 
-        control={control}
-      />
+    <Form {...form}>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 gap-6">
+          {/* Personal Information */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Personal Information</h3>
+            <div className="bg-muted/20 p-4 rounded-md">
+              <PersonalInfoSection control={form.control} />
+            </div>
+          </div>
+          
+          {/* Phone Information */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Contact Information</h3>
+            <div className="bg-muted/20 p-4 rounded-md">
+              <PhoneSection control={form.control} />
+            </div>
+          </div>
+          
+          {/* Position & Employment Details */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Employment Details</h3>
+            <div className="bg-muted/20 p-4 rounded-md">
+              <EmploymentDetailsSection 
+                control={form.control} 
+                date={date} 
+                setDate={setDate}
+              />
+            </div>
+          </div>
+          
+          {/* Departments */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Department Assignment</h3>
+            <div className="bg-muted/20 p-4 rounded-md">
+              <DepartmentsSection 
+                selectedDepartments={selectedDepartments} 
+                setSelectedDepartments={setSelectedDepartments}
+              />
+            </div>
+          </div>
+        </div>
 
-      <EmploymentDetailsSection 
-        control={control}
-        date={hireDate}
-        setDate={setHireDate}
-      />
-
-      <DepartmentsSection 
-        selectedDepartments={selectedDepartments}
-        setSelectedDepartments={setSelectedDepartments}
-      />
-
-      <PhoneSection 
-        control={control}
-      />
-
-      <Button type="submit" className="w-full">
-        Add Employee
-      </Button>
-    </form>
+        <Button type="submit" className="w-full md:w-auto">
+          <UserPlus className="mr-2 h-4 w-4" /> Add Employee
+        </Button>
+      </form>
+    </Form>
   );
 };
 
