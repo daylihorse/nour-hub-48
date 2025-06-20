@@ -35,7 +35,15 @@ export const useClients = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setClients(data || []);
+      
+      // Type cast the data to ensure proper typing
+      const typedData = (data || []).map(client => ({
+        ...client,
+        client_type: client.client_type as 'horse_owner' | 'veterinarian' | 'supplier' | 'trainer' | 'staff' | 'other',
+        status: client.status as 'active' | 'inactive'
+      })) as DatabaseClient[];
+      
+      setClients(typedData);
     } catch (error) {
       console.error('Error fetching clients:', error);
       toast({
@@ -73,13 +81,20 @@ export const useClients = () => {
 
       if (error) throw error;
 
-      setClients(prev => [data, ...prev]);
+      // Type cast the returned data
+      const typedClient = {
+        ...data,
+        client_type: data.client_type as 'horse_owner' | 'veterinarian' | 'supplier' | 'trainer' | 'staff' | 'other',
+        status: data.status as 'active' | 'inactive'
+      } as DatabaseClient;
+
+      setClients(prev => [typedClient, ...prev]);
       toast({
         title: 'Success',
         description: 'Client added successfully',
       });
 
-      return data;
+      return typedClient;
     } catch (error) {
       console.error('Error adding client:', error);
       toast({
@@ -102,13 +117,20 @@ export const useClients = () => {
 
       if (error) throw error;
 
-      setClients(prev => prev.map(client => client.id === id ? data : client));
+      // Type cast the returned data
+      const typedClient = {
+        ...data,
+        client_type: data.client_type as 'horse_owner' | 'veterinarian' | 'supplier' | 'trainer' | 'staff' | 'other',
+        status: data.status as 'active' | 'inactive'
+      } as DatabaseClient;
+
+      setClients(prev => prev.map(client => client.id === id ? typedClient : client));
       toast({
         title: 'Success',
         description: 'Client updated successfully',
       });
 
-      return data;
+      return typedClient;
     } catch (error) {
       console.error('Error updating client:', error);
       toast({

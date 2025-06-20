@@ -66,12 +66,18 @@ const EnhancedAddEmployee = ({ onEmployeeAdded }: EnhancedAddEmployeeProps) => {
   const handleSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
     try {
-      const employeeData = {
-        ...data,
-        hire_date: data.hire_date,
-        salary: data.salary || undefined,
+      // Ensure required fields are properly set
+      const employeeData: Omit<DatabaseEmployee, 'id' | 'tenant_id' | 'created_at' | 'updated_at'> = {
+        employee_number: data.employee_number || undefined,
+        first_name: data.first_name, // Required field
+        last_name: data.last_name,   // Required field
         email: data.email || undefined,
         phone: data.phone || undefined,
+        hire_date: data.hire_date,   // Required field
+        position: data.position,     // Required field
+        department: data.department, // Required field
+        salary: data.salary || undefined,
+        status: data.status,         // Required field with proper type
       };
 
       const newEmployee = await addEmployee(employeeData);

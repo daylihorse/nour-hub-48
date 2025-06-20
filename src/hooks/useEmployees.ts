@@ -35,7 +35,14 @@ export const useEmployees = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setEmployees(data || []);
+      
+      // Type cast the data to ensure proper typing
+      const typedData = (data || []).map(employee => ({
+        ...employee,
+        status: employee.status as 'active' | 'inactive' | 'terminated'
+      })) as DatabaseEmployee[];
+      
+      setEmployees(typedData);
     } catch (error) {
       console.error('Error fetching employees:', error);
       toast({
@@ -74,13 +81,19 @@ export const useEmployees = () => {
 
       if (error) throw error;
 
-      setEmployees(prev => [data, ...prev]);
+      // Type cast the returned data
+      const typedEmployee = {
+        ...data,
+        status: data.status as 'active' | 'inactive' | 'terminated'
+      } as DatabaseEmployee;
+
+      setEmployees(prev => [typedEmployee, ...prev]);
       toast({
         title: 'Success',
         description: 'Employee added successfully',
       });
 
-      return data;
+      return typedEmployee;
     } catch (error) {
       console.error('Error adding employee:', error);
       toast({
@@ -103,13 +116,19 @@ export const useEmployees = () => {
 
       if (error) throw error;
 
-      setEmployees(prev => prev.map(emp => emp.id === id ? data : emp));
+      // Type cast the returned data
+      const typedEmployee = {
+        ...data,
+        status: data.status as 'active' | 'inactive' | 'terminated'
+      } as DatabaseEmployee;
+
+      setEmployees(prev => prev.map(emp => emp.id === id ? typedEmployee : emp));
       toast({
         title: 'Success',
         description: 'Employee updated successfully',
       });
 
-      return data;
+      return typedEmployee;
     } catch (error) {
       console.error('Error updating employee:', error);
       toast({
