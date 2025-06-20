@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,10 +14,10 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import PersonalInfoSection from "./form-sections/PersonalInfoSection";
-import EmploymentDetailsSection from "./form-sections/EmploymentDetailsSection";
-import DepartmentsSection from "./form-sections/DepartmentsSection";
-import PhoneSection from "./form-sections/PhoneSection";
+import { PersonalInfoSection } from "./form-sections/PersonalInfoSection";
+import { EmploymentDetailsSection } from "./form-sections/EmploymentDetailsSection";
+import { DepartmentsSection } from "./form-sections/DepartmentsSection";
+import { PhoneSection } from "./form-sections/PhoneSection";
 
 const employeeSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
