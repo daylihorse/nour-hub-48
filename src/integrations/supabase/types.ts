@@ -9,6 +9,95 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      appointments: {
+        Row: {
+          appointment_date: string
+          appointment_type: string
+          client_id: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          duration_minutes: number | null
+          employee_id: string | null
+          horse_id: string | null
+          id: string
+          location: string | null
+          notes: string | null
+          reminder_sent: boolean | null
+          status: string
+          tenant_id: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          appointment_date: string
+          appointment_type: string
+          client_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          employee_id?: string | null
+          horse_id?: string | null
+          id?: string
+          location?: string | null
+          notes?: string | null
+          reminder_sent?: boolean | null
+          status?: string
+          tenant_id: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          appointment_date?: string
+          appointment_type?: string
+          client_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          employee_id?: string | null
+          horse_id?: string | null
+          id?: string
+          location?: string | null
+          notes?: string | null
+          reminder_sent?: boolean | null
+          status?: string
+          tenant_id?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_appointments_client"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_appointments_employee"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_appointments_horse"
+            columns: ["horse_id"]
+            isOneToOne: false
+            referencedRelation: "horses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_appointments_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       breeding_records: {
         Row: {
           additional_costs: number | null
@@ -119,6 +208,142 @@ export type Database = {
           },
           {
             foreignKeyName: "breeding_records_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clients: {
+        Row: {
+          address: Json | null
+          billing_address: Json | null
+          client_number: string | null
+          client_type: string
+          created_at: string | null
+          created_by: string | null
+          credit_limit: number | null
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          payment_terms: string | null
+          phone: string | null
+          status: string
+          tax_id: string | null
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          address?: Json | null
+          billing_address?: Json | null
+          client_number?: string | null
+          client_type: string
+          created_at?: string | null
+          created_by?: string | null
+          credit_limit?: number | null
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          payment_terms?: string | null
+          phone?: string | null
+          status?: string
+          tax_id?: string | null
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          address?: Json | null
+          billing_address?: Json | null
+          client_number?: string | null
+          client_type?: string
+          created_at?: string | null
+          created_by?: string | null
+          credit_limit?: number | null
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          payment_terms?: string | null
+          phone?: string | null
+          status?: string
+          tax_id?: string | null
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_clients_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      employees: {
+        Row: {
+          address: Json | null
+          created_at: string | null
+          created_by: string | null
+          department: string
+          email: string | null
+          emergency_contact: Json | null
+          employee_number: string | null
+          first_name: string
+          hire_date: string
+          id: string
+          last_name: string
+          phone: string | null
+          position: string
+          salary: number | null
+          status: string
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          address?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          department: string
+          email?: string | null
+          emergency_contact?: Json | null
+          employee_number?: string | null
+          first_name: string
+          hire_date: string
+          id?: string
+          last_name: string
+          phone?: string | null
+          position: string
+          salary?: number | null
+          status?: string
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          address?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          department?: string
+          email?: string | null
+          emergency_contact?: Json | null
+          employee_number?: string | null
+          first_name?: string
+          hire_date?: string
+          id?: string
+          last_name?: string
+          phone?: string | null
+          position?: string
+          salary?: number | null
+          status?: string
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_employees_tenant"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -624,6 +849,182 @@ export type Database = {
           },
         ]
       }
+      inventory_categories: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          parent_category_id: string | null
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          parent_category_id?: string | null
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          parent_category_id?: string | null
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_inventory_categories_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_items: {
+        Row: {
+          barcode: string | null
+          category_id: string | null
+          created_at: string | null
+          created_by: string | null
+          current_stock: number | null
+          description: string | null
+          expiry_date: string | null
+          id: string
+          name: string
+          reorder_level: number | null
+          sku: string | null
+          status: string
+          storage_location: string | null
+          supplier_info: Json | null
+          tenant_id: string
+          unit_cost: number | null
+          unit_of_measure: string
+          updated_at: string | null
+        }
+        Insert: {
+          barcode?: string | null
+          category_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          current_stock?: number | null
+          description?: string | null
+          expiry_date?: string | null
+          id?: string
+          name: string
+          reorder_level?: number | null
+          sku?: string | null
+          status?: string
+          storage_location?: string | null
+          supplier_info?: Json | null
+          tenant_id: string
+          unit_cost?: number | null
+          unit_of_measure: string
+          updated_at?: string | null
+        }
+        Update: {
+          barcode?: string | null
+          category_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          current_stock?: number | null
+          description?: string | null
+          expiry_date?: string | null
+          id?: string
+          name?: string
+          reorder_level?: number | null
+          sku?: string | null
+          status?: string
+          storage_location?: string | null
+          supplier_info?: Json | null
+          tenant_id?: string
+          unit_cost?: number | null
+          unit_of_measure?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_inventory_items_category"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_inventory_items_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_transactions: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          item_id: string
+          notes: string | null
+          quantity: number
+          reference_number: string | null
+          tenant_id: string
+          total_cost: number | null
+          transaction_date: string
+          transaction_type: string
+          unit_cost: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          item_id: string
+          notes?: string | null
+          quantity: number
+          reference_number?: string | null
+          tenant_id: string
+          total_cost?: number | null
+          transaction_date?: string
+          transaction_type: string
+          unit_cost?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          item_id?: string
+          notes?: string | null
+          quantity?: number
+          reference_number?: string | null
+          tenant_id?: string
+          total_cost?: number | null
+          transaction_date?: string
+          transaction_type?: string
+          unit_cost?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_inventory_transactions_item"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_inventory_transactions_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       nutrition_records: {
         Row: {
           appetite_rating: number | null
@@ -970,6 +1371,71 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      stalls: {
+        Row: {
+          capacity: number | null
+          created_at: string | null
+          created_by: string | null
+          current_occupant_id: string | null
+          dimensions: string | null
+          features: Json | null
+          id: string
+          location: string | null
+          notes: string | null
+          rent_amount: number | null
+          stall_number: string
+          stall_type: string
+          status: string
+          tenant_id: string
+          updated_at: string | null
+          utilities_included: boolean | null
+        }
+        Insert: {
+          capacity?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          current_occupant_id?: string | null
+          dimensions?: string | null
+          features?: Json | null
+          id?: string
+          location?: string | null
+          notes?: string | null
+          rent_amount?: number | null
+          stall_number: string
+          stall_type: string
+          status?: string
+          tenant_id: string
+          updated_at?: string | null
+          utilities_included?: boolean | null
+        }
+        Update: {
+          capacity?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          current_occupant_id?: string | null
+          dimensions?: string | null
+          features?: Json | null
+          id?: string
+          location?: string | null
+          notes?: string | null
+          rent_amount?: number | null
+          stall_number?: string
+          stall_type?: string
+          status?: string
+          tenant_id?: string
+          updated_at?: string | null
+          utilities_included?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_stalls_tenant"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tenant_users: {
         Row: {

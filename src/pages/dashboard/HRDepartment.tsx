@@ -10,20 +10,16 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import HRDashboard from "@/components/hr/HRDashboard";
-import AddEmployee from "@/components/hr/AddEmployee";
-import EmployeeRecords from "@/components/hr/EmployeeRecords";
+import EnhancedAddEmployee from "@/components/hr/EnhancedAddEmployee";
+import EnhancedEmployeeRecords from "@/components/hr/EnhancedEmployeeRecords";
 import WorkSchedules from "@/components/hr/WorkSchedules";
 import Payroll from "@/components/hr/Payroll";
 import PerformanceReviews from "@/components/hr/PerformanceReviews";
 import TrainingRecords from "@/components/hr/TrainingRecords";
-import { Employee } from "@/types/employee";
+import { useEmployees } from "@/hooks/useEmployees";
 
 const HRDepartment = () => {
-  const [employees, setEmployees] = useState<Employee[]>([]);
-
-  const addEmployee = (employee: Employee) => {
-    setEmployees((prev) => [employee, ...prev]);
-  };
+  const { employees } = useEmployees();
 
   return (
     <div className="space-y-6">
@@ -56,27 +52,11 @@ const HRDepartment = () => {
         </TabsContent>
 
         <TabsContent value="employees">
-          <Card>
-            <CardHeader>
-              <CardTitle>Employee Records</CardTitle>
-              <CardDescription>View and manage employee information</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <EmployeeRecords employees={employees} />
-            </CardContent>
-          </Card>
+          <EnhancedEmployeeRecords />
         </TabsContent>
 
         <TabsContent value="add">
-          <Card>
-            <CardHeader>
-              <CardTitle>Add New Employee</CardTitle>
-              <CardDescription>Create a new employee record</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <AddEmployee onSubmit={addEmployee} />
-            </CardContent>
-          </Card>
+          <EnhancedAddEmployee />
         </TabsContent>
 
         <TabsContent value="schedules">
