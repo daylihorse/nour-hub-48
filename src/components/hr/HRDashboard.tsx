@@ -5,7 +5,10 @@ import { useIntegratedModuleAccess } from "@/hooks/useIntegratedModuleAccess";
 import { Users, DollarSign, GraduationCap, FileText, Clipboard } from "lucide-react";
 import ModuleTabs, { ModuleTabConfig } from "@/components/common/ModuleTabs";
 
-const HRDashboard: React.FC = () => {
+// Explicitly define the component to accept no props
+interface HRDashboardProps {}
+
+const HRDashboard: React.FC<HRDashboardProps> = () => {
   const { isSubmoduleAccessible } = useIntegratedModuleAccess();
 
   // Define all possible tabs with their access requirements
