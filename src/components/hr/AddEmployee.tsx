@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,6 +37,13 @@ const employeeSchema = z.object({
   currency: z.string().optional(),
   salaryType: z.enum(["daily", "monthly"]).optional(),
   status: z.enum(["active", "inactive", "on-leave"]),
+  phones: z.array(z.object({
+    id: z.string(),
+    countryCode: z.string(),
+    number: z.string(),
+    hasWhatsapp: z.boolean(),
+    hasTelegram: z.boolean(),
+  })).optional(),
   address: z.object({
     street: z.string().optional(),
     city: z.string().optional(),
@@ -51,16 +59,11 @@ interface AddEmployeeProps {
 
 const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
   const { toast } = useToast();
-  const [phones, setPhones] = useState([{
-    id: "1",
-    countryCode: "1",
-    number: "",
-    hasWhatsapp: false,
-    hasTelegram: false
-  }]);
+  const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
+  const [hireDate, setHireDate] = useState<Date>(new Date());
 
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
     setValue,
@@ -73,29 +76,30 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
       department: [],
       hireDate: new Date(),
       currency: "USD",
-      salaryType: "monthly" as const
+      salaryType: "monthly" as const,
+      phones: [{
+        id: "1",
+        countryCode: "1",
+        number: "",
+        hasWhatsapp: false,
+        hasTelegram: false
+      }]
     }
   });
-
-  const watchedDepartment = watch("department");
-  const watchedHireDate = watch("hireDate");
 
   const handleFormSubmit = (data: any) => {
     const employeeData: Employee = {
       id: crypto.randomUUID(),
       ...data,
-      phones: phones.filter(phone => phone.number.trim() !== "")
+      department: selectedDepartments,
+      hireDate: hireDate,
+      phones: data.phones?.filter((phone: any) => phone.number.trim() !== "") || []
     };
 
     onSubmit(employeeData);
     reset();
-    setPhones([{
-      id: "1",
-      countryCode: "1",
-      number: "",
-      hasWhatsapp: false,
-      hasTelegram: false
-    }]);
+    setSelectedDepartments([]);
+    setHireDate(new Date());
     
     toast({
       title: "Employee Added",
@@ -106,26 +110,22 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
       <PersonalInfoSection 
-        register={register} 
-        errors={errors} 
+        control={control}
       />
 
       <EmploymentDetailsSection 
-        register={register} 
-        errors={errors}
-        setValue={setValue}
-        watchedHireDate={watchedHireDate}
+        control={control}
+        date={hireDate}
+        setDate={setHireDate}
       />
 
       <DepartmentsSection 
-        setValue={setValue}
-        watchedDepartment={watchedDepartment}
-        errors={errors}
+        selectedDepartments={selectedDepartments}
+        setSelectedDepartments={setSelectedDepartments}
       />
 
       <PhoneSection 
-        phones={phones}
-        setPhones={setPhones}
+        control={control}
       />
 
       <Button type="submit" className="w-full">
