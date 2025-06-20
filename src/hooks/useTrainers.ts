@@ -40,7 +40,8 @@ export const useTrainers = () => {
         return;
       }
 
-      setTrainers(data || []);
+      // Type cast the data to match our Trainer interface
+      setTrainers((data || []) as Trainer[]);
     } catch (error) {
       console.error('Error fetching trainers:', error);
     } finally {
@@ -61,8 +62,10 @@ export const useTrainers = () => {
         return null;
       }
 
-      setTrainers(prev => [data, ...prev]);
-      return data;
+      // Type cast the returned data
+      const newTrainer = data as Trainer;
+      setTrainers(prev => [newTrainer, ...prev]);
+      return newTrainer;
     } catch (error) {
       console.error('Error adding trainer:', error);
       return null;
@@ -83,10 +86,12 @@ export const useTrainers = () => {
         return null;
       }
 
+      // Type cast the returned data
+      const updatedTrainer = data as Trainer;
       setTrainers(prev => prev.map(trainer => 
-        trainer.id === id ? { ...trainer, ...data } : trainer
+        trainer.id === id ? { ...trainer, ...updatedTrainer } : trainer
       ));
-      return data;
+      return updatedTrainer;
     } catch (error) {
       console.error('Error updating trainer:', error);
       return null;
