@@ -38,7 +38,16 @@ export const useMedicalAlerts = () => {
 
       if (error) throw error;
       
-      setAlerts(data || []);
+      // Type-safe mapping of the data
+      const typedData = (data || []).map(alert => ({
+        ...alert,
+        alert_type: alert.alert_type as MedicalAlert['alert_type'],
+        severity: alert.severity as MedicalAlert['severity'],
+        status: alert.status as MedicalAlert['status'],
+        related_record_type: alert.related_record_type as MedicalAlert['related_record_type'],
+      }));
+      
+      setAlerts(typedData);
     } catch (error) {
       console.error('Error fetching medical alerts:', error);
       toast({
@@ -76,18 +85,29 @@ export const useMedicalAlerts = () => {
 
       if (error) throw error;
 
-      setAlerts(prev => [data, ...prev]);
+      const typedData = {
+        ...data,
+        alert_type: data.alert_type as MedicalAlert['alert_type'],
+        severity: data.severity as MedicalAlert['severity'],
+        status: data.status as MedicalAlert['status'],
+        related_record_type: data.related_record_type as MedicalAlert['related_record_type'],
+      };
+
+      setAlerts(prev => [typedData, ...prev]);
       toast({
         title: 'Success',
         description: 'Medical alert created successfully',
       });
 
-      return data;
+      return typedData;
     } catch (error) {
       console.error('Error adding medical alert:', error);
       toast({
         title: 'Error',
-        description: 'Failed to create medical alert',
+        description: '
+
+
+to create medical alert',
         variant: 'destructive',
       });
       throw error;
@@ -105,13 +125,21 @@ export const useMedicalAlerts = () => {
 
       if (error) throw error;
 
-      setAlerts(prev => prev.map(alert => alert.id === id ? data : alert));
+      const typedData = {
+        ...data,
+        alert_type: data.alert_type as MedicalAlert['alert_type'],
+        severity: data.severity as MedicalAlert['severity'],
+        status: data.status as MedicalAlert['status'],
+        related_record_type: data.related_record_type as MedicalAlert['related_record_type'],
+      };
+
+      setAlerts(prev => prev.map(alert => alert.id === id ? typedData : alert));
       toast({
         title: 'Success',
         description: 'Medical alert updated successfully',
       });
 
-      return data;
+      return typedData;
     } catch (error) {
       console.error('Error updating medical alert:', error);
       toast({
@@ -141,13 +169,21 @@ export const useMedicalAlerts = () => {
 
       if (error) throw error;
 
-      setAlerts(prev => prev.map(alert => alert.id === id ? data : alert));
+      const typedData = {
+        ...data,
+        alert_type: data.alert_type as MedicalAlert['alert_type'],
+        severity: data.severity as MedicalAlert['severity'],
+        status: data.status as MedicalAlert['status'],
+        related_record_type: data.related_record_type as MedicalAlert['related_record_type'],
+      };
+
+      setAlerts(prev => prev.map(alert => alert.id === id ? typedData : alert));
       toast({
         title: 'Success',
         description: 'Alert acknowledged',
       });
 
-      return data;
+      return typedData;
     } catch (error) {
       console.error('Error acknowledging alert:', error);
       toast({
@@ -177,13 +213,21 @@ export const useMedicalAlerts = () => {
 
       if (error) throw error;
 
-      setAlerts(prev => prev.map(alert => alert.id === id ? data : alert));
+      const typedData = {
+        ...data,
+        alert_type: data.alert_type as MedicalAlert['alert_type'],
+        severity: data.severity as MedicalAlert['severity'],
+        status: data.status as MedicalAlert['status'],
+        related_record_type: data.related_record_type as MedicalAlert['related_record_type'],
+      };
+
+      setAlerts(prev => prev.map(alert => alert.id === id ? typedData : alert));
       toast({
         title: 'Success',
         description: 'Alert resolved',
       });
 
-      return data;
+      return typedData;
     } catch (error) {
       console.error('Error resolving alert:', error);
       toast({

@@ -39,7 +39,14 @@ export const useVaccinations = () => {
 
       if (error) throw error;
       
-      setVaccinations(data || []);
+      // Type-safe mapping of the data
+      const typedData = (data || []).map(vaccination => ({
+        ...vaccination,
+        vaccine_type: vaccination.vaccine_type as Vaccination['vaccine_type'],
+        status: vaccination.status as Vaccination['status'],
+      }));
+      
+      setVaccinations(typedData);
     } catch (error) {
       console.error('Error fetching vaccinations:', error);
       toast({
@@ -77,13 +84,19 @@ export const useVaccinations = () => {
 
       if (error) throw error;
 
-      setVaccinations(prev => [data, ...prev]);
+      const typedData = {
+        ...data,
+        vaccine_type: data.vaccine_type as Vaccination['vaccine_type'],
+        status: data.status as Vaccination['status'],
+      };
+
+      setVaccinations(prev => [typedData, ...prev]);
       toast({
         title: 'Success',
         description: 'Vaccination record added successfully',
       });
 
-      return data;
+      return typedData;
     } catch (error) {
       console.error('Error adding vaccination:', error);
       toast({
@@ -106,13 +119,19 @@ export const useVaccinations = () => {
 
       if (error) throw error;
 
-      setVaccinations(prev => prev.map(vacc => vacc.id === id ? data : vacc));
+      const typedData = {
+        ...data,
+        vaccine_type: data.vaccine_type as Vaccination['vaccine_type'],
+        status: data.status as Vaccination['status'],
+      };
+
+      setVaccinations(prev => prev.map(vacc => vacc.id === id ? typedData : vacc));
       toast({
         title: 'Success',
         description: 'Vaccination record updated successfully',
       });
 
-      return data;
+      return typedData;
     } catch (error) {
       console.error('Error updating vaccination:', error);
       toast({

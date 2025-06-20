@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -61,6 +60,9 @@ import InventoryPOSPage from "./pages/pos/InventoryPOSPage";
 import ClinicPOSPage from "./pages/pos/ClinicPOSPage";
 import LaboratoryPOSPage from "./pages/pos/LaboratoryPOSPage";
 import PharmacyPOSPage from "./pages/pos/PharmacyPOSPage";
+
+// Medical Management import
+import MedicalDepartment from "./pages/dashboard/MedicalDepartment";
 
 // Create a new QueryClient instance
 const queryClient = new QueryClient();
@@ -126,6 +128,7 @@ const App = () => {
                         <Route path="messages" element={<MessagesDepartment />} />
                         <Route path="messages/:id" element={<MessagesDepartment />} />
                         <Route path="settings" element={<TenantSettings />} />
+                        <Route path="medical" element={<MedicalDepartment />} />
                         
                         {/* Client Management Routes */}
                         <Route path="clients" element={<ClientsDepartment />} />

@@ -36,7 +36,13 @@ export const useVeterinarians = () => {
 
       if (error) throw error;
       
-      setVeterinarians(data || []);
+      // Type-safe mapping of the data
+      const typedData = (data || []).map(vet => ({
+        ...vet,
+        status: vet.status as Veterinarian['status'],
+      }));
+      
+      setVeterinarians(typedData);
     } catch (error) {
       console.error('Error fetching veterinarians:', error);
       toast({
@@ -74,13 +80,18 @@ export const useVeterinarians = () => {
 
       if (error) throw error;
 
-      setVeterinarians(prev => [data, ...prev]);
+      const typedData = {
+        ...data,
+        status: data.status as Veterinarian['status'],
+      };
+
+      setVeterinarians(prev => [typedData, ...prev]);
       toast({
         title: 'Success',
         description: 'Veterinarian added successfully',
       });
 
-      return data;
+      return typedData;
     } catch (error) {
       console.error('Error adding veterinarian:', error);
       toast({
@@ -103,13 +114,18 @@ export const useVeterinarians = () => {
 
       if (error) throw error;
 
-      setVeterinarians(prev => prev.map(vet => vet.id === id ? data : vet));
+      const typedData = {
+        ...data,
+        status: data.status as Veterinarian['status'],
+      };
+
+      setVeterinarians(prev => prev.map(vet => vet.id === id ? typedData : vet));
       toast({
         title: 'Success',
         description: 'Veterinarian updated successfully',
       });
 
-      return data;
+      return typedData;
     } catch (error) {
       console.error('Error updating veterinarian:', error);
       toast({

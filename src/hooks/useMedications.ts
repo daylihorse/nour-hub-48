@@ -40,7 +40,15 @@ export const useMedications = () => {
 
       if (error) throw error;
       
-      setMedications(data || []);
+      // Type-safe mapping of the data
+      const typedData = (data || []).map(medication => ({
+        ...medication,
+        medication_type: medication.medication_type as Medication['medication_type'],
+        route_of_administration: medication.route_of_administration as Medication['route_of_administration'],
+        status: medication.status as Medication['status'],
+      }));
+      
+      setMedications(typedData);
     } catch (error) {
       console.error('Error fetching medications:', error);
       toast({
@@ -78,13 +86,20 @@ export const useMedications = () => {
 
       if (error) throw error;
 
-      setMedications(prev => [data, ...prev]);
+      const typedData = {
+        ...data,
+        medication_type: data.medication_type as Medication['medication_type'],
+        route_of_administration: data.route_of_administration as Medication['route_of_administration'],
+        status: data.status as Medication['status'],
+      };
+
+      setMedications(prev => [typedData, ...prev]);
       toast({
         title: 'Success',
         description: 'Medication record added successfully',
       });
 
-      return data;
+      return typedData;
     } catch (error) {
       console.error('Error adding medication:', error);
       toast({
@@ -107,13 +122,20 @@ export const useMedications = () => {
 
       if (error) throw error;
 
-      setMedications(prev => prev.map(med => med.id === id ? data : med));
+      const typedData = {
+        ...data,
+        medication_type: data.medication_type as Medication['medication_type'],
+        route_of_administration: data.route_of_administration as Medication['route_of_administration'],
+        status: data.status as Medication['status'],
+      };
+
+      setMedications(prev => prev.map(med => med.id === id ? typedData : med));
       toast({
         title: 'Success',
         description: 'Medication record updated successfully',
       });
 
-      return data;
+      return typedData;
     } catch (error) {
       console.error('Error updating medication:', error);
       toast({
