@@ -12,7 +12,7 @@ import {
   Sparkles, 
   Play, 
   Crown,
-  Horse,
+  Heart,
   Users,
   FlaskConical,
   Stethoscope,
@@ -75,7 +75,7 @@ const departmentModules: DepartmentModule[] = [
     id: "horses",
     title: "Horse Management",
     description: "Comprehensive horse registry, breeding records, and performance tracking for your equine operation.",
-    icon: <Horse className="h-8 w-8" />,
+    icon: <Heart className="h-8 w-8" />,
     route: "/dashboard/horses",
     feature: "horses_module"
   },
