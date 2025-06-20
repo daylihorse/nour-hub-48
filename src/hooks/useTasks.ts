@@ -8,9 +8,9 @@ export interface Task {
   tenant_id: string;
   title: string;
   description?: string;
-  task_type: 'follow_up' | 'reminder' | 'maintenance' | 'medical' | 'administrative' | 'other';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
+  task_type: string;
+  priority: string;
+  status: string;
   assigned_to?: string;
   due_date?: string;
   completed_date?: string;
@@ -36,7 +36,7 @@ export const useTasks = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setTasks(data || []);
+      setTasks(data as Task[] || []);
     } catch (error) {
       console.error('Error fetching tasks:', error);
       toast({
@@ -74,7 +74,7 @@ export const useTasks = () => {
 
       if (error) throw error;
 
-      setTasks(prev => [data, ...prev]);
+      setTasks(prev => [data as Task, ...prev]);
       toast({
         title: 'Success',
         description: 'Task created successfully',
@@ -103,7 +103,7 @@ export const useTasks = () => {
 
       if (error) throw error;
 
-      setTasks(prev => prev.map(task => task.id === id ? data : task));
+      setTasks(prev => prev.map(task => task.id === id ? data as Task : task));
       toast({
         title: 'Success',
         description: 'Task updated successfully',

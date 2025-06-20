@@ -8,7 +8,7 @@ export interface FinancialAccount {
   tenant_id: string;
   account_code: string;
   account_name: string;
-  account_type: 'asset' | 'liability' | 'equity' | 'revenue' | 'expense';
+  account_type: string;
   parent_account_id?: string;
   balance: number;
   is_active: boolean;
@@ -31,7 +31,7 @@ export const useFinancialAccounts = () => {
         .order('account_code');
 
       if (error) throw error;
-      setAccounts(data || []);
+      setAccounts(data as FinancialAccount[] || []);
     } catch (error) {
       console.error('Error fetching financial accounts:', error);
       toast({
@@ -69,7 +69,7 @@ export const useFinancialAccounts = () => {
 
       if (error) throw error;
 
-      setAccounts(prev => [...prev, data]);
+      setAccounts(prev => [...prev, data as FinancialAccount]);
       toast({
         title: 'Success',
         description: 'Financial account added successfully',
@@ -98,7 +98,7 @@ export const useFinancialAccounts = () => {
 
       if (error) throw error;
 
-      setAccounts(prev => prev.map(acc => acc.id === id ? data : acc));
+      setAccounts(prev => prev.map(acc => acc.id === id ? data as FinancialAccount : acc));
       toast({
         title: 'Success',
         description: 'Financial account updated successfully',

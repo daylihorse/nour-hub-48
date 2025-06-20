@@ -6,16 +6,16 @@ import { toast } from '@/hooks/use-toast';
 export interface Communication {
   id: string;
   tenant_id: string;
-  communication_type: 'call' | 'email' | 'sms' | 'meeting' | 'note';
+  communication_type: string;
   subject?: string;
   content: string;
-  direction: 'inbound' | 'outbound';
+  direction: string;
   contact_person?: string;
   contact_info?: any;
   client_id?: string;
   horse_id?: string;
   employee_id?: string;
-  status: 'pending' | 'completed' | 'failed';
+  status: string;
   scheduled_at?: string;
   completed_at?: string;
   attachments?: any[];
@@ -74,7 +74,7 @@ export const useCommunications = () => {
 
       if (error) throw error;
 
-      setCommunications(prev => [data, ...prev]);
+      setCommunications(prev => [data as Communication, ...prev]);
       toast({
         title: 'Success',
         description: 'Communication logged successfully',
@@ -103,7 +103,7 @@ export const useCommunications = () => {
 
       if (error) throw error;
 
-      setCommunications(prev => prev.map(comm => comm.id === id ? data : comm));
+      setCommunications(prev => prev.map(comm => comm.id === id ? data as Communication : comm));
       toast({
         title: 'Success',
         description: 'Communication updated successfully',

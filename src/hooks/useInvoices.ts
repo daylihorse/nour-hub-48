@@ -6,7 +6,7 @@ import { toast } from '@/hooks/use-toast';
 export interface InvoiceItem {
   id: string;
   invoice_id: string;
-  item_type: 'service' | 'product' | 'board' | 'training' | 'veterinary' | 'other';
+  item_type: string;
   description: string;
   quantity: number;
   unit_price: number;
@@ -28,7 +28,7 @@ export interface Invoice {
   discount_amount: number;
   total_amount: number;
   paid_amount: number;
-  status: 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
+  status: string;
   payment_terms?: string;
   notes?: string;
   created_at: string;
@@ -52,7 +52,7 @@ export const useInvoices = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setInvoices(data || []);
+      setInvoices(data as Invoice[] || []);
     } catch (error) {
       console.error('Error fetching invoices:', error);
       toast({
@@ -90,7 +90,7 @@ export const useInvoices = () => {
 
       if (error) throw error;
 
-      setInvoices(prev => [data, ...prev]);
+      setInvoices(prev => [data as Invoice, ...prev]);
       toast({
         title: 'Success',
         description: 'Invoice created successfully',
@@ -119,7 +119,7 @@ export const useInvoices = () => {
 
       if (error) throw error;
 
-      setInvoices(prev => prev.map(inv => inv.id === id ? data : inv));
+      setInvoices(prev => prev.map(inv => inv.id === id ? data as Invoice : inv));
       toast({
         title: 'Success',
         description: 'Invoice updated successfully',
