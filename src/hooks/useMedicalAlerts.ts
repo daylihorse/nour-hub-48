@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -104,10 +103,7 @@ export const useMedicalAlerts = () => {
       console.error('Error adding medical alert:', error);
       toast({
         title: 'Error',
-        description: '
-
-
-to create medical alert',
+        description: 'Failed to create medical alert',
         variant: 'destructive',
       });
       throw error;
