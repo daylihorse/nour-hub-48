@@ -1,257 +1,214 @@
 
-import { useState, useMemo } from 'react';
-import { TrainingProgram, TrainingSession, TrainingFacility, TrainingWorkflow } from '@/types/training';
+import { useState, useEffect } from 'react';
 
-export interface UseTrainingDataReturn {
-  programs: TrainingProgram[];
-  sessions: TrainingSession[];
-  facilities: TrainingFacility[];
-  workflows: TrainingWorkflow[];
-  metrics: {
-    activePrograms: number;
-    horsesInTraining: number;
-    todaySessions: number;
-    availableFacilities: number;
+export interface TrainingProgram {
+  id: string;
+  name: string;
+  description: string;
+  type: 'basic' | 'intermediate' | 'advanced' | 'specialized' | 'rehabilitation' | 'competition_prep';
+  discipline: string;
+  intensity: 'low' | 'medium' | 'high';
+  duration: number; // weeks
+  cost: number;
+  status: 'active' | 'inactive' | 'draft';
+  currentParticipants: number;
+  maxParticipants: number;
+  startDate: Date;
+  trainer: {
+    name: string;
+    id: string;
   };
-  isLoading: boolean;
-  createProgram: (program: Omit<TrainingProgram, 'id' | 'createdAt' | 'updatedAt'>) => void;
-  scheduleSession: (session: Omit<TrainingSession, 'id' | 'createdAt' | 'updatedAt'>) => void;
-  updateSessionStatus: (sessionId: string, status: TrainingSession['status']) => void;
-  createWorkflow: (workflow: Omit<TrainingWorkflow, 'id' | 'createdAt' | 'updatedAt'>) => void;
+  schedule: {
+    days: string[];
+    time: string;
+  };
+  requirements?: {
+    minimumAge: number;
+    healthClearance: boolean;
+    experienceLevel: string;
+  };
 }
 
-// Mock data
+// Mock data for training programs
 const mockPrograms: TrainingProgram[] = [
   {
-    id: 'prog_001',
-    name: 'Basic Riding Fundamentals',
-    description: 'Introduction to basic riding techniques and horse handling',
+    id: '1',
+    name: 'Basic Riding Foundation',
+    description: 'Introduction to horse riding fundamentals and safety protocols',
     type: 'basic',
     discipline: 'General Riding',
-    duration: 8,
     intensity: 'low',
-    maxParticipants: 6,
-    currentParticipants: 4,
+    duration: 8,
+    cost: 800,
+    status: 'active',
+    currentParticipants: 5,
+    maxParticipants: 8,
+    startDate: new Date('2024-01-15'),
     trainer: {
-      id: 'trainer_001',
       name: 'Sarah Johnson',
-      specializations: ['Basic Training', 'Horse Psychology'],
-      certifications: ['Certified Riding Instructor', 'Horse Behavior Specialist']
+      id: 'trainer-1'
     },
     schedule: {
       days: ['Monday', 'Wednesday', 'Friday'],
-      timeSlots: ['09:00-11:00', '14:00-16:00'],
-      location: 'Main Arena'
+      time: '10:00 AM'
     },
     requirements: {
-      minimumAge: 2,
+      minimumAge: 8,
       healthClearance: true,
-      experienceLevel: 'beginner',
-      equipment: ['halter', 'lead rope', 'basic tack']
-    },
-    status: 'active',
-    startDate: new Date('2024-01-15'),
-    endDate: new Date('2024-03-15'),
-    cost: 2500,
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-10')
+      experienceLevel: 'beginner'
+    }
   },
   {
-    id: 'prog_002',
+    id: '2',
     name: 'Advanced Dressage Training',
-    description: 'Advanced dressage movements and competition preparation',
+    description: 'High-level dressage techniques and competition preparation',
     type: 'advanced',
     discipline: 'Dressage',
-    duration: 12,
     intensity: 'high',
-    maxParticipants: 4,
+    duration: 12,
+    cost: 1800,
+    status: 'active',
     currentParticipants: 3,
+    maxParticipants: 6,
+    startDate: new Date('2024-02-01'),
     trainer: {
-      id: 'trainer_002',
-      name: 'Dr. Martinez',
-      specializations: ['Dressage', 'Competition Training'],
-      certifications: ['FEI Dressage Trainer', 'Olympic Level Certification']
+      name: 'Michael Chen',
+      id: 'trainer-2'
     },
     schedule: {
       days: ['Tuesday', 'Thursday', 'Saturday'],
-      timeSlots: ['08:00-10:00', '16:00-18:00'],
-      location: 'Dressage Arena'
+      time: '2:00 PM'
+    },
+    requirements: {
+      minimumAge: 16,
+      healthClearance: true,
+      experienceLevel: 'advanced'
+    }
+  },
+  {
+    id: '3',
+    name: 'Show Jumping Intensive',
+    description: 'Comprehensive show jumping training for competitions',
+    type: 'competition_prep',
+    discipline: 'Show Jumping',
+    intensity: 'high',
+    duration: 10,
+    cost: 1500,
+    status: 'active',
+    currentParticipants: 4,
+    maxParticipants: 8,
+    startDate: new Date('2024-02-15'),
+    trainer: {
+      name: 'Emma Rodriguez',
+      id: 'trainer-3'
+    },
+    schedule: {
+      days: ['Monday', 'Thursday', 'Sunday'],
+      time: '9:00 AM'
+    },
+    requirements: {
+      minimumAge: 14,
+      healthClearance: true,
+      experienceLevel: 'intermediate'
+    }
+  },
+  {
+    id: '4',
+    name: 'Therapeutic Riding Program',
+    description: 'Specialized program for riders with physical or cognitive challenges',
+    type: 'specialized',
+    discipline: 'Therapeutic Riding',
+    intensity: 'low',
+    duration: 16,
+    cost: 1200,
+    status: 'active',
+    currentParticipants: 6,
+    maxParticipants: 10,
+    startDate: new Date('2024-01-08'),
+    trainer: {
+      name: 'Dr. Lisa Harper',
+      id: 'trainer-4'
+    },
+    schedule: {
+      days: ['Tuesday', 'Friday'],
+      time: '11:00 AM'
     },
     requirements: {
       minimumAge: 5,
       healthClearance: true,
-      experienceLevel: 'advanced',
-      equipment: ['dressage saddle', 'specialized bridle', 'protective boots']
-    },
+      experienceLevel: 'beginner'
+    }
+  },
+  {
+    id: '5',
+    name: 'Horse Rehabilitation Training',
+    description: 'Training program for horses recovering from injury or layoff',
+    type: 'rehabilitation',
+    discipline: 'Rehabilitation',
+    intensity: 'medium',
+    duration: 20,
+    cost: 2000,
     status: 'active',
-    startDate: new Date('2024-02-01'),
-    endDate: new Date('2024-05-01'),
-    cost: 5000,
-    createdAt: new Date('2024-01-15'),
-    updatedAt: new Date('2024-01-20')
-  }
-];
-
-const mockSessions: TrainingSession[] = [
-  {
-    id: 'session_001',
-    programId: 'prog_001',
-    horseId: 'H001',
-    trainerId: 'trainer_001',
-    date: new Date(),
-    duration: 120,
-    type: 'group',
-    activities: ['warm-up', 'basic commands', 'cool-down'],
-    location: 'Main Arena',
-    equipment: ['halter', 'lead rope'],
-    status: 'scheduled',
-    createdAt: new Date(),
-    updatedAt: new Date()
-  },
-  {
-    id: 'session_002',
-    programId: 'prog_002',
-    horseId: 'H002',
-    trainerId: 'trainer_002',
-    date: new Date(),
-    duration: 90,
-    type: 'individual',
-    activities: ['collection exercises', 'lateral movements'],
-    location: 'Dressage Arena',
-    equipment: ['dressage saddle', 'specialized bridle'],
-    status: 'in_progress',
-    performanceMetrics: {
-      endurance: 8,
-      technique: 9,
-      behavior: 7,
-      improvement: 8
+    currentParticipants: 2,
+    maxParticipants: 4,
+    startDate: new Date('2024-01-22'),
+    trainer: {
+      name: 'Robert Kim',
+      id: 'trainer-5'
     },
-    createdAt: new Date(),
-    updatedAt: new Date()
+    schedule: {
+      days: ['Monday', 'Wednesday', 'Friday'],
+      time: '3:00 PM'
+    },
+    requirements: {
+      minimumAge: 18,
+      healthClearance: true,
+      experienceLevel: 'advanced'
+    }
   }
 ];
 
-const mockFacilities: TrainingFacility[] = [
-  {
-    id: 'facility_001',
-    name: 'Main Arena',
-    type: 'arena',
-    capacity: 8,
-    equipment: ['jumps', 'cones', 'poles'],
-    status: 'available',
-    schedule: [],
-    maintenanceHistory: [],
-    createdAt: new Date(),
-    updatedAt: new Date()
-  },
-  {
-    id: 'facility_002',
-    name: 'Dressage Arena',
-    type: 'dressage',
-    capacity: 4,
-    equipment: ['dressage letters', 'mirrors', 'sound system'],
-    status: 'occupied',
-    schedule: [],
-    maintenanceHistory: [],
-    createdAt: new Date(),
-    updatedAt: new Date()
-  }
-];
+export const useTrainingData = () => {
+  const [programs, setPrograms] = useState<TrainingProgram[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-const mockWorkflows: TrainingWorkflow[] = [
-  {
-    id: 'workflow_001',
-    type: 'enrollment',
-    horseId: 'H001',
-    programId: 'prog_001',
-    status: 'in_progress',
-    steps: [
-      {
-        id: 'step_001',
-        title: 'Health Clearance',
-        department: 'Clinic',
-        status: 'completed',
-        assignedTo: 'Dr. Martinez',
-        estimatedTime: '30 mins',
-        actions: ['Physical examination', 'Vaccination check', 'Fitness assessment'],
-        completedAt: new Date()
-      },
-      {
-        id: 'step_002',
-        title: 'Equipment Assignment',
-        department: 'Inventory',
-        status: 'in_progress',
-        assignedTo: 'Equipment Manager',
-        estimatedTime: '15 mins',
-        dependencies: ['step_001'],
-        actions: ['Allocate training equipment', 'Fit check', 'Safety inspection']
-      },
-      {
-        id: 'step_003',
-        title: 'Financial Setup',
-        department: 'Finance',
-        status: 'pending',
-        estimatedTime: '10 mins',
-        dependencies: ['step_002'],
-        actions: ['Create billing account', 'Setup payment plan', 'Generate invoice']
-      }
-    ],
-    createdAt: new Date(),
-    updatedAt: new Date()
-  }
-];
-
-export const useTrainingData = (): UseTrainingDataReturn => {
-  const [programs] = useState<TrainingProgram[]>(mockPrograms);
-  const [sessions] = useState<TrainingSession[]>(mockSessions);
-  const [facilities] = useState<TrainingFacility[]>(mockFacilities);
-  const [workflows] = useState<TrainingWorkflow[]>(mockWorkflows);
-  const [isLoading] = useState(false);
-
-  const metrics = useMemo(() => {
-    const today = new Date();
-    const todaySessions = sessions.filter(session => 
-      session.date.toDateString() === today.toDateString()
-    ).length;
-
-    return {
-      activePrograms: programs.filter(p => p.status === 'active').length,
-      horsesInTraining: new Set(sessions.map(s => s.horseId)).size,
-      todaySessions,
-      availableFacilities: facilities.filter(f => f.status === 'available').length
+  useEffect(() => {
+    // Simulate API call
+    const fetchPrograms = async () => {
+      setIsLoading(true);
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setPrograms(mockPrograms);
+      setIsLoading(false);
     };
-  }, [programs, sessions, facilities]);
 
-  const createProgram = (programData: Omit<TrainingProgram, 'id' | 'createdAt' | 'updatedAt'>) => {
-    console.log('Creating program:', programData);
-    // Implementation would update state and trigger workflows
+    fetchPrograms();
+  }, []);
+
+  const addProgram = async (program: Omit<TrainingProgram, 'id'>) => {
+    const newProgram: TrainingProgram = {
+      ...program,
+      id: `program-${Date.now()}`
+    };
+    setPrograms(prev => [...prev, newProgram]);
+    return newProgram;
   };
 
-  const scheduleSession = (sessionData: Omit<TrainingSession, 'id' | 'createdAt' | 'updatedAt'>) => {
-    console.log('Scheduling session:', sessionData);
-    // Implementation would update state and check facility availability
+  const updateProgram = async (id: string, updates: Partial<TrainingProgram>) => {
+    setPrograms(prev => prev.map(program => 
+      program.id === id ? { ...program, ...updates } : program
+    ));
   };
 
-  const updateSessionStatus = (sessionId: string, status: TrainingSession['status']) => {
-    console.log('Updating session status:', sessionId, status);
-    // Implementation would update session status and trigger integrations
-  };
-
-  const createWorkflow = (workflowData: Omit<TrainingWorkflow, 'id' | 'createdAt' | 'updatedAt'>) => {
-    console.log('Creating workflow:', workflowData);
-    // Implementation would create cross-departmental workflow
+  const deleteProgram = async (id: string) => {
+    setPrograms(prev => prev.filter(program => program.id !== id));
   };
 
   return {
     programs,
-    sessions,
-    facilities,
-    workflows,
-    metrics,
     isLoading,
-    createProgram,
-    scheduleSession,
-    updateSessionStatus,
-    createWorkflow
+    addProgram,
+    updateProgram,
+    deleteProgram
   };
 };

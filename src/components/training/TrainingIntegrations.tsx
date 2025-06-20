@@ -1,278 +1,218 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useTrainingData } from "@/hooks/useTrainingData";
-import { useOperationsData } from "@/hooks/useOperationsData";
+import { Button } from "@/components/ui/button";
 import { 
-  Stethoscope, 
-  Package, 
-  DollarSign, 
+  Network, 
+  Database, 
   Users, 
-  ArrowRight, 
+  FileText, 
+  DollarSign,
+  Calendar,
+  Activity,
+  Settings,
   CheckCircle,
-  AlertTriangle,
-  Clock
+  AlertCircle
 } from "lucide-react";
 
 const TrainingIntegrations = () => {
-  const { workflows } = useTrainingData();
-  const { alerts } = useOperationsData();
+  const integrations = [
+    {
+      title: "Horse Management",
+      description: "Sync training records with horse profiles and health data",
+      icon: Activity,
+      status: "active",
+      features: ["Performance tracking", "Health integration", "Progress monitoring"],
+      color: "bg-green-100 text-green-800"
+    },
+    {
+      title: "Finance System",
+      description: "Integrate training payments and billing with financial records",
+      icon: DollarSign,
+      status: "active",
+      features: ["Automatic billing", "Payment tracking", "Revenue reporting"],
+      color: "bg-blue-100 text-blue-800"
+    },
+    {
+      title: "Client Management",
+      description: "Connect training programs with client profiles and communications",
+      icon: Users,
+      status: "active",
+      features: ["Client enrollment", "Progress updates", "Communication logs"],
+      color: "bg-purple-100 text-purple-800"
+    },
+    {
+      title: "Scheduling System",
+      description: "Synchronize training sessions with facility bookings",
+      icon: Calendar,
+      status: "partial",
+      features: ["Facility booking", "Trainer schedules", "Conflict resolution"],
+      color: "bg-yellow-100 text-yellow-800"
+    },
+    {
+      title: "Document Management",
+      description: "Link training certificates and assessments to document system",
+      icon: FileText,
+      status: "pending",
+      features: ["Certificate generation", "Assessment storage", "Record keeping"],
+      color: "bg-gray-100 text-gray-800"
+    },
+    {
+      title: "Inventory Integration",
+      description: "Track training equipment usage and maintenance needs",
+      icon: Database,
+      status: "pending",
+      features: ["Equipment tracking", "Maintenance scheduling", "Usage analytics"],
+      color: "bg-gray-100 text-gray-800"
+    }
+  ];
 
-  const integrationStatus = {
-    clinic: { connected: true, lastSync: new Date(), alerts: 2 },
-    inventory: { connected: true, lastSync: new Date(), alerts: 1 },
-    finance: { connected: true, lastSync: new Date(), alerts: 0 },
-    hr: { connected: true, lastSync: new Date(), alerts: 3 }
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'active':
+        return <CheckCircle className="h-4 w-4 text-green-600" />;
+      case 'partial':
+        return <AlertCircle className="h-4 w-4 text-yellow-600" />;
+      default:
+        return <Settings className="h-4 w-4 text-gray-400" />;
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'active':
+        return <Badge className="bg-green-100 text-green-800">Active</Badge>;
+      case 'partial':
+        return <Badge className="bg-yellow-100 text-yellow-800">Partial</Badge>;
+      default:
+        return <Badge variant="outline">Pending</Badge>;
+    }
   };
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold">Cross-Departmental Integrations</h2>
-        <p className="text-muted-foreground">
-          Real-time integration status and automated workflow management
-        </p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold">Training System Integrations</h2>
+          <p className="text-muted-foreground">
+            Manage cross-system integrations and data synchronization
+          </p>
+        </div>
+        <Button>
+          <Network className="h-4 w-4 mr-2" />
+          Configure Integration
+        </Button>
       </div>
 
-      {/* Integration Status Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Integration Status Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <Stethoscope className="h-5 w-5 text-blue-500" />
-              <Badge variant={integrationStatus.clinic.connected ? 'default' : 'destructive'}>
-                {integrationStatus.clinic.connected ? 'Connected' : 'Disconnected'}
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <h3 className="font-medium mb-2">Clinic Integration</h3>
-            <div className="space-y-1 text-sm">
-              <p className="text-muted-foreground">
-                Last sync: {integrationStatus.clinic.lastSync.toLocaleTimeString()}
-              </p>
-              <p className="text-muted-foreground">
-                {integrationStatus.clinic.alerts} active alerts
-              </p>
-            </div>
-            <Button size="sm" variant="outline" className="mt-3 w-full">
-              View Details
-            </Button>
+          <CardContent className="p-6 text-center">
+            <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-2" />
+            <div className="text-2xl font-bold text-green-600">3</div>
+            <p className="text-sm text-muted-foreground">Active Integrations</p>
           </CardContent>
         </Card>
-
         <Card>
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <Package className="h-5 w-5 text-green-500" />
-              <Badge variant={integrationStatus.inventory.connected ? 'default' : 'destructive'}>
-                {integrationStatus.inventory.connected ? 'Connected' : 'Disconnected'}
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <h3 className="font-medium mb-2">Inventory Integration</h3>
-            <div className="space-y-1 text-sm">
-              <p className="text-muted-foreground">
-                Last sync: {integrationStatus.inventory.lastSync.toLocaleTimeString()}
-              </p>
-              <p className="text-muted-foreground">
-                {integrationStatus.inventory.alerts} active alerts
-              </p>
-            </div>
-            <Button size="sm" variant="outline" className="mt-3 w-full">
-              View Details
-            </Button>
+          <CardContent className="p-6 text-center">
+            <AlertCircle className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
+            <div className="text-2xl font-bold text-yellow-600">1</div>
+            <p className="text-sm text-muted-foreground">Partial Integrations</p>
           </CardContent>
         </Card>
-
         <Card>
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <DollarSign className="h-5 w-5 text-yellow-500" />
-              <Badge variant={integrationStatus.finance.connected ? 'default' : 'destructive'}>
-                {integrationStatus.finance.connected ? 'Connected' : 'Disconnected'}
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <h3 className="font-medium mb-2">Finance Integration</h3>
-            <div className="space-y-1 text-sm">
-              <p className="text-muted-foreground">
-                Last sync: {integrationStatus.finance.lastSync.toLocaleTimeString()}
-              </p>
-              <p className="text-muted-foreground">
-                {integrationStatus.finance.alerts} active alerts
-              </p>
-            </div>
-            <Button size="sm" variant="outline" className="mt-3 w-full">
-              View Details
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <Users className="h-5 w-5 text-purple-500" />
-              <Badge variant={integrationStatus.hr.connected ? 'default' : 'destructive'}>
-                {integrationStatus.hr.connected ? 'Connected' : 'Disconnected'}
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <h3 className="font-medium mb-2">HR Integration</h3>
-            <div className="space-y-1 text-sm">
-              <p className="text-muted-foreground">
-                Last sync: {integrationStatus.hr.lastSync.toLocaleTimeString()}
-              </p>
-              <p className="text-muted-foreground">
-                {integrationStatus.hr.alerts} active alerts
-              </p>
-            </div>
-            <Button size="sm" variant="outline" className="mt-3 w-full">
-              View Details
-            </Button>
+          <CardContent className="p-6 text-center">
+            <Settings className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+            <div className="text-2xl font-bold text-gray-600">2</div>
+            <p className="text-sm text-muted-foreground">Pending Setup</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Active Workflows */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Active Cross-Departmental Workflows</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {workflows.map((workflow) => (
-              <div key={workflow.id} className="p-4 border rounded-lg">
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h4 className="font-medium">
-                      {workflow.type.replace('_', ' ').toUpperCase()} - Horse #{workflow.horseId}
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      Created {workflow.createdAt.toLocaleDateString()}
-                    </p>
+      {/* Integration Cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {integrations.map((integration) => (
+          <Card key={integration.title} className="relative">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-lg ${integration.color}`}>
+                    <integration.icon className="h-5 w-5" />
                   </div>
-                  <Badge variant={workflow.status === 'completed' ? 'default' : 'secondary'}>
-                    {workflow.status}
-                  </Badge>
+                  <div>
+                    <CardTitle className="text-lg">{integration.title}</CardTitle>
+                    <p className="text-sm text-muted-foreground">{integration.description}</p>
+                  </div>
                 </div>
-
-                <div className="flex items-center justify-between mb-3">
-                  {workflow.steps.map((step, index) => (
-                    <div key={step.id} className="flex items-center">
-                      <div className="flex flex-col items-center">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
-                          step.status === 'completed' ? 'bg-green-500 text-white' :
-                          step.status === 'in_progress' ? 'bg-blue-500 text-white' :
-                          step.status === 'blocked' ? 'bg-red-500 text-white' :
-                          'bg-gray-200 text-gray-600'
-                        }`}>
-                          {step.status === 'completed' ? (
-                            <CheckCircle className="h-4 w-4" />
-                          ) : step.status === 'blocked' ? (
-                            <AlertTriangle className="h-4 w-4" />
-                          ) : step.status === 'in_progress' ? (
-                            <Clock className="h-4 w-4" />
-                          ) : (
-                            index + 1
-                          )}
-                        </div>
-                        <p className="text-xs mt-1 text-center max-w-20 truncate">
-                          {step.department}
-                        </p>
-                      </div>
-                      {index < workflow.steps.length - 1 && (
-                        <ArrowRight className="h-4 w-4 text-muted-foreground mx-2" />
-                      )}
-                    </div>
-                  ))}
+                <div className="flex items-center gap-2">
+                  {getStatusIcon(integration.status)}
+                  {getStatusBadge(integration.status)}
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {workflow.steps.map((step) => (
-                    <div key={step.id} className="p-3 bg-muted/30 rounded">
-                      <div className="flex justify-between items-start mb-2">
-                        <h5 className="text-sm font-medium">{step.title}</h5>
-                        <Badge variant="outline" className="text-xs">
-                          {step.status}
-                        </Badge>
-                      </div>
-                      <p className="text-xs text-muted-foreground mb-2">
-                        {step.department}
-                      </p>
-                      {step.assignedTo && (
-                        <p className="text-xs">
-                          <span className="text-muted-foreground">Assigned: </span>
-                          {step.assignedTo}
-                        </p>
-                      )}
-                      <p className="text-xs">
-                        <span className="text-muted-foreground">Est. Time: </span>
-                        {step.estimatedTime}
-                      </p>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <p className="text-sm font-medium mb-2">Available Features:</p>
+                <div className="space-y-1">
+                  {integration.features.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-2 text-sm">
+                      <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                      <span>{feature}</span>
                     </div>
                   ))}
                 </div>
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              
+              <div className="flex gap-2">
+                {integration.status === 'active' ? (
+                  <>
+                    <Button variant="outline" size="sm">Configure</Button>
+                    <Button variant="outline" size="sm">View Logs</Button>
+                  </>
+                ) : integration.status === 'partial' ? (
+                  <>
+                    <Button size="sm">Complete Setup</Button>
+                    <Button variant="outline" size="sm">Configure</Button>
+                  </>
+                ) : (
+                  <Button size="sm">Enable Integration</Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-      {/* Integration Alerts */}
+      {/* Data Flow Overview */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-orange-500" />
-            Integration Alerts
+            <Network className="h-5 w-5" />
+            Data Flow Overview
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            <div className="p-3 border-l-4 border-orange-500 bg-orange-50">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h4 className="font-medium text-orange-800">Equipment Allocation Required</h4>
-                  <p className="text-sm text-orange-700">
-                    Training program "Advanced Dressage" needs specialized equipment allocation from Inventory
-                  </p>
-                </div>
-                <Button size="sm" variant="outline">
-                  Resolve
-                </Button>
-              </div>
+          <div className="space-y-4">
+            <div className="p-4 bg-blue-50 rounded-lg">
+              <h4 className="font-medium text-blue-900 mb-2">Real-time Synchronization</h4>
+              <p className="text-sm text-blue-800">
+                Training session data automatically syncs with horse health records, 
+                client progress reports, and billing systems in real-time.
+              </p>
             </div>
-            
-            <div className="p-3 border-l-4 border-blue-500 bg-blue-50">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h4 className="font-medium text-blue-800">Health Clearance Pending</h4>
-                  <p className="text-sm text-blue-700">
-                    Horse #H003 requires veterinary clearance before starting training program
-                  </p>
-                </div>
-                <Button size="sm" variant="outline">
-                  Check Status
-                </Button>
-              </div>
+            <div className="p-4 bg-green-50 rounded-lg">
+              <h4 className="font-medium text-green-900 mb-2">Cross-Module Analytics</h4>
+              <p className="text-sm text-green-800">
+                Integrated data enables comprehensive reporting across training performance, 
+                financial metrics, and operational efficiency.
+              </p>
             </div>
-            
-            <div className="p-3 border-l-4 border-green-500 bg-green-50">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h4 className="font-medium text-green-800">Payment Confirmation</h4>
-                  <p className="text-sm text-green-700">
-                    Training fees for January programs have been successfully processed
-                  </p>
-                </div>
-                <Button size="sm" variant="outline">
-                  View Details
-                </Button>
-              </div>
+            <div className="p-4 bg-purple-50 rounded-lg">
+              <h4 className="font-medium text-purple-900 mb-2">Automated Workflows</h4>
+              <p className="text-sm text-purple-800">
+                Trigger automated actions like invoice generation, progress notifications, 
+                and facility booking confirmations based on training activities.
+              </p>
             </div>
           </div>
         </CardContent>
