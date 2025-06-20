@@ -215,6 +215,99 @@ export type Database = {
           },
         ]
       }
+      budget_items: {
+        Row: {
+          account_id: string | null
+          budget_id: string
+          budgeted_amount: number
+          category: string
+          created_at: string | null
+          id: string
+          notes: string | null
+          spent_amount: number | null
+        }
+        Insert: {
+          account_id?: string | null
+          budget_id: string
+          budgeted_amount?: number
+          category: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          spent_amount?: number | null
+        }
+        Update: {
+          account_id?: string | null
+          budget_id?: string
+          budgeted_amount?: number
+          category?: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          spent_amount?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_budget_items_account"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "financial_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_budget_items_budget"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "budgets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      budgets: {
+        Row: {
+          budget_period: string
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          end_date: string
+          id: string
+          name: string
+          start_date: string
+          status: string
+          tenant_id: string
+          total_amount: number
+          updated_at: string | null
+        }
+        Insert: {
+          budget_period: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          end_date: string
+          id?: string
+          name: string
+          start_date: string
+          status?: string
+          tenant_id: string
+          total_amount?: number
+          updated_at?: string | null
+        }
+        Update: {
+          budget_period?: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          end_date?: string
+          id?: string
+          name?: string
+          start_date?: string
+          status?: string
+          tenant_id?: string
+          total_amount?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       clients: {
         Row: {
           address: Json | null
@@ -443,6 +536,119 @@ export type Database = {
           },
         ]
       }
+      expense_categories: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          parent_category_id: string | null
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          parent_category_id?: string | null
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          parent_category_id?: string | null
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_expense_categories_parent"
+            columns: ["parent_category_id"]
+            isOneToOne: false
+            referencedRelation: "expense_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expenses: {
+        Row: {
+          amount: number
+          category_id: string | null
+          created_at: string | null
+          created_by: string | null
+          date: string
+          description: string
+          expense_number: string | null
+          id: string
+          payment_method_id: string | null
+          receipt_url: string | null
+          reimbursable: boolean | null
+          status: string
+          tax_amount: number | null
+          tenant_id: string
+          updated_at: string | null
+          vendor: string | null
+        }
+        Insert: {
+          amount: number
+          category_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          date?: string
+          description: string
+          expense_number?: string | null
+          id?: string
+          payment_method_id?: string | null
+          receipt_url?: string | null
+          reimbursable?: boolean | null
+          status?: string
+          tax_amount?: number | null
+          tenant_id: string
+          updated_at?: string | null
+          vendor?: string | null
+        }
+        Update: {
+          amount?: number
+          category_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          date?: string
+          description?: string
+          expense_number?: string | null
+          id?: string
+          payment_method_id?: string | null
+          receipt_url?: string | null
+          reimbursable?: boolean | null
+          status?: string
+          tax_amount?: number | null
+          tenant_id?: string
+          updated_at?: string | null
+          vendor?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_expenses_category"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "expense_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_expenses_payment_method"
+            columns: ["payment_method_id"]
+            isOneToOne: false
+            referencedRelation: "payment_methods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       financial_accounts: {
         Row: {
           account_code: string
@@ -502,6 +708,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      financial_transactions: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string
+          id: string
+          reference_number: string | null
+          source_document_id: string | null
+          source_document_type: string | null
+          status: string
+          tenant_id: string
+          total_amount: number
+          transaction_date: string
+          transaction_type: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description: string
+          id?: string
+          reference_number?: string | null
+          source_document_id?: string | null
+          source_document_type?: string | null
+          status?: string
+          tenant_id: string
+          total_amount: number
+          transaction_date?: string
+          transaction_type?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string
+          id?: string
+          reference_number?: string | null
+          source_document_id?: string | null
+          source_document_type?: string | null
+          status?: string
+          tenant_id?: string
+          total_amount?: number
+          transaction_date?: string
+          transaction_type?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       health_records: {
         Row: {
@@ -1585,6 +1839,111 @@ export type Database = {
           },
         ]
       }
+      payment_methods: {
+        Row: {
+          account_details: Json | null
+          created_at: string | null
+          created_by: string | null
+          id: string
+          is_active: boolean | null
+          is_default: boolean | null
+          name: string
+          tenant_id: string
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          account_details?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_default?: boolean | null
+          name: string
+          tenant_id: string
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          account_details?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_default?: boolean | null
+          name?: string
+          tenant_id?: string
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string | null
+          created_by: string | null
+          gateway_response: Json | null
+          id: string
+          invoice_id: string | null
+          notes: string | null
+          payment_date: string
+          payment_method_id: string | null
+          reference_number: string | null
+          status: string
+          tenant_id: string
+          transaction_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          created_by?: string | null
+          gateway_response?: Json | null
+          id?: string
+          invoice_id?: string | null
+          notes?: string | null
+          payment_date?: string
+          payment_method_id?: string | null
+          reference_number?: string | null
+          status?: string
+          tenant_id: string
+          transaction_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          created_by?: string | null
+          gateway_response?: Json | null
+          id?: string
+          invoice_id?: string | null
+          notes?: string | null
+          payment_date?: string
+          payment_method_id?: string | null
+          reference_number?: string | null
+          status?: string
+          tenant_id?: string
+          transaction_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_payments_invoice"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_payments_method"
+            columns: ["payment_method_id"]
+            isOneToOne: false
+            referencedRelation: "payment_methods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       performance_records: {
         Row: {
           attachments: Json | null
@@ -2027,6 +2386,71 @@ export type Database = {
           },
         ]
       }
+      recurring_transactions: {
+        Row: {
+          account_id: string | null
+          amount: number
+          auto_generate: boolean | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          end_date: string | null
+          frequency: string
+          id: string
+          name: string
+          next_occurrence: string | null
+          start_date: string
+          status: string
+          tenant_id: string
+          transaction_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          account_id?: string | null
+          amount: number
+          auto_generate?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          end_date?: string | null
+          frequency: string
+          id?: string
+          name: string
+          next_occurrence?: string | null
+          start_date: string
+          status?: string
+          tenant_id: string
+          transaction_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          account_id?: string | null
+          amount?: number
+          auto_generate?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          end_date?: string | null
+          frequency?: string
+          id?: string
+          name?: string
+          next_occurrence?: string | null
+          start_date?: string
+          status?: string
+          tenant_id?: string
+          transaction_type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_recurring_account"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "financial_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       report_templates: {
         Row: {
           created_at: string | null
@@ -2403,6 +2827,51 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transaction_entries: {
+        Row: {
+          account_id: string
+          created_at: string | null
+          credit_amount: number | null
+          debit_amount: number | null
+          description: string | null
+          id: string
+          transaction_id: string
+        }
+        Insert: {
+          account_id: string
+          created_at?: string | null
+          credit_amount?: number | null
+          debit_amount?: number | null
+          description?: string | null
+          id?: string
+          transaction_id: string
+        }
+        Update: {
+          account_id?: string
+          created_at?: string | null
+          credit_amount?: number | null
+          debit_amount?: number | null
+          description?: string | null
+          id?: string
+          transaction_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_entries_account"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "financial_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_entries_transaction"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "financial_transactions"
             referencedColumns: ["id"]
           },
         ]
