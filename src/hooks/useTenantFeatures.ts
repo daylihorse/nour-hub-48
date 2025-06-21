@@ -1,5 +1,6 @@
 
 import { useMemo } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 
 export interface FeatureDefinition {
   id: string;
@@ -28,29 +29,93 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     category: 'core',
     requiredSubscription: ['basic', 'professional', 'premium', 'enterprise']
   },
+  laboratory: { 
+    id: 'laboratory', 
+    name: 'Laboratory Services', 
+    description: 'Lab testing, sample management, and diagnostic services', 
+    enabled: false, 
+    category: 'medical',
+    requiredSubscription: ['professional', 'premium', 'enterprise']
+  },
   clinic: { 
     id: 'clinic', 
     name: 'Veterinary Clinic', 
     description: 'Medical records and treatments', 
-    enabled: true, 
+    enabled: false, 
     category: 'medical',
     requiredSubscription: ['professional', 'premium', 'enterprise']
+  },
+  pharmacy: { 
+    id: 'pharmacy', 
+    name: 'Pharmacy Services', 
+    description: 'Medication management and pharmaceutical operations', 
+    enabled: false, 
+    category: 'medical',
+    requiredSubscription: ['professional', 'premium', 'enterprise']
+  },
+  marketplace: { 
+    id: 'marketplace', 
+    name: 'Marketplace', 
+    description: 'Buy and sell horses, equipment, and services', 
+    enabled: false, 
+    category: 'commercial',
+    requiredSubscription: ['premium', 'enterprise']
   },
   finance: { 
     id: 'finance', 
     name: 'Finance Management', 
     description: 'Financial tracking and reporting', 
-    enabled: true, 
+    enabled: false, 
     category: 'business',
     requiredSubscription: ['professional', 'premium', 'enterprise']
+  },
+  hr: { 
+    id: 'hr', 
+    name: 'HR Department', 
+    description: 'Human resources and employee management', 
+    enabled: false, 
+    category: 'business',
+    requiredSubscription: ['premium', 'enterprise']
   },
   inventory: { 
     id: 'inventory', 
     name: 'Inventory Management', 
     description: 'Stock and supply management', 
-    enabled: true, 
+    enabled: false, 
     category: 'operations',
     requiredSubscription: ['premium', 'enterprise']
+  },
+  training: { 
+    id: 'training', 
+    name: 'Training Center', 
+    description: 'Training programs and tracking', 
+    enabled: false, 
+    category: 'operations',
+    requiredSubscription: ['premium', 'enterprise']
+  },
+  rooms: { 
+    id: 'rooms', 
+    name: 'Stable Rooms', 
+    description: 'Room and facility management', 
+    enabled: false, 
+    category: 'facilities',
+    requiredSubscription: ['basic', 'professional', 'premium', 'enterprise']
+  },
+  maintenance: { 
+    id: 'maintenance', 
+    name: 'Maintenance', 
+    description: 'Equipment and facility maintenance tracking', 
+    enabled: false, 
+    category: 'facilities',
+    requiredSubscription: ['professional', 'premium', 'enterprise']
+  },
+  messages: { 
+    id: 'messages', 
+    name: 'Messages', 
+    description: 'Internal messaging and communication', 
+    enabled: false, 
+    category: 'communication',
+    requiredSubscription: ['basic', 'professional', 'premium', 'enterprise']
   },
   clients: { 
     id: 'clients', 
@@ -60,45 +125,50 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     category: 'business',
     requiredSubscription: ['basic', 'professional', 'premium', 'enterprise']
   },
-  training: { 
-    id: 'training', 
-    name: 'Training Center', 
-    description: 'Training programs and tracking', 
-    enabled: true, 
-    category: 'operations',
-    requiredSubscription: ['premium', 'enterprise']
-  },
   analytics: { 
     id: 'analytics', 
     name: 'Analytics & Reports', 
     description: 'Business intelligence and reporting', 
-    enabled: true, 
+    enabled: false, 
     category: 'insights',
     requiredSubscription: ['premium', 'enterprise']
   },
-  scheduling: { 
-    id: 'scheduling', 
-    name: 'Scheduling', 
-    description: 'Appointment and calendar management', 
+  paddocks: { 
+    id: 'paddocks', 
+    name: 'Paddock Management', 
+    description: 'Paddock and pasture management', 
     enabled: false, 
-    category: 'operations',
-    requiredSubscription: ['enterprise']
+    category: 'facilities',
+    requiredSubscription: ['basic', 'professional', 'premium', 'enterprise']
   }
 };
 
 export const useTenantFeatures = () => {
-  const features: Feature[] = useMemo(() => [
-    { id: 'horses', name: 'Horse Management', enabled: true, category: 'core' },
-    { id: 'clinic', name: 'Veterinary Clinic', enabled: true, category: 'medical' },
-    { id: 'finance', name: 'Finance Management', enabled: true, category: 'business' },
-    { id: 'inventory', name: 'Inventory Management', enabled: true, category: 'operations' },
-    { id: 'clients', name: 'Client Management', enabled: true, category: 'business' },
-    { id: 'training', name: 'Training Center', enabled: true, category: 'operations' },
-    { id: 'analytics', name: 'Analytics & Reports', enabled: true, category: 'insights' },
-    { id: 'scheduling', name: 'Scheduling', enabled: false, category: 'operations' }
-  ], []);
+  const { currentTenant } = useAuth();
 
-  const subscriptionTier: SubscriptionTier = 'premium';
+  const features: Feature[] = useMemo(() => {
+    // If we have a tenant with settings, use its feature configuration
+    if (currentTenant?.settings?.features) {
+      const tenantFeatures = currentTenant.settings.features;
+      
+      return Object.entries(FEATURE_MATRIX).map(([key, definition]) => ({
+        id: key,
+        name: definition.name,
+        enabled: tenantFeatures[key as keyof typeof tenantFeatures] ?? false,
+        category: definition.category
+      }));
+    }
+
+    // Fallback to basic configuration for demo mode
+    return Object.values(FEATURE_MATRIX).map(definition => ({
+      id: definition.id,
+      name: definition.name,
+      enabled: definition.enabled,
+      category: definition.category
+    }));
+  }, [currentTenant]);
+
+  const subscriptionTier: SubscriptionTier = currentTenant?.subscriptionTier || 'basic';
 
   const getEnabledFeatures = () => features.filter(f => f.enabled);
   const getAvailableFeatures = () => features;
