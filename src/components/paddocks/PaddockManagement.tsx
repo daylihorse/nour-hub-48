@@ -1,306 +1,207 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Filter, Plus, MapPin, Edit2, Trash2, Users, Calendar } from "lucide-react";
-import { usePaddockData } from "@/hooks/usePaddockData";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
-import PaddockHorseAssignment from "./PaddockHorseAssignment";
-import PaddockAnalytics from "./PaddockAnalytics";
-import PaddockEnvironmentalMonitoring from "./PaddockEnvironmentalMonitoring";
-import PaddockViewSelector, { ViewMode, GridSize } from "./components/PaddockViewSelector";
-import PaddockGridView from "./components/PaddockGridView";
-import PaddockListView from "./components/PaddockListView";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { usePaddockService } from "@/hooks/usePaddockService";
+import { Paddock } from "@/types/paddocks";
 import PaddockTableView from "./components/PaddockTableView";
-import AddPaddockDialog from "./components/AddPaddockDialog";
-import PaddockDetailsDialog from "./components/PaddockDetailsDialog";
+import PaddockListView from "./components/PaddockListView";
 import DeleteConfirmationDialog from "./components/DeleteConfirmationDialog";
-import EditPaddockDialog from "./components/EditPaddockDialog";
-import AssignHorseDialog from "./components/AssignHorseDialog";
+import { Plus, Grid, List, Search } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
-/**
- * Component: PaddockManagement
- * 
- * PURPOSE:
- * Comprehensive paddock management system providing centralized control for
- * all paddock-related operations including horse assignments, maintenance scheduling,
- * rotation planning, environmental monitoring, and performance analytics.
- * 
- * ARCHITECTURAL PATTERN:
- * - Tab-based navigation for different management aspects
- * - Centralized data management through custom hooks
- * - Modular component architecture for scalability
- * - Responsive design with filtering and search capabilities
- * 
- * DESIGN PRINCIPLES:
- * - Single-page application approach with tabbed interface
- * - Real-time filtering and search functionality
- * - Visual status indicators and type categorization
- * - Consistent UI patterns across all management areas
- * 
- * OPERATIONAL CONTEXT:
- * This component serves as the main interface for paddock operations:
- * - Daily paddock status monitoring and management
- * - Horse assignment and movement coordination
- * - Maintenance task scheduling and tracking
- * - Environmental condition monitoring and control
- * - Rotation planning for optimal pasture management
- * - Performance analytics and reporting
- * 
- * MANAGEMENT FEATURES:
- * The system provides comprehensive paddock lifecycle management:
- * - Real-time paddock status and availability tracking
- * - Multi-criteria filtering (status, type, occupancy)
- * - Quick action buttons for common operations
- * - Visual indicators for immediate status recognition
- * 
- * INTEGRATION CONTEXT:
- * Integrates with housing service, horse management, and maintenance systems.
- * Supports both manual operations and automated management workflows
- * through environmental monitoring and scheduling systems.
- * 
- * ACCESSIBILITY FEATURES:
- * - Keyboard navigation support for all interactive elements
- * - Screen reader friendly with proper ARIA labels
- * - High contrast design for status indicators
- * - Responsive layout for various screen sizes and devices
- */
 const PaddockManagement = () => {
-  /** Hook providing paddock data and management operations */
-  const { paddocks, deletePaddock, createPaddock, updatePaddock, assignHorseToPaddock } = usePaddockData();
-  const { toast } = useToast();
-  
-  /** Search term state for filtering paddocks by name or number */
+  const [viewMode, setViewMode] = useState<'table' | 'list'>('table');
   const [searchTerm, setSearchTerm] = useState("");
-  
-  /** Status filter state for filtering by paddock availability status */
-  const [statusFilter, setStatusFilter] = useState("all");
-  
-  /** Type filter state for filtering by paddock functional type */
-  const [typeFilter, setTypeFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingPaddock, setEditingPaddock] = useState<Paddock | null>(null);
+  const [deletingPaddock, setDeletingPaddock] = useState<Paddock | null>(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    number: "",
+    type: "grazing",
+    status: "available",
+    capacity: 1,
+    length: 0,
+    width: 0,
+    section: "",
+    features: [] as string[]
+  });
 
-  /** View mode and grid size states */
-  const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [gridSize, setGridSize] = useState<GridSize>(3);
+  const {
+    usePaddocks,
+    createPaddock,
+    updatePaddock,
+    deletePaddock,
+    isCreatingPaddock,
+    isUpdatingPaddock,
+    isDeletingPaddock
+  } = usePaddockService();
 
-  /** Dialog states */
-  const [showAddDialog, setShowAddDialog] = useState(false);
-  const [showDetailsDialog, setShowDetailsDialog] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [showEditDialog, setShowEditDialog] = useState(false);
-  const [showAssignHorseDialog, setShowAssignHorseDialog] = useState(false);
-  const [selectedPaddock, setSelectedPaddock] = useState<any>(null);
+  const { data: paddocks = [], isLoading } = usePaddocks();
 
-  /**
-   * Determines the appropriate color scheme for paddock status badges.
-   * 
-   * STATUS COLOR MAPPING:
-   * - occupied: Green for paddocks currently housing horses
-   * - available: Blue for ready-to-use empty paddocks
-   * - maintenance: Orange for paddocks under maintenance
-   * - reserved: Purple for paddocks reserved for specific use
-   * - default: Gray for undefined or transitional states
-   * 
-   * @param status The current paddock status
-   * @returns CSS classes for badge styling
-   */
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'occupied': return 'bg-green-500 text-white';
-      case 'available': return 'bg-blue-500 text-white';
-      case 'maintenance': return 'bg-orange-500 text-white';
-      case 'reserved': return 'bg-purple-500 text-white';
-      default: return 'bg-gray-500 text-white';
-    }
-  };
-
-  /**
-   * Determines the appropriate color scheme for paddock type badges.
-   * 
-   * TYPE COLOR MAPPING:
-   * - grazing: Green for pasture and feeding areas
-   * - exercise: Blue for training and exercise paddocks
-   * - turnout: Yellow for general horse turnout areas
-   * - breeding: Pink for specialized breeding paddocks
-   * - quarantine: Red for isolation and quarantine areas
-   * - rehabilitation: Purple for medical recovery areas
-   * - default: Gray for unspecified or general purpose paddocks
-   * 
-   * @param type The paddock functional type
-   * @returns CSS classes for badge styling
-   */
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'grazing': return 'bg-green-100 text-green-800';
-      case 'exercise': return 'bg-blue-100 text-blue-800';
-      case 'turnout': return 'bg-yellow-100 text-yellow-800';
-      case 'breeding': return 'bg-pink-100 text-pink-800';
-      case 'quarantine': return 'bg-red-100 text-red-800';
-      case 'rehabilitation': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  /**
-   * Filters paddocks based on search term and selected filter criteria.
-   * 
-   * FILTERING LOGIC:
-   * - Text search: Matches paddock name or number (case-insensitive)
-   * - Status filter: Matches exact status or 'all' for no filtering
-   * - Type filter: Matches exact type or 'all' for no filtering
-   * 
-   * @returns Array of paddocks matching all filter criteria
-   */
+  // Filter paddocks based on search and filters
   const filteredPaddocks = paddocks.filter(paddock => {
     const matchesSearch = paddock.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          paddock.number.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || paddock.status === statusFilter;
     const matchesType = typeFilter === "all" || paddock.type === typeFilter;
+    
     return matchesSearch && matchesStatus && matchesType;
   });
 
-  /** Handle add new paddock */
-  const handleAddPaddock = (paddockData: any) => {
-    const newPaddock = createPaddock(paddockData);
-    if (newPaddock) {
-      toast({
-        title: "Success",
-        description: `Paddock ${newPaddock.name} created successfully`,
-      });
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'available': return 'bg-green-100 text-green-800 border-green-200';
+      case 'occupied': return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'maintenance': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'reserved': return 'bg-purple-100 text-purple-800 border-purple-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
-  /** Handle view paddock details */
-  const handleViewDetails = (paddock: any) => {
-    setSelectedPaddock(paddock);
-    setShowDetailsDialog(true);
-  };
-
-  /** Handle edit paddock */
-  const handleEditPaddock = (paddock: any) => {
-    setSelectedPaddock(paddock);
-    setShowEditDialog(true);
-  };
-
-  /** Handle delete paddock */
-  const handleDeletePaddock = (paddock: any) => {
-    setSelectedPaddock(paddock);
-    setShowDeleteDialog(true);
-  };
-
-  /** Handle assign horse to paddock */
-  const handleAssignHorse = (paddock: any) => {
-    setSelectedPaddock(paddock);
-    setShowAssignHorseDialog(true);
-  };
-
-  /** Handle delete confirmation */
-  const handleDeleteConfirm = () => {
-    if (selectedPaddock) {
-      deletePaddock(selectedPaddock.id);
-      toast({
-        title: "Paddock Deleted",
-        description: `${selectedPaddock.name} has been removed`,
-        variant: "destructive",
-      });
-      setShowDeleteDialog(false);
-      setSelectedPaddock(null);
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'grazing': return 'text-green-700 border-green-300';
+      case 'exercise': return 'text-blue-700 border-blue-300';
+      case 'breeding': return 'text-purple-700 border-purple-300';
+      case 'quarantine': return 'text-red-700 border-red-300';
+      case 'rehabilitation': return 'text-orange-700 border-orange-300';
+      default: return 'text-gray-700 border-gray-300';
     }
   };
 
-  /** Handle edit save */
-  const handleEditSave = (updatedPaddock: any) => {
-    if (updatePaddock(updatedPaddock.id, updatedPaddock)) {
-      toast({
-        title: "Success",
-        description: `Paddock ${updatedPaddock.name} updated successfully`,
-      });
-      setShowEditDialog(false);
-      setSelectedPaddock(null);
-    }
-  };
-
-  /** Handle horse assignment */
-  const handleHorseAssignment = (horseId: string, horseName: string, assignmentType: string, reason?: string) => {
-    if (selectedPaddock && assignHorseToPaddock(horseId, horseName, selectedPaddock.id, reason)) {
-      toast({
-        title: "Horse Assigned",
-        description: `${horseName} has been assigned to ${selectedPaddock.name}`,
-      });
-      setShowAssignHorseDialog(false);
-      setSelectedPaddock(null);
-    }
-  };
-
-  /** Render the appropriate view based on viewMode */
-  const renderPaddockView = () => {
-    const viewProps = {
-      paddocks: filteredPaddocks,
-      onViewDetails: handleViewDetails,
-      onEditPaddock: handleEditPaddock,
-      onDeletePaddock: handleDeletePaddock,
-      onAssignHorse: handleAssignHorse,
-      getStatusColor,
-      getTypeColor,
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const paddockData: Partial<Paddock> = {
+      name: formData.name,
+      number: formData.number,
+      type: formData.type as any,
+      status: formData.status as any,
+      capacity: formData.capacity,
+      currentOccupancy: 0,
+      size: {
+        length: formData.length,
+        width: formData.width,
+        unit: 'meters'
+      },
+      location: {
+        section: formData.section
+      },
+      features: formData.features
     };
 
-    switch (viewMode) {
-      case "grid":
-        return <PaddockGridView {...viewProps} gridSize={gridSize} />;
-      case "list":
-        return <PaddockListView {...viewProps} />;
-      case "table":
-        return <PaddockTableView {...viewProps} />;
-      default:
-        return <PaddockGridView {...viewProps} gridSize={gridSize} />;
+    if (editingPaddock) {
+      updatePaddock({ id: editingPaddock.id, data: paddockData });
+      setEditingPaddock(null);
+    } else {
+      createPaddock(paddockData);
+    }
+    
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      number: "",
+      type: "grazing",
+      status: "available",
+      capacity: 1,
+      length: 0,
+      width: 0,
+      section: "",
+      features: []
+    });
+    setShowAddForm(false);
+  };
+
+  const handleEdit = (paddock: Paddock) => {
+    setFormData({
+      name: paddock.name,
+      number: paddock.number,
+      type: paddock.type,
+      status: paddock.status,
+      capacity: paddock.capacity,
+      length: paddock.size.length,
+      width: paddock.size.width,
+      section: paddock.location.section,
+      features: paddock.features || []
+    });
+    setEditingPaddock(paddock);
+    setShowAddForm(true);
+  };
+
+  const handleDelete = (paddock: Paddock) => {
+    setDeletingPaddock(paddock);
+  };
+
+  const confirmDelete = () => {
+    if (deletingPaddock) {
+      deletePaddock(deletingPaddock.id);
+      setDeletingPaddock(null);
     }
   };
+
+  const handleViewDetails = (paddock: Paddock) => {
+    toast({
+      title: "Paddock Details",
+      description: `Viewing details for ${paddock.name}`,
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-lg">Loading paddocks...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Paddock Management</h2>
-          <p className="text-muted-foreground">Manage pastures, exercise areas, and turnout paddocks</p>
+          <p className="text-muted-foreground">Manage your paddocks and their assignments</p>
         </div>
-        <Button 
-          className="flex items-center gap-2"
-          onClick={() => setShowAddDialog(true)}
-        >
-          <Plus className="h-4 w-4" />
-          Add New Paddock
+        <Button onClick={() => setShowAddForm(true)} disabled={isCreatingPaddock}>
+          <Plus className="h-4 w-4 mr-2" />
+          Add Paddock
         </Button>
       </div>
 
-      <Tabs defaultValue="paddocks">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="paddocks">Paddocks</TabsTrigger>
-          <TabsTrigger value="assignments">Horse Assignments</TabsTrigger>
-          <TabsTrigger value="environmental">Environmental</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="paddocks">
-          {/* Filters and View Controls */}
-          <Card className="mb-6">
+      {/* Filters */}
+      <Card>
         <CardContent className="p-4">
-              <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-                <div className="flex flex-col sm:flex-row gap-4 flex-1">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                placeholder="Search paddocks..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
+          <div className="flex flex-wrap gap-4 items-center">
+            <div className="flex-1 min-w-[200px]">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Search paddocks..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-[150px]">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
@@ -312,7 +213,7 @@ const PaddockManagement = () => {
               </SelectContent>
             </Select>
             <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-[150px]">
                 <SelectValue placeholder="Type" />
               </SelectTrigger>
               <SelectContent>
@@ -325,88 +226,164 @@ const PaddockManagement = () => {
                 <SelectItem value="rehabilitation">Rehabilitation</SelectItem>
               </SelectContent>
             </Select>
+            <div className="flex gap-1">
+              <Button
+                variant={viewMode === 'table' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('table')}
+              >
+                <Grid className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('list')}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
-                
-                <PaddockViewSelector
-                  currentView={viewMode}
-                  onViewChange={setViewMode}
-                  gridSize={gridSize}
-                  onGridSizeChange={setGridSize}
-                />
-              </div>
-            </CardContent>
-          </Card>
+        </CardContent>
+      </Card>
 
-          {/* Paddock Views */}
-          {filteredPaddocks.length > 0 ? (
-            renderPaddockView()
-          ) : (
+      {/* Add/Edit Form */}
+      {showAddForm && (
         <Card>
-          <CardContent className="p-8 text-center">
-            <p className="text-muted-foreground">No paddocks found matching your criteria.</p>
+          <CardHeader>
+            <CardTitle>{editingPaddock ? 'Edit Paddock' : 'Add New Paddock'}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Paddock Name</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="number">Paddock Number</Label>
+                  <Input
+                    id="number"
+                    value={formData.number}
+                    onChange={(e) => setFormData({ ...formData, number: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="type">Type</Label>
+                  <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="grazing">Grazing</SelectItem>
+                      <SelectItem value="exercise">Exercise</SelectItem>
+                      <SelectItem value="turnout">Turnout</SelectItem>
+                      <SelectItem value="breeding">Breeding</SelectItem>
+                      <SelectItem value="quarantine">Quarantine</SelectItem>
+                      <SelectItem value="rehabilitation">Rehabilitation</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="status">Status</Label>
+                  <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="available">Available</SelectItem>
+                      <SelectItem value="occupied">Occupied</SelectItem>
+                      <SelectItem value="maintenance">Maintenance</SelectItem>
+                      <SelectItem value="reserved">Reserved</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="capacity">Capacity</Label>
+                  <Input
+                    id="capacity"
+                    type="number"
+                    min="1"
+                    value={formData.capacity}
+                    onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="section">Location Section</Label>
+                  <Input
+                    id="section"
+                    value={formData.section}
+                    onChange={(e) => setFormData({ ...formData, section: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="length">Length (meters)</Label>
+                  <Input
+                    id="length"
+                    type="number"
+                    min="0"
+                    value={formData.length}
+                    onChange={(e) => setFormData({ ...formData, length: parseFloat(e.target.value) || 0 })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="width">Width (meters)</Label>
+                  <Input
+                    id="width"
+                    type="number"
+                    min="0"
+                    value={formData.width}
+                    onChange={(e) => setFormData({ ...formData, width: parseFloat(e.target.value) || 0 })}
+                  />
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button type="submit" disabled={isCreatingPaddock || isUpdatingPaddock}>
+                  {editingPaddock ? 'Update Paddock' : 'Create Paddock'}
+                </Button>
+                <Button type="button" variant="outline" onClick={resetForm}>
+                  Cancel
+                </Button>
+              </div>
+            </form>
           </CardContent>
         </Card>
       )}
-        </TabsContent>
-        
-        <TabsContent value="assignments">
-          <PaddockHorseAssignment />
-        </TabsContent>
-        
-        <TabsContent value="environmental">
-          <PaddockEnvironmentalMonitoring />
-        </TabsContent>
-        
-        <TabsContent value="analytics">
-          <PaddockAnalytics />
-        </TabsContent>
-      </Tabs>
 
-      {/* Dialogs */}
-      <AddPaddockDialog
-        isOpen={showAddDialog}
-        onClose={() => setShowAddDialog(false)}
-        onAddPaddock={handleAddPaddock}
-      />
+      {/* Paddocks List */}
+      {viewMode === 'table' ? (
+        <PaddockTableView
+          paddocks={filteredPaddocks}
+          onViewDetails={handleViewDetails}
+          onEditPaddock={handleEdit}
+          onDeletePaddock={handleDelete}
+          getStatusColor={getStatusColor}
+          getTypeColor={getTypeColor}
+        />
+      ) : (
+        <PaddockListView
+          paddocks={filteredPaddocks}
+          onViewDetails={handleViewDetails}
+          onEditPaddock={handleEdit}
+          onDeletePaddock={handleDelete}
+          getStatusColor={getStatusColor}
+          getTypeColor={getTypeColor}
+        />
+      )}
 
-      <PaddockDetailsDialog
-        paddock={selectedPaddock}
-        isOpen={showDetailsDialog}
-        onClose={() => {
-          setShowDetailsDialog(false);
-          setSelectedPaddock(null);
-        }}
-        onEdit={handleEditPaddock}
-        getStatusColor={getStatusColor}
-        getTypeColor={getTypeColor}
-      />
-
-      <EditPaddockDialog
-        paddock={selectedPaddock}
-        isOpen={showEditDialog}
-        onClose={() => {
-          setShowEditDialog(false);
-          setSelectedPaddock(null);
-        }}
-        onSave={handleEditSave}
-      />
-
+      {/* Delete Confirmation Dialog */}
       <DeleteConfirmationDialog
-        open={showDeleteDialog}
-        onOpenChange={(open) => !open && setShowDeleteDialog(false)}
-        onConfirm={handleDeleteConfirm}
-        recordId={selectedPaddock?.id}
+        open={!!deletingPaddock}
+        onOpenChange={(open) => !open && setDeletingPaddock(null)}
+        onConfirm={confirmDelete}
+        recordId={deletingPaddock?.id}
         recordType="paddock"
-      />
-
-      <AssignHorseDialog
-        isOpen={showAssignHorseDialog}
-        onClose={() => {
-          setShowAssignHorseDialog(false);
-          setSelectedPaddock(null);
-        }}
-        paddock={selectedPaddock}
-        onAssign={handleHorseAssignment}
       />
     </div>
   );
