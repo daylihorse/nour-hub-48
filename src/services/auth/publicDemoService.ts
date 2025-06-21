@@ -15,8 +15,8 @@ export const publicDemoService = {
       updated_at: new Date().toISOString(),
       tenants: [{
         id: 'public-tenant-user-id',
-        tenant_id: 'public-tenant-id',
-        tenantId: 'public-tenant-id',
+        tenant_id: '550e8400-e29b-41d4-a716-446655440001',
+        tenantId: '550e8400-e29b-41d4-a716-446655440001',
         user_id: 'public-user-id',
         role: 'owner',
         permissions: ['*'],
@@ -28,8 +28,8 @@ export const publicDemoService = {
 
   createPublicTenant(): Tenant {
     return {
-      id: 'public-tenant-id',
-      name: 'Demo Stable',
+      id: '550e8400-e29b-41d4-a716-446655440001',
+      name: 'Elite Equestrian Center',
       type: 'stable',
       subscription_tier: 'premium',
       subscriptionTier: 'premium',
@@ -62,32 +62,41 @@ export const publicDemoService = {
   getDemoAccounts() {
     return [
       {
-        tenantName: 'Green Valley Stables',
+        tenantName: 'Elite Equestrian Center',
         tenantType: 'stable',
-        email: 'owner@greenvalley.com',
+        email: 'owner@eliteequestrian.com',
         password: 'demo123',
         role: 'owner'
       },
       {
-        tenantName: 'Elite Veterinary Clinic',
-        tenantType: 'clinic',
-        email: 'vet@eliteclinic.com',
+        tenantName: 'Sunset Stables',
+        tenantType: 'stable',
+        email: 'owner@sunsetstables.com',
         password: 'demo123',
-        role: 'admin'
+        role: 'owner'
       },
       {
-        tenantName: 'Arabian Horse Laboratory',
-        tenantType: 'laboratory',
-        email: 'lab@arabianlab.com',
+        tenantName: 'Advanced Veterinary Clinic',
+        tenantType: 'clinic',
+        email: 'director@advancedvetclinic.com',
         password: 'demo123',
-        role: 'manager'
+        role: 'admin'
       }
     ];
   },
 
   createTenantFromDemoAccount(account: any): Tenant {
+    // Map demo accounts to their corresponding tenant IDs from the database
+    const tenantIdMap: { [key: string]: string } = {
+      'Elite Equestrian Center': '550e8400-e29b-41d4-a716-446655440001',
+      'Sunset Stables': '550e8400-e29b-41d4-a716-446655440002', 
+      'Advanced Veterinary Clinic': '550e8400-e29b-41d4-a716-446655440003'
+    };
+
+    const tenantId = tenantIdMap[account.tenantName] || `demo-tenant-${account.tenantType}`;
+    
     return {
-      id: `demo-tenant-${account.tenantType}`,
+      id: tenantId,
       name: account.tenantName,
       type: account.tenantType,
       subscription_tier: 'premium',

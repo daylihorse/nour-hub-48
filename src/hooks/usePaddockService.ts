@@ -1,39 +1,36 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { paddockService } from '@/services/paddocks/paddockService';
 import { Paddock, PaddockAssignment, PaddockMaintenanceRecord } from '@/types/paddocks';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
+import { debugTenantInfo } from '@/utils/tenantUtils';
 
 export const usePaddockService = () => {
   const { currentTenant } = useAuth();
   const queryClient = useQueryClient();
   const tenantId = currentTenant?.id;
 
-  console.log('usePaddockService - Current tenant:', {
-    id: tenantId,
-    name: currentTenant?.name,
-    type: currentTenant?.type
-  });
+  // Debug tenant information
+  debugTenantInfo('usePaddockService hook', currentTenant);
 
   // Queries
   const usePaddocks = () => {
     return useQuery({
       queryKey: ['paddocks', tenantId],
       queryFn: async () => {
-        console.log('Query: Fetching paddocks for tenant:', tenantId);
+        console.log('🔍 Query: Fetching paddocks for tenant:', tenantId);
         try {
           const result = await paddockService.getAllPaddocks(tenantId);
-          console.log('Query: Successfully fetched paddocks:', result.length);
+          console.log('✅ Query: Successfully fetched paddocks:', result.length);
           return result;
         } catch (error) {
-          console.error('Query: Error fetching paddocks:', error);
+          console.error('❌ Query: Error fetching paddocks:', error);
           throw error;
         }
       },
       enabled: !!tenantId,
       retry: (failureCount, error) => {
-        console.log(`Query retry attempt ${failureCount} for paddocks:`, error);
+        console.log(`🔄 Query retry attempt ${failureCount} for paddocks:`, error);
         return failureCount < 2; // Only retry twice
       },
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
@@ -44,19 +41,19 @@ export const usePaddockService = () => {
     return useQuery({
       queryKey: ['paddock-assignments', tenantId, paddockId],
       queryFn: async () => {
-        console.log('Query: Fetching assignments for tenant:', tenantId, 'paddock:', paddockId);
+        console.log('🔍 Query: Fetching assignments for tenant:', tenantId, 'paddock:', paddockId);
         try {
           const result = await paddockService.getPaddockAssignments(tenantId, paddockId);
-          console.log('Query: Successfully fetched assignments:', result.length);
+          console.log('✅ Query: Successfully fetched assignments:', result.length);
           return result;
         } catch (error) {
-          console.error('Query: Error fetching assignments:', error);
+          console.error('❌ Query: Error fetching assignments:', error);
           throw error;
         }
       },
       enabled: !!tenantId,
       retry: (failureCount, error) => {
-        console.log(`Query retry attempt ${failureCount} for assignments:`, error);
+        console.log(`🔄 Query retry attempt ${failureCount} for assignments:`, error);
         return failureCount < 2;
       },
     });
@@ -66,19 +63,19 @@ export const usePaddockService = () => {
     return useQuery({
       queryKey: ['paddock-maintenance', tenantId, paddockId],
       queryFn: async () => {
-        console.log('Query: Fetching maintenance records for tenant:', tenantId, 'paddock:', paddockId);
+        console.log('🔍 Query: Fetching maintenance records for tenant:', tenantId, 'paddock:', paddockId);
         try {
           const result = await paddockService.getMaintenanceRecords(tenantId, paddockId);
-          console.log('Query: Successfully fetched maintenance records:', result.length);
+          console.log('✅ Query: Successfully fetched maintenance records:', result.length);
           return result;
         } catch (error) {
-          console.error('Query: Error fetching maintenance records:', error);
+          console.error('❌ Query: Error fetching maintenance records:', error);
           throw error;
         }
       },
       enabled: !!tenantId,
       retry: (failureCount, error) => {
-        console.log(`Query retry attempt ${failureCount} for maintenance:`, error);
+        console.log(`🔄 Query retry attempt ${failureCount} for maintenance:`, error);
         return failureCount < 2;
       },
     });
@@ -87,13 +84,13 @@ export const usePaddockService = () => {
   // Mutations
   const createPaddockMutation = useMutation({
     mutationFn: async (paddockData: Partial<Paddock>) => {
-      console.log('Mutation: Creating paddock for tenant:', tenantId, paddockData);
+      console.log('🔧 Mutation: Creating paddock for tenant:', tenantId, paddockData);
       try {
         const result = await paddockService.createPaddock(tenantId, paddockData);
-        console.log('Mutation: Successfully created paddock:', result.id);
+        console.log('✅ Mutation: Successfully created paddock:', result.id);
         return result;
       } catch (error) {
-        console.error('Mutation: Error creating paddock:', error);
+        console.error('❌ Mutation: Error creating paddock:', error);
         throw error;
       }
     },
@@ -105,7 +102,7 @@ export const usePaddockService = () => {
       });
     },
     onError: (error: any) => {
-      console.error('Mutation error creating paddock:', error);
+      console.error('❌ Mutation error creating paddock:', error);
       toast({
         title: "Error",
         description: error.message || "Failed to create paddock",
@@ -116,13 +113,13 @@ export const usePaddockService = () => {
 
   const updatePaddockMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: Partial<Paddock> }) => {
-      console.log('Mutation: Updating paddock:', id, data);
+      console.log('🔧 Mutation: Updating paddock:', id, data);
       try {
         const result = await paddockService.updatePaddock(id, data);
-        console.log('Mutation: Successfully updated paddock:', id);
+        console.log('✅ Mutation: Successfully updated paddock:', id);
         return result;
       } catch (error) {
-        console.error('Mutation: Error updating paddock:', error);
+        console.error('❌ Mutation: Error updating paddock:', error);
         throw error;
       }
     },
@@ -134,7 +131,7 @@ export const usePaddockService = () => {
       });
     },
     onError: (error: any) => {
-      console.error('Mutation error updating paddock:', error);
+      console.error('❌ Mutation error updating paddock:', error);
       toast({
         title: "Error",
         description: error.message || "Failed to update paddock",
@@ -145,12 +142,12 @@ export const usePaddockService = () => {
 
   const deletePaddockMutation = useMutation({
     mutationFn: async (paddockId: string) => {
-      console.log('Mutation: Deleting paddock:', paddockId);
+      console.log('🔧 Mutation: Deleting paddock:', paddockId);
       try {
         await paddockService.deletePaddock(paddockId);
-        console.log('Mutation: Successfully deleted paddock:', paddockId);
+        console.log('✅ Mutation: Successfully deleted paddock:', paddockId);
       } catch (error) {
-        console.error('Mutation: Error deleting paddock:', error);
+        console.error('❌ Mutation: Error deleting paddock:', error);
         throw error;
       }
     },
@@ -162,7 +159,7 @@ export const usePaddockService = () => {
       });
     },
     onError: (error: any) => {
-      console.error('Mutation error deleting paddock:', error);
+      console.error('❌ Mutation error deleting paddock:', error);
       toast({
         title: "Error",
         description: error.message || "Failed to delete paddock",
@@ -173,13 +170,13 @@ export const usePaddockService = () => {
 
   const assignHorseMutation = useMutation({
     mutationFn: async (assignment: Omit<PaddockAssignment, 'id' | 'createdAt' | 'updatedAt'>) => {
-      console.log('Mutation: Assigning horse for tenant:', tenantId, assignment);
+      console.log('🔧 Mutation: Assigning horse for tenant:', tenantId, assignment);
       try {
         const result = await paddockService.assignHorseToPaddock(tenantId, assignment);
-        console.log('Mutation: Successfully assigned horse:', result.id);
+        console.log('✅ Mutation: Successfully assigned horse:', result.id);
         return result;
       } catch (error) {
-        console.error('Mutation: Error assigning horse:', error);
+        console.error('❌ Mutation: Error assigning horse:', error);
         throw error;
       }
     },
@@ -192,7 +189,7 @@ export const usePaddockService = () => {
       });
     },
     onError: (error: any) => {
-      console.error('Mutation error assigning horse:', error);
+      console.error('❌ Mutation error assigning horse:', error);
       toast({
         title: "Error",
         description: error.message || "Failed to assign horse to paddock",
@@ -203,13 +200,13 @@ export const usePaddockService = () => {
 
   const createMaintenanceMutation = useMutation({
     mutationFn: async (maintenance: Omit<PaddockMaintenanceRecord, 'id' | 'createdAt'>) => {
-      console.log('Mutation: Creating maintenance record for tenant:', tenantId, maintenance);
+      console.log('🔧 Mutation: Creating maintenance record for tenant:', tenantId, maintenance);
       try {
         const result = await paddockService.createMaintenanceRecord(tenantId, maintenance);
-        console.log('Mutation: Successfully created maintenance record:', result.id);
+        console.log('✅ Mutation: Successfully created maintenance record:', result.id);
         return result;
       } catch (error) {
-        console.error('Mutation: Error creating maintenance record:', error);
+        console.error('❌ Mutation: Error creating maintenance record:', error);
         throw error;
       }
     },
@@ -221,7 +218,7 @@ export const usePaddockService = () => {
       });
     },
     onError: (error: any) => {
-      console.error('Mutation error creating maintenance:', error);
+      console.error('❌ Mutation error creating maintenance:', error);
       toast({
         title: "Error",
         description: error.message || "Failed to create maintenance record",

@@ -1,495 +1,284 @@
+import { Paddock, PaddockAssignment, PaddockMaintenanceRecord } from '@/types/paddocks';
+import { validateTenantId, debugTenantInfo } from '@/utils/tenantUtils';
 
-import { supabase } from '@/integrations/supabase/client';
-import { Paddock, PaddockAssignment, PaddockMaintenanceRecord, PaddockRotationPlan, HorseGroup } from '@/types/paddocks';
-import { validateTenantId, resolveTenantId } from '@/utils/tenantUtils';
-
-export interface DatabasePaddock {
-  id: string;
-  tenant_id: string;
-  name: string;
-  paddock_number: string;
-  status: string;
-  paddock_type: string;
-  size_length: number | null;
-  size_width: number | null;
-  size_unit: string | null;
-  capacity: number;
-  current_occupancy: number;
-  location_section: string | null;
-  location_coordinates: any;
-  features: any;
-  created_at: string;
-  updated_at: string;
-  created_by: string | null;
-}
-
-export interface DatabasePaddockAssignment {
-  id: string;
-  tenant_id: string;
-  paddock_id: string;
-  horse_id: string;
-  horse_name: string;
-  assigned_date: string;
-  scheduled_end_date: string | null;
-  actual_end_date: string | null;
-  assignment_type: string | null;
-  status: string;
-  assigned_by: string;
-  notes: string | null;
-  reason: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface DatabasePaddockMaintenance {
-  id: string;
-  tenant_id: string;
-  paddock_id: string;
-  maintenance_type: string;
-  title: string;
-  description: string;
-  scheduled_date: string;
-  completed_date: string | null;
-  status: string;
-  assigned_to: string | null;
-  cost: number | null;
-  notes: string | null;
-  next_maintenance_date: string | null;
-  created_at: string;
-  updated_at: string;
-  created_by: string | null;
-}
-
+// Mock data service for demonstration - in production this would connect to your database
 class PaddockService {
-  private mapDatabasePaddockToType(dbPaddock: DatabasePaddock): Paddock {
-    return {
-      id: dbPaddock.id,
-      name: dbPaddock.name,
-      number: dbPaddock.paddock_number,
-      status: dbPaddock.status as any,
-      type: dbPaddock.paddock_type as any,
-      size: {
-        length: dbPaddock.size_length || 0,
-        width: dbPaddock.size_width || 0,
-        unit: dbPaddock.size_unit || 'meters'
-      },
-      capacity: dbPaddock.capacity,
-      currentOccupancy: dbPaddock.current_occupancy,
-      location: {
-        section: dbPaddock.location_section || '',
-        coordinates: dbPaddock.location_coordinates
-      },
-      features: Array.isArray(dbPaddock.features) ? dbPaddock.features : [],
-      assignedHorses: [],
-      createdAt: new Date(dbPaddock.created_at),
-      updatedAt: new Date(dbPaddock.updated_at)
-    };
-  }
+  private mockPaddocks: Paddock[] = [
+    {
+      id: 'p1',
+      tenantId: '550e8400-e29b-41d4-a716-446655440001',
+      name: 'North Pasture',
+      number: 'P001',
+      type: 'grazing',
+      status: 'available',
+      size: { length: 100, width: 50, unit: 'meters' },
+      capacity: 4,
+      currentOccupancy: 2,
+      location: { section: 'North Field', coordinates: { lat: 0, lng: 0 } },
+      features: ['water_trough', 'shelter', 'gate_access'],
+      createdAt: new Date('2024-01-01'),
+      updatedAt: new Date('2024-01-15')
+    },
+    {
+      id: 'p2', 
+      tenantId: '550e8400-e29b-41d4-a716-446655440001',
+      name: 'South Pasture',
+      number: 'P002',
+      type: 'exercise',
+      status: 'occupied',
+      size: { length: 80, width: 40, unit: 'meters' },
+      capacity: 3,
+      currentOccupancy: 3,
+      location: { section: 'South Field', coordinates: { lat: 0, lng: 0 } },
+      features: ['water_trough', 'lighting'],
+      createdAt: new Date('2024-01-01'),
+      updatedAt: new Date('2024-01-10')
+    },
+    {
+      id: 'p3',
+      tenantId: '550e8400-e29b-41d4-a716-446655440001', 
+      name: 'East Training Area',
+      number: 'P003',
+      type: 'exercise',
+      status: 'maintenance',
+      size: { length: 60, width: 30, unit: 'meters' },
+      capacity: 2,
+      currentOccupancy: 0,
+      location: { section: 'East Side', coordinates: { lat: 0, lng: 0 } },
+      features: ['shelter', 'gate_access'],
+      createdAt: new Date('2024-01-01'),
+      updatedAt: new Date('2024-01-20')
+    }
+  ];
 
-  private mapDatabaseAssignmentToType(dbAssignment: DatabasePaddockAssignment): PaddockAssignment {
-    return {
-      id: dbAssignment.id,
-      paddockId: dbAssignment.paddock_id,
-      horseId: dbAssignment.horse_id,
-      horseName: dbAssignment.horse_name,
-      assignedDate: new Date(dbAssignment.assigned_date),
-      scheduledEndDate: dbAssignment.scheduled_end_date ? new Date(dbAssignment.scheduled_end_date) : undefined,
-      actualEndDate: dbAssignment.actual_end_date ? new Date(dbAssignment.actual_end_date) : undefined,
-      assignmentType: dbAssignment.assignment_type || undefined,
-      status: dbAssignment.status as any,
-      assignedBy: dbAssignment.assigned_by,
-      notes: dbAssignment.notes || undefined,
-      reason: dbAssignment.reason || undefined,
-      createdAt: new Date(dbAssignment.created_at),
-      updatedAt: new Date(dbAssignment.updated_at)
-    };
-  }
+  private mockAssignments: PaddockAssignment[] = [
+    {
+      id: 'a1',
+      paddockId: 'p1',
+      horseId: 'h1',
+      horseName: 'Thunder',
+      assignedDate: new Date('2024-01-10'),
+      assignmentType: 'grazing',
+      status: 'active',
+      assignedBy: 'user1',
+      reason: 'Regular grazing rotation'
+    },
+    {
+      id: 'a2',
+      paddockId: 'p2',
+      horseId: 'h2', 
+      horseName: 'Lightning',
+      assignedDate: new Date('2024-01-12'),
+      assignmentType: 'exercise',
+      status: 'active',
+      assignedBy: 'user1',
+      reason: 'Daily exercise routine'
+    }
+  ];
 
-  async getAllPaddocks(tenantId: string | null | undefined): Promise<Paddock[]> {
+  private mockMaintenanceRecords: PaddockMaintenanceRecord[] = [
+    {
+      id: 'm1',
+      paddockId: 'p3',
+      type: 'fence_repair',
+      title: 'Fence Post Replacement',
+      description: 'Replace damaged fence posts on east side',
+      status: 'in_progress',
+      scheduledDate: new Date('2024-01-25'),
+      assignedTo: 'maintenance-team',
+      createdAt: new Date('2024-01-20')
+    }
+  ];
+
+  async getAllPaddocks(tenantId?: string | null): Promise<Paddock[]> {
+    console.group('🏇 PaddockService.getAllPaddocks');
+    console.log('Input tenant ID:', tenantId);
+    
     const validTenantId = validateTenantId(tenantId);
     
     if (!validTenantId) {
-      console.error('Cannot fetch paddocks: invalid tenant ID');
-      throw new Error('Invalid tenant ID provided');
+      console.error('❌ Invalid tenant ID, returning empty array');
+      console.groupEnd();
+      return [];
     }
 
-    console.log('Fetching paddocks for tenant:', validTenantId);
+    // Filter paddocks by tenant ID
+    const filteredPaddocks = this.mockPaddocks.filter(paddock => {
+      const matches = paddock.tenantId === validTenantId;
+      console.log(`Paddock ${paddock.name} (${paddock.tenantId}) matches tenant ${validTenantId}: ${matches}`);
+      return matches;
+    });
 
-    try {
-      const { data: paddocksData, error: paddocksError } = await supabase
-        .from('paddocks')
-        .select('*')
-        .eq('tenant_id', validTenantId)
-        .order('name');
-
-      if (paddocksError) {
-        console.error('Error fetching paddocks:', paddocksError);
-        throw new Error(`Failed to fetch paddocks: ${paddocksError.message}`);
-      }
-
-      const { data: assignmentsData } = await supabase
-        .from('paddock_assignments')
-        .select('*')
-        .eq('tenant_id', validTenantId)
-        .eq('status', 'active');
-
-      const paddocks = paddocksData.map(paddock => {
-        const mapped = this.mapDatabasePaddockToType(paddock);
-        
-        // Add assigned horses
-        const assignments = assignmentsData?.filter(a => a.paddock_id === paddock.id) || [];
-        mapped.assignedHorses = assignments.map(assignment => ({
-          horseId: assignment.horse_id,
-          horseName: assignment.horse_name,
-          assignedDate: new Date(assignment.assigned_date)
-        }));
-
-        return mapped;
-      });
-
-      console.log(`Successfully fetched ${paddocks.length} paddocks`);
-      return paddocks;
-    } catch (error) {
-      console.error('Database error while fetching paddocks:', error);
-      throw error;
-    }
+    console.log(`✓ Found ${filteredPaddocks.length} paddocks for tenant ${validTenantId}`);
+    console.groupEnd();
+    
+    return filteredPaddocks;
   }
 
-  async createPaddock(tenantId: string | null | undefined, paddockData: Partial<Paddock>): Promise<Paddock> {
+  async getPaddockAssignments(tenantId?: string | null, paddockId?: string): Promise<PaddockAssignment[]> {
+    console.group('🏇 PaddockService.getPaddockAssignments');
+    console.log('Input tenant ID:', tenantId);
+    console.log('Paddock ID filter:', paddockId);
+    
     const validTenantId = validateTenantId(tenantId);
     
     if (!validTenantId) {
-      console.error('Cannot create paddock: invalid tenant ID');
+      console.error('❌ Invalid tenant ID, returning empty array');
+      console.groupEnd();
+      return [];
+    }
+
+    // Get paddocks for this tenant first
+    const tenantPaddocks = await this.getAllPaddocks(validTenantId);
+    const tenantPaddockIds = tenantPaddocks.map(p => p.id);
+
+    // Filter assignments by tenant's paddocks
+    let filteredAssignments = this.mockAssignments.filter(assignment => {
+      return tenantPaddockIds.includes(assignment.paddockId);
+    });
+
+    // Further filter by specific paddock if provided
+    if (paddockId) {
+      filteredAssignments = filteredAssignments.filter(assignment => 
+        assignment.paddockId === paddockId
+      );
+    }
+
+    console.log(`✓ Found ${filteredAssignments.length} assignments for tenant ${validTenantId}`);
+    console.groupEnd();
+    
+    return filteredAssignments;
+  }
+
+  async getMaintenanceRecords(tenantId?: string | null, paddockId?: string): Promise<PaddockMaintenanceRecord[]> {
+    console.group('🏇 PaddockService.getMaintenanceRecords');
+    console.log('Input tenant ID:', tenantId);
+    console.log('Paddock ID filter:', paddockId);
+    
+    const validTenantId = validateTenantId(tenantId);
+    
+    if (!validTenantId) {
+      console.error('❌ Invalid tenant ID, returning empty array');
+      console.groupEnd();
+      return [];
+    }
+
+    // Get paddocks for this tenant first
+    const tenantPaddocks = await this.getAllPaddocks(validTenantId);
+    const tenantPaddockIds = tenantPaddocks.map(p => p.id);
+
+    // Filter maintenance records by tenant's paddocks
+    let filteredRecords = this.mockMaintenanceRecords.filter(record => {
+      return tenantPaddockIds.includes(record.paddockId);
+    });
+
+    // Further filter by specific paddock if provided
+    if (paddockId) {
+      filteredRecords = filteredRecords.filter(record => 
+        record.paddockId === paddockId
+      );
+    }
+
+    console.log(`✓ Found ${filteredRecords.length} maintenance records for tenant ${validTenantId}`);
+    console.groupEnd();
+    
+    return filteredRecords;
+  }
+
+  async createPaddock(tenantId?: string | null, paddockData?: Partial<Paddock>): Promise<Paddock> {
+    const validTenantId = validateTenantId(tenantId);
+    if (!validTenantId) {
       throw new Error('Invalid tenant ID provided');
     }
 
-    if (!paddockData.name || !paddockData.number) {
-      throw new Error('Paddock name and number are required');
-    }
+    const newPaddock: Paddock = {
+      id: `p${Date.now()}`,
+      tenantId: validTenantId,
+      name: paddockData?.name || 'New Paddock',
+      number: paddockData?.number || `P${String(this.mockPaddocks.length + 1).padStart(3, '0')}`,
+      type: paddockData?.type || 'grazing',
+      status: paddockData?.status || 'available',
+      size: paddockData?.size || { length: 50, width: 50, unit: 'meters' },
+      capacity: paddockData?.capacity || 1,
+      currentOccupancy: paddockData?.currentOccupancy || 0,
+      location: paddockData?.location || { section: 'Main Area' },
+      features: paddockData?.features || [],
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
 
-    console.log('Creating paddock for tenant:', validTenantId, paddockData);
-
-    try {
-      const { data, error } = await supabase
-        .from('paddocks')
-        .insert({
-          tenant_id: validTenantId,
-          name: paddockData.name,
-          paddock_number: paddockData.number,
-          status: paddockData.status || 'available',
-          paddock_type: paddockData.type || 'grazing',
-          size_length: paddockData.size?.length || null,
-          size_width: paddockData.size?.width || null,
-          size_unit: paddockData.size?.unit || 'meters',
-          capacity: paddockData.capacity || 1,
-          current_occupancy: paddockData.currentOccupancy || 0,
-          location_section: paddockData.location?.section || null,
-          location_coordinates: paddockData.location?.coordinates || null,
-          features: paddockData.features || []
-        })
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error creating paddock:', error);
-        throw new Error(`Failed to create paddock: ${error.message}`);
-      }
-
-      console.log('Successfully created paddock:', data.id);
-      return this.mapDatabasePaddockToType(data);
-    } catch (error) {
-      console.error('Database error while creating paddock:', error);
-      throw error;
-    }
+    this.mockPaddocks.push(newPaddock);
+    console.log(`✓ Created paddock ${newPaddock.name} for tenant ${validTenantId}`);
+    return newPaddock;
   }
 
   async updatePaddock(paddockId: string, paddockData: Partial<Paddock>): Promise<Paddock> {
-    if (!paddockId) {
-      throw new Error('Paddock ID is required');
+    const index = this.mockPaddocks.findIndex(p => p.id === paddockId);
+    if (index === -1) {
+      throw new Error('Paddock not found');
     }
 
-    console.log('Updating paddock:', paddockId, paddockData);
+    this.mockPaddocks[index] = {
+      ...this.mockPaddocks[index],
+      ...paddockData,
+      updatedAt: new Date()
+    };
 
-    try {
-      const { data, error } = await supabase
-        .from('paddocks')
-        .update({
-          name: paddockData.name,
-          paddock_number: paddockData.number,
-          status: paddockData.status,
-          paddock_type: paddockData.type,
-          size_length: paddockData.size?.length,
-          size_width: paddockData.size?.width,
-          size_unit: paddockData.size?.unit,
-          capacity: paddockData.capacity,
-          current_occupancy: paddockData.currentOccupancy,
-          location_section: paddockData.location?.section,
-          location_coordinates: paddockData.location?.coordinates,
-          features: paddockData.features
-        })
-        .eq('id', paddockId)
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error updating paddock:', error);
-        throw new Error(`Failed to update paddock: ${error.message}`);
-      }
-
-      console.log('Successfully updated paddock:', paddockId);
-      return this.mapDatabasePaddockToType(data);
-    } catch (error) {
-      console.error('Database error while updating paddock:', error);
-      throw error;
-    }
+    console.log(`✓ Updated paddock ${paddockId}`);
+    return this.mockPaddocks[index];
   }
 
   async deletePaddock(paddockId: string): Promise<void> {
-    if (!paddockId) {
-      throw new Error('Paddock ID is required');
+    const index = this.mockPaddocks.findIndex(p => p.id === paddockId);
+    if (index === -1) {
+      throw new Error('Paddock not found');
     }
 
-    console.log('Deleting paddock:', paddockId);
-
-    try {
-      const { error } = await supabase
-        .from('paddocks')
-        .delete()
-        .eq('id', paddockId);
-
-      if (error) {
-        console.error('Error deleting paddock:', error);
-        throw new Error(`Failed to delete paddock: ${error.message}`);
-      }
-
-      console.log('Successfully deleted paddock:', paddockId);
-    } catch (error) {
-      console.error('Database error while deleting paddock:', error);
-      throw error;
-    }
+    this.mockPaddocks.splice(index, 1);
+    console.log(`✓ Deleted paddock ${paddockId}`);
   }
 
-  async assignHorseToPaddock(tenantId: string | null | undefined, assignment: Omit<PaddockAssignment, 'id' | 'createdAt' | 'updatedAt'>): Promise<PaddockAssignment> {
+  async assignHorseToPaddock(tenantId?: string | null, assignment?: Omit<PaddockAssignment, 'id' | 'createdAt' | 'updatedAt'>): Promise<PaddockAssignment> {
     const validTenantId = validateTenantId(tenantId);
-    
     if (!validTenantId) {
-      console.error('Cannot assign horse: invalid tenant ID');
       throw new Error('Invalid tenant ID provided');
     }
 
-    if (!assignment.paddockId || !assignment.horseId || !assignment.assignedBy) {
-      throw new Error('Paddock ID, Horse ID, and Assigned By are required');
+    if (!assignment) {
+      throw new Error('Assignment data is required');
     }
 
-    console.log('Assigning horse to paddock for tenant:', validTenantId, assignment);
+    const newAssignment: PaddockAssignment = {
+      ...assignment,
+      id: `a${Date.now()}`,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
 
-    try {
-      const { data, error } = await supabase
-        .from('paddock_assignments')
-        .insert({
-          tenant_id: validTenantId,
-          paddock_id: assignment.paddockId,
-          horse_id: assignment.horseId,
-          horse_name: assignment.horseName,
-          assigned_date: assignment.assignedDate.toISOString().split('T')[0],
-          scheduled_end_date: assignment.scheduledEndDate?.toISOString().split('T')[0],
-          assignment_type: assignment.assignmentType,
-          status: assignment.status,
-          assigned_by: assignment.assignedBy,
-          notes: assignment.notes,
-          reason: assignment.reason
-        })
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error creating assignment:', error);
-        throw new Error(`Failed to assign horse: ${error.message}`);
-      }
-
-      // Update paddock occupancy
-      await this.updatePaddockOccupancy(assignment.paddockId);
-
-      console.log('Successfully assigned horse to paddock:', data.id);
-      return this.mapDatabaseAssignmentToType(data);
-    } catch (error) {
-      console.error('Database error while assigning horse:', error);
-      throw error;
-    }
+    this.mockAssignments.push(newAssignment);
+    console.log(`✓ Assigned horse ${assignment.horseName} to paddock for tenant ${validTenantId}`);
+    return newAssignment;
   }
 
-  async getPaddockAssignments(tenantId: string | null | undefined, paddockId?: string): Promise<PaddockAssignment[]> {
+  async createMaintenanceRecord(tenantId?: string | null, maintenance?: Omit<PaddockMaintenanceRecord, 'id' | 'createdAt'>): Promise<PaddockMaintenanceRecord> {
     const validTenantId = validateTenantId(tenantId);
-    
     if (!validTenantId) {
-      console.error('Cannot fetch assignments: invalid tenant ID');
       throw new Error('Invalid tenant ID provided');
     }
 
-    console.log('Fetching assignments for tenant:', validTenantId, paddockId ? `paddock: ${paddockId}` : 'all paddocks');
-
-    try {
-      let query = supabase
-        .from('paddock_assignments')
-        .select('*')
-        .eq('tenant_id', validTenantId);
-
-      if (paddockId) {
-        query = query.eq('paddock_id', paddockId);
-      }
-
-      const { data, error } = await query.order('assigned_date', { ascending: false });
-
-      if (error) {
-        console.error('Error fetching assignments:', error);
-        throw new Error(`Failed to fetch assignments: ${error.message}`);
-      }
-
-      console.log(`Successfully fetched ${data.length} assignments`);
-      return data.map(this.mapDatabaseAssignmentToType);
-    } catch (error) {
-      console.error('Database error while fetching assignments:', error);
-      throw error;
-    }
-  }
-
-  private async updatePaddockOccupancy(paddockId: string): Promise<void> {
-    if (!paddockId) {
-      console.warn('Cannot update occupancy: paddock ID is missing');
-      return;
+    if (!maintenance) {
+      throw new Error('Maintenance data is required');
     }
 
-    try {
-      // Count active assignments for this paddock
-      const { count } = await supabase
-        .from('paddock_assignments')
-        .select('*', { count: 'exact', head: true })
-        .eq('paddock_id', paddockId)
-        .eq('status', 'active');
+    const newRecord: PaddockMaintenanceRecord = {
+      ...maintenance,
+      id: `m${Date.now()}`,
+      createdAt: new Date()
+    };
 
-      // Update paddock current_occupancy
-      const { error } = await supabase
-        .from('paddocks')
-        .update({ current_occupancy: count || 0 })
-        .eq('id', paddockId);
-
-      if (error) {
-        console.error('Error updating paddock occupancy:', error);
-        throw error;
-      }
-
-      console.log(`Updated paddock ${paddockId} occupancy to ${count || 0}`);
-    } catch (error) {
-      console.error('Error updating paddock occupancy:', error);
-    }
-  }
-
-  async createMaintenanceRecord(tenantId: string | null | undefined, maintenance: Omit<PaddockMaintenanceRecord, 'id' | 'createdAt'>): Promise<PaddockMaintenanceRecord> {
-    const validTenantId = validateTenantId(tenantId);
-    
-    if (!validTenantId) {
-      console.error('Cannot create maintenance record: invalid tenant ID');
-      throw new Error('Invalid tenant ID provided');
-    }
-
-    if (!maintenance.paddockId || !maintenance.description) {
-      throw new Error('Paddock ID and description are required');
-    }
-
-    console.log('Creating maintenance record for tenant:', validTenantId, maintenance);
-
-    try {
-      const { data, error } = await supabase
-        .from('paddock_maintenance')
-        .insert({
-          tenant_id: validTenantId,
-          paddock_id: maintenance.paddockId,
-          maintenance_type: maintenance.type,
-          title: maintenance.description, // Using description as title for now
-          description: maintenance.description,
-          scheduled_date: maintenance.scheduledDate.toISOString().split('T')[0],
-          completed_date: maintenance.completedDate?.toISOString().split('T')[0],
-          status: maintenance.status,
-          assigned_to: maintenance.assignedTo,
-          cost: maintenance.cost,
-          notes: maintenance.notes,
-          next_maintenance_date: maintenance.nextMaintenanceDate?.toISOString().split('T')[0]
-        })
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error creating maintenance record:', error);
-        throw new Error(`Failed to create maintenance record: ${error.message}`);
-      }
-
-      console.log('Successfully created maintenance record:', data.id);
-      return {
-        id: data.id,
-        paddockId: data.paddock_id,
-        type: data.maintenance_type as any,
-        description: data.description,
-        scheduledDate: new Date(data.scheduled_date),
-        completedDate: data.completed_date ? new Date(data.completed_date) : undefined,
-        status: data.status as any,
-        assignedTo: data.assigned_to || undefined,
-        cost: data.cost || undefined,
-        notes: data.notes || undefined,
-        nextMaintenanceDate: data.next_maintenance_date ? new Date(data.next_maintenance_date) : undefined,
-        createdAt: new Date(data.created_at)
-      };
-    } catch (error) {
-      console.error('Database error while creating maintenance record:', error);
-      throw error;
-    }
-  }
-
-  async getMaintenanceRecords(tenantId: string | null | undefined, paddockId?: string): Promise<PaddockMaintenanceRecord[]> {
-    const validTenantId = validateTenantId(tenantId);
-    
-    if (!validTenantId) {
-      console.error('Cannot fetch maintenance records: invalid tenant ID');
-      throw new Error('Invalid tenant ID provided');
-    }
-
-    console.log('Fetching maintenance records for tenant:', validTenantId, paddockId ? `paddock: ${paddockId}` : 'all paddocks');
-
-    try {
-      let query = supabase
-        .from('paddock_maintenance')
-        .select('*')
-        .eq('tenant_id', validTenantId);
-
-      if (paddockId) {
-        query = query.eq('paddock_id', paddockId);
-      }
-
-      const { data, error } = await query.order('scheduled_date', { ascending: false });
-
-      if (error) {
-        console.error('Error fetching maintenance records:', error);
-        throw new Error(`Failed to fetch maintenance records: ${error.message}`);
-      }
-
-      console.log(`Successfully fetched ${data.length} maintenance records`);
-      return data.map(record => ({
-        id: record.id,
-        paddockId: record.paddock_id,
-        type: record.maintenance_type as any,
-        description: record.description,
-        scheduledDate: new Date(record.scheduled_date),
-        completedDate: record.completed_date ? new Date(record.completed_date) : undefined,
-        status: record.status as any,
-        assignedTo: record.assigned_to || undefined,
-        cost: record.cost || undefined,
-        notes: record.notes || undefined,
-        nextMaintenanceDate: record.next_maintenance_date ? new Date(record.next_maintenance_date) : undefined,
-        createdAt: new Date(record.created_at)
-      }));
-    } catch (error) {
-      console.error('Database error while fetching maintenance records:', error);
-      throw error;
-    }
+    this.mockMaintenanceRecords.push(newRecord);
+    console.log(`✓ Created maintenance record for tenant ${validTenantId}`);
+    return newRecord;
   }
 }
 

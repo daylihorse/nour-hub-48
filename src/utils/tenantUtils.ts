@@ -15,15 +15,20 @@ export const validateTenantId = (tenantId: string | null | undefined): string | 
     return null;
   }
   
+  console.log(`✓ Valid tenant ID: ${tenantId}`);
   return tenantId;
 };
 
 export const getFallbackTenantId = (): string => {
   // Generate a valid UUID for fallback scenarios
-  return uuidv4();
+  const fallbackId = uuidv4();
+  console.warn(`Using generated fallback tenant ID: ${fallbackId}`);
+  return fallbackId;
 };
 
 export const resolveTenantId = (tenantId: string | null | undefined): string => {
+  console.log(`Resolving tenant ID: ${tenantId}`);
+  
   const validTenantId = validateTenantId(tenantId);
   
   if (!validTenantId) {
@@ -31,5 +36,15 @@ export const resolveTenantId = (tenantId: string | null | undefined): string => 
     return getFallbackTenantId();
   }
   
+  console.log(`✓ Resolved tenant ID: ${validTenantId}`);
   return validTenantId;
+};
+
+export const debugTenantInfo = (context: string, tenant: any) => {
+  console.group(`🏢 Tenant Debug - ${context}`);
+  console.log('Tenant object:', tenant);
+  console.log('Tenant ID:', tenant?.id);
+  console.log('Tenant name:', tenant?.name);
+  console.log('Tenant type:', tenant?.type);
+  console.groupEnd();
 };
