@@ -2,221 +2,283 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { 
-  FileText, 
   Plus, 
-  Play, 
-  Download,
-  Calendar,
-  Filter,
-  BarChart3
+  Trash2, 
+  Save, 
+  Play,
+  FileText,
+  BarChart3,
+  PieChart,
+  LineChart,
+  Settings
 } from "lucide-react";
 
-const ReportBuilder = () => {
-  const [selectedTemplate, setSelectedTemplate] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
+interface ReportField {
+  id: string;
+  name: string;
+  type: 'text' | 'number' | 'date' | 'select';
+  required: boolean;
+}
 
-  const reportTemplates = [
-    {
-      id: 'financial-summary',
-      name: 'Financial Summary',
-      description: 'Monthly financial performance and key metrics',
-      category: 'financial',
-      lastGenerated: '2 days ago'
-    },
-    {
-      id: 'training-performance',
-      name: 'Training Performance',
-      description: 'Training program effectiveness and participant progress',
-      category: 'training',
-      lastGenerated: '1 week ago'
-    },
-    {
-      id: 'operational-overview',
-      name: 'Operational Overview',
-      description: 'Comprehensive operational metrics and KPIs',
-      category: 'operational',
-      lastGenerated: '3 days ago'
-    },
-    {
-      id: 'client-analysis',
-      name: 'Client Analysis',
-      description: 'Client satisfaction, retention, and engagement metrics',
-      category: 'client',
-      lastGenerated: '5 days ago'
-    }
+interface ReportFilter {
+  id: string;
+  field: string;
+  operator: 'equals' | 'contains' | 'greater_than' | 'less_than' | 'between';
+  value: string;
+}
+
+interface ReportConfig {
+  name: string;
+  description: string;
+  type: 'table' | 'chart' | 'summary';
+  chartType?: 'bar' | 'line' | 'pie' | 'area';
+  fields: ReportField[];
+  filters: ReportFilter[];
+  groupBy?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+const ReportBuilder = () => {
+  const [config, setConfig] = useState<ReportConfig>({
+    name: '',
+    description: '',
+    type: 'table',
+    fields: [],
+    filters: []
+  });
+
+  const [isBuilding, setIsBuilding] = useState(false);
+
+  const availableFields = [
+    { id: 'horse_name', name: 'Horse Name', type: 'text' as const },
+    { id: 'age', name: 'Age', type: 'number' as const },
+    { id: 'breed', name: 'Breed', type: 'text' as const },
+    { id: 'owner', name: 'Owner', type: 'text' as const },
+    { id: 'registration_date', name: 'Registration Date', type: 'date' as const },
+    { id: 'health_status', name: 'Health Status', type: 'select' as const }
   ];
 
-  const handleGenerateReport = async () => {
-    if (!selectedTemplate) return;
-    
-    setIsGenerating(true);
+  const handleAddField = (fieldId: string) => {
+    const field = availableFields.find(f => f.id === fieldId);
+    if (field && !config.fields.find(f => f.id === fieldId)) {
+      setConfig(prev => ({
+        ...prev,
+        fields: [...prev.fields, { ...field, required: false }]
+      }));
+    }
+  };
+
+  const handleRemoveField = (fieldId: string) => {
+    setConfig(prev => ({
+      ...prev,
+      fields: prev.fields.filter(f => f.id !== fieldId)
+    }));
+  };
+
+  const handleAddFilter = () => {
+    const newFilter: ReportFilter = {
+      id: Date.now().toString(),
+      field: '',
+      operator: 'equals',
+      value: ''
+    };
+    setConfig(prev => ({
+      ...prev,
+      filters: [...prev.filters, newFilter]
+    }));
+  };
+
+  const handleRemoveFilter = (filterId: string) => {
+    setConfig(prev => ({
+      ...prev,
+      filters: prev.filters.filter(f => f.id !== filterId)
+    }));
+  };
+
+  const handleBuildReport = async () => {
+    setIsBuilding(true);
     try {
+      console.log('Building report with config:', config);
       // Simulate report generation
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      console.log('Report generated for template:', selectedTemplate);
-    } catch (error) {
-      console.error('Error generating report:', error);
+      await new Promise(resolve => setTimeout(resolve, 2000));
     } finally {
-      setIsGenerating(false);
+      setIsBuilding(false);
+    }
+  };
+
+  const getReportTypeIcon = (type: string) => {
+    switch (type) {
+      case 'table': return <FileText className="h-4 w-4" />;
+      case 'chart': return <BarChart3 className="h-4 w-4" />;
+      case 'summary': return <PieChart className="h-4 w-4" />;
+      default: return <FileText className="h-4 w-4" />;
     }
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h3 className="text-xl font-semibold">Report Builder</h3>
-          <p className="text-muted-foreground">
-            Generate custom reports and schedule automated delivery
-          </p>
-        </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Create Template
+      <Card>
+        <CardHeader>
+          <CardTitle>Report Configuration</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Basic Settings */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="reportName">Report Name</Label>
+              <Input
+                id="reportName"
+                value={config.name}
+                onChange={(e) => setConfig(prev => ({ ...prev, name: e.target.value }))}
+                placeholder="Enter report name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="reportType">Report Type</Label>
+              <Select 
+                value={config.type} 
+                onValueChange={(value: 'table' | 'chart' | 'summary') => 
+                  setConfig(prev => ({ ...prev, type: value }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="table">Table Report</SelectItem>
+                  <SelectItem value="chart">Chart Report</SelectItem>
+                  <SelectItem value="summary">Summary Report</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              value={config.description}
+              onChange={(e) => setConfig(prev => ({ ...prev, description: e.target.value }))}
+              placeholder="Describe what this report shows"
+              rows={3}
+            />
+          </div>
+
+          {/* Chart Type Selection (if chart report) */}
+          {config.type === 'chart' && (
+            <div className="space-y-2">
+              <Label>Chart Type</Label>
+              <Select 
+                value={config.chartType || 'bar'} 
+                onValueChange={(value: 'bar' | 'line' | 'pie' | 'area') => 
+                  setConfig(prev => ({ ...prev, chartType: value }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="bar">Bar Chart</SelectItem>
+                  <SelectItem value="line">Line Chart</SelectItem>
+                  <SelectItem value="pie">Pie Chart</SelectItem>
+                  <SelectItem value="area">Area Chart</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Fields Selection */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>Report Fields</CardTitle>
+            <Badge variant="outline">
+              {config.fields.length} selected
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            {availableFields.map(field => (
+              <Button
+                key={field.id}
+                variant={config.fields.find(f => f.id === field.id) ? "default" : "outline"}
+                size="sm"
+                onClick={() => {
+                  if (config.fields.find(f => f.id ===
+
+field.id)) {
+                    handleRemoveField(field.id);
+                  } else {
+                    handleAddField(field.id);
+                  }
+                }}
+                className="justify-start"
+              >
+                {config.fields.find(f => f.id === field.id) ? (
+                  <Trash2 className="h-3 w-3 mr-2" />
+                ) : (
+                  <Plus className="h-3 w-3 mr-2" />
+                )}
+                {field.name}
+              </Button>
+            ))}
+          </div>
+
+          {config.fields.length > 0 && (
+            <div className="space-y-2">
+              <Label>Selected Fields</Label>
+              <div className="flex flex-wrap gap-2">
+                {config.fields.map(field => (
+                  <Badge key={field.id} variant="secondary">
+                    {field.name}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-4 w-4 p-0 ml-2"
+                      onClick={() => handleRemoveField(field.id)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Build Actions */}
+      <div className="flex justify-end gap-3">
+        <Button variant="outline">
+          <Save className="h-4 w-4 mr-2" />
+          Save Configuration
         </Button>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Template Selection */}
-        <div className="lg:col-span-2 space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Available Templates</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {reportTemplates.map((template) => (
-                <div
-                  key={template.id}
-                  className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                    selectedTemplate === template.id
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                  onClick={() => setSelectedTemplate(template.id)}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h4 className="font-medium">{template.name}</h4>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {template.description}
-                      </p>
-                      <div className="flex items-center gap-2 mt-2">
-                        <Badge variant="outline" size="sm">
-                          {template.category}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground">
-                          Last generated: {template.lastGenerated}
-                        </span>
-                      </div>
-                    </div>
-                    <FileText className="h-5 w-5 text-muted-foreground" />
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Report Configuration */}
-        <div className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Report Configuration</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="report-name">Report Name</Label>
-                <Input id="report-name" placeholder="Enter report name" />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="date-range">Date Range</Label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select date range" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="last-week">Last Week</SelectItem>
-                    <SelectItem value="last-month">Last Month</SelectItem>
-                    <SelectItem value="last-quarter">Last Quarter</SelectItem>
-                    <SelectItem value="last-year">Last Year</SelectItem>
-                    <SelectItem value="custom">Custom Range</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="format">Export Format</Label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select format" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pdf">PDF</SelectItem>
-                    <SelectItem value="excel">Excel</SelectItem>
-                    <SelectItem value="csv">CSV</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="pt-4 space-y-2">
-                <Button 
-                  onClick={handleGenerateReport}
-                  disabled={!selectedTemplate || isGenerating}
-                  className="w-full"
-                >
-                  {isGenerating ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Generating...
-                    </>
-                  ) : (
-                    <>
-                      <Play className="h-4 w-4 mr-2" />
-                      Generate Report
-                    </>
-                  )}
-                </Button>
-                
-                <Button variant="outline" className="w-full">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Schedule Report
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Button variant="outline" size="sm" className="w-full justify-start">
-                <BarChart3 className="h-4 w-4 mr-2" />
-                View Analytics
-              </Button>
-              <Button variant="outline" size="sm" className="w-full justify-start">
-                <Filter className="h-4 w-4 mr-2" />
-                Advanced Filters
-              </Button>
-              <Button variant="outline" size="sm" className="w-full justify-start">
-                <Download className="h-4 w-4 mr-2" />
-                Export Data
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+        <Button 
+          onClick={handleBuildReport}
+          disabled={isBuilding || !config.name || config.fields.length === 0}
+        >
+          {isBuilding ? (
+            <>
+              <Settings className="h-4 w-4 mr-2 animate-spin" />
+              Building...
+            </>
+          ) : (
+            <>
+              <Play className="h-4 w-4 mr-2" />
+              Build Report
+            </>
+          )}
+        </Button>
       </div>
     </div>
   );

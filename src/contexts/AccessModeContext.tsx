@@ -6,6 +6,8 @@ type AccessMode = 'demo' | 'production';
 interface AccessModeContextType {
   accessMode: AccessMode;
   setAccessMode: (mode: AccessMode) => void;
+  isPublicMode: boolean;
+  isDemoMode: boolean;
 }
 
 const AccessModeContext = createContext<AccessModeContextType | undefined>(undefined);
@@ -25,8 +27,16 @@ interface AccessModeProviderProps {
 export const AccessModeProvider: React.FC<AccessModeProviderProps> = ({ children }) => {
   const [accessMode, setAccessMode] = useState<AccessMode>('demo');
 
+  const isPublicMode = false; // For now, keeping this false as the current system doesn't support public mode
+  const isDemoMode = accessMode === 'demo';
+
   return (
-    <AccessModeContext.Provider value={{ accessMode, setAccessMode }}>
+    <AccessModeContext.Provider value={{ 
+      accessMode, 
+      setAccessMode, 
+      isPublicMode, 
+      isDemoMode 
+    }}>
       {children}
     </AccessModeContext.Provider>
   );

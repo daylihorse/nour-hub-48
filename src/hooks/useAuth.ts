@@ -1,40 +1,26 @@
 
-import { useState, useEffect } from 'react';
+import { useContext } from 'react';
+import { AuthContextProvider } from '@/contexts/AuthContext';
+import { AuthContext } from '@/types/tenant';
 
-interface AuthState {
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  user: any | null;
-}
-
-export const useAuth = () => {
-  const [authState, setAuthState] = useState<AuthState>({
-    isAuthenticated: false,
-    isLoading: true,
-    user: null
-  });
-
-  useEffect(() => {
-    // Simulate auth check
-    const checkAuth = async () => {
-      try {
-        // In demo mode, always authenticated
-        setAuthState({
-          isAuthenticated: true,
-          isLoading: false,
-          user: { id: 'demo-user', name: 'Demo User' }
-        });
-      } catch (error) {
-        setAuthState({
-          isAuthenticated: false,
-          isLoading: false,
-          user: null
-        });
-      }
+export const useAuth = (): AuthContext => {
+  const context = useContext(AuthContextProvider);
+  if (!context) {
+    // Return a default context for demo mode
+    return {
+      user: { id: 'demo-user', email: 'demo@example.com', firstName: 'Demo', lastName: 'User' },
+      currentTenant: { id: 'demo-tenant', name: 'Demo Tenant', type: 'demo' },
+      availableTenants: [{ id: 'demo-tenant', name: 'Demo Tenant', type: 'demo' }],
+      isLoading: false,
+      login: async () => ({ data: null, error: null }),
+      signUp: async () => ({ data: null, error: null }),
+      logout: async () => {},
+      switchTenant: async () => {},
+      switchDemoAccount: async () => {},
+      hasPermission: () => true,
+      hasRole: () => true,
+      isAuthenticated: true,
     };
-
-    checkAuth();
-  }, []);
-
-  return authState;
+  }
+  return context;
 };
