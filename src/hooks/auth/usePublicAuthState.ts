@@ -1,48 +1,59 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { User, Tenant } from '@/types/tenant';
 import { publicDemoService } from '@/services/auth/publicDemoService';
-import { useAccessMode } from '@/contexts/AccessModeContext';
 
 export const usePublicAuthState = () => {
-  const { accessMode } = useAccessMode();
-  const [user, setUser] = useState<User | null>(null);
-  const [currentTenant, setCurrentTenant] = useState<Tenant | null>(null);
-  const [availableTenants, setAvailableTenants] = useState<Tenant[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (accessMode === 'public') {
-      // In public mode, create a generic user and tenant
-      const publicUser = publicDemoService.createPublicUser();
-      const publicTenant = publicDemoService.createPublicTenant();
-      
-      setUser(publicUser);
-      setCurrentTenant(publicTenant);
-      setAvailableTenants([publicTenant]);
-      setIsLoading(false);
-    } else {
-      // In demo mode, clear state (will be handled by regular auth)
-      setUser(null);
-      setCurrentTenant(null);
-      setAvailableTenants([]);
-      setIsLoading(false);
-    }
-  }, [accessMode]);
+  // Get a random demo account for public mode
+  const demoAccount = publicDemoService.getRandomDemoAccount();
+  
+  const [user] = useState<User | null>({
+    id: 'public-user',
+    email: demoAccount.email,
+    firstName: 'Demo',
+    lastName: 'User'
+  });
+  
+  // Use Elite Equestrian Center as the default public demo tenant (has most features)
+  const [currentTenant] = useState<Tenant | null>({
+    id: '550e8400-e29b-41d4-a716-446655440001',
+    name: 'Elite Equestrian Center',
+    type: 'stable',
+    subscriptionTier: 'premium',
+    status: 'active',
+    createdAt: new Date('2024-01-01'),
+    updatedAt: new Date('2024-01-01'),
+    settings: {
+      timezone: 'UTC',
+      currency: 'USD',
+      language: 'en',
+      features: {
+        horses: true,
+        laboratory: true,
+        clinic: true,
+        pharmacy: true,
+        marketplace: true,
+        finance: true,
+        hr: true,
+        inventory: true,
+        training: true,
+        rooms: true,
+        maintenance: true,
+        messages: true,
+      }
+    },
+    metadata: {}
+  });
+  
+  const [availableTenants] = useState<Tenant[]>([currentTenant!]);
+  const [isLoading] = useState(false);
 
   const switchTenant = async (tenantId: string) => {
-    if (accessMode === 'public') {
-      // In public mode, switching doesn't do anything
-      return;
-    }
-    // In demo mode, this will be handled by regular auth
+    console.log('Public mode: switching tenant:', tenantId);
   };
 
   const switchDemoAccount = async (account: any) => {
-    // In public mode, this function doesn't need to do anything
-    // since account switching is handled by the regular auth state
-    console.log('switchDemoAccount called in public auth state for:', account.tenantName);
-    return Promise.resolve();
+    console.log('Public mode: switching demo account:', account);
   };
 
   return {
@@ -52,6 +63,6 @@ export const usePublicAuthState = () => {
     isLoading,
     switchTenant,
     switchDemoAccount,
-    setIsLoading,
+    setIsLoading: () => {},
   };
 };

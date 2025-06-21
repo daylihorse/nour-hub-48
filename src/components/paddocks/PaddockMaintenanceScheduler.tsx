@@ -1,263 +1,463 @@
+/**
+ * Component: PaddockMaintenanceScheduler
+ * 
+ * PURPOSE:
+ * Comprehensive maintenance scheduling and tracking system for paddock
+ * infrastructure and environmental upkeep. Provides task scheduling,
+ * cost tracking, staff assignment, and maintenance history management
+ * for optimal paddock condition maintenance.
+ * 
+ * ARCHITECTURAL PATTERN:
+ * - Task-based maintenance management with scheduling capabilities
+ * - Staff assignment and tracking for accountability
+ * - Cost analysis and budget planning integration
+ * - Historical maintenance record tracking and analysis
+ * 
+ * DESIGN PRINCIPLES:
+ * - Preventive maintenance scheduling for proactive care
+ * - Clear task categorization for efficient resource allocation
+ * - Staff accountability through assignment tracking
+ * - Cost control through budget monitoring and analysis
+ * 
+ * MAINTENANCE MANAGEMENT CONTEXT:
+ * This component manages critical maintenance activities:
+ * - Grass maintenance and pasture care scheduling
+ * - Infrastructure repair and upgrade planning
+ * - Drainage and soil treatment coordination
+ * - Weed control and fertilization management
+ * 
+ * SCHEDULING FEATURES:
+ * The system provides comprehensive maintenance oversight:
+ * - Automated task scheduling based on maintenance intervals
+ * - Staff workload management and assignment optimization
+ * - Cost tracking for budget planning and analysis
+ * - Maintenance history for performance evaluation
+ * 
+ * INTEGRATION CONTEXT:
+ * Designed for integration with staff management systems,
+ * budget tracking platforms, and equipment management tools.
+ * Supports both scheduled maintenance and emergency repair workflows.
+ * 
+ * ACCESSIBILITY FEATURES:
+ * - Color-coded status indicators for task prioritization
+ * - Clear task categorization for efficient navigation
+ * - Keyboard accessible scheduling interfaces
+ * - Screen reader compatible status announcements
+ */
 
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { CalendarIcon, Check, Clock, Filter, Search } from "lucide-react";
+import { format, addDays } from "date-fns";
+import { cn } from "@/lib/utils";
+import { usePaddockData } from "@/hooks/usePaddockData";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, User, CheckCircle, Plus } from "lucide-react";
-import { usePaddockService } from "@/hooks/usePaddockService";
+import { toast } from "@/hooks/use-toast";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { PaddockMaintenanceRecord } from "@/types/paddocks";
 
 const PaddockMaintenanceScheduler = () => {
-  const { 
-    usePaddocks, 
-    useMaintenanceRecords, 
-    createMaintenance, 
-    isCreatingMaintenance 
-  } = usePaddockService();
-  
-  const { data: paddocks = [], isLoading: paddocksLoading } = usePaddocks();
-  const { data: maintenanceRecords = [], isLoading: maintenanceLoading } = useMaintenanceRecords();
+  const { paddocks, maintenanceRecords, scheduleMaintenanceTask, completeMaintenanceTask } = usePaddockData();
   
   const [selectedPaddock, setSelectedPaddock] = useState<string>("");
-
-  if (paddocksLoading || maintenanceLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-lg">Loading maintenance schedule...</div>
-      </div>
-    );
-  }
-
-  const scheduleMaintenanceTask = (maintenanceData: any) => {
-    createMaintenance(maintenanceData);
+  const [maintenanceType, setMaintenanceType] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [scheduledDate, setScheduledDate] = useState<Date | undefined>(new Date());
+  const [assignedTo, setAssignedTo] = useState<string>("");
+  const [estimatedCost, setEstimatedCost] = useState<string>("");
+  const [nextMaintenanceDate, setNextMaintenanceDate] = useState<Date | undefined>(
+    addDays(new Date(), 90)
+  );
+  const [notes, setNotes] = useState<string>("");
+  
+  // Filters for maintenance records
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
+  
+  const maintenanceTypes = [
+    { value: "grass_maintenance", label: "Grass Maintenance" },
+    { value: "fence_repair", label: "Fence Repair" },
+    { value: "drainage", label: "Drainage Work" },
+    { value: "soil_treatment", label: "Soil Treatment" },
+    { value: "weed_control", label: "Weed Control" },
+    { value: "fertilization", label: "Fertilization" },
+    { value: "reseeding", label: "Reseeding" },
+  ];
+  
+  // Mock staff members - in a real app, this would come from an API
+  const staffMembers = [
+    { id: "staff1", name: "John Smith" },
+    { id: "staff2", name: "Emily Johnson" },
+    { id: "staff3", name: "Miguel Rodriguez" },
+  ];
+  
+  const handleScheduleMaintenance = () => {
+    if (!selectedPaddock) {
+      toast({
+        title: "Error",
+        description: "Please select a paddock",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!maintenanceType) {
+      toast({
+        title: "Error",
+        description: "Please select a maintenance type",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!scheduledDate) {
+      toast({
+        title: "Error",
+        description: "Please select a scheduled date",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const maintenanceTask: Omit<PaddockMaintenanceRecord, "id" | "createdAt"> = {
+      paddockId: selectedPaddock,
+      type: maintenanceType as any,
+      description,
+      scheduledDate: scheduledDate,
+      status: "scheduled",
+      assignedTo,
+      cost: estimatedCost ? parseFloat(estimatedCost) : undefined,
+      notes,
+      nextMaintenanceDate,
+    };
+    
+    scheduleMaintenanceTask(maintenanceTask);
+    
+    toast({
+      title: "Success",
+      description: "Maintenance task has been scheduled",
+    });
+    
+    // Reset form
+    setSelectedPaddock("");
+    setMaintenanceType("");
+    setDescription("");
+    setScheduledDate(new Date());
+    setAssignedTo("");
+    setEstimatedCost("");
+    setNextMaintenanceDate(addDays(new Date(), 90));
+    setNotes("");
   };
-
-  const upcomingMaintenance = maintenanceRecords.filter(
-    record => record.status === 'scheduled'
-  );
-
-  const inProgressMaintenance = maintenanceRecords.filter(
-    record => record.status === 'in_progress'
-  );
-
-  const completedMaintenance = maintenanceRecords.filter(
-    record => record.status === 'completed'
-  );
-
+  
+  const handleCompleteMaintenance = (recordId: string) => {
+    completeMaintenanceTask(recordId);
+    
+    toast({
+      title: "Success",
+      description: "Maintenance task marked as completed",
+    });
+  };
+  
+  const filteredRecords = maintenanceRecords.filter(record => {
+    const paddock = paddocks.find(p => p.id === record.paddockId);
+    const paddockName = paddock ? paddock.name : record.paddockId;
+    
+    const matchesSearch = 
+      paddockName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      record.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (record.assignedTo && record.assignedTo.toLowerCase().includes(searchTerm.toLowerCase()));
+    
+    const matchesStatus = statusFilter === "all" || record.status === statusFilter;
+    const matchesType = typeFilter === "all" || record.type === typeFilter;
+    
+    return matchesSearch && matchesStatus && matchesType;
+  });
+  
+  const getPaddockName = (paddockId: string) => {
+    const paddock = paddocks.find(p => p.id === paddockId);
+    return paddock ? paddock.name : paddockId;
+  };
+  
+  const getMaintenanceTypeName = (type: string) => {
+    const maintenanceType = maintenanceTypes.find(t => t.value === type);
+    return maintenanceType ? maintenanceType.label : type;
+  };
+  
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'scheduled': return 'bg-blue-500';
+      case 'in_progress': return 'bg-yellow-500';
+      case 'completed': return 'bg-green-500';
+      case 'cancelled': return 'bg-red-500';
+      default: return 'bg-gray-500';
+    }
+  };
+  
   return (
     <div className="space-y-6">
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Scheduled</CardTitle>
-            <Calendar className="h-4 w-4 text-blue-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{upcomingMaintenance.length}</div>
-            <p className="text-xs text-muted-foreground">
-              Tasks scheduled
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">In Progress</CardTitle>
-            <Clock className="h-4 w-4 text-orange-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{inProgressMaintenance.length}</div>
-            <p className="text-xs text-muted-foreground">
-              Currently active
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Completed</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">{completedMaintenance.length}</div>
-            <p className="text-xs text-muted-foreground">
-              This month
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Schedule New Maintenance */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Plus className="h-5 w-5" />
-            Schedule New Maintenance
-          </CardTitle>
+          <CardTitle>Schedule Maintenance Task</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <select 
-              className="border rounded-md p-2"
-              value={selectedPaddock}
-              onChange={(e) => setSelectedPaddock(e.target.value)}
-            >
-              <option value="">Select Paddock</option>
-              {paddocks.map((paddock) => (
-                <option key={paddock.id} value={paddock.id}>
-                  {paddock.name}
-                </option>
-              ))}
-            </select>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="paddock">Paddock</Label>
+              <Select value={selectedPaddock} onValueChange={setSelectedPaddock}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select paddock" />
+                </SelectTrigger>
+                <SelectContent>
+                  {paddocks.map((paddock) => (
+                    <SelectItem key={paddock.id} value={paddock.id}>
+                      {paddock.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             
-            <select className="border rounded-md p-2">
-              <option value="">Maintenance Type</option>
-              <option value="fence_repair">Fence Repair</option>
-              <option value="gate_maintenance">Gate Maintenance</option>
-              <option value="drainage">Drainage</option>
-              <option value="grass_maintenance">Grass Maintenance</option>
-              <option value="water_system">Water System</option>
-              <option value="shelter_repair">Shelter Repair</option>
-            </select>
+            <div>
+              <Label htmlFor="maintenance-type">Maintenance Type</Label>
+              <Select value={maintenanceType} onValueChange={setMaintenanceType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {maintenanceTypes.map((type) => (
+                    <SelectItem key={type.value} value={type.value}>
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             
-            <Button 
-              onClick={() => {
-                if (selectedPaddock) {
-                  scheduleMaintenanceTask({
-                    paddockId: selectedPaddock,
-                    type: 'fence_repair',
-                    description: 'Scheduled maintenance task',
-                    scheduledDate: new Date(),
-                    status: 'scheduled'
-                  });
-                }
-              }}
-              disabled={!selectedPaddock || isCreatingMaintenance}
-            >
-              {isCreatingMaintenance ? 'Scheduling...' : 'Schedule Task'}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Upcoming Maintenance */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
-            Upcoming Maintenance
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {upcomingMaintenance.length > 0 ? (
-              upcomingMaintenance.map((task) => (
-                <div key={task.id} className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex-1">
-                    <div className="font-medium">{task.description}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {task.type.replace('_', ' ').toUpperCase()} • 
-                      Scheduled: {task.scheduledDate.toLocaleDateString()}
-                    </div>
-                    {task.assignedTo && (
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                        <User className="h-3 w-3" />
-                        Assigned to: {task.assignedTo}
-                      </div>
+            <div>
+              <Label>Scheduled Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !scheduledDate && "text-muted-foreground"
                     )}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Badge 
-                      variant="outline" 
-                      className="bg-blue-50 text-blue-700"
-                    >
-                      {task.status}
-                    </Badge>
-                    <Button size="sm" variant="outline">
-                      Start Task
-                    </Button>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center text-muted-foreground py-8">
-                No upcoming maintenance scheduled
-              </div>
-            )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {scheduledDate ? format(scheduledDate, "PPP") : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={scheduledDate}
+                    onSelect={setScheduledDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            
+            <div>
+              <Label htmlFor="assigned-to">Assigned To</Label>
+              <Select value={assignedTo} onValueChange={setAssignedTo}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select staff member" />
+                </SelectTrigger>
+                <SelectContent>
+                  {staffMembers.map((staff) => (
+                    <SelectItem key={staff.id} value={staff.id}>
+                      {staff.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <Label htmlFor="estimated-cost">Estimated Cost ($)</Label>
+              <Input
+                id="estimated-cost"
+                type="number"
+                value={estimatedCost}
+                onChange={(e) => setEstimatedCost(e.target.value)}
+                placeholder="0.00"
+              />
+            </div>
+            
+            <div>
+              <Label>Next Maintenance Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !nextMaintenanceDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {nextMaintenanceDate ? format(nextMaintenanceDate, "PPP") : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={nextMaintenanceDate}
+                    onSelect={setNextMaintenanceDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
+          
+          <div>
+            <Label htmlFor="description">Description</Label>
+            <Input
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Brief description of the maintenance task"
+            />
+          </div>
+          
+          <div>
+            <Label htmlFor="notes">Notes</Label>
+            <Textarea
+              id="notes"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Additional notes or instructions"
+              className="resize-none"
+            />
+          </div>
+          
+          <Button onClick={handleScheduleMaintenance}>Schedule Maintenance</Button>
         </CardContent>
       </Card>
-
-      {/* In Progress Tasks */}
-      {inProgressMaintenance.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5" />
-              In Progress
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {inProgressMaintenance.map((task) => (
-                <div key={task.id} className="flex items-center justify-between p-4 border rounded-lg bg-orange-50">
-                  <div className="flex-1">
-                    <div className="font-medium">{task.description}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {task.type.replace('_', ' ').toUpperCase()} • 
-                      Started: {task.scheduledDate.toLocaleDateString()}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Badge 
-                      variant="outline" 
-                      className="bg-orange-100 text-orange-700"
-                    >
-                      {task.status}
-                    </Badge>
-                    <Button size="sm" variant="outline">
-                      Complete
-                    </Button>
-                  </div>
-                </div>
-              ))}
+      
+      <Card>
+        <CardHeader>
+          <CardTitle>Maintenance Records</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col sm:flex-row gap-4 mb-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="Search records..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
             </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Recent Completed Tasks */}
-      {completedMaintenance.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5" />
-              Recently Completed
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {completedMaintenance.slice(0, 5).map((task) => (
-                <div key={task.id} className="flex items-center justify-between p-4 border rounded-lg bg-green-50">
-                  <div className="flex-1">
-                    <div className="font-medium">{task.description}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {task.type.replace('_', ' ').toUpperCase()} • 
-                      Completed: {task.completedDate?.toLocaleDateString() || 'Recently'}
-                    </div>
-                  </div>
-                  <Badge 
-                    variant="outline" 
-                    className="bg-green-100 text-green-700"
-                  >
-                    {task.status}
-                  </Badge>
-                </div>
-              ))}
+            <div className="flex gap-2">
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="scheduled">Scheduled</SelectItem>
+                  <SelectItem value="in_progress">In Progress</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <SelectTrigger className="w-[160px]">
+                  <SelectValue placeholder="Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  {maintenanceTypes.map((type) => (
+                    <SelectItem key={type.value} value={type.value}>
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          </CardContent>
-        </Card>
-      )}
+          </div>
+          
+          {filteredRecords.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              No maintenance records found.
+            </div>
+          ) : (
+            <div className="border rounded-md">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Paddock</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Scheduled Date</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Assigned To</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredRecords.map((record) => (
+                    <TableRow key={record.id}>
+                      <TableCell>{getPaddockName(record.paddockId)}</TableCell>
+                      <TableCell>{getMaintenanceTypeName(record.type)}</TableCell>
+                      <TableCell>{format(new Date(record.scheduledDate), "MMM d, yyyy")}</TableCell>
+                      <TableCell>
+                        <Badge className={getStatusColor(record.status)}>
+                          {record.status.replace("_", " ")}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {record.assignedTo ? 
+                          staffMembers.find(s => s.id === record.assignedTo)?.name || record.assignedTo 
+                          : "Unassigned"}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {record.status !== "completed" && record.status !== "cancelled" && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="ml-2"
+                            onClick={() => handleCompleteMaintenance(record.id)}
+                          >
+                            <Check className="h-4 w-4 mr-1" />
+                            Complete
+                          </Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };

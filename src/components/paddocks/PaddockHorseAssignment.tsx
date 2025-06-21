@@ -17,10 +17,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
-import { usePaddockService } from "@/hooks/usePaddockService";
-import { useAuth } from "@/hooks/useAuth";
+import { toast } from "@/hooks/use-toast";
+import { usePaddockData } from "@/hooks/usePaddockData";
+import { useHousingService } from "@/services/housing";
 
 // Mock horse data - in a real app this would come from an API or context
 const mockHorses = [
@@ -38,10 +40,9 @@ interface AssignmentFormData {
 }
 
 const PaddockHorseAssignment = () => {
-  const { usePaddocks, usePaddockAssignments, assignHorse, isAssigningHorse } = usePaddockService();
-  const { user } = useAuth();
-  const { data: paddocks = [] } = usePaddocks();
-  const { data: assignments = [] } = usePaddockAssignments();
+  const { paddocks } = usePaddockData();
+  const housingService = useHousingService();
+  const [assignments, setAssignments] = useState<any[]>([]);
   
   // Initialize form
   const form = useForm<AssignmentFormData>({
@@ -60,27 +61,52 @@ const PaddockHorseAssignment = () => {
   
   // Handle form submission
   const onSubmit = (data: AssignmentFormData) => {
-    const selectedHorse = mockHorses.find(h => h.id === data.horseId);
-    
-    if (!selectedHorse || !user) {
-      return;
+    try {
+      // Find the selected horse
+      const selectedHorse = mockHorses.find(h => h.id === data.horseId);
+      
+      if (!selectedHorse) {
+        toast({
+          title: "Error",
+          description: "Selected horse not found",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      // Assign horse to paddock using our housing service
+      const assignment = housingService.assignHorseToPaddock({
+        paddockId: data.paddockId,
+        horseId: selectedHorse.id,
+        horseName: selectedHorse.name,
+        assignedDate: new Date(),
+        assignmentType: data.assignmentType,
+        status: 'active',
+        assignedBy: "current-user", // In a real app, this would be the current user
+        notes: data.notes,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
+      
+      // Update local assignments state
+      setAssignments(prev => [...prev, assignment]);
+      
+      toast({
+        title: "Success",
+        description: `${selectedHorse.name} has been assigned to the paddock successfully`,
+      });
+      
+      // Reset form
+      form.reset();
+      
+    } catch (error) {
+      console.error("Error assigning horse to paddock:", error);
+      toast({
+        title: "Error", 
+        description: "Failed to assign horse to paddock. Please try again.",
+        variant: "destructive"
+      });
     }
-    
-    // Assign horse to paddock using the database service
-    assignHorse({
-      paddockId: data.paddockId,
-      horseId: selectedHorse.id,
-      horseName: selectedHorse.name,
-      assignedDate: new Date(),
-      assignmentType: data.assignmentType,
-      status: 'active',
-      assignedBy: user.id,
-      notes: data.notes,
-      reason: `${data.assignmentType} assignment`
-    });
-    
-    // Reset form
-    form.reset();
   };
   
   return (
@@ -187,8 +213,8 @@ const PaddockHorseAssignment = () => {
                 )}
               />
 
-              <Button type="submit" className="w-full" disabled={isAssigningHorse}>
-                {isAssigningHorse ? 'Assigning...' : 'Assign Horse to Paddock'}
+              <Button type="submit" className="w-full">
+                Assign Horse to Paddock
               </Button>
             </form>
           </Form>
@@ -203,11 +229,11 @@ const PaddockHorseAssignment = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {assignments.slice(0, 5).map((assignment) => (
-                <div key={assignment.id} className="flex justify-between items-center p-2 bg-muted rounded">
+              {assignments.slice(-5).map((assignment, index) => (
+                <div key={index} className="flex justify-between items-center p-2 bg-muted rounded">
                   <span>{assignment.horseName}</span>
                   <span className="text-sm text-muted-foreground">
-                    {assignment.status} • {assignment.assignedDate.toLocaleDateString()}
+                    Assigned to {assignment.paddockId}
                   </span>
                 </div>
               ))}

@@ -1,4 +1,3 @@
-
 import { Tenant, User, TenantUser, TenantSettings, TenantMetadata } from '@/types/tenant';
 
 interface MockTenantData {
@@ -25,7 +24,6 @@ class MockTenantService {
           id: '550e8400-e29b-41d4-a716-446655440001',
           name: 'Elite Equestrian Center',
           type: 'stable',
-          subscription_tier: 'premium',
           subscriptionTier: 'premium',
           status: 'active',
           createdAt: new Date('2024-01-01'),
@@ -61,7 +59,6 @@ class MockTenantService {
           id: '550e8400-e29b-41d4-a716-446655440002',
           name: 'Sunset Stables',
           type: 'stable',
-          subscription_tier: 'basic',
           subscriptionTier: 'basic',
           status: 'active',
           createdAt: new Date('2024-01-01'),
@@ -96,7 +93,6 @@ class MockTenantService {
           id: '550e8400-e29b-41d4-a716-446655440003',
           name: 'Advanced Veterinary Clinic',
           type: 'clinic',
-          subscription_tier: 'professional',
           subscriptionTier: 'professional',
           status: 'active',
           createdAt: new Date('2024-01-01'),
@@ -131,7 +127,6 @@ class MockTenantService {
           id: '550e8400-e29b-41d4-a716-446655440004',
           name: 'Equine Diagnostics Lab',
           type: 'laboratory',
-          subscription_tier: 'professional',
           subscriptionTier: 'professional',
           status: 'active',
           createdAt: new Date('2024-01-01'),
@@ -166,7 +161,6 @@ class MockTenantService {
           id: '550e8400-e29b-41d4-a716-446655440005',
           name: 'Regional Equine Hospital',
           type: 'hospital',
-          subscription_tier: 'enterprise',
           subscriptionTier: 'enterprise',
           status: 'active',
           createdAt: new Date('2024-01-01'),
@@ -201,7 +195,6 @@ class MockTenantService {
           id: '550e8400-e29b-41d4-a716-446655440006',
           name: 'HorseTrader Marketplace',
           type: 'marketplace',
-          subscription_tier: 'premium',
           subscriptionTier: 'premium',
           status: 'active',
           createdAt: new Date('2024-01-01'),
@@ -236,7 +229,6 @@ class MockTenantService {
           id: '550e8400-e29b-41d4-a716-446655440007',
           name: 'Global Equine Solutions',
           type: 'enterprise',
-          subscription_tier: 'enterprise',
           subscriptionTier: 'enterprise',
           status: 'active',
           createdAt: new Date('2024-01-01'),
@@ -289,14 +281,13 @@ class MockTenantService {
         
         const tenantUser: TenantUser = {
           id: this.generateId(),
-          tenant_id: tenantId,
           tenantId: tenantId,
-          user_id: userAssociation.userId,
+          userId: userAssociation.userId,
           role: userAssociation.role as any,
           permissions: userAssociation.permissions,
           status: 'active',
-          joined_at: new Date().toISOString(),
-          last_login_at: new Date().toISOString()
+          joinedAt: new Date(),
+          lastLoginAt: new Date()
         };
         
         userTenantUsers.push(tenantUser);
