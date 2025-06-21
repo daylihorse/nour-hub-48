@@ -1,72 +1,33 @@
 
-import { mockTenantService } from './mockTenantService';
-
-export interface DemoAccount {
-  email: string;
-  password: string;
-  role: string;
-  tenantName: string;
-  tenantType: string;
-  description?: string;
-}
-
-class PublicDemoService {
-  private demoAccounts: DemoAccount[] = [
+export const publicDemoService = {
+  getDemoAccounts: () => [
     {
-      email: 'owner@eliteequestrian.com',
-      password: 'password123',
-      role: 'owner',
-      tenantName: 'Elite Equestrian Center',
-      tenantType: 'stable',
-      description: 'Premium stable with all features enabled'
+      email: 'demo@horseranch.com',
+      password: 'demo123',
+      tenantName: 'Sunset Horse Ranch',
+      tenantType: 'ranch',
+      role: 'owner'
     },
     {
-      email: 'director@advancedvetclinic.com',
-      password: 'password123',
-      role: 'owner',
-      tenantName: 'Advanced Veterinary Clinic',
+      email: 'demo@vetclinic.com',
+      password: 'demo123',
+      tenantName: 'Equine Veterinary Clinic',
       tenantType: 'clinic',
-      description: 'Professional veterinary clinic'
-    },
-    {
-      email: 'director@equinediagnostics.com',
-      password: 'password123',
-      role: 'owner',
-      tenantName: 'Equine Diagnostics Lab',
-      tenantType: 'laboratory',
-      description: 'Specialized diagnostic laboratory'
-    },
-    {
-      email: 'admin@regionalequinehospital.com',
-      password: 'password123',
-      role: 'owner',
-      tenantName: 'Regional Equine Hospital',
-      tenantType: 'hospital',
-      description: 'Full-service equine hospital with all features'
-    },
-    {
-      email: 'admin@horsetrader.com',
-      password: 'password123',
-      role: 'owner',
-      tenantName: 'HorseTrader Marketplace',
-      tenantType: 'marketplace',
-      description: 'Horse trading marketplace platform'
+      role: 'veterinarian'
     }
-  ];
-
-  getDemoAccounts(): DemoAccount[] {
-    return this.demoAccounts;
-  }
-
-  async getDemoTenantForAccount(email: string) {
-    const { tenants } = await mockTenantService.getUserTenants(email);
-    return tenants[0] || null;
-  }
-
-  getRandomDemoAccount(): DemoAccount {
-    const randomIndex = Math.floor(Math.random() * this.demoAccounts.length);
-    return this.demoAccounts[randomIndex];
-  }
-}
-
-export const publicDemoService = new PublicDemoService();
+  ],
+  
+  createTenantFromDemoAccount: (account: any) => ({
+    id: `tenant-${account.tenantType}`,
+    name: account.tenantName,
+    type: account.tenantType
+  }),
+  
+  createUserFromDemoAccount: (account: any, tenant: any) => ({
+    id: `user-${account.role}`,
+    email: account.email,
+    firstName: 'Demo',
+    lastName: 'User',
+    role: account.role
+  })
+};

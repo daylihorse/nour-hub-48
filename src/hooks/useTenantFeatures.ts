@@ -1,6 +1,5 @@
 
 import { useMemo } from 'react';
-import { useAuth } from '@/hooks/useAuth';
 
 export interface FeatureDefinition {
   id: string;
@@ -29,14 +28,6 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     category: 'core',
     requiredSubscription: ['basic', 'professional', 'premium', 'enterprise']
   },
-  laboratory: { 
-    id: 'laboratory', 
-    name: 'Laboratory Services', 
-    description: 'Lab testing, sample management, and diagnostic services', 
-    enabled: true, 
-    category: 'medical',
-    requiredSubscription: ['professional', 'premium', 'enterprise']
-  },
   clinic: { 
     id: 'clinic', 
     name: 'Veterinary Clinic', 
@@ -44,22 +35,6 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     enabled: true, 
     category: 'medical',
     requiredSubscription: ['professional', 'premium', 'enterprise']
-  },
-  pharmacy: { 
-    id: 'pharmacy', 
-    name: 'Pharmacy Services', 
-    description: 'Medication management and pharmaceutical operations', 
-    enabled: true, 
-    category: 'medical',
-    requiredSubscription: ['professional', 'premium', 'enterprise']
-  },
-  marketplace: { 
-    id: 'marketplace', 
-    name: 'Marketplace', 
-    description: 'Buy and sell horses, equipment, and services', 
-    enabled: true, 
-    category: 'commercial',
-    requiredSubscription: ['premium', 'enterprise']
   },
   finance: { 
     id: 'finance', 
@@ -69,14 +44,6 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     category: 'business',
     requiredSubscription: ['professional', 'premium', 'enterprise']
   },
-  hr: { 
-    id: 'hr', 
-    name: 'HR Department', 
-    description: 'Human resources and employee management', 
-    enabled: true, 
-    category: 'business',
-    requiredSubscription: ['premium', 'enterprise']
-  },
   inventory: { 
     id: 'inventory', 
     name: 'Inventory Management', 
@@ -84,38 +51,6 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     enabled: true, 
     category: 'operations',
     requiredSubscription: ['premium', 'enterprise']
-  },
-  training: { 
-    id: 'training', 
-    name: 'Training Center', 
-    description: 'Training programs and tracking', 
-    enabled: true, 
-    category: 'operations',
-    requiredSubscription: ['premium', 'enterprise']
-  },
-  rooms: { 
-    id: 'rooms', 
-    name: 'Stable Rooms', 
-    description: 'Room and facility management', 
-    enabled: true, 
-    category: 'facilities',
-    requiredSubscription: ['basic', 'professional', 'premium', 'enterprise']
-  },
-  maintenance: { 
-    id: 'maintenance', 
-    name: 'Maintenance', 
-    description: 'Equipment and facility maintenance tracking', 
-    enabled: true, 
-    category: 'facilities',
-    requiredSubscription: ['professional', 'premium', 'enterprise']
-  },
-  messages: { 
-    id: 'messages', 
-    name: 'Messages', 
-    description: 'Internal messaging and communication', 
-    enabled: true, 
-    category: 'communication',
-    requiredSubscription: ['basic', 'professional', 'premium', 'enterprise']
   },
   clients: { 
     id: 'clients', 
@@ -125,6 +60,14 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     category: 'business',
     requiredSubscription: ['basic', 'professional', 'premium', 'enterprise']
   },
+  training: { 
+    id: 'training', 
+    name: 'Training Center', 
+    description: 'Training programs and tracking', 
+    enabled: true, 
+    category: 'operations',
+    requiredSubscription: ['premium', 'enterprise']
+  },
   analytics: { 
     id: 'analytics', 
     name: 'Analytics & Reports', 
@@ -133,42 +76,29 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     category: 'insights',
     requiredSubscription: ['premium', 'enterprise']
   },
-  paddocks: { 
-    id: 'paddocks', 
-    name: 'Paddock Management', 
-    description: 'Paddock and pasture management', 
-    enabled: true, 
-    category: 'facilities',
-    requiredSubscription: ['basic', 'professional', 'premium', 'enterprise']
+  scheduling: { 
+    id: 'scheduling', 
+    name: 'Scheduling', 
+    description: 'Appointment and calendar management', 
+    enabled: false, 
+    category: 'operations',
+    requiredSubscription: ['enterprise']
   }
 };
 
 export const useTenantFeatures = () => {
-  const { currentTenant } = useAuth();
+  const features: Feature[] = useMemo(() => [
+    { id: 'horses', name: 'Horse Management', enabled: true, category: 'core' },
+    { id: 'clinic', name: 'Veterinary Clinic', enabled: true, category: 'medical' },
+    { id: 'finance', name: 'Finance Management', enabled: true, category: 'business' },
+    { id: 'inventory', name: 'Inventory Management', enabled: true, category: 'operations' },
+    { id: 'clients', name: 'Client Management', enabled: true, category: 'business' },
+    { id: 'training', name: 'Training Center', enabled: true, category: 'operations' },
+    { id: 'analytics', name: 'Analytics & Reports', enabled: true, category: 'insights' },
+    { id: 'scheduling', name: 'Scheduling', enabled: false, category: 'operations' }
+  ], []);
 
-  const features: Feature[] = useMemo(() => {
-    // If we have a tenant with settings, use its feature configuration
-    if (currentTenant?.settings?.features) {
-      const tenantFeatures = currentTenant.settings.features;
-      
-      return Object.entries(FEATURE_MATRIX).map(([key, definition]) => ({
-        id: key,
-        name: definition.name,
-        enabled: tenantFeatures[key as keyof typeof tenantFeatures] ?? definition.enabled,
-        category: definition.category
-      }));
-    }
-
-    // Fallback to demo configuration with all features enabled
-    return Object.values(FEATURE_MATRIX).map(definition => ({
-      id: definition.id,
-      name: definition.name,
-      enabled: true, // Enable all features in demo mode
-      category: definition.category
-    }));
-  }, [currentTenant]);
-
-  const subscriptionTier: SubscriptionTier = currentTenant?.subscriptionTier || 'premium';
+  const subscriptionTier: SubscriptionTier = 'premium';
 
   const getEnabledFeatures = () => features.filter(f => f.enabled);
   const getAvailableFeatures = () => features;
@@ -176,7 +106,7 @@ export const useTenantFeatures = () => {
   
   const isFeatureEnabled = (featureId: string) => {
     const feature = features.find(f => f.id === featureId);
-    return feature?.enabled || true; // Default to true in demo mode
+    return feature?.enabled || false;
   };
 
   const getFeatureDefinition = (featureId: string) => {
