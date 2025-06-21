@@ -3,33 +3,33 @@ import { useState } from 'react';
 import { User, Tenant } from '@/types/tenant';
 
 export const usePublicAuthState = () => {
-  const [user, setUser] = useState<User | null>({
+  const [user] = useState<User | null>({
     id: 'public-user',
     email: 'public@example.com',
     firstName: 'Public',
     lastName: 'User'
   });
   
-  const [currentTenant, setCurrentTenant] = useState<Tenant | null>({
+  const [currentTenant] = useState<Tenant | null>({
     id: 'public-tenant',
-    name: 'Public Demo',
-    type: 'public'
+    name: 'Public Access',
+    type: 'enterprise'
   });
   
-  const [availableTenants, setAvailableTenants] = useState<Tenant[]>([{
+  const [availableTenants] = useState<Tenant[]>([{
     id: 'public-tenant',
-    name: 'Public Demo',
-    type: 'public'
+    name: 'Public Access',
+    type: 'enterprise'
   }]);
   
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
 
   const switchTenant = async (tenantId: string) => {
-    console.log('Switching tenant:', tenantId);
+    console.log('Public mode: switching tenant:', tenantId);
   };
 
   const switchDemoAccount = async (account: any) => {
-    console.log('Switching demo account:', account);
+    console.log('Public mode: switching demo account:', account);
   };
 
   return {
@@ -39,6 +39,6 @@ export const usePublicAuthState = () => {
     isLoading,
     switchTenant,
     switchDemoAccount,
-    setIsLoading,
+    setIsLoading: () => {},
   };
 };
