@@ -1,7 +1,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
-import { AnalyticsMetric, AnalyticsInsight } from '@/types/analytics';
-import { ReportTemplate, Dashboard } from '@/types/analytics';
+import { AnalyticsMetric, ReportTemplate, Dashboard, AnalyticsInsight } from '@/types/analytics';
 
 // Mock data for demonstration
 const generateMockMetrics = (): AnalyticsMetric[] => [

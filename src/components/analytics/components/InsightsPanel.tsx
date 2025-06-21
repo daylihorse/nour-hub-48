@@ -101,10 +101,10 @@ const InsightsPanel = ({ insights, onDismiss }: InsightsPanelProps) => {
                   <div>
                     <CardTitle className="text-lg">{insight.title}</CardTitle>
                     <div className="flex items-center gap-2 mt-1">
-                      <Badge variant={getSeverityBadgeVariant(insight.severity)}>
+                      <Badge variant={getSeverityBadgeVariant(insight.severity)} size="sm">
                         {insight.severity}
                       </Badge>
-                      <Badge variant="outline">
+                      <Badge variant="outline" size="sm">
                         {insight.type}
                       </Badge>
                     </div>

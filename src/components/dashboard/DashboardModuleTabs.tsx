@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
-  Heart, 
+  Horse, 
   Stethoscope, 
   Calculator, 
   Package, 
@@ -18,15 +18,14 @@ import { Link } from "react-router-dom";
 
 export const createDashboardModuleTabs = () => [
   {
-    value: "all",
+    id: "all",
     label: "All Modules",
-    icon: Heart,
     content: (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         <ModuleCard
           title="Horse Management"
           description="Comprehensive horse profiles, health records, and breeding management"
-          icon={Heart}
+          icon={Horse}
           status="active"
           route="/dashboard/horses"
           stats={{ total: 143, active: 138 }}
@@ -91,15 +90,14 @@ export const createDashboardModuleTabs = () => [
     )
   },
   {
-    value: "active",
+    id: "active",
     label: "Active Modules",
-    icon: Heart,
     content: (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <ModuleCard
           title="Horse Management"
           description="Comprehensive horse profiles and health records"
-          icon={Heart}
+          icon={Horse}
           status="active"
           route="/dashboard/horses"
           stats={{ total: 143, active: 138 }}
@@ -140,9 +138,8 @@ export const createDashboardModuleTabs = () => [
     )
   },
   {
-    value: "new",
+    id: "new",
     label: "New Features",
-    icon: BarChart3,
     content: (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <ModuleCard
@@ -181,40 +178,12 @@ const ModuleCard = ({ title, description, icon: Icon, status, route, stats, high
     }
   };
 
-  if (status === "coming-soon") {
-    return (
-      <Card className={`hover:shadow-lg transition-shadow cursor-pointer ${highlight ? 'ring-2 ring-blue-500 bg-blue-50' : ''}`}>
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <Icon className={`h-8 w-8 ${highlight ? 'text-blue-600' : 'text-primary'}`} />
-            {getStatusBadge()}
-          </div>
-          <CardTitle className="text-lg">{title}</CardTitle>
-          <p className="text-sm text-muted-foreground">{description}</p>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {stats && (
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              {Object.entries(stats).map(([key, value]) => (
-                <div key={key} className="text-center">
-                  <div className="font-semibold">{value}</div>
-                  <div className="text-muted-foreground capitalize">{key}</div>
-                </div>
-              ))}
-            </div>
-          )}
-          
-          <Button variant="outline" size="sm" className="w-full" disabled>
-            Coming Soon
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
+  const CardWrapper = status === "coming-soon" ? "div" : Link;
+  const cardProps = status === "coming-soon" ? {} : { to: route };
 
   return (
-    <Link to={route}>
-      <Card className={`hover:shadow-lg transition-shadow cursor-pointer ${highlight ? 'ring-2 ring-blue-500 bg-blue-50' : ''}`}>
+    <Card className={`hover:shadow-lg transition-shadow cursor-pointer ${highlight ? 'ring-2 ring-blue-500 bg-blue-50' : ''}`}>
+      <CardWrapper {...cardProps}>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <Icon className={`h-8 w-8 ${highlight ? 'text-blue-600' : 'text-primary'}`} />
@@ -235,14 +204,22 @@ const ModuleCard = ({ title, description, icon: Icon, status, route, stats, high
             </div>
           )}
           
-          <Button variant="outline" size="sm" className="w-full" asChild>
-            <Link to={route}>
-              Open Module
-              {status === "new" ? <ExternalLink className="h-4 w-4 ml-2" /> : <ChevronRight className="h-4 w-4 ml-2" />}
-            </Link>
-          </Button>
+          {status !== "coming-soon" && (
+            <Button variant="outline" size="sm" className="w-full" asChild>
+              <Link to={route}>
+                Open Module
+                {status === "new" ? <ExternalLink className="h-4 w-4 ml-2" /> : <ChevronRight className="h-4 w-4 ml-2" />}
+              </Link>
+            </Button>
+          )}
+          
+          {status === "coming-soon" && (
+            <Button variant="outline" size="sm" className="w-full" disabled>
+              Coming Soon
+            </Button>
+          )}
         </CardContent>
-      </Card>
-    </Link>
+      </CardWrapper>
+    </Card>
   );
 };

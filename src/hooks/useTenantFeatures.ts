@@ -1,203 +1,160 @@
 
-import { useMemo } from 'react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from './useAuth';
 
 export interface FeatureDefinition {
   id: string;
   name: string;
   description: string;
-  enabled: boolean;
-  category: string;
   requiredSubscription: string[];
+  icon?: string;
 }
 
-interface Feature {
-  id: string;
-  name: string;
-  enabled: boolean;
-  category: string;
-}
-
-export type SubscriptionTier = 'basic' | 'professional' | 'premium' | 'enterprise';
-
+// Feature matrix defining which features are available on which subscription tiers
 export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
-  horses: { 
-    id: 'horses', 
-    name: 'Horse Management', 
-    description: 'Comprehensive horse profiles and management', 
-    enabled: true, 
-    category: 'core',
-    requiredSubscription: ['basic', 'professional', 'premium', 'enterprise']
+  horses: {
+    id: 'horses',
+    name: 'Horse Management',
+    description: 'Comprehensive horse records and health tracking',
+    requiredSubscription: ['basic', 'professional', 'premium', 'enterprise'],
   },
-  laboratory: { 
-    id: 'laboratory', 
-    name: 'Laboratory Services', 
-    description: 'Lab testing, sample management, and diagnostic services', 
-    enabled: true, 
-    category: 'medical',
-    requiredSubscription: ['professional', 'premium', 'enterprise']
+  laboratory: {
+    id: 'laboratory',
+    name: 'Laboratory',
+    description: 'Lab tests, results, and medical analysis',
+    requiredSubscription: ['professional', 'premium', 'enterprise'],
   },
-  clinic: { 
-    id: 'clinic', 
-    name: 'Veterinary Clinic', 
-    description: 'Medical records and treatments', 
-    enabled: true, 
-    category: 'medical',
-    requiredSubscription: ['professional', 'premium', 'enterprise']
+  clinic: {
+    id: 'clinic',
+    name: 'Clinic',
+    description: 'Veterinary care, appointments, and medical records',
+    requiredSubscription: ['professional', 'premium', 'enterprise'],
   },
-  pharmacy: { 
-    id: 'pharmacy', 
-    name: 'Pharmacy Services', 
-    description: 'Medication management and pharmaceutical operations', 
-    enabled: true, 
-    category: 'medical',
-    requiredSubscription: ['professional', 'premium', 'enterprise']
+  pharmacy: {
+    id: 'pharmacy',
+    name: 'Pharmacy',
+    description: 'Medication management and prescriptions',
+    requiredSubscription: ['professional', 'premium', 'enterprise'],
   },
-  marketplace: { 
-    id: 'marketplace', 
-    name: 'Marketplace', 
-    description: 'Buy and sell horses, equipment, and services', 
-    enabled: true, 
-    category: 'commercial',
-    requiredSubscription: ['premium', 'enterprise']
+  finance: {
+    id: 'finance',
+    name: 'Finance',
+    description: 'Financial management, invoicing, and accounting',
+    requiredSubscription: ['basic', 'professional', 'premium', 'enterprise'],
   },
-  finance: { 
-    id: 'finance', 
-    name: 'Finance Management', 
-    description: 'Financial tracking and reporting', 
-    enabled: true, 
-    category: 'business',
-    requiredSubscription: ['professional', 'premium', 'enterprise']
+  hr: {
+    id: 'hr',
+    name: 'Human Resources',
+    description: 'Employee management, payroll, and scheduling',
+    requiredSubscription: ['premium', 'enterprise'],
   },
-  hr: { 
-    id: 'hr', 
-    name: 'HR Department', 
-    description: 'Human resources and employee management', 
-    enabled: true, 
-    category: 'business',
-    requiredSubscription: ['premium', 'enterprise']
+  inventory: {
+    id: 'inventory',
+    name: 'Inventory',
+    description: 'Stock management, supplies, and equipment',
+    requiredSubscription: ['basic', 'professional', 'premium', 'enterprise'],
   },
-  inventory: { 
-    id: 'inventory', 
-    name: 'Inventory Management', 
-    description: 'Stock and supply management', 
-    enabled: true, 
-    category: 'operations',
-    requiredSubscription: ['premium', 'enterprise']
+  marketplace: {
+    id: 'marketplace',
+    name: 'Marketplace',
+    description: 'Buy, sell, and trade horses and equipment',
+    requiredSubscription: ['professional', 'premium', 'enterprise'],
   },
-  training: { 
-    id: 'training', 
-    name: 'Training Center', 
-    description: 'Training programs and tracking', 
-    enabled: true, 
-    category: 'operations',
-    requiredSubscription: ['premium', 'enterprise']
+  training: {
+    id: 'training',
+    name: 'Training Center',
+    description: 'Training programs and progress tracking',
+    requiredSubscription: ['premium', 'enterprise'],
   },
-  rooms: { 
-    id: 'rooms', 
-    name: 'Stable Rooms', 
-    description: 'Room and facility management', 
-    enabled: true, 
-    category: 'facilities',
-    requiredSubscription: ['basic', 'professional', 'premium', 'enterprise']
+  rooms: {
+    id: 'rooms',
+    name: 'Stable Rooms',
+    description: 'Room assignments and facility management',
+    requiredSubscription: ['basic', 'professional', 'premium', 'enterprise'],
   },
-  maintenance: { 
-    id: 'maintenance', 
-    name: 'Maintenance', 
-    description: 'Equipment and facility maintenance tracking', 
-    enabled: true, 
-    category: 'facilities',
-    requiredSubscription: ['professional', 'premium', 'enterprise']
+  maintenance: {
+    id: 'maintenance',
+    name: 'Maintenance',
+    description: 'Facility maintenance and repairs',
+    requiredSubscription: ['premium', 'enterprise'],
   },
-  messages: { 
-    id: 'messages', 
-    name: 'Messages', 
-    description: 'Internal messaging and communication', 
-    enabled: true, 
-    category: 'communication',
-    requiredSubscription: ['basic', 'professional', 'premium', 'enterprise']
+  messages: {
+    id: 'messages',
+    name: 'Messaging',
+    description: 'Internal communications and notifications',
+    requiredSubscription: ['basic', 'professional', 'premium', 'enterprise'],
   },
-  clients: { 
-    id: 'clients', 
-    name: 'Client Management', 
-    description: 'Customer relationship management', 
-    enabled: true, 
-    category: 'business',
-    requiredSubscription: ['basic', 'professional', 'premium', 'enterprise']
-  },
-  analytics: { 
-    id: 'analytics', 
-    name: 'Analytics & Reports', 
-    description: 'Business intelligence and reporting', 
-    enabled: true, 
-    category: 'insights',
-    requiredSubscription: ['premium', 'enterprise']
-  },
-  paddocks: { 
-    id: 'paddocks', 
-    name: 'Paddock Management', 
-    description: 'Paddock and pasture management', 
-    enabled: true, 
-    category: 'facilities',
-    requiredSubscription: ['basic', 'professional', 'premium', 'enterprise']
-  }
 };
 
 export const useTenantFeatures = () => {
   const { currentTenant } = useAuth();
-
-  const features: Feature[] = useMemo(() => {
-    // If we have a tenant with settings, use its feature configuration
-    if (currentTenant?.settings?.features) {
-      const tenantFeatures = currentTenant.settings.features;
-      
-      return Object.entries(FEATURE_MATRIX).map(([key, definition]) => ({
-        id: key,
-        name: definition.name,
-        enabled: tenantFeatures[key as keyof typeof tenantFeatures] ?? definition.enabled,
-        category: definition.category
-      }));
-    }
-
-    // Fallback to demo configuration with all features enabled
-    return Object.values(FEATURE_MATRIX).map(definition => ({
-      id: definition.id,
-      name: definition.name,
-      enabled: true, // Enable all features in demo mode
-      category: definition.category
-    }));
-  }, [currentTenant]);
-
-  const subscriptionTier: SubscriptionTier = currentTenant?.subscriptionTier || 'premium';
-
-  const getEnabledFeatures = () => features.filter(f => f.enabled);
-  const getAvailableFeatures = () => features;
-  const getUnavailableFeatures = () => features.filter(f => !f.enabled);
   
-  const isFeatureEnabled = (featureId: string) => {
-    const feature = features.find(f => f.id === featureId);
-    return feature?.enabled || true; // Default to true in demo mode
+  // Check if a feature is enabled both in tenant settings and by subscription tier
+  const isFeatureEnabled = (featureId: string): boolean => {
+    if (!currentTenant?.settings?.features || !currentTenant.subscriptionTier) return false;
+    
+    // First check if it's enabled in tenant settings
+    const isEnabledInSettings = currentTenant.settings.features[featureId as keyof typeof currentTenant.settings.features] || false;
+    
+    // Then check if the subscription tier allows it
+    const featureDefinition = FEATURE_MATRIX[featureId];
+    if (!featureDefinition) return false;
+    
+    const isAllowedBySubscription = featureDefinition.requiredSubscription.includes(currentTenant.subscriptionTier);
+    
+    // Feature must be both enabled in settings and allowed by subscription
+    return isEnabledInSettings && isAllowedBySubscription;
   };
 
-  const getFeatureDefinition = (featureId: string) => {
+  const getEnabledFeatures = () => {
+    if (!currentTenant?.settings?.features) return [];
+    
+    return Object.keys(FEATURE_MATRIX).filter(featureId => isFeatureEnabled(featureId));
+  };
+
+  const getDisabledFeatures = () => {
+    if (!currentTenant?.settings?.features) return [];
+    
+    return Object.keys(FEATURE_MATRIX).filter(featureId => !isFeatureEnabled(featureId));
+  };
+
+  const getAvailableFeatures = () => {
+    if (!currentTenant?.subscriptionTier) return [];
+    
+    // Return features available on current subscription tier
+    return Object.values(FEATURE_MATRIX).filter(feature => 
+      feature.requiredSubscription.includes(currentTenant.subscriptionTier)
+    );
+  };
+
+  const getUnavailableFeatures = () => {
+    if (!currentTenant?.subscriptionTier) return [];
+    
+    // Return features not available on current subscription tier
+    return Object.values(FEATURE_MATRIX).filter(feature => 
+      !feature.requiredSubscription.includes(currentTenant.subscriptionTier)
+    );
+  };
+
+  const getFeatureDefinition = (featureId: string): FeatureDefinition | undefined => {
     return FEATURE_MATRIX[featureId];
   };
 
-  const getSubscriptionTierFeatures = (tier: SubscriptionTier) => {
+  const getSubscriptionTierFeatures = (tier: string): FeatureDefinition[] => {
     return Object.values(FEATURE_MATRIX).filter(feature => 
       feature.requiredSubscription.includes(tier)
     );
   };
-  
+
   return {
-    features,
-    featureMatrix: FEATURE_MATRIX,
-    subscriptionTier,
+    isFeatureEnabled,
     getEnabledFeatures,
+    getDisabledFeatures,
     getAvailableFeatures,
     getUnavailableFeatures,
-    isFeatureEnabled,
     getFeatureDefinition,
-    getSubscriptionTierFeatures
+    getSubscriptionTierFeatures,
+    features: currentTenant?.settings?.features,
+    subscriptionTier: currentTenant?.subscriptionTier,
+    featureMatrix: FEATURE_MATRIX,
   };
 };
