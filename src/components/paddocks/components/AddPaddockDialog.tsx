@@ -1,14 +1,21 @@
+
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -16,268 +23,271 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { usePaddockService } from "@/hooks/usePaddockService";
 
 interface AddPaddockDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onAddPaddock: (paddockData: any) => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-const AddPaddockDialog = ({ isOpen, onClose, onAddPaddock }: AddPaddockDialogProps) => {
-  const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    name: "",
-    number: "",
-    type: "",
-    status: "available",
-    location: {
-      section: "",
-      coordinates: { x: 0, y: 0 },
+interface PaddockFormData {
+  name: string;
+  paddockNumber: string;
+  paddockType: string;
+  status: string;
+  capacity: number;
+  locationSection: string;
+  sizeLength: number;
+  sizeWidth: number;
+  sizeUnit: string;
+  features: string[];
+}
+
+const AddPaddockDialog = ({ open, onOpenChange }: AddPaddockDialogProps) => {
+  const { createPaddock, isCreatingPaddock } = usePaddockService();
+  
+  const form = useForm<PaddockFormData>({
+    defaultValues: {
+      name: "",
+      paddockNumber: "",
+      paddockType: "grazing",
+      status: "available",
+      capacity: 1,
+      locationSection: "",
+      sizeLength: 0,
+      sizeWidth: 0,
+      sizeUnit: "meters",
+      features: [],
     },
-    capacity: 0,
-    size: {
-      length: 0,
-      width: 0,
-      unit: "meters",
-    },
-    description: "",
-    features: [],
-    amenities: [],
   });
 
-  const handleInputChange = (field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const handleLocationChange = (field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      location: {
-        ...prev.location,
-        [field]: value
-      }
-    }));
-  };
-
-  const handleSizeChange = (field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      size: {
-        ...prev.size,
-        [field]: value
-      }
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Basic validation
-    if (!formData.name || !formData.number || !formData.type || !formData.location.section) {
-      toast({
-        title: "Error",
-        description: "Please fill in all required fields",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Create paddock data
-    const paddockData = {
-      ...formData,
-      currentOccupancy: 0,
-      assignedHorses: [],
-      maintenanceSchedule: null,
-      rotationSchedule: null,
-    };
-
-    onAddPaddock(paddockData);
-    
-    // Reset form
-    setFormData({
-      name: "",
-      number: "",
-      type: "",
-      status: "available",
-      location: {
-        section: "",
-        coordinates: { x: 0, y: 0 },
-      },
-      capacity: 0,
-      size: {
-        length: 0,
-        width: 0,
-        unit: "meters",
-      },
-      description: "",
-      features: [],
-      amenities: [],
+  const onSubmit = (data: PaddockFormData) => {
+    createPaddock({
+      name: data.name,
+      paddock_number: data.paddockNumber,
+      paddock_type: data.paddockType,
+      status: data.status,
+      capacity: data.capacity,
+      current_occupancy: 0,
+      location_section: data.locationSection,
+      size_length: data.sizeLength,
+      size_width: data.sizeWidth,
+      size_unit: data.sizeUnit,
+      features: data.features,
     });
     
-    onClose();
+    form.reset();
+    onOpenChange(false);
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Add New Paddock</DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Basic Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="name">Paddock Name *</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => handleInputChange("name", e.target.value)}
-                placeholder="e.g., North Pasture"
-                required
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Paddock Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter paddock name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="paddockNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Paddock Number</FormLabel>
+                    <FormControl>
+                      <Input placeholder="P001" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
-            
-            <div>
-              <Label htmlFor="number">Paddock Number *</Label>
-              <Input
-                id="number"
-                value={formData.number}
-                onChange={(e) => handleInputChange("number", e.target.value)}
-                placeholder="e.g., NP-001"
-                required
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="paddockType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Type</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="grazing">Grazing</SelectItem>
+                        <SelectItem value="exercise">Exercise</SelectItem>
+                        <SelectItem value="turnout">Turnout</SelectItem>
+                        <SelectItem value="quarantine">Quarantine</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="available">Available</SelectItem>
+                        <SelectItem value="occupied">Occupied</SelectItem>
+                        <SelectItem value="maintenance">Maintenance</SelectItem>
+                        <SelectItem value="resting">Resting</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
-          </div>
 
-          {/* Type and Status */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="type">Paddock Type *</Label>
-              <Select value={formData.type} onValueChange={(value) => handleInputChange("type", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="grazing">Grazing</SelectItem>
-                  <SelectItem value="exercise">Exercise</SelectItem>
-                  <SelectItem value="turnout">Turnout</SelectItem>
-                  <SelectItem value="breeding">Breeding</SelectItem>
-                  <SelectItem value="quarantine">Quarantine</SelectItem>
-                  <SelectItem value="rehabilitation">Rehabilitation</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div>
-              <Label htmlFor="status">Status</Label>
-              <Select value={formData.status} onValueChange={(value) => handleInputChange("status", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="available">Available</SelectItem>
-                  <SelectItem value="occupied">Occupied</SelectItem>
-                  <SelectItem value="maintenance">Maintenance</SelectItem>
-                  <SelectItem value="reserved">Reserved</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="capacity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Capacity</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="1"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          {/* Location and Capacity */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="section">Location Section *</Label>
-              <Input
-                id="section"
-                value={formData.location.section}
-                onChange={(e) => handleLocationChange("section", e.target.value)}
-                placeholder="e.g., North Section"
-                required
+              <FormField
+                control={form.control}
+                name="locationSection"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Location Section</FormLabel>
+                    <FormControl>
+                      <Input placeholder="North Field" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
-            
-            <div>
-              <Label htmlFor="capacity">Horse Capacity</Label>
-              <Input
-                id="capacity"
-                type="number"
-                min="0"
-                value={formData.capacity}
-                onChange={(e) => handleInputChange("capacity", parseInt(e.target.value) || 0)}
-                placeholder="Maximum number of horses"
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <FormField
+                control={form.control}
+                name="sizeLength"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Length</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        step="0.1"
+                        {...field}
+                        onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="sizeWidth"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Width</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        step="0.1"
+                        {...field}
+                        onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="sizeUnit"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Unit</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select unit" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="meters">Meters</SelectItem>
+                        <SelectItem value="feet">Feet</SelectItem>
+                        <SelectItem value="acres">Acres</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
-          </div>
 
-          {/* Size */}
-          <div>
-            <Label>Paddock Size</Label>
-            <div className="grid grid-cols-3 gap-4 mt-2">
-              <div>
-                <Input
-                  type="number"
-                  min="0"
-                  value={formData.size.length}
-                  onChange={(e) => handleSizeChange("length", parseInt(e.target.value) || 0)}
-                  placeholder="Length"
-                />
-              </div>
-              <div>
-                <Input
-                  type="number"
-                  min="0"
-                  value={formData.size.width}
-                  onChange={(e) => handleSizeChange("width", parseInt(e.target.value) || 0)}
-                  placeholder="Width"
-                />
-              </div>
-              <div>
-                <Select value={formData.size.unit} onValueChange={(value) => handleSizeChange("unit", value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="meters">Meters</SelectItem>
-                    <SelectItem value="feet">Feet</SelectItem>
-                    <SelectItem value="acres">Acres</SelectItem>
-                    <SelectItem value="hectares">Hectares</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="flex justify-end gap-2 pt-4">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => onOpenChange(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isCreatingPaddock}>
+                {isCreatingPaddock ? "Creating..." : "Create Paddock"}
+              </Button>
             </div>
-          </div>
-
-          {/* Description */}
-          <div>
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => handleInputChange("description", e.target.value)}
-              placeholder="Additional details about the paddock..."
-              rows={3}
-            />
-          </div>
-
-          {/* Actions */}
-          <div className="flex justify-end gap-2 pt-6">
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button type="submit">
-              Add Paddock
-            </Button>
-          </div>
-        </form>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default AddPaddockDialog; 
+export default AddPaddockDialog;
