@@ -26,6 +26,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { usePaddockService } from "@/hooks/usePaddockService";
+import { PaddockStatus, PaddockType } from "@/types/paddocks";
 
 interface AddPaddockDialogProps {
   open: boolean;
@@ -66,16 +67,22 @@ const AddPaddockDialog = ({ open, onOpenChange }: AddPaddockDialogProps) => {
   const onSubmit = (data: PaddockFormData) => {
     createPaddock({
       name: data.name,
-      paddock_number: data.paddockNumber,
-      paddock_type: data.paddockType,
-      status: data.status,
+      number: data.paddockNumber,
+      type: data.paddockType as PaddockType,
+      status: data.status as PaddockStatus,
+      size: {
+        length: data.sizeLength,
+        width: data.sizeWidth,
+        unit: data.sizeUnit,
+      },
       capacity: data.capacity,
-      current_occupancy: 0,
-      location_section: data.locationSection,
-      size_length: data.sizeLength,
-      size_width: data.sizeWidth,
-      size_unit: data.sizeUnit,
+      currentOccupancy: 0,
+      location: {
+        section: data.locationSection,
+      },
       features: data.features,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
     
     form.reset();
@@ -139,6 +146,8 @@ const AddPaddockDialog = ({ open, onOpenChange }: AddPaddockDialogProps) => {
                         <SelectItem value="exercise">Exercise</SelectItem>
                         <SelectItem value="turnout">Turnout</SelectItem>
                         <SelectItem value="quarantine">Quarantine</SelectItem>
+                        <SelectItem value="breeding">Breeding</SelectItem>
+                        <SelectItem value="rehabilitation">Rehabilitation</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -162,7 +171,7 @@ const AddPaddockDialog = ({ open, onOpenChange }: AddPaddockDialogProps) => {
                         <SelectItem value="available">Available</SelectItem>
                         <SelectItem value="occupied">Occupied</SelectItem>
                         <SelectItem value="maintenance">Maintenance</SelectItem>
-                        <SelectItem value="resting">Resting</SelectItem>
+                        <SelectItem value="reserved">Reserved</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
