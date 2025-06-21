@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { 
   Menu, 
-  Heart, 
+  Horse, 
   Stethoscope, 
   Calculator, 
   Package, 
@@ -19,7 +19,7 @@ import TenantSwitcher from "./auth/TenantSwitcher";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
-  { name: "Horses", href: "/dashboard/horses", icon: Heart },
+  { name: "Horses", href: "/dashboard/horses", icon: Horse },
   { name: "Clinic", href: "/dashboard/clinic", icon: Stethoscope },
   { name: "Finance", href: "/dashboard/finance", icon: Calculator },
   { name: "Inventory", href: "/dashboard/inventory", icon: Package },
