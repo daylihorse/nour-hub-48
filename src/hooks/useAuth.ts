@@ -1,14 +1,40 @@
 
-import { useContext } from 'react';
-import { AuthContextProvider } from '@/contexts/AuthContext';
-import { AuthContext } from '@/types/tenant';
+import { useState, useEffect } from 'react';
 
-export const useAuth = (): AuthContext => {
-  const context = useContext(AuthContextProvider);
-  
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  
-  return context;
+interface AuthState {
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  user: any | null;
+}
+
+export const useAuth = () => {
+  const [authState, setAuthState] = useState<AuthState>({
+    isAuthenticated: false,
+    isLoading: true,
+    user: null
+  });
+
+  useEffect(() => {
+    // Simulate auth check
+    const checkAuth = async () => {
+      try {
+        // In demo mode, always authenticated
+        setAuthState({
+          isAuthenticated: true,
+          isLoading: false,
+          user: { id: 'demo-user', name: 'Demo User' }
+        });
+      } catch (error) {
+        setAuthState({
+          isAuthenticated: false,
+          isLoading: false,
+          user: null
+        });
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  return authState;
 };
