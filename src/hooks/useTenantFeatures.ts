@@ -33,7 +33,7 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     id: 'laboratory', 
     name: 'Laboratory Services', 
     description: 'Lab testing, sample management, and diagnostic services', 
-    enabled: false, 
+    enabled: true, 
     category: 'medical',
     requiredSubscription: ['professional', 'premium', 'enterprise']
   },
@@ -41,7 +41,7 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     id: 'clinic', 
     name: 'Veterinary Clinic', 
     description: 'Medical records and treatments', 
-    enabled: false, 
+    enabled: true, 
     category: 'medical',
     requiredSubscription: ['professional', 'premium', 'enterprise']
   },
@@ -49,7 +49,7 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     id: 'pharmacy', 
     name: 'Pharmacy Services', 
     description: 'Medication management and pharmaceutical operations', 
-    enabled: false, 
+    enabled: true, 
     category: 'medical',
     requiredSubscription: ['professional', 'premium', 'enterprise']
   },
@@ -57,7 +57,7 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     id: 'marketplace', 
     name: 'Marketplace', 
     description: 'Buy and sell horses, equipment, and services', 
-    enabled: false, 
+    enabled: true, 
     category: 'commercial',
     requiredSubscription: ['premium', 'enterprise']
   },
@@ -65,7 +65,7 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     id: 'finance', 
     name: 'Finance Management', 
     description: 'Financial tracking and reporting', 
-    enabled: false, 
+    enabled: true, 
     category: 'business',
     requiredSubscription: ['professional', 'premium', 'enterprise']
   },
@@ -73,7 +73,7 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     id: 'hr', 
     name: 'HR Department', 
     description: 'Human resources and employee management', 
-    enabled: false, 
+    enabled: true, 
     category: 'business',
     requiredSubscription: ['premium', 'enterprise']
   },
@@ -81,7 +81,7 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     id: 'inventory', 
     name: 'Inventory Management', 
     description: 'Stock and supply management', 
-    enabled: false, 
+    enabled: true, 
     category: 'operations',
     requiredSubscription: ['premium', 'enterprise']
   },
@@ -89,7 +89,7 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     id: 'training', 
     name: 'Training Center', 
     description: 'Training programs and tracking', 
-    enabled: false, 
+    enabled: true, 
     category: 'operations',
     requiredSubscription: ['premium', 'enterprise']
   },
@@ -97,7 +97,7 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     id: 'rooms', 
     name: 'Stable Rooms', 
     description: 'Room and facility management', 
-    enabled: false, 
+    enabled: true, 
     category: 'facilities',
     requiredSubscription: ['basic', 'professional', 'premium', 'enterprise']
   },
@@ -105,7 +105,7 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     id: 'maintenance', 
     name: 'Maintenance', 
     description: 'Equipment and facility maintenance tracking', 
-    enabled: false, 
+    enabled: true, 
     category: 'facilities',
     requiredSubscription: ['professional', 'premium', 'enterprise']
   },
@@ -113,7 +113,7 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     id: 'messages', 
     name: 'Messages', 
     description: 'Internal messaging and communication', 
-    enabled: false, 
+    enabled: true, 
     category: 'communication',
     requiredSubscription: ['basic', 'professional', 'premium', 'enterprise']
   },
@@ -129,7 +129,7 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     id: 'analytics', 
     name: 'Analytics & Reports', 
     description: 'Business intelligence and reporting', 
-    enabled: false, 
+    enabled: true, 
     category: 'insights',
     requiredSubscription: ['premium', 'enterprise']
   },
@@ -137,7 +137,7 @@ export const FEATURE_MATRIX: Record<string, FeatureDefinition> = {
     id: 'paddocks', 
     name: 'Paddock Management', 
     description: 'Paddock and pasture management', 
-    enabled: false, 
+    enabled: true, 
     category: 'facilities',
     requiredSubscription: ['basic', 'professional', 'premium', 'enterprise']
   }
@@ -154,21 +154,21 @@ export const useTenantFeatures = () => {
       return Object.entries(FEATURE_MATRIX).map(([key, definition]) => ({
         id: key,
         name: definition.name,
-        enabled: tenantFeatures[key as keyof typeof tenantFeatures] ?? false,
+        enabled: tenantFeatures[key as keyof typeof tenantFeatures] ?? definition.enabled,
         category: definition.category
       }));
     }
 
-    // Fallback to basic configuration for demo mode
+    // Fallback to demo configuration with all features enabled
     return Object.values(FEATURE_MATRIX).map(definition => ({
       id: definition.id,
       name: definition.name,
-      enabled: definition.enabled,
+      enabled: true, // Enable all features in demo mode
       category: definition.category
     }));
   }, [currentTenant]);
 
-  const subscriptionTier: SubscriptionTier = currentTenant?.subscriptionTier || 'basic';
+  const subscriptionTier: SubscriptionTier = currentTenant?.subscriptionTier || 'premium';
 
   const getEnabledFeatures = () => features.filter(f => f.enabled);
   const getAvailableFeatures = () => features;
@@ -176,7 +176,7 @@ export const useTenantFeatures = () => {
   
   const isFeatureEnabled = (featureId: string) => {
     const feature = features.find(f => f.id === featureId);
-    return feature?.enabled || false;
+    return feature?.enabled || true; // Default to true in demo mode
   };
 
   const getFeatureDefinition = (featureId: string) => {
