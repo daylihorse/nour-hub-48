@@ -10,6 +10,8 @@ import TestCompletionSection from "./components/TestCompletionSection";
 import { useState, useEffect } from "react";
 import { Template } from "@/types/template";
 import { initializeMockTemplateData } from "../utils/mockTemplateData";
+import { convertLaboratoryTemplatesToTemplates } from "@/components/laboratory/sample-management/utils/templateConverter";
+import { useLaboratoryData } from "@/hooks/useLaboratoryData";
 
 interface TestResultStep1Props {
   formData: TestResultFormData;
@@ -18,6 +20,7 @@ interface TestResultStep1Props {
 
 const TestResultStep1 = ({ formData, updateFormData }: TestResultStep1Props) => {
   const { getTemplateById } = useTemplateIntegration();
+  const { templates: laboratoryTemplates } = useLaboratoryData();
   const [preSelectedTemplates, setPreSelectedTemplates] = useState<Template[]>([]);
   const [templatesLoading, setTemplatesLoading] = useState(false);
   const [mockDataInitialized, setMockDataInitialized] = useState(false);
@@ -73,19 +76,19 @@ const TestResultStep1 = ({ formData, updateFormData }: TestResultStep1Props) => 
         if (templateData.success && templateData.templateIds.length > 0) {
           console.log(`Found ${templateData.templateIds.length} templates for sample ${sampleId}:`, templateData.templateIds);
           
-          const templates = templateData.templateIds
-            .map(id => {
-              const template = getTemplateById(id);
-              console.log(`Template lookup for ID ${id}:`, template ? `Found: ${template.nameEn}` : 'Not found');
-              return template;
-            })
-            .filter((template): template is Template => template !== undefined);
+          // Find the laboratory templates and convert them
+          const matchingLabTemplates = laboratoryTemplates.filter(labTemplate => 
+            templateData.templateIds.includes(labTemplate.id)
+          );
+          
+          // Convert to Template format for display
+          const templates = convertLaboratoryTemplatesToTemplates(matchingLabTemplates);
           
           console.log(`Successfully resolved ${templates.length} template objects`);
           setPreSelectedTemplates(templates);
           
           // Update form data with template IDs and combined test type
-          const testType = templates.map(t => t.nameEn).join(", ");
+          const testType = matchingLabTemplates.map(t => t.name_en).join(", ");
           updateFormData({
             templateIds: templateData.templateIds,
             testType: testType

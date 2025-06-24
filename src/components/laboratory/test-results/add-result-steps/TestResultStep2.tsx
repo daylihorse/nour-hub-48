@@ -8,6 +8,8 @@ import { TemplateLoadingSection } from "./components/TemplateLoadingSection";
 import { TemplateParametersTable } from "./components/TemplateParametersTable";
 import { AddCustomParameterForm } from "./components/AddCustomParameterForm";
 import { ArrowLeft } from "lucide-react";
+import { convertLaboratoryTemplatesToTemplates } from "@/components/laboratory/sample-management/utils/templateConverter";
+import { useLaboratoryData } from "@/hooks/useLaboratoryData";
 
 interface TestResultStep2Props {
   formData: TestResultFormData;
@@ -15,8 +17,15 @@ interface TestResultStep2Props {
 }
 
 const TestResultStep2 = ({ formData, updateFormData }: TestResultStep2Props) => {
+  const { templates: laboratoryTemplates } = useLaboratoryData();
+
+  // Convert laboratory templates to Template format for the hook
+  const selectedLaboratoryTemplates = laboratoryTemplates.filter(template => 
+    formData.templateIds?.includes(template.id)
+  );
+  const selectedTemplates = convertLaboratoryTemplatesToTemplates(selectedLaboratoryTemplates);
+
   const {
-    selectedTemplates,
     templateLoaded,
     selectedTemplateFilter,
     filteredValues,
@@ -110,7 +119,7 @@ const TestResultStep2 = ({ formData, updateFormData }: TestResultStep2Props) => 
               <div className="text-xs mt-2">
                 Sample Type: {activeTemplate.sampleType} • 
                 Methodology: {activeTemplate.methodology} • 
-                Turnaround: {activeTemplate.turnaroundTime}h
+                Turnaround: {activeTemplate.turnaroundTime}
               </div>
             </div>
           )}

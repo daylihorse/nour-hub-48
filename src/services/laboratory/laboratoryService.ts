@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 
 export interface LaboratorySample {
@@ -130,7 +129,11 @@ class LaboratoryService {
     return (data || []).map(item => ({
       ...item,
       priority: item.priority as LaboratorySample['priority'],
-      status: item.status as LaboratorySample['status']
+      status: item.status as LaboratorySample['status'],
+      attachments: Array.isArray(item.attachments) ? item.attachments : [],
+      client_contact: item.client_contact || {},
+      required_analysis: Array.isArray(item.required_analysis) ? item.required_analysis : [],
+      selected_templates: Array.isArray(item.selected_templates) ? item.selected_templates : []
     }));
   }
 
@@ -155,7 +158,11 @@ class LaboratoryService {
     return {
       ...data,
       priority: data.priority as LaboratorySample['priority'],
-      status: data.status as LaboratorySample['status']
+      status: data.status as LaboratorySample['status'],
+      attachments: Array.isArray(data.attachments) ? data.attachments : [],
+      client_contact: data.client_contact || {},
+      required_analysis: Array.isArray(data.required_analysis) ? data.required_analysis : [],
+      selected_templates: Array.isArray(data.selected_templates) ? data.selected_templates : []
     };
   }
 
@@ -175,7 +182,11 @@ class LaboratoryService {
     return {
       ...data,
       priority: data.priority as LaboratorySample['priority'],
-      status: data.status as LaboratorySample['status']
+      status: data.status as LaboratorySample['status'],
+      attachments: Array.isArray(data.attachments) ? data.attachments : [],
+      client_contact: data.client_contact || {},
+      required_analysis: Array.isArray(data.required_analysis) ? data.required_analysis : [],
+      selected_templates: Array.isArray(data.selected_templates) ? data.selected_templates : []
     };
   }
 
@@ -194,7 +205,11 @@ class LaboratoryService {
     return (data || []).map(item => ({
       ...item,
       status: item.status as LaboratoryTestResult['status'],
-      priority: item.priority as LaboratoryTestResult['priority']
+      priority: item.priority as LaboratoryTestResult['priority'],
+      attachments: Array.isArray(item.attachments) ? item.attachments : [],
+      equipment_used: Array.isArray(item.equipment_used) ? item.equipment_used : [],
+      parameters: item.parameters || {},
+      normal_ranges: item.normal_ranges || {}
     }));
   }
 
@@ -219,7 +234,11 @@ class LaboratoryService {
     return {
       ...data,
       status: data.status as LaboratoryTestResult['status'],
-      priority: data.priority as LaboratoryTestResult['priority']
+      priority: data.priority as LaboratoryTestResult['priority'],
+      attachments: Array.isArray(data.attachments) ? data.attachments : [],
+      equipment_used: Array.isArray(data.equipment_used) ? data.equipment_used : [],
+      parameters: data.parameters || {},
+      normal_ranges: data.normal_ranges || {}
     };
   }
 
@@ -239,7 +258,11 @@ class LaboratoryService {
     return {
       ...data,
       status: data.status as LaboratoryTestResult['status'],
-      priority: data.priority as LaboratoryTestResult['priority']
+      priority: data.priority as LaboratoryTestResult['priority'],
+      attachments: Array.isArray(data.attachments) ? data.attachments : [],
+      equipment_used: Array.isArray(data.equipment_used) ? data.equipment_used : [],
+      parameters: data.parameters || {},
+      normal_ranges: data.normal_ranges || {}
     };
   }
 
@@ -258,7 +281,10 @@ class LaboratoryService {
 
     return (data || []).map(item => ({
       ...item,
-      template_type: item.template_type as LaboratoryTemplate['template_type']
+      template_type: item.template_type as LaboratoryTemplate['template_type'],
+      parameters: Array.isArray(item.parameters) ? item.parameters : [],
+      normal_ranges: item.normal_ranges || {},
+      equipment_required: Array.isArray(item.equipment_required) ? item.equipment_required : []
     }));
   }
 
@@ -276,7 +302,10 @@ class LaboratoryService {
 
     return {
       ...data,
-      template_type: data.template_type as LaboratoryTemplate['template_type']
+      template_type: data.template_type as LaboratoryTemplate['template_type'],
+      parameters: Array.isArray(data.parameters) ? data.parameters : [],
+      normal_ranges: data.normal_ranges || {},
+      equipment_required: Array.isArray(data.equipment_required) ? data.equipment_required : []
     };
   }
 
@@ -295,7 +324,10 @@ class LaboratoryService {
 
     return {
       ...data,
-      template_type: data.template_type as LaboratoryTemplate['template_type']
+      template_type: data.template_type as LaboratoryTemplate['template_type'],
+      parameters: Array.isArray(data.parameters) ? data.parameters : [],
+      normal_ranges: data.normal_ranges || {},
+      equipment_required: Array.isArray(data.equipment_required) ? data.equipment_required : []
     };
   }
 
@@ -313,7 +345,11 @@ class LaboratoryService {
 
     return (data || []).map(item => ({
       ...item,
-      status: item.status as LaboratoryEquipment['status']
+      status: item.status as LaboratoryEquipment['status'],
+      specifications: item.specifications || {},
+      maintenance_history: Array.isArray(item.maintenance_history) ? item.maintenance_history : [],
+      usage_log: Array.isArray(item.usage_log) ? item.usage_log : [],
+      attachments: Array.isArray(item.attachments) ? item.attachments : []
     }));
   }
 
@@ -331,7 +367,11 @@ class LaboratoryService {
 
     return {
       ...data,
-      status: data.status as LaboratoryEquipment['status']
+      status: data.status as LaboratoryEquipment['status'],
+      specifications: data.specifications || {},
+      maintenance_history: Array.isArray(data.maintenance_history) ? data.maintenance_history : [],
+      usage_log: Array.isArray(data.usage_log) ? data.usage_log : [],
+      attachments: Array.isArray(data.attachments) ? data.attachments : []
     };
   }
 
@@ -350,7 +390,11 @@ class LaboratoryService {
 
     return {
       ...data,
-      status: data.status as LaboratoryEquipment['status']
+      status: data.status as LaboratoryEquipment['status'],
+      specifications: data.specifications || {},
+      maintenance_history: Array.isArray(data.maintenance_history) ? data.maintenance_history : [],
+      usage_log: Array.isArray(data.usage_log) ? data.usage_log : [],
+      attachments: Array.isArray(data.attachments) ? data.attachments : []
     };
   }
 
