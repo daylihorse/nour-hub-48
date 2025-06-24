@@ -1,13 +1,13 @@
 
 import { useState, useCallback, useMemo } from "react";
 import { TestResultFormData, TestValueStatus } from "../../AddTestResultDialog";
-import { useTemplateIntegration } from "../../hooks/useTemplateIntegration";
 import { calculateStatus } from "../utils/statusUtils";
 import { Template } from "@/types/template";
 
 interface UseTestValuesProps {
   formData: TestResultFormData;
   updateFormData: (updates: Partial<TestResultFormData>) => void;
+  selectedTemplates: Template[]; // Accept converted templates directly
 }
 
 interface TestValue {
@@ -16,18 +16,12 @@ interface TestValue {
   unit: string;
   reference: string;
   status: TestValueStatus;
-  templateId?: string; // Add template association
+  templateId?: string;
 }
 
-export const useTestValues = ({ formData, updateFormData }: UseTestValuesProps) => {
-  const { getTemplateById } = useTemplateIntegration();
+export const useTestValues = ({ formData, updateFormData, selectedTemplates }: UseTestValuesProps) => {
   const [templateLoaded, setTemplateLoaded] = useState(false);
   const [selectedTemplateFilter, setSelectedTemplateFilter] = useState<string | null>(null);
-
-  // Get all selected templates
-  const selectedTemplates = formData.templateIds
-    .map(id => getTemplateById(id))
-    .filter((template): template is NonNullable<typeof template> => template !== undefined);
 
   // Filter values based on selected template
   const filteredValues = useMemo(() => {
@@ -39,7 +33,7 @@ export const useTestValues = ({ formData, updateFormData }: UseTestValuesProps) 
 
   // Get template for filtered view
   const activeTemplate = selectedTemplateFilter 
-    ? getTemplateById(selectedTemplateFilter) 
+    ? selectedTemplates.find(template => template.id === selectedTemplateFilter) 
     : null;
 
   const loadTemplateParameters = useCallback(() => {
@@ -55,7 +49,7 @@ export const useTestValues = ({ formData, updateFormData }: UseTestValuesProps) 
             ? `${param.normalRangeMin} - ${param.normalRangeMax}`
             : "Not specified",
           status: "normal" as TestValueStatus,
-          templateId: template.id // Associate parameter with template
+          templateId: template.id
         });
       });
     });
@@ -73,7 +67,7 @@ export const useTestValues = ({ formData, updateFormData }: UseTestValuesProps) 
         unit: testValue.unit,
         reference: testValue.reference,
         status: testValue.status,
-        templateId: selectedTemplateFilter || undefined // Associate with current filter or leave unassigned
+        templateId: selectedTemplateFilter || undefined
       };
       updateFormData({ values: [...formData.values, newValue] });
       return true;

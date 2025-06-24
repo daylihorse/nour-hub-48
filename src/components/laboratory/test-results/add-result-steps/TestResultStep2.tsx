@@ -36,7 +36,11 @@ const TestResultStep2 = ({ formData, updateFormData }: TestResultStep2Props) => 
     updateValue,
     handleTemplateFilter,
     getTemplateParameterCount
-  } = useTestValues({ formData, updateFormData });
+  } = useTestValues({ 
+    formData, 
+    updateFormData, 
+    selectedTemplates // Pass the converted templates
+  });
 
   if (!formData.templateIds || formData.templateIds.length === 0) {
     return (
