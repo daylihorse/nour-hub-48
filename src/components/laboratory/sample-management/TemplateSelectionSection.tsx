@@ -7,6 +7,7 @@ import TemplatePreviewDialog from "./components/TemplatePreviewDialog";
 import TemplateSearchFilters from "./components/TemplateSearchFilters";
 import TemplateGrid from "./components/TemplateGrid";
 import SelectedTemplatesSummary from "./components/SelectedTemplatesSummary";
+import { convertLaboratoryTemplatesToTemplates } from "./utils/templateConverter";
 
 interface TemplateSelectionSectionProps {
   selectedTemplates: string[];
@@ -18,7 +19,7 @@ const TemplateSelectionSection = ({
   onTemplateChange
 }: TemplateSelectionSectionProps) => {
   const {
-    templates,
+    templates: laboratorTemplates,
     loading,
     searchTerm,
     categoryFilter,
@@ -35,6 +36,9 @@ const TemplateSelectionSection = ({
   } = useTemplateManagement();
 
   const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
+
+  // Convert laboratory templates to the expected Template format
+  const templates = convertLaboratoryTemplatesToTemplates(laboratorTemplates);
 
   const handlePreview = (template: Template) => {
     setPreviewTemplate(template);

@@ -127,7 +127,11 @@ class LaboratoryService {
       throw error;
     }
 
-    return data || [];
+    return (data || []).map(item => ({
+      ...item,
+      priority: item.priority as LaboratorySample['priority'],
+      status: item.status as LaboratorySample['status']
+    }));
   }
 
   async createSample(sample: Omit<LaboratorySample, 'id' | 'created_at' | 'updated_at'>): Promise<LaboratorySample> {
@@ -148,7 +152,11 @@ class LaboratoryService {
       throw error;
     }
 
-    return data;
+    return {
+      ...data,
+      priority: data.priority as LaboratorySample['priority'],
+      status: data.status as LaboratorySample['status']
+    };
   }
 
   async updateSample(id: string, updates: Partial<LaboratorySample>): Promise<LaboratorySample> {
@@ -164,7 +172,11 @@ class LaboratoryService {
       throw error;
     }
 
-    return data;
+    return {
+      ...data,
+      priority: data.priority as LaboratorySample['priority'],
+      status: data.status as LaboratorySample['status']
+    };
   }
 
   // Test results management
@@ -179,7 +191,11 @@ class LaboratoryService {
       throw error;
     }
 
-    return data || [];
+    return (data || []).map(item => ({
+      ...item,
+      status: item.status as LaboratoryTestResult['status'],
+      priority: item.priority as LaboratoryTestResult['priority']
+    }));
   }
 
   async createTestResult(result: Omit<LaboratoryTestResult, 'id' | 'created_at' | 'updated_at'>): Promise<LaboratoryTestResult> {
@@ -200,7 +216,11 @@ class LaboratoryService {
       throw error;
     }
 
-    return data;
+    return {
+      ...data,
+      status: data.status as LaboratoryTestResult['status'],
+      priority: data.priority as LaboratoryTestResult['priority']
+    };
   }
 
   async updateTestResult(id: string, updates: Partial<LaboratoryTestResult>): Promise<LaboratoryTestResult> {
@@ -216,7 +236,11 @@ class LaboratoryService {
       throw error;
     }
 
-    return data;
+    return {
+      ...data,
+      status: data.status as LaboratoryTestResult['status'],
+      priority: data.priority as LaboratoryTestResult['priority']
+    };
   }
 
   // Template management
@@ -232,7 +256,10 @@ class LaboratoryService {
       throw error;
     }
 
-    return data || [];
+    return (data || []).map(item => ({
+      ...item,
+      template_type: item.template_type as LaboratoryTemplate['template_type']
+    }));
   }
 
   async createTemplate(template: Omit<LaboratoryTemplate, 'id' | 'created_at' | 'updated_at'>): Promise<LaboratoryTemplate> {
@@ -247,7 +274,10 @@ class LaboratoryService {
       throw error;
     }
 
-    return data;
+    return {
+      ...data,
+      template_type: data.template_type as LaboratoryTemplate['template_type']
+    };
   }
 
   async updateTemplate(id: string, updates: Partial<LaboratoryTemplate>): Promise<LaboratoryTemplate> {
@@ -263,7 +293,10 @@ class LaboratoryService {
       throw error;
     }
 
-    return data;
+    return {
+      ...data,
+      template_type: data.template_type as LaboratoryTemplate['template_type']
+    };
   }
 
   // Equipment management
@@ -278,7 +311,10 @@ class LaboratoryService {
       throw error;
     }
 
-    return data || [];
+    return (data || []).map(item => ({
+      ...item,
+      status: item.status as LaboratoryEquipment['status']
+    }));
   }
 
   async createEquipment(equipment: Omit<LaboratoryEquipment, 'id' | 'created_at' | 'updated_at'>): Promise<LaboratoryEquipment> {
@@ -293,7 +329,10 @@ class LaboratoryService {
       throw error;
     }
 
-    return data;
+    return {
+      ...data,
+      status: data.status as LaboratoryEquipment['status']
+    };
   }
 
   async updateEquipment(id: string, updates: Partial<LaboratoryEquipment>): Promise<LaboratoryEquipment> {
@@ -309,7 +348,10 @@ class LaboratoryService {
       throw error;
     }
 
-    return data;
+    return {
+      ...data,
+      status: data.status as LaboratoryEquipment['status']
+    };
   }
 
   // Utility methods

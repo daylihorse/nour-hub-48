@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { useLaboratoryData } from './useLaboratoryData';
 import { LaboratoryTemplate } from '@/services/laboratory/laboratoryService';
 
@@ -80,6 +81,21 @@ export const useCentralTemplateService = () => {
     return templates.filter(t => selectedTemplates.includes(t.id));
   };
 
+  const getTemplateById = (id: string) => {
+    return templates.find(t => t.id === id);
+  };
+
+  const convertTemplateToFormValues = (template: LaboratoryTemplate) => {
+    // Convert laboratory template to form values format
+    return {
+      id: template.id,
+      name: template.name_en,
+      category: template.category,
+      parameters: template.parameters || [],
+      normalRanges: template.normal_ranges || {},
+    };
+  };
+
   const loadTemplates = () => {
     // Templates are automatically loaded via the useLaboratoryData hook
     // This function is kept for compatibility
@@ -98,6 +114,8 @@ export const useCentralTemplateService = () => {
     setFilter,
     clearFilters,
     getSelectedTemplateDetails,
+    getTemplateById,
+    convertTemplateToFormValues,
     loadTemplates
   };
 };
