@@ -1199,6 +1199,50 @@ export type Database = {
           },
         ]
       }
+      horse_groups: {
+        Row: {
+          created_at: string | null
+          current_paddock_id: string | null
+          group_name: string
+          horse_ids: string[]
+          id: string
+          rotation_order: number
+          rotation_plan_id: string
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_paddock_id?: string | null
+          group_name: string
+          horse_ids: string[]
+          id?: string
+          rotation_order: number
+          rotation_plan_id: string
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_paddock_id?: string | null
+          group_name?: string
+          horse_ids?: string[]
+          id?: string
+          rotation_order?: number
+          rotation_plan_id?: string
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "horse_groups_rotation_plan_id_fkey"
+            columns: ["rotation_plan_id"]
+            isOneToOne: false
+            referencedRelation: "paddock_rotation_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       horse_movements: {
         Row: {
           attachments: Json | null
@@ -1735,6 +1779,491 @@ export type Database = {
           },
         ]
       }
+      laboratory_equipment: {
+        Row: {
+          attachments: Json | null
+          calibration_due: string | null
+          category: string
+          cost: number | null
+          created_at: string | null
+          created_by: string | null
+          equipment_number: string
+          id: string
+          last_maintenance: string | null
+          location: string | null
+          maintenance_history: Json | null
+          maintenance_interval_days: number | null
+          manufacturer: string | null
+          model: string | null
+          name: string
+          next_maintenance: string | null
+          operating_instructions: string | null
+          purchase_date: string | null
+          safety_notes: string | null
+          serial_number: string | null
+          specifications: Json | null
+          status: string
+          tenant_id: string
+          updated_at: string | null
+          usage_log: Json | null
+          warranty_expiry: string | null
+        }
+        Insert: {
+          attachments?: Json | null
+          calibration_due?: string | null
+          category: string
+          cost?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          equipment_number: string
+          id?: string
+          last_maintenance?: string | null
+          location?: string | null
+          maintenance_history?: Json | null
+          maintenance_interval_days?: number | null
+          manufacturer?: string | null
+          model?: string | null
+          name: string
+          next_maintenance?: string | null
+          operating_instructions?: string | null
+          purchase_date?: string | null
+          safety_notes?: string | null
+          serial_number?: string | null
+          specifications?: Json | null
+          status?: string
+          tenant_id: string
+          updated_at?: string | null
+          usage_log?: Json | null
+          warranty_expiry?: string | null
+        }
+        Update: {
+          attachments?: Json | null
+          calibration_due?: string | null
+          category?: string
+          cost?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          equipment_number?: string
+          id?: string
+          last_maintenance?: string | null
+          location?: string | null
+          maintenance_history?: Json | null
+          maintenance_interval_days?: number | null
+          manufacturer?: string | null
+          model?: string | null
+          name?: string
+          next_maintenance?: string | null
+          operating_instructions?: string | null
+          purchase_date?: string | null
+          safety_notes?: string | null
+          serial_number?: string | null
+          specifications?: Json | null
+          status?: string
+          tenant_id?: string
+          updated_at?: string | null
+          usage_log?: Json | null
+          warranty_expiry?: string | null
+        }
+        Relationships: []
+      }
+      laboratory_quality_control: {
+        Row: {
+          actual_results: Json
+          attachments: Json | null
+          control_date: string
+          control_type: string
+          corrective_actions: string | null
+          created_at: string | null
+          created_by: string | null
+          deviation_notes: string | null
+          equipment_used: string[] | null
+          expected_results: Json
+          id: string
+          operator: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          tenant_id: string
+          test_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          actual_results: Json
+          attachments?: Json | null
+          control_date: string
+          control_type: string
+          corrective_actions?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          deviation_notes?: string | null
+          equipment_used?: string[] | null
+          expected_results: Json
+          id?: string
+          operator: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          tenant_id: string
+          test_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          actual_results?: Json
+          attachments?: Json | null
+          control_date?: string
+          control_type?: string
+          corrective_actions?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          deviation_notes?: string | null
+          equipment_used?: string[] | null
+          expected_results?: Json
+          id?: string
+          operator?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          tenant_id?: string
+          test_type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      laboratory_samples: {
+        Row: {
+          attachments: Json | null
+          client_contact: Json | null
+          client_name: string | null
+          collected_by: string
+          collection_date: string
+          collection_time: string | null
+          completed_at: string | null
+          created_at: string | null
+          created_by: string | null
+          horse_id: string | null
+          horse_name: string
+          id: string
+          notes: string | null
+          person_who_brought: string
+          previous_sample_id: string | null
+          priority: string
+          processing_started_at: string | null
+          required_analysis: string[] | null
+          sample_number: string
+          sample_receipt_date: string | null
+          sample_type: string
+          selected_templates: string[] | null
+          status: string
+          storage_location: string | null
+          storage_temperature: string | null
+          tenant_id: string
+          updated_at: string | null
+          volume_amount: number | null
+          volume_unit: string | null
+        }
+        Insert: {
+          attachments?: Json | null
+          client_contact?: Json | null
+          client_name?: string | null
+          collected_by: string
+          collection_date: string
+          collection_time?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          horse_id?: string | null
+          horse_name: string
+          id?: string
+          notes?: string | null
+          person_who_brought: string
+          previous_sample_id?: string | null
+          priority?: string
+          processing_started_at?: string | null
+          required_analysis?: string[] | null
+          sample_number: string
+          sample_receipt_date?: string | null
+          sample_type: string
+          selected_templates?: string[] | null
+          status?: string
+          storage_location?: string | null
+          storage_temperature?: string | null
+          tenant_id: string
+          updated_at?: string | null
+          volume_amount?: number | null
+          volume_unit?: string | null
+        }
+        Update: {
+          attachments?: Json | null
+          client_contact?: Json | null
+          client_name?: string | null
+          collected_by?: string
+          collection_date?: string
+          collection_time?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          horse_id?: string | null
+          horse_name?: string
+          id?: string
+          notes?: string | null
+          person_who_brought?: string
+          previous_sample_id?: string | null
+          priority?: string
+          processing_started_at?: string | null
+          required_analysis?: string[] | null
+          sample_number?: string
+          sample_receipt_date?: string | null
+          sample_type?: string
+          selected_templates?: string[] | null
+          status?: string
+          storage_location?: string | null
+          storage_temperature?: string | null
+          tenant_id?: string
+          updated_at?: string | null
+          volume_amount?: number | null
+          volume_unit?: string | null
+        }
+        Relationships: []
+      }
+      laboratory_templates: {
+        Row: {
+          category: string
+          cost: number | null
+          created_at: string | null
+          created_by: string | null
+          equipment_required: string[] | null
+          estimated_duration_minutes: number | null
+          id: string
+          is_active: boolean | null
+          methodology: string | null
+          name_ar: string | null
+          name_en: string
+          normal_ranges: Json | null
+          parameters: Json | null
+          sample_type: string | null
+          template_type: string
+          tenant_id: string
+          updated_at: string | null
+          usage_count: number | null
+        }
+        Insert: {
+          category: string
+          cost?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          equipment_required?: string[] | null
+          estimated_duration_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
+          methodology?: string | null
+          name_ar?: string | null
+          name_en: string
+          normal_ranges?: Json | null
+          parameters?: Json | null
+          sample_type?: string | null
+          template_type: string
+          tenant_id: string
+          updated_at?: string | null
+          usage_count?: number | null
+        }
+        Update: {
+          category?: string
+          cost?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          equipment_required?: string[] | null
+          estimated_duration_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
+          methodology?: string | null
+          name_ar?: string | null
+          name_en?: string
+          normal_ranges?: Json | null
+          parameters?: Json | null
+          sample_type?: string | null
+          template_type?: string
+          tenant_id?: string
+          updated_at?: string | null
+          usage_count?: number | null
+        }
+        Relationships: []
+      }
+      laboratory_test_requests: {
+        Row: {
+          attachments: Json | null
+          completed_at: string | null
+          created_at: string | null
+          created_by: string | null
+          estimated_completion: string | null
+          horse_name: string
+          id: string
+          notes: string | null
+          priority: string
+          request_date: string
+          request_number: string
+          requested_by: string
+          sample_id: string
+          status: string
+          tenant_id: string
+          test_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          attachments?: Json | null
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          estimated_completion?: string | null
+          horse_name: string
+          id?: string
+          notes?: string | null
+          priority?: string
+          request_date: string
+          request_number: string
+          requested_by: string
+          sample_id: string
+          status?: string
+          tenant_id: string
+          test_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          attachments?: Json | null
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          estimated_completion?: string | null
+          horse_name?: string
+          id?: string
+          notes?: string | null
+          priority?: string
+          request_date?: string
+          request_number?: string
+          requested_by?: string
+          sample_id?: string
+          status?: string
+          tenant_id?: string
+          test_type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "laboratory_test_requests_sample_id_fkey"
+            columns: ["sample_id"]
+            isOneToOne: false
+            referencedRelation: "laboratory_samples"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      laboratory_test_results: {
+        Row: {
+          attachments: Json | null
+          client_name: string
+          completed_at: string | null
+          created_at: string | null
+          created_by: string | null
+          equipment_used: string[] | null
+          estimated_completion: string | null
+          horse_name: string
+          id: string
+          interpretation: string | null
+          methodology: string | null
+          normal_ranges: Json | null
+          notes: string | null
+          parameters: Json | null
+          priority: string
+          quality_control_passed: boolean | null
+          recommendations: string | null
+          result_number: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          sample_id: string
+          status: string
+          technician: string
+          template_id: string | null
+          tenant_id: string
+          test_date: string
+          test_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          attachments?: Json | null
+          client_name: string
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          equipment_used?: string[] | null
+          estimated_completion?: string | null
+          horse_name: string
+          id?: string
+          interpretation?: string | null
+          methodology?: string | null
+          normal_ranges?: Json | null
+          notes?: string | null
+          parameters?: Json | null
+          priority?: string
+          quality_control_passed?: boolean | null
+          recommendations?: string | null
+          result_number: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          sample_id: string
+          status?: string
+          technician: string
+          template_id?: string | null
+          tenant_id: string
+          test_date: string
+          test_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          attachments?: Json | null
+          client_name?: string
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          equipment_used?: string[] | null
+          estimated_completion?: string | null
+          horse_name?: string
+          id?: string
+          interpretation?: string | null
+          methodology?: string | null
+          normal_ranges?: Json | null
+          notes?: string | null
+          parameters?: Json | null
+          priority?: string
+          quality_control_passed?: boolean | null
+          recommendations?: string | null
+          result_number?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          sample_id?: string
+          status?: string
+          technician?: string
+          template_id?: string | null
+          tenant_id?: string
+          test_date?: string
+          test_type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "laboratory_test_results_sample_id_fkey"
+            columns: ["sample_id"]
+            isOneToOne: false
+            referencedRelation: "laboratory_samples"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "laboratory_test_results_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "laboratory_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       medical_alerts: {
         Row: {
           acknowledged_at: string | null
@@ -2013,6 +2542,244 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      paddock_assignments: {
+        Row: {
+          actual_end_date: string | null
+          assigned_by: string
+          assigned_date: string
+          assignment_type: string | null
+          created_at: string | null
+          horse_id: string
+          horse_name: string
+          id: string
+          notes: string | null
+          paddock_id: string
+          reason: string | null
+          scheduled_end_date: string | null
+          status: string
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          actual_end_date?: string | null
+          assigned_by: string
+          assigned_date?: string
+          assignment_type?: string | null
+          created_at?: string | null
+          horse_id: string
+          horse_name: string
+          id?: string
+          notes?: string | null
+          paddock_id: string
+          reason?: string | null
+          scheduled_end_date?: string | null
+          status?: string
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          actual_end_date?: string | null
+          assigned_by?: string
+          assigned_date?: string
+          assignment_type?: string | null
+          created_at?: string | null
+          horse_id?: string
+          horse_name?: string
+          id?: string
+          notes?: string | null
+          paddock_id?: string
+          reason?: string | null
+          scheduled_end_date?: string | null
+          status?: string
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paddock_assignments_paddock_id_fkey"
+            columns: ["paddock_id"]
+            isOneToOne: false
+            referencedRelation: "paddocks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      paddock_maintenance: {
+        Row: {
+          assigned_to: string | null
+          completed_date: string | null
+          cost: number | null
+          created_at: string | null
+          created_by: string | null
+          description: string
+          id: string
+          maintenance_type: string
+          next_maintenance_date: string | null
+          notes: string | null
+          paddock_id: string
+          scheduled_date: string
+          status: string
+          tenant_id: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          completed_date?: string | null
+          cost?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          description: string
+          id?: string
+          maintenance_type: string
+          next_maintenance_date?: string | null
+          notes?: string | null
+          paddock_id: string
+          scheduled_date: string
+          status?: string
+          tenant_id: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          completed_date?: string | null
+          cost?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string
+          id?: string
+          maintenance_type?: string
+          next_maintenance_date?: string | null
+          notes?: string | null
+          paddock_id?: string
+          scheduled_date?: string
+          status?: string
+          tenant_id?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paddock_maintenance_paddock_id_fkey"
+            columns: ["paddock_id"]
+            isOneToOne: false
+            referencedRelation: "paddocks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      paddock_rotation_plans: {
+        Row: {
+          automatic_rotation: boolean | null
+          created_at: string | null
+          created_by: string | null
+          end_date: string | null
+          id: string
+          name: string
+          notifications: Json | null
+          paddock_ids: string[]
+          rest_period: number
+          rotation_interval: number
+          start_date: string
+          status: string
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          automatic_rotation?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          end_date?: string | null
+          id?: string
+          name: string
+          notifications?: Json | null
+          paddock_ids: string[]
+          rest_period?: number
+          rotation_interval: number
+          start_date: string
+          status?: string
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          automatic_rotation?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          end_date?: string | null
+          id?: string
+          name?: string
+          notifications?: Json | null
+          paddock_ids?: string[]
+          rest_period?: number
+          rotation_interval?: number
+          start_date?: string
+          status?: string
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      paddocks: {
+        Row: {
+          capacity: number
+          created_at: string | null
+          created_by: string | null
+          current_occupancy: number
+          features: Json | null
+          id: string
+          location_coordinates: Json | null
+          location_section: string | null
+          name: string
+          paddock_number: string
+          paddock_type: string
+          size_length: number | null
+          size_unit: string | null
+          size_width: number | null
+          status: string
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          capacity?: number
+          created_at?: string | null
+          created_by?: string | null
+          current_occupancy?: number
+          features?: Json | null
+          id?: string
+          location_coordinates?: Json | null
+          location_section?: string | null
+          name: string
+          paddock_number: string
+          paddock_type?: string
+          size_length?: number | null
+          size_unit?: string | null
+          size_width?: number | null
+          status?: string
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          capacity?: number
+          created_at?: string | null
+          created_by?: string | null
+          current_occupancy?: number
+          features?: Json | null
+          id?: string
+          location_coordinates?: Json | null
+          location_section?: string | null
+          name?: string
+          paddock_number?: string
+          paddock_type?: string
+          size_length?: number | null
+          size_unit?: string | null
+          size_width?: number | null
+          status?: string
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       payment_methods: {
         Row: {

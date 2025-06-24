@@ -1,58 +1,53 @@
 
-export const mockPreviousSamples = {
-  "thunder": [
-    {
-      id: "S001",
-      collectionDate: "2024-05-15",
-      analysis: ["Blood Chemistry", "CBC"],
-      status: "completed",
-      priority: "routine",
-      notes: "Regular health check"
-    },
-    {
-      id: "S005",
-      collectionDate: "2024-05-28",
-      analysis: ["Hormone Panel"],
-      status: "processing",
-      priority: "urgent",
-      notes: "Follow-up test for hormonal imbalance"
-    }
-  ],
-  "bella": [
-    {
-      id: "S003",
-      collectionDate: "2024-05-20",
-      analysis: ["Parasite Screen"],
-      status: "completed",
-      priority: "routine",
-      notes: "Routine parasite check"
-    }
-  ],
-  "shadow": [],
-  "storm": [
-    {
-      id: "S007",
-      collectionDate: "2024-05-30",
-      analysis: ["Blood Chemistry", "Liver Function"],
-      status: "rejected",
-      priority: "critical",
-      notes: "Sample rejected due to hemolysis"
-    }
-  ],
-  "flash": []
-};
+// This file now serves as fallback data and utility functions
+// The actual data comes from the database via the laboratory service
 
-export const getHorseName = (selectedHorse: string): string => {
+export const getHorseName = (horseId: string): string => {
   const horseNames: { [key: string]: string } = {
-    "thunder": "Thunder",
-    "bella": "Bella",
-    "shadow": "Shadow",
-    "storm": "Storm",
-    "flash": "Flash"
+    "H001": "Thunder",
+    "H002": "Lightning",
+    "H003": "Storm",
+    "H004": "Blaze",
+    "H005": "Shadow"
   };
-  return horseNames[selectedHorse] || "";
+  return horseNames[horseId] || "Unknown Horse";
 };
 
-export const getPreviousSamples = (selectedHorse: string) => {
-  return selectedHorse ? (mockPreviousSamples[selectedHorse as keyof typeof mockPreviousSamples] || []) : [];
+export const getPreviousSamples = (horseId: string) => {
+  // This would typically come from the database
+  // For now, return empty array as samples will be fetched from DB
+  return [];
 };
+
+// Legacy mock data - kept for reference but not used
+export const mockAnalysisTypes = [
+  {
+    id: "blood_chemistry",
+    name: "Blood Chemistry Panel",
+    category: "Clinical Chemistry",
+    description: "Complete metabolic panel including liver and kidney function",
+    tubes: [
+      { type: "Red Top (Serum)", required: true },
+      { type: "Purple Top (EDTA)", required: false }
+    ]
+  },
+  {
+    id: "cbc",
+    name: "Complete Blood Count",
+    category: "Hematology", 
+    description: "Full blood count with differential",
+    tubes: [
+      { type: "Purple Top (EDTA)", required: true }
+    ]
+  },
+  {
+    id: "hormone_panel",
+    name: "Hormone Panel",
+    category: "Endocrinology",
+    description: "Thyroid and reproductive hormones",
+    tubes: [
+      { type: "Red Top (Serum)", required: true },
+      { type: "Gray Top (Fluoride)", required: false }
+    ]
+  }
+];
