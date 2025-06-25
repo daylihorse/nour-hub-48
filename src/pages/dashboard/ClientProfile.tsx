@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { getClientById } from "@/data/clients";
 import { Button } from "@/components/ui/button";
 import { ClientNote, ClientTask, ClientFile, CommunicationLog, HorseOwner } from "@/types/client";
 import { toast } from "sonner";
@@ -15,6 +14,7 @@ import AddNoteDialog from "@/components/clients/profile/dialogs/AddNoteDialog";
 import UploadDocumentDialog from "@/components/clients/profile/dialogs/UploadDocumentDialog";
 import LogCommunicationDialog from "@/components/clients/profile/dialogs/LogCommunicationDialog";
 import AddTaskDialog from "@/components/clients/profile/dialogs/AddTaskDialog";
+import { useClient } from "@/hooks/useClient";
 
 /**
  * ClientProfile Component
@@ -35,9 +35,8 @@ const ClientProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   
-  // Fetch client data using the ID from URL params
-  // Returns null if client is not found, handled in the component
-  const client = getClientById(id as string);
+  // Use the database hook instead of mock data
+  const { client, loading, error } = useClient(id);
   
   // State management for active tab - controls which content section is displayed
   // Defaults to "overview" which shows a summary of recent activity
@@ -45,7 +44,7 @@ const ClientProfile = () => {
   
   // Local state for client-related data arrays
   // These allow for real-time updates without refetching from the data source
-  const [notes, setNotes] = useState<ClientNote[]>(client?.notes || []);
+  const [notes, setNotes] = useState<ClientNote[]>(client?.clientNotes || []);
   const [communications, setCommunications] = useState<CommunicationLog[]>(client?.communication || []);
   const [tasks, setTasks] = useState<ClientTask[]>(client?.tasks || []);
   const [files, setFiles] = useState<ClientFile[]>(client?.files || []);
@@ -57,9 +56,43 @@ const ClientProfile = () => {
   const [logCommunicationDialogOpen, setLogCommunicationDialogOpen] = useState(false);
   const [addTaskDialogOpen, setAddTaskDialogOpen] = useState(false);
 
-  // Early return if client is not found - prevents rendering with null data
-  if (!client) {
-    return <div className="p-6">Client not found</div>;
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
+        <div className="container mx-auto py-6">
+          <div className="flex items-center justify-center py-12">
+            <div className="text-lg text-muted-foreground">Loading client...</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error || !client) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
+        <div className="container mx-auto py-6 space-y-4">
+          <div className="flex items-center space-x-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate("/dashboard/clients")}
+              className="hover:bg-white/60"
+            >
+              <ArrowLeft className="h-4 w-4 mr-1" />
+              Back to Clients
+            </Button>
+          </div>
+          <div className="text-center py-12">
+            <div className="text-lg text-muted-foreground">
+              {error || 'Client not found'}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // Type checking for horse owner specific features

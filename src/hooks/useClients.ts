@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { Client, ClientType, ClientStatus } from '@/types/client';
 
 export interface DatabaseClient {
   id: string;
@@ -23,8 +24,54 @@ export interface DatabaseClient {
   created_by?: string;
 }
 
+// Transform database client to UI client format
+const transformDatabaseClient = (dbClient: DatabaseClient): Client => {
+  // Map database client_type to UI ClientType
+  const typeMapping: Record<string, ClientType> = {
+    'horse_owner': 'Horse Owner',
+    'veterinarian': 'Veterinarian',
+    'supplier': 'Supplier',
+    'trainer': 'Trainer',
+    'staff': 'Staff',
+    'other': 'Other'
+  };
+
+  const statusMapping: Record<string, ClientStatus> = {
+    'active': 'Active',
+    'inactive': 'Inactive'
+  };
+
+  return {
+    id: dbClient.id,
+    tenant_id: dbClient.tenant_id,
+    client_number: dbClient.client_number,
+    name: dbClient.name,
+    email: dbClient.email || '',
+    phone: dbClient.phone || '',
+    address: typeof dbClient.address === 'object' && dbClient.address ? 
+      `${dbClient.address.street || ''}, ${dbClient.address.city || ''}, ${dbClient.address.country || ''}`.trim().replace(/^,\s*|,\s*$/g, '') :
+      dbClient.address || '',
+    client_type: dbClient.client_type,
+    status: dbClient.status,
+    type: typeMapping[dbClient.client_type] || 'Other', // For backward compatibility
+    billing_address: dbClient.billing_address,
+    payment_terms: dbClient.payment_terms,
+    credit_limit: dbClient.credit_limit,
+    tax_id: dbClient.tax_id,
+    notes: dbClient.notes,
+    created_at: dbClient.created_at,
+    updated_at: dbClient.updated_at,
+    created_by: dbClient.created_by,
+    lastInteraction: dbClient.updated_at, // Use updated_at as last interaction
+    clientNotes: [],
+    communication: [],
+    files: [],
+    tasks: []
+  };
+};
+
 export const useClients = () => {
-  const [clients, setClients] = useState<DatabaseClient[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchClients = async () => {
@@ -36,14 +83,8 @@ export const useClients = () => {
 
       if (error) throw error;
       
-      // Type cast the data to ensure proper typing
-      const typedData = (data || []).map(client => ({
-        ...client,
-        client_type: client.client_type as 'horse_owner' | 'veterinarian' | 'supplier' | 'trainer' | 'staff' | 'other',
-        status: client.status as 'active' | 'inactive'
-      })) as DatabaseClient[];
-      
-      setClients(typedData);
+      const transformedClients = (data || []).map(transformDatabaseClient);
+      setClients(transformedClients);
     } catch (error) {
       console.error('Error fetching clients:', error);
       toast({
@@ -56,7 +97,7 @@ export const useClients = () => {
     }
   };
 
-  const addClient = async (client: Omit<DatabaseClient, 'id' | 'tenant_id' | 'created_at' | 'updated_at'>) => {
+  const addClient = async (clientData: Omit<Client, 'id' | 'tenant_id' | 'created_at' | 'updated_at'>) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('No authenticated user');
@@ -69,10 +110,41 @@ export const useClients = () => {
 
       if (!tenantData) throw new Error('No tenant found for user');
 
+      // Transform UI client type back to database format
+      const typeMapping: Record<string, string> = {
+        'Horse Owner': 'horse_owner',
+        'Veterinarian': 'veterinarian',
+        'Supplier': 'supplier',
+        'Trainer': 'trainer',
+        'Staff': 'staff',
+        'Other': 'other'
+      };
+
+      const statusMapping: Record<string, string> = {
+        'Active': 'active',
+        'Inactive': 'inactive'
+      };
+
+      // Parse address string back to JSON if needed
+      let addressJson = null;
+      if (clientData.address && typeof clientData.address === 'string') {
+        const addressParts = clientData.address.split(', ');
+        addressJson = {
+          street: addressParts[0] || '',
+          city: addressParts[1] || '',
+          country: addressParts[2] || ''
+        };
+      }
+
       const { data, error } = await supabase
         .from('clients')
         .insert([{
-          ...client,
+          name: clientData.name,
+          email: clientData.email,
+          phone: clientData.phone,
+          address: addressJson,
+          client_type: typeMapping[clientData.type || 'Other'] || 'other',
+          status: statusMapping[clientData.status] || 'active',
           tenant_id: tenantData.tenant_id,
           created_by: user.id,
         }])
@@ -81,20 +153,15 @@ export const useClients = () => {
 
       if (error) throw error;
 
-      // Type cast the returned data
-      const typedClient = {
-        ...data,
-        client_type: data.client_type as 'horse_owner' | 'veterinarian' | 'supplier' | 'trainer' | 'staff' | 'other',
-        status: data.status as 'active' | 'inactive'
-      } as DatabaseClient;
-
-      setClients(prev => [typedClient, ...prev]);
+      const transformedClient = transformDatabaseClient(data);
+      setClients(prev => [transformedClient, ...prev]);
+      
       toast({
         title: 'Success',
         description: 'Client added successfully',
       });
 
-      return typedClient;
+      return transformedClient;
     } catch (error) {
       console.error('Error adding client:', error);
       toast({
@@ -106,31 +173,59 @@ export const useClients = () => {
     }
   };
 
-  const updateClient = async (id: string, updates: Partial<DatabaseClient>) => {
+  const updateClient = async (id: string, updates: Partial<Client>) => {
     try {
+      // Transform UI updates back to database format
+      const typeMapping: Record<string, string> = {
+        'Horse Owner': 'horse_owner',
+        'Veterinarian': 'veterinarian',
+        'Supplier': 'supplier',
+        'Trainer': 'trainer',
+        'Staff': 'staff',
+        'Other': 'other'
+      };
+
+      const statusMapping: Record<string, string> = {
+        'Active': 'active',
+        'Inactive': 'inactive'
+      };
+
+      const dbUpdates: any = {};
+      
+      if (updates.name) dbUpdates.name = updates.name;
+      if (updates.email) dbUpdates.email = updates.email;
+      if (updates.phone) dbUpdates.phone = updates.phone;
+      if (updates.type) dbUpdates.client_type = typeMapping[updates.type];
+      if (updates.status) dbUpdates.status = statusMapping[updates.status];
+      if (updates.notes) dbUpdates.notes = updates.notes;
+      
+      if (updates.address && typeof updates.address === 'string') {
+        const addressParts = updates.address.split(', ');
+        dbUpdates.address = {
+          street: addressParts[0] || '',
+          city: addressParts[1] || '',
+          country: addressParts[2] || ''
+        };
+      }
+
       const { data, error } = await supabase
         .from('clients')
-        .update(updates)
+        .update(dbUpdates)
         .eq('id', id)
         .select()
         .single();
 
       if (error) throw error;
 
-      // Type cast the returned data
-      const typedClient = {
-        ...data,
-        client_type: data.client_type as 'horse_owner' | 'veterinarian' | 'supplier' | 'trainer' | 'staff' | 'other',
-        status: data.status as 'active' | 'inactive'
-      } as DatabaseClient;
-
-      setClients(prev => prev.map(client => client.id === id ? typedClient : client));
+      const transformedClient = transformDatabaseClient(data);
+      setClients(prev => prev.map(client => client.id === id ? transformedClient : client));
+      
       toast({
         title: 'Success',
         description: 'Client updated successfully',
       });
 
-      return typedClient;
+      return transformedClient;
     } catch (error) {
       console.error('Error updating client:', error);
       toast({
@@ -152,6 +247,7 @@ export const useClients = () => {
       if (error) throw error;
 
       setClients(prev => prev.filter(client => client.id !== id));
+      
       toast({
         title: 'Success',
         description: 'Client deleted successfully',

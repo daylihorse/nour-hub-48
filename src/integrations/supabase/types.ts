@@ -402,6 +402,150 @@ export type Database = {
         }
         Relationships: []
       }
+      client_files: {
+        Row: {
+          client_id: string
+          created_by: string | null
+          file_size: number | null
+          file_type: string
+          file_url: string
+          id: string
+          name: string
+          tenant_id: string
+          upload_date: string
+        }
+        Insert: {
+          client_id: string
+          created_by?: string | null
+          file_size?: number | null
+          file_type: string
+          file_url: string
+          id?: string
+          name: string
+          tenant_id: string
+          upload_date?: string
+        }
+        Update: {
+          client_id?: string
+          created_by?: string | null
+          file_size?: number | null
+          file_type?: string
+          file_url?: string
+          id?: string
+          name?: string
+          tenant_id?: string
+          upload_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_files_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_notes: {
+        Row: {
+          category: string
+          client_id: string
+          content: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_private: boolean | null
+          priority: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          client_id: string
+          content: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_private?: boolean | null
+          priority?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          client_id?: string
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_private?: boolean | null
+          priority?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_notes_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_tasks: {
+        Row: {
+          assigned_to: string | null
+          client_id: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          due_date: string | null
+          id: string
+          priority: string
+          status: string
+          tenant_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          client_id: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          priority?: string
+          status?: string
+          tenant_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          client_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          priority?: string
+          status?: string
+          tenant_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_tasks_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clients: {
         Row: {
           address: Json | null

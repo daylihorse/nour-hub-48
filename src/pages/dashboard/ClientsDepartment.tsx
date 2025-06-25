@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -7,7 +8,6 @@ import {
   Plus,
   Search,
 } from "lucide-react";
-import { mockClients } from "@/data/clients";
 import { Client, ClientType, ClientStatus } from "@/types/client";
 import { 
   Select, 
@@ -22,6 +22,7 @@ import ClientViewSelector, { ViewMode, GridSize } from "@/components/clients/Cli
 import ClientGridView from "@/components/clients/ClientGridView";
 import ClientListView from "@/components/clients/ClientListView";
 import ClientTableView from "@/components/clients/ClientTableView";
+import { useClients } from "@/hooks/useClients";
 
 const ClientsDepartment = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -30,6 +31,9 @@ const ClientsDepartment = () => {
   const [currentView, setCurrentView] = useState<ViewMode>("table");
   const [gridSize, setGridSize] = useState<GridSize>(3);
   const navigate = useNavigate();
+
+  // Use the database hook instead of mock data
+  const { clients, loading } = useClients();
 
   const clientTypes: (ClientType | "All")[] = [
     "All", 
@@ -43,10 +47,10 @@ const ClientsDepartment = () => {
   
   const statuses: (ClientStatus | "All")[] = ["All", "Active", "Inactive"];
 
-  const filteredClients = mockClients.filter(client => {
+  const filteredClients = clients.filter(client => {
     const matchesSearch = client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         client.phone.includes(searchTerm);
+                         (client.email && client.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                         (client.phone && client.phone.includes(searchTerm));
     
     const matchesType = clientTypeFilter === "All" || client.type === clientTypeFilter;
     const matchesStatus = statusFilter === "All" || client.status === statusFilter;
@@ -110,6 +114,16 @@ const ClientsDepartment = () => {
         return <ClientTableView {...commonProps} />;
     }
   };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto py-6 space-y-6">
+        <div className="flex items-center justify-center py-12">
+          <div className="text-lg text-muted-foreground">Loading clients...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-6 space-y-6">

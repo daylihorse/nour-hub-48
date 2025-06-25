@@ -22,10 +22,11 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Save } from "lucide-react";
-import { getClientById } from "@/data/clients";
 import { ClientType, ClientStatus } from "@/types/client";
 import { toast } from "sonner";
 import HorseLinkingSection from "@/components/clients/HorseLinkingSection";
+import { useClients } from "@/hooks/useClients";
+import { useClient } from "@/hooks/useClient";
 
 interface LinkedHorse {
   id: string;
@@ -56,6 +57,10 @@ const ClientForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [linkedHorses, setLinkedHorses] = useState<LinkedHorse[]>([]);
 
+  // Use database hooks
+  const { addClient, updateClient } = useClients();
+  const { client, loading: clientLoading } = useClient(id);
+
   const {
     register,
     handleSubmit,
@@ -79,39 +84,48 @@ const ClientForm = () => {
   const watchedStatus = watch("status");
 
   useEffect(() => {
-    if (isEditing && id) {
-      const client = getClientById(id);
-      if (client) {
-        setValue("name", client.name);
-        setValue("email", client.email);
-        setValue("phone", client.phone);
-        setValue("address", client.address || "");
-        setValue("type", client.type);
-        setValue("status", client.status);
-        setValue("notes", client.notes?.[0]?.content || "");
-      } else {
-        toast.error("Client not found");
-        navigate("/dashboard/clients");
-      }
+    if (isEditing && client && !clientLoading) {
+      setValue("name", client.name);
+      setValue("email", client.email || "");
+      setValue("phone", client.phone || "");
+      setValue("address", client.address || "");
+      setValue("type", client.type as ClientType);
+      setValue("status", client.status);
+      setValue("notes", client.notes || "");
     }
-  }, [isEditing, id, setValue, navigate]);
+  }, [isEditing, client, clientLoading, setValue]);
 
   const onSubmit = async (data: ClientFormData) => {
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      if (isEditing) {
+      if (isEditing && id) {
+        await updateClient(id, {
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          address: data.address,
+          type: data.type,
+          status: data.status,
+          notes: data.notes,
+        });
         toast.success("Client updated successfully");
       } else {
+        await addClient({
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          address: data.address,
+          type: data.type,
+          status: data.status,
+          notes: data.notes,
+        });
         toast.success("Client created successfully");
       }
       
       navigate("/dashboard/clients");
     } catch (error) {
       console.error("Form submission error:", error);
-      toast.error("Failed to save client");
+      toast.error(`Failed to ${isEditing ? 'update' : 'create'} client`);
     } finally {
       setIsLoading(false);
     }
@@ -152,6 +166,16 @@ const ClientForm = () => {
   const handleRemoveHorse = (horseId: string) => {
     setLinkedHorses(prev => prev.filter(h => h.id !== horseId));
   };
+
+  if (clientLoading) {
+    return (
+      <div className="container mx-auto py-6 space-y-6">
+        <div className="flex items-center justify-center py-12">
+          <div className="text-lg text-muted-foreground">Loading...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -270,7 +294,6 @@ const ClientForm = () => {
               />
             </div>
 
-            {/* Horse Linking Section - Only show for Horse Owner */}
             {watchedType === "Horse Owner" && (
               <div className="space-y-4">
                 <div className="border-t pt-6">
@@ -280,25 +303,9 @@ const ClientForm = () => {
                   </p>
                   <HorseLinkingSection
                     linkedHorses={linkedHorses}
-                    onAddExistingHorse={(horse) => {
-                      if (linkedHorses.find(h => h.id === horse.id)) {
-                        toast.error("This horse is already linked to this client");
-                        return;
-                      }
-                      setLinkedHorses(prev => [...prev, horse]);
-                    }}
-                    onAddNewHorse={(horseData) => {
-                      const newHorse: LinkedHorse = {
-                        id: `incomplete-${Date.now()}`,
-                        ...horseData,
-                        isComplete: false,
-                        status: 'incomplete'
-                      };
-                      setLinkedHorses(prev => [...prev, newHorse]);
-                    }}
-                    onRemoveHorse={(horseId) => {
-                      setLinkedHorses(prev => prev.filter(h => h.id !== horseId));
-                    }}
+                    onAddExistingHorse={handleAddExistingHorse}
+                    onAddNewHorse={handleAddNewHorse}
+                    onRemoveHorse={handleRemoveHorse}
                   />
                 </div>
               </div>
