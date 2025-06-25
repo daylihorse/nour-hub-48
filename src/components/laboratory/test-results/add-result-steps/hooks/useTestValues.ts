@@ -41,13 +41,21 @@ export const useTestValues = ({ formData, updateFormData, selectedTemplates }: U
     
     selectedTemplates.forEach(template => {
       template.parameters.forEach(param => {
+        // Create reference range string from the parameter's normal range values
+        let referenceRange = "Not specified";
+        if (param.normalRangeMin && param.normalRangeMax) {
+          referenceRange = `${param.normalRangeMin} - ${param.normalRangeMax}`;
+        } else if (param.normalRangeMin) {
+          referenceRange = `≥ ${param.normalRangeMin}`;
+        } else if (param.normalRangeMax) {
+          referenceRange = `≤ ${param.normalRangeMax}`;
+        }
+
         allParameters.push({
           parameter: param.nameEn,
           value: "",
           unit: param.unit,
-          reference: param.normalRangeMin && param.normalRangeMax 
-            ? `${param.normalRangeMin} - ${param.normalRangeMax}`
-            : "Not specified",
+          reference: referenceRange,
           status: "normal" as TestValueStatus,
           templateId: template.id
         });

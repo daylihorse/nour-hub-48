@@ -4056,6 +4056,7 @@ export type Database = {
           description: string | null
           id: string
           transaction_id: string
+          user_id: string | null
         }
         Insert: {
           account_id: string
@@ -4065,6 +4066,7 @@ export type Database = {
           description?: string | null
           id?: string
           transaction_id: string
+          user_id?: string | null
         }
         Update: {
           account_id?: string
@@ -4074,6 +4076,7 @@ export type Database = {
           description?: string | null
           id?: string
           transaction_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -4272,7 +4275,7 @@ export type Database = {
         Returns: undefined
       }
       get_user_tenant_access: {
-        Args: { user_id: string }
+        Args: Record<PropertyKey, never> | { user_id: string }
         Returns: {
           tenant_id: string
           role: string
