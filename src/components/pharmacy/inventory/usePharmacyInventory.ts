@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { InventoryItem } from './types';
 import { filterItems } from './utils';
@@ -95,13 +94,54 @@ const mockInventoryItems: InventoryItem[] = [
   }
 ];
 
+interface ReceiveStockItem {
+  itemId: string;
+  quantityReceived: number;
+  newBatchNumber: string;
+  newExpiryDate: string;
+  unitCost: number;
+  supplier: string;
+}
+
 export const usePharmacyInventory = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [stockFilter, setStockFilter] = useState("all");
-  const [inventoryItems] = useState<InventoryItem[]>(mockInventoryItems);
+  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(mockInventoryItems);
 
   const filteredItems = filterItems(inventoryItems, searchTerm, categoryFilter, stockFilter);
+
+  const addItem = (newItem: Omit<InventoryItem, 'id'>) => {
+    const id = `PI${String(Date.now()).slice(-3)}`;
+    const item: InventoryItem = {
+      ...newItem,
+      id,
+    };
+    setInventoryItems(prev => [...prev, item]);
+  };
+
+  const updateItem = (id: string, updatedItem: Omit<InventoryItem, 'id'>) => {
+    setInventoryItems(prev => prev.map(item => 
+      item.id === id ? { ...updatedItem, id } : item
+    ));
+  };
+
+  const receiveStock = (receivedItems: ReceiveStockItem[]) => {
+    setInventoryItems(prev => prev.map(item => {
+      const receivedItem = receivedItems.find(ri => ri.itemId === item.id);
+      if (receivedItem) {
+        return {
+          ...item,
+          currentStock: item.currentStock + receivedItem.quantityReceived,
+          batchNumber: receivedItem.newBatchNumber || item.batchNumber,
+          expiryDate: receivedItem.newExpiryDate || item.expiryDate,
+          unitCost: receivedItem.unitCost || item.unitCost,
+          supplier: receivedItem.supplier || item.supplier,
+        };
+      }
+      return item;
+    }));
+  };
 
   return {
     searchTerm,
@@ -111,6 +151,9 @@ export const usePharmacyInventory = () => {
     stockFilter,
     setStockFilter,
     inventoryItems,
-    filteredItems
+    filteredItems,
+    addItem,
+    updateItem,
+    receiveStock,
   };
 };

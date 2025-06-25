@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useInventoryState } from "@/hooks/useInventoryState";
@@ -7,7 +6,8 @@ import InventoryFormSections from "@/components/inventory/InventoryFormSections"
 import InventoryMainTabs from "@/components/inventory/InventoryMainTabs";
 import WarehouseManagement from "@/components/warehouse/WarehouseManagement";
 import StoreManagement from "@/components/store/StoreManagement";
-import { Package, Store, Warehouse } from "lucide-react";
+import IntegrationShowcase from "@/components/inventory/IntegrationShowcase";
+import { Package, Store, Warehouse, Zap } from "lucide-react";
 
 const InventoryManagement = () => {
   const [activeTab, setActiveTab] = useState("inventory");
@@ -36,10 +36,14 @@ const InventoryManagement = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="inventory" className="flex items-center gap-2">
             <Package className="h-4 w-4" />
             Inventory Management
+          </TabsTrigger>
+          <TabsTrigger value="integration" className="flex items-center gap-2">
+            <Zap className="h-4 w-4" />
+            Pharmacy Integration
           </TabsTrigger>
           <TabsTrigger value="warehouse" className="flex items-center gap-2">
             <Warehouse className="h-4 w-4" />
@@ -75,6 +79,10 @@ const InventoryManagement = () => {
               onWithdrawFromStock={handleWithdrawFromStock}
             />
           )}
+        </TabsContent>
+
+        <TabsContent value="integration" className="space-y-6">
+          <IntegrationShowcase />
         </TabsContent>
 
         <TabsContent value="warehouse" className="space-y-6">
