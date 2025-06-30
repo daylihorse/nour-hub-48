@@ -227,13 +227,13 @@ export class InventoryPharmacySyncService {
    * Convert enhanced inventory item to pharmacy item
    */
   public static convertToPharmacyItem(item: EnhancedInventoryItem): PharmacyItem {
-    const pharmacyItem: PharmacyItem = {
+    return {
       id: item.id,
       name: item.productName,
       category: this.mapToPharmacyCategory(item.classification),
       currentStock: item.quantitiesPurchased,
       minimumStock: item.alertThreshold,
-      maximumStock: item.quantitiesPurchased * 2, // Default to double current stock
+      maximumStock: item.quantitiesPurchased * 2,
       supplier: item.supplier,
       unitCost: item.purchasePrice,
       sellingPrice: item.sellingPrice || item.purchasePrice * 1.4,
@@ -252,9 +252,7 @@ export class InventoryPharmacySyncService {
       brandName: item.pharmacySettings?.brandName,
       createdAt: new Date(),
       updatedAt: new Date(),
-    };
-
-    return pharmacyItem;
+    } as PharmacyItem;
   }
 
   /**
