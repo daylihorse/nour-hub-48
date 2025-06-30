@@ -1,4 +1,3 @@
-
 import { 
   EnhancedInventoryItem, 
   ModuleSyncResult, 
@@ -11,6 +10,7 @@ import { PharmacyItem } from '@/types/pharmacy';
 
 export class InventoryPharmacySyncService {
   private static instance: InventoryPharmacySyncService;
+  private static businessContext: BusinessContext;
   
   private constructor() {}
   
@@ -19,6 +19,20 @@ export class InventoryPharmacySyncService {
       InventoryPharmacySyncService.instance = new InventoryPharmacySyncService();
     }
     return InventoryPharmacySyncService.instance;
+  }
+
+  /**
+   * Set the business context for the sync service
+   */
+  public static setBusinessContext(context: BusinessContext): void {
+    InventoryPharmacySyncService.businessContext = context;
+  }
+
+  /**
+   * Get the current business context
+   */
+  public static getBusinessContext(): BusinessContext | undefined {
+    return InventoryPharmacySyncService.businessContext;
   }
 
   /**
@@ -212,28 +226,33 @@ export class InventoryPharmacySyncService {
   /**
    * Convert enhanced inventory item to pharmacy item
    */
-  public static convertToPharmacyItem(item: EnhancedInventoryItem): Partial<PharmacyItem> {
-    const pharmacyItem: Partial<PharmacyItem> = {
+  public static convertToPharmacyItem(item: EnhancedInventoryItem): PharmacyItem {
+    const pharmacyItem: PharmacyItem = {
+      id: item.id,
       name: item.productName,
       category: this.mapToPharmacyCategory(item.classification),
       currentStock: item.quantitiesPurchased,
       minimumStock: item.alertThreshold,
+      maximumStock: item.quantitiesPurchased * 2, // Default to double current stock
       supplier: item.supplier,
       unitCost: item.purchasePrice,
       sellingPrice: item.sellingPrice || item.purchasePrice * 1.4,
       requiresPrescription: item.pharmacySettings?.requiresPrescription || false,
       controlledSubstance: item.pharmacySettings?.controlledSubstance || false,
       isActive: true,
+      dosageForm: this.mapDosageForm(item.pharmacySettings?.dosageForm),
+      strength: item.pharmacySettings?.strength || '',
+      unit: item.unitOfMeasure,
+      expiryDate: item.expiryDate?.toISOString().split('T')[0] || '',
+      batchNumber: item.batchNumber || '',
+      location: item.warehouse || '',
+      storageRequirements: item.pharmacySettings?.storageRequirements || '',
+      activeIngredient: item.pharmacySettings?.activeIngredient || '',
+      genericName: item.pharmacySettings?.genericName,
+      brandName: item.pharmacySettings?.brandName,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
-
-    if (item.pharmacySettings) {
-      pharmacyItem.dosageForm = this.mapDosageForm(item.pharmacySettings.dosageForm);
-      pharmacyItem.strength = item.pharmacySettings.strength || '';
-      pharmacyItem.activeIngredient = item.pharmacySettings.activeIngredient || '';
-      pharmacyItem.storageRequirements = item.pharmacySettings.storageRequirements || '';
-      pharmacyItem.genericName = item.pharmacySettings.genericName;
-      pharmacyItem.brandName = item.pharmacySettings.brandName;
-    }
 
     return pharmacyItem;
   }
