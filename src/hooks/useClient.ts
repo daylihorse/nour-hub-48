@@ -9,7 +9,7 @@ export const useClient = (clientId: string | undefined) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchClient = async () => {
+    const fetchClientData = async () => {
       if (!clientId) {
         setClient(null);
         setLoading(false);
@@ -31,8 +31,25 @@ export const useClient = (clientId: string | undefined) => {
       }
     };
 
-    fetchClient();
+    fetchClientData();
   }, [clientId]);
 
-  return { client, loading, error, refetch: fetchClient };
+  const refetch = async () => {
+    if (!clientId) return;
+    
+    try {
+      setLoading(true);
+      setError(null);
+      const clientData = await getClientById(clientId);
+      setClient(clientData);
+    } catch (err) {
+      console.error('Error refetching client:', err);
+      setError('Failed to fetch client');
+      setClient(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { client, loading, error, refetch };
 };

@@ -22,7 +22,7 @@ const RecentNotesSection = ({ notes }: RecentNotesSectionProps) => {
               <CardContent className="p-3">
                 <p className="text-sm text-gray-700">{note.content}</p>
                 <p className="text-xs text-gray-500 mt-1">
-                  {formatDistanceToNow(new Date(note.createdAt), { addSuffix: true })}
+                  {formatDistanceToNow(new Date(note.created_at), { addSuffix: true })}
                 </p>
               </CardContent>
             </Card>

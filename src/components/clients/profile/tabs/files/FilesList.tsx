@@ -38,11 +38,13 @@ const FilesList = ({ files }: FilesListProps) => {
               <p className="font-medium truncate">{file.name}</p>
               <div className="flex items-center justify-between">
                 <p className="text-xs text-muted-foreground">
-                  {format(new Date(file.uploadDate), 'MMM dd, yyyy')}
+                  {format(new Date(file.upload_date), 'MMM dd, yyyy')}
                 </p>
-                <p className="text-xs text-muted-foreground">
-                  {(file.size / 1024).toFixed(1)} KB
-                </p>
+                {file.file_size && (
+                  <p className="text-xs text-muted-foreground">
+                    {(file.file_size / 1024).toFixed(1)} KB
+                  </p>
+                )}
               </div>
             </div>
           </div>

@@ -44,7 +44,7 @@ const ClientTimeline = ({ client }: ClientTimelineProps) => {
           <div className="text-center p-2 rounded-lg bg-blue-50">
             <div className="text-xs font-medium text-blue-600">Client Since</div>
             <div className="text-sm font-bold text-blue-800">
-              {format(new Date(client.createdAt), 'MMM yyyy')}
+              {format(new Date(client.created_at), 'MMM yyyy')}
             </div>
           </div>
           

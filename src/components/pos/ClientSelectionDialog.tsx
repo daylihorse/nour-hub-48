@@ -27,8 +27,8 @@ const ClientSelectionDialog = ({
 
   const filteredClients = clients.filter(client =>
     client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    client.phone.includes(searchTerm)
+    (client.email && client.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (client.phone && client.phone.includes(searchTerm))
   );
 
   const handleSelectClient = (client: Client) => {
@@ -86,8 +86,8 @@ const ClientSelectionDialog = ({
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <h3 className="font-medium">{client.name}</h3>
-                          <Badge variant={client.status === 'Active' ? 'default' : 'secondary'}>
-                            {client.status}
+                          <Badge variant={client.statusDisplay === 'Active' ? 'default' : 'secondary'}>
+                            {client.statusDisplay}
                           </Badge>
                           <Badge variant="outline">{client.type}</Badge>
                         </div>

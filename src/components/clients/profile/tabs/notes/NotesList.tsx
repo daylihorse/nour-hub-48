@@ -19,7 +19,7 @@ const NotesList = ({ notes }: NotesListProps) => {
           <CardContent className="pt-4">
             <p>{note.content}</p>
             <p className="text-xs text-muted-foreground mt-2">
-              {formatDistanceToNow(new Date(note.createdAt), { addSuffix: true })}
+              {formatDistanceToNow(new Date(note.created_at), { addSuffix: true })}
             </p>
           </CardContent>
         </Card>

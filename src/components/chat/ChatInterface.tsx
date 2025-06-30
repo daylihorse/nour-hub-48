@@ -145,7 +145,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ client }) => {
             <div>
               <h3 className="font-medium">{client.name}</h3>
               <p className="text-sm text-muted-foreground">
-                {client.type} • {client.status}
+                {client.type} • {client.statusDisplay}
               </p>
             </div>
           </div>
@@ -210,13 +210,13 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ client }) => {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Status:</span>
-                      <Badge variant={client.status === 'Active' ? 'default' : 'secondary'}>
-                        {client.status}
+                      <Badge variant={client.statusDisplay === 'Active' ? 'default' : 'secondary'}>
+                        {client.statusDisplay}
                       </Badge>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Client since:</span>
-                      <span>{new Date(client.createdAt).toLocaleDateString()}</span>
+                      <span>{new Date(client.created_at).toLocaleDateString()}</span>
                     </div>
                     {client.lastInteraction && (
                       <div className="flex justify-between">
@@ -247,15 +247,15 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ client }) => {
                 )}
 
                 {/* Notes Section */}
-                {client.notes && client.notes.length > 0 && (
+                {client.clientNotes && client.clientNotes.length > 0 && (
                   <div>
                     <h3 className="font-medium mb-3">Recent Notes</h3>
                     <div className="space-y-2">
-                      {client.notes.slice(0, 3).map((note) => (
+                      {client.clientNotes.slice(0, 3).map((note) => (
                         <div key={note.id} className="p-3 bg-muted/50 rounded-md">
                           <p className="text-sm">{note.content}</p>
                           <p className="text-xs text-muted-foreground mt-1">
-                            {new Date(note.createdAt).toLocaleDateString()} by {note.createdBy}
+                            {new Date(note.created_at).toLocaleDateString()} by {note.created_by}
                           </p>
                         </div>
                       ))}

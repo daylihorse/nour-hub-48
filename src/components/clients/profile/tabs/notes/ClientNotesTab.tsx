@@ -22,9 +22,14 @@ const ClientNotesTab = ({ notes, setNotes }: ClientNotesTabProps) => {
     
     const newNoteItem: ClientNote = {
       id: uuidv4(),
+      client_id: 'current-client',
+      tenant_id: 'current-tenant',
       content: newNote,
-      createdAt: new Date().toISOString(),
-      createdBy: "current-user"
+      priority: 'medium',
+      category: 'general',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      created_by: "current-user"
     };
     
     setNotes([...notes, newNoteItem]);

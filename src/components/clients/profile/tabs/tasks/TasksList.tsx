@@ -45,7 +45,7 @@ const TasksList = ({ tasks }: TasksListProps) => {
                 </p>
                 <Badge variant={
                   task.status === "completed" ? "outline" :
-                  task.status === "in-progress" ? "secondary" : "default"  
+                  task.status === "in_progress" ? "secondary" : "default"  
                 }>
                   {task.status}
                 </Badge>
@@ -54,16 +54,16 @@ const TasksList = ({ tasks }: TasksListProps) => {
                 <p className="text-sm text-muted-foreground mt-1">{task.description}</p>
               )}
               <div className="flex items-center justify-between mt-2">
-                {task.dueDate && (
+                {task.due_date && (
                   <div className="flex items-center text-xs">
                     <Calendar className="h-3 w-3 mr-1" />
-                    <span>{format(new Date(task.dueDate), 'MMM dd, yyyy')}</span>
+                    <span>{format(new Date(task.due_date), 'MMM dd, yyyy')}</span>
                   </div>
                 )}
-                {task.assignedTo && (
+                {task.assigned_to && (
                   <div className="flex items-center text-xs">
                     <User className="h-3 w-3 mr-1" />
-                    <span>Assigned to: {task.assignedTo}</span>
+                    <span>Assigned to: {task.assigned_to}</span>
                   </div>
                 )}
               </div>

@@ -73,8 +73,8 @@ const ClientProfileHeader = ({ client, onEditClient }: ClientProfileHeaderProps)
                 </Badge>
                 
                 {/* Client status badge with semantic coloring */}
-                <Badge variant={client.status === "Active" ? "default" : "secondary"}>
-                  {client.status}
+                <Badge variant={client.statusDisplay === "Active" ? "default" : "secondary"}>
+                  {client.statusDisplay}
                 </Badge>
               </div>
             </div>

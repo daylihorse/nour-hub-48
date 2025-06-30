@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Save } from "lucide-react";
-import { ClientType, ClientStatus } from "@/types/client";
+import { ClientTypeDisplay, ClientStatusDisplay } from "@/types/client";
 import { toast } from "sonner";
 import HorseLinkingSection from "@/components/clients/HorseLinkingSection";
 import { useClients } from "@/hooks/useClients";
@@ -89,8 +89,8 @@ const ClientForm = () => {
       setValue("email", client.email || "");
       setValue("phone", client.phone || "");
       setValue("address", client.address || "");
-      setValue("type", client.type as ClientType);
-      setValue("status", client.status);
+      setValue("type", client.type as ClientTypeDisplay);
+      setValue("status", client.statusDisplay as ClientStatusDisplay);
       setValue("notes", client.notes || "");
     }
   }, [isEditing, client, clientLoading, setValue]);
@@ -105,7 +105,7 @@ const ClientForm = () => {
           phone: data.phone,
           address: data.address,
           type: data.type,
-          status: data.status,
+          statusDisplay: data.status,
           notes: data.notes,
         });
         toast.success("Client updated successfully");
@@ -116,7 +116,7 @@ const ClientForm = () => {
           phone: data.phone,
           address: data.address,
           type: data.type,
-          status: data.status,
+          statusDisplay: data.status,
           notes: data.notes,
         });
         toast.success("Client created successfully");
@@ -236,7 +236,7 @@ const ClientForm = () => {
                 <Label htmlFor="type">Client Type *</Label>
                 <Select
                   value={watchedType}
-                  onValueChange={(value) => setValue("type", value as ClientType)}
+                  onValueChange={(value) => setValue("type", value as ClientTypeDisplay)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select client type" />
@@ -259,7 +259,7 @@ const ClientForm = () => {
                 <Label htmlFor="status">Status *</Label>
                 <Select
                   value={watchedStatus}
-                  onValueChange={(value) => setValue("status", value as ClientStatus)}
+                  onValueChange={(value) => setValue("status", value as ClientStatusDisplay)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select status" />
