@@ -122,8 +122,31 @@ const EnhancedInventoryItemForm = ({
         destinationModules: values.destinationModules,
         isMedicalItem: values.isMedicalItem,
         requiresSpecialHandling: values.requiresSpecialHandling,
-        pharmacySettings: values.pharmacySettings,
-        salesConfiguration: values.salesConfiguration,
+        pharmacySettings: values.pharmacySettings ? {
+          requiresPrescription: values.pharmacySettings.requiresPrescription ?? false,
+          controlledSubstance: values.pharmacySettings.controlledSubstance ?? false,
+          dosageForm: values.pharmacySettings.dosageForm,
+          strength: values.pharmacySettings.strength,
+          activeIngredient: values.pharmacySettings.activeIngredient,
+          storageRequirements: values.pharmacySettings.storageRequirements,
+          genericName: values.pharmacySettings.genericName,
+          brandName: values.pharmacySettings.brandName,
+          administrationRoute: values.pharmacySettings.administrationRoute,
+          withdrawalPeriod: values.pharmacySettings.withdrawalPeriod,
+          doseCalculationNotes: values.pharmacySettings.doseCalculationNotes,
+        } : undefined,
+        salesConfiguration: values.salesConfiguration ? {
+          markupPercentage: values.salesConfiguration.markupPercentage,
+          minimumOrderQuantity: values.salesConfiguration.minimumOrderQuantity,
+          bulkDiscountTiers: values.salesConfiguration.bulkDiscountTiers?.filter(tier => 
+            tier.quantity !== undefined && tier.discountPercentage !== undefined
+          ).map(tier => ({
+            quantity: tier.quantity!,
+            discountPercentage: tier.discountPercentage!,
+          })),
+          availableForOnlineOrders: values.salesConfiguration.availableForOnlineOrders ?? true,
+          requiresConsultation: values.salesConfiguration.requiresConsultation ?? false,
+        } : undefined,
         images: selectedImages,
         syncStatus: {
           inventory: false,
