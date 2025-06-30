@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -6,7 +7,7 @@ import { Form } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, Save, X, Sync, CheckCircle, AlertCircle } from "lucide-react";
+import { Loader2, Save, X, RefreshCw, CheckCircle, AlertCircle } from "lucide-react";
 import { enhancedFormSchema, EnhancedFormValues } from "./item-form/EnhancedFormSchema";
 import BasicInfoSection from "./item-form/BasicInfoSection";
 import EnhancedProductDetailsSection from "./item-form/EnhancedProductDetailsSection";
@@ -105,7 +106,24 @@ const EnhancedInventoryItemForm = ({
       // Create enhanced inventory item
       const enhancedItem: EnhancedInventoryItem = {
         id: initialData?.id || `item_${Date.now()}`,
-        ...values,
+        productName: values.productName,
+        warehouse: values.warehouse,
+        classification: values.classification,
+        entryDate: values.entryDate,
+        supplier: values.supplier,
+        quantitiesPurchased: values.quantitiesPurchased,
+        unitOfMeasure: values.unitOfMeasure,
+        alertThreshold: values.alertThreshold,
+        purchasePrice: values.purchasePrice,
+        listForSale: values.listForSale,
+        sellingPrice: values.sellingPrice,
+        businessType: values.businessType,
+        usageIntent: values.usageIntent,
+        destinationModules: values.destinationModules,
+        isMedicalItem: values.isMedicalItem,
+        requiresSpecialHandling: values.requiresSpecialHandling,
+        pharmacySettings: values.pharmacySettings,
+        salesConfiguration: values.salesConfiguration,
         images: selectedImages,
         syncStatus: {
           inventory: false,
@@ -211,7 +229,7 @@ const EnhancedInventoryItemForm = ({
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Sync className="h-5 w-5" />
+                  <RefreshCw className="h-5 w-5" />
                   Module Sync Results
                 </CardTitle>
               </CardHeader>
@@ -276,4 +294,4 @@ const EnhancedInventoryItemForm = ({
   );
 };
 
-export default EnhancedInventoryItemForm; 
+export default EnhancedInventoryItemForm;

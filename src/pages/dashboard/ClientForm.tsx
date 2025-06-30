@@ -104,8 +104,12 @@ const ClientForm = () => {
           email: data.email,
           phone: data.phone,
           address: data.address,
-          type: data.type,
-          statusDisplay: data.status,
+          client_type: data.type === "Horse Owner" ? "horse_owner" : 
+                      data.type === "Veterinarian" ? "veterinarian" :
+                      data.type === "Supplier" ? "supplier" :
+                      data.type === "Trainer" ? "trainer" :
+                      data.type === "Staff" ? "staff" : "other",
+          status: data.status === "Active" ? "active" : "inactive",
           notes: data.notes,
         });
         toast.success("Client updated successfully");
@@ -115,8 +119,12 @@ const ClientForm = () => {
           email: data.email,
           phone: data.phone,
           address: data.address,
-          type: data.type,
-          statusDisplay: data.status,
+          client_type: data.type === "Horse Owner" ? "horse_owner" : 
+                      data.type === "Veterinarian" ? "veterinarian" :
+                      data.type === "Supplier" ? "supplier" :
+                      data.type === "Trainer" ? "trainer" :
+                      data.type === "Staff" ? "staff" : "other",
+          status: data.status === "Active" ? "active" : "inactive",
           notes: data.notes,
         });
         toast.success("Client created successfully");

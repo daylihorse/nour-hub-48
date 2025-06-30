@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -53,12 +54,16 @@ const AddTaskDialog = ({
   const onSubmit = (data: TaskFormData) => {
     const newTask: ClientTask = {
       id: `task_${Date.now()}`,
+      client_id: client.id,
+      tenant_id: client.tenant_id,
       title: data.title,
       description: data.description || undefined,
-      dueDate: data.dueDate?.toISOString(),
+      due_date: data.dueDate?.toISOString().split('T')[0],
       status: "pending",
       priority: data.priority,
-      assignedTo: data.assignedTo || undefined,
+      assigned_to: data.assignedTo || undefined,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     };
 
     onTaskAdded(newTask);
