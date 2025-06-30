@@ -9,6 +9,17 @@ export type ClientType =
 
 export type ClientStatus = "active" | "inactive";
 
+// UI display types for backward compatibility
+export type ClientTypeDisplay = 
+  | "Horse Owner" 
+  | "Veterinarian" 
+  | "Supplier" 
+  | "Trainer" 
+  | "Staff" 
+  | "Other";
+
+export type ClientStatusDisplay = "Active" | "Inactive";
+
 export interface Client {
   id: string;
   tenant_id: string;
@@ -28,7 +39,8 @@ export interface Client {
   updated_at: string;
   created_by?: string;
   // Computed fields for UI compatibility
-  type?: string; // For backward compatibility
+  type?: ClientTypeDisplay; // For backward compatibility
+  statusDisplay?: ClientStatusDisplay; // For backward compatibility
   lastInteraction?: string;
   clientNotes?: ClientNote[];
   communication?: CommunicationLog[];

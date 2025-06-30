@@ -8,7 +8,7 @@ import {
   Plus,
   Search,
 } from "lucide-react";
-import { Client, ClientType, ClientStatus } from "@/types/client";
+import { Client, ClientTypeDisplay, ClientStatusDisplay } from "@/types/client";
 import { 
   Select, 
   SelectContent, 
@@ -26,8 +26,8 @@ import { useClients } from "@/hooks/useClients";
 
 const ClientsDepartment = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [clientTypeFilter, setClientTypeFilter] = useState<ClientType | "All">("All");
-  const [statusFilter, setStatusFilter] = useState<ClientStatus | "All">("All");
+  const [clientTypeFilter, setClientTypeFilter] = useState<ClientTypeDisplay | "All">("All");
+  const [statusFilter, setStatusFilter] = useState<ClientStatusDisplay | "All">("All");
   const [currentView, setCurrentView] = useState<ViewMode>("table");
   const [gridSize, setGridSize] = useState<GridSize>(3);
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ const ClientsDepartment = () => {
   // Use the database hook instead of mock data
   const { clients, loading } = useClients();
 
-  const clientTypes: (ClientType | "All")[] = [
+  const clientTypes: (ClientTypeDisplay | "All")[] = [
     "All", 
     "Horse Owner", 
     "Veterinarian", 
@@ -45,7 +45,7 @@ const ClientsDepartment = () => {
     "Other"
   ];
   
-  const statuses: (ClientStatus | "All")[] = ["All", "Active", "Inactive"];
+  const statuses: (ClientStatusDisplay | "All")[] = ["All", "Active", "Inactive"];
 
   const filteredClients = clients.filter(client => {
     const matchesSearch = client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -53,7 +53,7 @@ const ClientsDepartment = () => {
                          (client.phone && client.phone.includes(searchTerm));
     
     const matchesType = clientTypeFilter === "All" || client.type === clientTypeFilter;
-    const matchesStatus = statusFilter === "All" || client.status === statusFilter;
+    const matchesStatus = statusFilter === "All" || client.statusDisplay === statusFilter;
     
     return matchesSearch && matchesType && matchesStatus;
   });
@@ -164,7 +164,7 @@ const ClientsDepartment = () => {
                 <div className="w-40">
                   <Select 
                     value={clientTypeFilter} 
-                    onValueChange={(value) => setClientTypeFilter(value as ClientType | "All")}
+                    onValueChange={(value) => setClientTypeFilter(value as ClientTypeDisplay | "All")}
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Client Type" />
@@ -182,7 +182,7 @@ const ClientsDepartment = () => {
                 <div className="w-32">
                   <Select 
                     value={statusFilter} 
-                    onValueChange={(value) => setStatusFilter(value as ClientStatus | "All")}
+                    onValueChange={(value) => setStatusFilter(value as ClientStatusDisplay | "All")}
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Status" />

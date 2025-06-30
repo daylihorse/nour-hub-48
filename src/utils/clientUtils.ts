@@ -1,10 +1,10 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { Client, ClientType, ClientStatus } from '@/types/client';
+import { Client, ClientType, ClientStatus, ClientTypeDisplay, ClientStatusDisplay } from '@/types/client';
 
 // Transform database client to UI client format
 const transformDatabaseClient = (dbClient: any): Client => {
-  const typeMapping: Record<string, ClientType> = {
+  const typeMapping: Record<ClientType, ClientTypeDisplay> = {
     'horse_owner': 'Horse Owner',
     'veterinarian': 'Veterinarian',
     'supplier': 'Supplier',
@@ -13,7 +13,7 @@ const transformDatabaseClient = (dbClient: any): Client => {
     'other': 'Other'
   };
 
-  const statusMapping: Record<string, ClientStatus> = {
+  const statusMapping: Record<ClientStatus, ClientStatusDisplay> = {
     'active': 'Active',
     'inactive': 'Inactive'
   };
@@ -31,6 +31,7 @@ const transformDatabaseClient = (dbClient: any): Client => {
     client_type: dbClient.client_type,
     status: dbClient.status,
     type: typeMapping[dbClient.client_type] || 'Other',
+    statusDisplay: statusMapping[dbClient.status] || 'Active',
     billing_address: dbClient.billing_address,
     payment_terms: dbClient.payment_terms,
     credit_limit: dbClient.credit_limit,

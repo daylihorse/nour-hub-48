@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
-import { Client, ClientType, ClientStatus } from '@/types/client';
+import { Client, ClientType, ClientStatus, ClientTypeDisplay, ClientStatusDisplay } from '@/types/client';
 
 export interface DatabaseClient {
   id: string;
@@ -12,8 +12,8 @@ export interface DatabaseClient {
   email?: string;
   phone?: string;
   address?: any;
-  client_type: 'horse_owner' | 'veterinarian' | 'supplier' | 'trainer' | 'staff' | 'other';
-  status: 'active' | 'inactive';
+  client_type: ClientType;
+  status: ClientStatus;
   billing_address?: any;
   payment_terms?: string;
   credit_limit?: number;
@@ -27,7 +27,7 @@ export interface DatabaseClient {
 // Transform database client to UI client format
 const transformDatabaseClient = (dbClient: DatabaseClient): Client => {
   // Map database client_type to UI ClientType
-  const typeMapping: Record<string, ClientType> = {
+  const typeMapping: Record<ClientType, ClientTypeDisplay> = {
     'horse_owner': 'Horse Owner',
     'veterinarian': 'Veterinarian',
     'supplier': 'Supplier',
@@ -36,7 +36,7 @@ const transformDatabaseClient = (dbClient: DatabaseClient): Client => {
     'other': 'Other'
   };
 
-  const statusMapping: Record<string, ClientStatus> = {
+  const statusMapping: Record<ClientStatus, ClientStatusDisplay> = {
     'active': 'Active',
     'inactive': 'Inactive'
   };
@@ -54,6 +54,7 @@ const transformDatabaseClient = (dbClient: DatabaseClient): Client => {
     client_type: dbClient.client_type,
     status: dbClient.status,
     type: typeMapping[dbClient.client_type] || 'Other', // For backward compatibility
+    statusDisplay: statusMapping[dbClient.status] || 'Active', // For backward compatibility
     billing_address: dbClient.billing_address,
     payment_terms: dbClient.payment_terms,
     credit_limit: dbClient.credit_limit,
@@ -83,7 +84,9 @@ export const useClients = () => {
 
       if (error) throw error;
       
-      const transformedClients = (data || []).map(transformDatabaseClient);
+      const transformedClients = (data || []).map((dbClient: any) => 
+        transformDatabaseClient(dbClient as DatabaseClient)
+      );
       setClients(transformedClients);
     } catch (error) {
       console.error('Error fetching clients:', error);
@@ -111,7 +114,7 @@ export const useClients = () => {
       if (!tenantData) throw new Error('No tenant found for user');
 
       // Transform UI client type back to database format
-      const typeMapping: Record<string, string> = {
+      const typeMapping: Record<ClientTypeDisplay, ClientType> = {
         'Horse Owner': 'horse_owner',
         'Veterinarian': 'veterinarian',
         'Supplier': 'supplier',
@@ -120,7 +123,7 @@ export const useClients = () => {
         'Other': 'other'
       };
 
-      const statusMapping: Record<string, string> = {
+      const statusMapping: Record<ClientStatusDisplay, ClientStatus> = {
         'Active': 'active',
         'Inactive': 'inactive'
       };
@@ -144,7 +147,7 @@ export const useClients = () => {
           phone: clientData.phone,
           address: addressJson,
           client_type: typeMapping[clientData.type || 'Other'] || 'other',
-          status: statusMapping[clientData.status] || 'active',
+          status: statusMapping[clientData.statusDisplay || 'Active'] || 'active',
           tenant_id: tenantData.tenant_id,
           created_by: user.id,
         }])
@@ -153,7 +156,7 @@ export const useClients = () => {
 
       if (error) throw error;
 
-      const transformedClient = transformDatabaseClient(data);
+      const transformedClient = transformDatabaseClient(data as DatabaseClient);
       setClients(prev => [transformedClient, ...prev]);
       
       toast({
@@ -176,7 +179,7 @@ export const useClients = () => {
   const updateClient = async (id: string, updates: Partial<Client>) => {
     try {
       // Transform UI updates back to database format
-      const typeMapping: Record<string, string> = {
+      const typeMapping: Record<ClientTypeDisplay, ClientType> = {
         'Horse Owner': 'horse_owner',
         'Veterinarian': 'veterinarian',
         'Supplier': 'supplier',
@@ -185,7 +188,7 @@ export const useClients = () => {
         'Other': 'other'
       };
 
-      const statusMapping: Record<string, string> = {
+      const statusMapping: Record<ClientStatusDisplay, ClientStatus> = {
         'Active': 'active',
         'Inactive': 'inactive'
       };
@@ -196,7 +199,7 @@ export const useClients = () => {
       if (updates.email) dbUpdates.email = updates.email;
       if (updates.phone) dbUpdates.phone = updates.phone;
       if (updates.type) dbUpdates.client_type = typeMapping[updates.type];
-      if (updates.status) dbUpdates.status = statusMapping[updates.status];
+      if (updates.statusDisplay) dbUpdates.status = statusMapping[updates.statusDisplay];
       if (updates.notes) dbUpdates.notes = updates.notes;
       
       if (updates.address && typeof updates.address === 'string') {
@@ -217,7 +220,7 @@ export const useClients = () => {
 
       if (error) throw error;
 
-      const transformedClient = transformDatabaseClient(data);
+      const transformedClient = transformDatabaseClient(data as DatabaseClient);
       setClients(prev => prev.map(client => client.id === id ? transformedClient : client));
       
       toast({

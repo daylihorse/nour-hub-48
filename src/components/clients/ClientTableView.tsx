@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { 
   Table, 
@@ -7,7 +8,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Client, ClientType, ClientStatus } from "@/types/client";
+import { Client, ClientTypeDisplay, ClientStatusDisplay } from "@/types/client";
 import { formatDistanceToNow } from "date-fns";
 import { Mail, Phone } from "lucide-react";
 
@@ -24,7 +25,7 @@ const ClientTableView = ({
   onEditClient, 
   onMessageClient 
 }: ClientTableViewProps) => {
-  const getClientTypeStyles = (type: ClientType) => {
+  const getClientTypeStyles = (type?: ClientTypeDisplay) => {
     switch(type) {
       case "Horse Owner":
         return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300";
@@ -39,7 +40,7 @@ const ClientTableView = ({
     }
   };
 
-  const getStatusStyles = (status: ClientStatus) => {
+  const getStatusStyles = (status?: ClientStatusDisplay) => {
     return status === "Active" 
       ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300" 
       : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
@@ -98,8 +99,8 @@ const ClientTableView = ({
                   </span>
                 </TableCell>
                 <TableCell>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusStyles(client.status)}`}>
-                    {client.status}
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusStyles(client.statusDisplay)}`}>
+                    {client.statusDisplay}
                   </span>
                 </TableCell>
                 <TableCell className="text-muted-foreground text-sm">
@@ -132,4 +133,4 @@ const ClientTableView = ({
   );
 };
 
-export default ClientTableView; 
+export default ClientTableView;

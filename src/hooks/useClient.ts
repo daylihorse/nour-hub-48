@@ -34,5 +34,5 @@ export const useClient = (clientId: string | undefined) => {
     fetchClient();
   }, [clientId]);
 
-  return { client, loading, error, refetch: () => fetchClient() };
+  return { client, loading, error, refetch: fetchClient };
 };

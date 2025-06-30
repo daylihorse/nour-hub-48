@@ -1,8 +1,9 @@
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Client, ClientType, ClientStatus } from "@/types/client";
+import { Client, ClientTypeDisplay, ClientStatusDisplay } from "@/types/client";
 import { formatDistanceToNow } from "date-fns";
 import { User, Mail, Phone, Edit, MessageSquare, Clock, MapPin } from "lucide-react";
 
@@ -19,7 +20,7 @@ const ClientListView = ({
   onEditClient, 
   onMessageClient 
 }: ClientListViewProps) => {
-  const getClientTypeStyles = (type: ClientType) => {
+  const getClientTypeStyles = (type?: ClientTypeDisplay) => {
     switch(type) {
       case "Horse Owner":
         return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300";
@@ -34,7 +35,7 @@ const ClientListView = ({
     }
   };
 
-  const getStatusStyles = (status: ClientStatus) => {
+  const getStatusStyles = (status?: ClientStatusDisplay) => {
     return status === "Active" 
       ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300" 
       : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
@@ -87,9 +88,9 @@ const ClientListView = ({
                       </Badge>
                       <Badge 
                         variant="secondary" 
-                        className={`text-xs ${getStatusStyles(client.status)}`}
+                        className={`text-xs ${getStatusStyles(client.statusDisplay)}`}
                       >
-                        {client.status}
+                        {client.statusDisplay}
                       </Badge>
                     </div>
                   </div>
@@ -147,4 +148,4 @@ const ClientListView = ({
   );
 };
 
-export default ClientListView; 
+export default ClientListView;
