@@ -110,21 +110,6 @@ const ClientForm = () => {
         });
         toast.success("Client updated successfully");
       } else {
-        // Transform UI data to include required database fields
-        const typeMapping: Record<ClientTypeDisplay, string> = {
-          'Horse Owner': 'horse_owner',
-          'Veterinarian': 'veterinarian',
-          'Supplier': 'supplier',
-          'Trainer': 'trainer',
-          'Staff': 'staff',
-          'Other': 'other'
-        };
-
-        const statusMapping: Record<ClientStatusDisplay, string> = {
-          'Active': 'active',
-          'Inactive': 'inactive'
-        };
-
         await addClient({
           name: data.name,
           email: data.email,
@@ -133,15 +118,6 @@ const ClientForm = () => {
           type: data.type,
           statusDisplay: data.status,
           notes: data.notes,
-          // Add required database fields
-          client_type: typeMapping[data.type] as any,
-          status: statusMapping[data.status] as any,
-          // Add other required fields with defaults
-          lastInteraction: new Date().toISOString(),
-          clientNotes: [],
-          communication: [],
-          files: [],
-          tasks: []
         });
         toast.success("Client created successfully");
       }

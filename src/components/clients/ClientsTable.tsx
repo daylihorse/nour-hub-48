@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -22,7 +23,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 interface ClientsTableProps {
   clients: Client[];
   loading: boolean;
-  onUpdateClient: (id: string, updates: Partial<Client>) => Promise<Client>;
+  onUpdateClient: (id: string, updates: Partial<Client>) => Promise<void>;
   onDeleteClient: (id: string) => Promise<void>;
 }
 

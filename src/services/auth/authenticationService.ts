@@ -1,5 +1,6 @@
+
 import { supabase } from '@/integrations/supabase/client';
-import { User, UserRole } from '@/types/tenant';
+import { User } from '@/types/tenant';
 
 export interface AuthenticationResult {
   isAuthenticated: boolean;
@@ -121,7 +122,7 @@ export class AuthenticationService {
             tenant_id: tu.tenant_id,
             tenantId: tu.tenant_id,
             user_id: session.user.id,
-            role: tu.role as UserRole,
+            role: tu.role,
             permissions: tu.permissions || [],
             status: 'active' as const,
             joined_at: new Date().toISOString(),
