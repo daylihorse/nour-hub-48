@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -25,8 +24,9 @@ import { ArrowLeft, Save } from "lucide-react";
 import { ClientTypeDisplay, ClientStatusDisplay } from "@/types/client";
 import { toast } from "sonner";
 import HorseLinkingSection from "@/components/clients/HorseLinkingSection";
-import { useClients } from "@/hooks/useClients";
+import { useEnhancedClients } from "@/hooks/useEnhancedClients";
 import { useClient } from "@/hooks/useClient";
+import ClientManagementGuard from "@/components/clients/ClientManagementGuard";
 
 interface LinkedHorse {
   id: string;
@@ -57,8 +57,8 @@ const ClientForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [linkedHorses, setLinkedHorses] = useState<LinkedHorse[]>([]);
 
-  // Use database hooks
-  const { addClient, updateClient } = useClients();
+  // Use enhanced hooks
+  const { addClient, updateClient } = useEnhancedClients();
   const { client, loading: clientLoading } = useClient(id);
 
   const {
@@ -104,12 +104,8 @@ const ClientForm = () => {
           email: data.email,
           phone: data.phone,
           address: data.address,
-          client_type: data.type === "Horse Owner" ? "horse_owner" : 
-                      data.type === "Veterinarian" ? "veterinarian" :
-                      data.type === "Supplier" ? "supplier" :
-                      data.type === "Trainer" ? "trainer" :
-                      data.type === "Staff" ? "staff" : "other",
-          status: data.status === "Active" ? "active" : "inactive",
+          type: data.type,
+          statusDisplay: data.status,
           notes: data.notes,
         });
         toast.success("Client updated successfully");
@@ -119,12 +115,8 @@ const ClientForm = () => {
           email: data.email,
           phone: data.phone,
           address: data.address,
-          client_type: data.type === "Horse Owner" ? "horse_owner" : 
-                      data.type === "Veterinarian" ? "veterinarian" :
-                      data.type === "Supplier" ? "supplier" :
-                      data.type === "Trainer" ? "trainer" :
-                      data.type === "Staff" ? "staff" : "other",
-          status: data.status === "Active" ? "active" : "inactive",
+          type: data.type,
+          statusDisplay: data.status,
           notes: data.notes,
         });
         toast.success("Client created successfully");
@@ -133,7 +125,7 @@ const ClientForm = () => {
       navigate("/dashboard/clients");
     } catch (error) {
       console.error("Form submission error:", error);
-      toast.error(`Failed to ${isEditing ? 'update' : 'create'} client`);
+      // Error handling is now done in the enhanced hooks
     } finally {
       setIsLoading(false);
     }
@@ -177,161 +169,165 @@ const ClientForm = () => {
 
   if (clientLoading) {
     return (
-      <div className="container mx-auto py-6 space-y-6">
-        <div className="flex items-center justify-center py-12">
-          <div className="text-lg text-muted-foreground">Loading...</div>
+      <ClientManagementGuard>
+        <div className="container mx-auto py-6 space-y-6">
+          <div className="flex items-center justify-center py-12">
+            <div className="text-lg text-muted-foreground">Loading...</div>
+          </div>
         </div>
-      </div>
+      </ClientManagementGuard>
     );
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      <div className="flex items-center space-x-2">
-        <Button variant="ghost" size="sm" onClick={handleBack}>
-          <ArrowLeft className="h-4 w-4 mr-1" />
-          Back
-        </Button>
-      </div>
+    <ClientManagementGuard>
+      <div className="container mx-auto py-6 space-y-6">
+        <div className="flex items-center space-x-2">
+          <Button variant="ghost" size="sm" onClick={handleBack}>
+            <ArrowLeft className="h-4 w-4 mr-1" />
+            Back
+          </Button>
+        </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            {isEditing ? "Edit Client" : "Add New Client"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="name">Name *</Label>
-                <Input
-                  id="name"
-                  {...register("name")}
-                  placeholder="Enter client name"
-                />
-                {errors.name && (
-                  <p className="text-sm text-red-600">{errors.name.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email *</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  {...register("email")}
-                  placeholder="Enter email address"
-                />
-                {errors.email && (
-                  <p className="text-sm text-red-600">{errors.email.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone *</Label>
-                <Input
-                  id="phone"
-                  {...register("phone")}
-                  placeholder="Enter phone number"
-                />
-                {errors.phone && (
-                  <p className="text-sm text-red-600">{errors.phone.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="type">Client Type *</Label>
-                <Select
-                  value={watchedType}
-                  onValueChange={(value) => setValue("type", value as ClientTypeDisplay)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select client type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Horse Owner">Horse Owner</SelectItem>
-                    <SelectItem value="Veterinarian">Veterinarian</SelectItem>
-                    <SelectItem value="Supplier">Supplier</SelectItem>
-                    <SelectItem value="Trainer">Trainer</SelectItem>
-                    <SelectItem value="Staff">Staff</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.type && (
-                  <p className="text-sm text-red-600">{errors.type.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="status">Status *</Label>
-                <Select
-                  value={watchedStatus}
-                  onValueChange={(value) => setValue("status", value as ClientStatusDisplay)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="Inactive">Inactive</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.status && (
-                  <p className="text-sm text-red-600">{errors.status.message}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="address">Address</Label>
-              <Input
-                id="address"
-                {...register("address")}
-                placeholder="Enter client address"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea
-                id="notes"
-                {...register("notes")}
-                placeholder="Enter any additional notes about the client"
-                rows={4}
-              />
-            </div>
-
-            {watchedType === "Horse Owner" && (
-              <div className="space-y-4">
-                <div className="border-t pt-6">
-                  <h3 className="text-lg font-semibold mb-4">Horse Management</h3>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Link existing horses or add new incomplete horse records that can be completed later in the Horse Department.
-                  </p>
-                  <HorseLinkingSection
-                    linkedHorses={linkedHorses}
-                    onAddExistingHorse={handleAddExistingHorse}
-                    onAddNewHorse={handleAddNewHorse}
-                    onRemoveHorse={handleRemoveHorse}
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              {isEditing ? "Edit Client" : "Add New Client"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Name *</Label>
+                  <Input
+                    id="name"
+                    {...register("name")}
+                    placeholder="Enter client name"
                   />
+                  {errors.name && (
+                    <p className="text-sm text-red-600">{errors.name.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email *</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    {...register("email")}
+                    placeholder="Enter email address"
+                  />
+                  {errors.email && (
+                    <p className="text-sm text-red-600">{errors.email.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone *</Label>
+                  <Input
+                    id="phone"
+                    {...register("phone")}
+                    placeholder="Enter phone number"
+                  />
+                  {errors.phone && (
+                    <p className="text-sm text-red-600">{errors.phone.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="type">Client Type *</Label>
+                  <Select
+                    value={watchedType}
+                    onValueChange={(value) => setValue("type", value as ClientTypeDisplay)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select client type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Horse Owner">Horse Owner</SelectItem>
+                      <SelectItem value="Veterinarian">Veterinarian</SelectItem>
+                      <SelectItem value="Supplier">Supplier</SelectItem>
+                      <SelectItem value="Trainer">Trainer</SelectItem>
+                      <SelectItem value="Staff">Staff</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.type && (
+                    <p className="text-sm text-red-600">{errors.type.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="status">Status *</Label>
+                  <Select
+                    value={watchedStatus}
+                    onValueChange={(value) => setValue("status", value as ClientStatusDisplay)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Active">Active</SelectItem>
+                      <SelectItem value="Inactive">Inactive</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.status && (
+                    <p className="text-sm text-red-600">{errors.status.message}</p>
+                  )}
                 </div>
               </div>
-            )}
 
-            <div className="flex justify-end space-x-4">
-              <Button type="button" variant="outline" onClick={handleBack}>
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isLoading}>
-                <Save className="h-4 w-4 mr-2" />
-                {isLoading ? "Saving..." : isEditing ? "Update Client" : "Create Client"}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+              <div className="space-y-2">
+                <Label htmlFor="address">Address</Label>
+                <Input
+                  id="address"
+                  {...register("address")}
+                  placeholder="Enter client address"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="notes">Notes</Label>
+                <Textarea
+                  id="notes"
+                  {...register("notes")}
+                  placeholder="Enter any additional notes about the client"
+                  rows={4}
+                />
+              </div>
+
+              {watchedType === "Horse Owner" && (
+                <div className="space-y-4">
+                  <div className="border-t pt-6">
+                    <h3 className="text-lg font-semibold mb-4">Horse Management</h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Link existing horses or add new incomplete horse records that can be completed later in the Horse Department.
+                    </p>
+                    <HorseLinkingSection
+                      linkedHorses={linkedHorses}
+                      onAddExistingHorse={handleAddExistingHorse}
+                      onAddNewHorse={handleAddNewHorse}
+                      onRemoveHorse={handleRemoveHorse}
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="flex justify-end space-x-4">
+                <Button type="button" variant="outline" onClick={handleBack}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={isLoading}>
+                  <Save className="h-4 w-4 mr-2" />
+                  {isLoading ? "Saving..." : isEditing ? "Update Client" : "Create Client"}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    </ClientManagementGuard>
   );
 };
 
