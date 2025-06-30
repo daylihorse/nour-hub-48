@@ -6,7 +6,7 @@ import {
   DestinationModule,
   BusinessContext 
 } from '@/types/inventory-integration';
-import { PharmacyItem } from '@/types/pharmacy';
+import { PharmacyItem } from '@/types/pharmacy.d';
 
 export class InventoryPharmacySyncService {
   private static instance: InventoryPharmacySyncService;
