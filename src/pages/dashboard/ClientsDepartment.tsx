@@ -1,106 +1,223 @@
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Plus, Search, Filter } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Users,
+  Plus,
+  Search,
+} from "lucide-react";
+import { Client, ClientTypeDisplay, ClientStatusDisplay } from "@/types/client";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
 } from "@/components/ui/select";
-import ClientsTable from "@/components/clients/ClientsTable";
-import ClientManagementGuard from "@/components/clients/ClientManagementGuard";
-import { useEnhancedClients } from "@/hooks/useEnhancedClients";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
+import ClientViewSelector, { ViewMode, GridSize } from "@/components/clients/ClientViewSelector";
+import ClientGridView from "@/components/clients/ClientGridView";
+import ClientListView from "@/components/clients/ClientListView";
+import ClientTableView from "@/components/clients/ClientTableView";
+import { useClients } from "@/hooks/useClients";
 
 const ClientsDepartment = () => {
-  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterType, setFilterType] = useState("all");
-  const [filterStatus, setFilterStatus] = useState("all");
+  const [clientTypeFilter, setClientTypeFilter] = useState<ClientTypeDisplay | "All">("All");
+  const [statusFilter, setStatusFilter] = useState<ClientStatusDisplay | "All">("All");
+  const [currentView, setCurrentView] = useState<ViewMode>("table");
+  const [gridSize, setGridSize] = useState<GridSize>(3);
+  const navigate = useNavigate();
 
-  const { clients, loading, addClient, updateClient, deleteClient } = useEnhancedClients();
+  // Use the database hook instead of mock data
+  const { clients, loading } = useClients();
 
-  const handleAddClient = () => {
-    navigate("/dashboard/clients/new");
-  };
+  const clientTypes: (ClientTypeDisplay | "All")[] = [
+    "All", 
+    "Horse Owner", 
+    "Veterinarian", 
+    "Supplier", 
+    "Trainer", 
+    "Staff", 
+    "Other"
+  ];
+  
+  const statuses: (ClientStatusDisplay | "All")[] = ["All", "Active", "Inactive"];
 
-  const filteredClients = clients.filter((client) => {
+  const filteredClients = clients.filter(client => {
     const matchesSearch = client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         client.phone.includes(searchTerm);
+                         (client.email && client.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                         (client.phone && client.phone.includes(searchTerm));
     
-    const matchesType = filterType === "all" || client.type === filterType;
-    const matchesStatus = filterStatus === "all" || client.statusDisplay === filterStatus;
+    const matchesType = clientTypeFilter === "All" || client.type === clientTypeFilter;
+    const matchesStatus = statusFilter === "All" || client.statusDisplay === statusFilter;
     
     return matchesSearch && matchesType && matchesStatus;
   });
 
-  return (
-    <ClientManagementGuard>
+  const handleEditClient = (clientId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      navigate(`/dashboard/clients/${clientId}/edit`);
+    } catch (error) {
+      console.error("Navigation error:", error);
+      toast.error("Unable to navigate to edit page");
+    }
+  };
+
+  const handleMessageClient = (clientId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      navigate(`/dashboard/messages/${clientId}`);
+    } catch (error) {
+      console.error("Navigation error:", error);
+      toast.error("Unable to navigate to messages");
+    }
+  };
+
+  const handleClientClick = (clientId: string) => {
+    try {
+      navigate(`/dashboard/clients/${clientId}`);
+    } catch (error) {
+      console.error("Navigation error:", error);
+      toast.error("Unable to view client profile");
+    }
+  };
+
+  const handleAddNewClient = () => {
+    try {
+      navigate("/dashboard/clients/new");
+    } catch (error) {
+      console.error("Navigation error:", error);
+      toast.error("Unable to navigate to new client form");
+    }
+  };
+
+  const renderCurrentView = () => {
+    const commonProps = {
+      clients: filteredClients,
+      onClientClick: handleClientClick,
+      onEditClient: handleEditClient,
+      onMessageClient: handleMessageClient,
+    };
+
+    switch (currentView) {
+      case "grid":
+        return <ClientGridView {...commonProps} gridSize={gridSize} />;
+      case "list":
+        return <ClientListView {...commonProps} />;
+      case "table":
+      default:
+        return <ClientTableView {...commonProps} />;
+    }
+  };
+
+  if (loading) {
+    return (
       <div className="container mx-auto py-6 space-y-6">
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-center py-12">
+          <div className="text-lg text-muted-foreground">Loading clients...</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto py-6 space-y-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex items-center space-x-3">
+          <Users className="h-8 w-8 text-primary" />
           <div>
-            <h1 className="text-3xl font-bold">Clients</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Clients</h1>
             <p className="text-muted-foreground">
               Manage your clients and their information
             </p>
           </div>
-          <Button onClick={handleAddClient}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Client
-          </Button>
         </div>
-
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search clients..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          
-          <Select value={filterType} onValueChange={setFilterType}>
-            <SelectTrigger className="w-48">
-              <Filter className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Filter by type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="Horse Owner">Horse Owner</SelectItem>
-              <SelectItem value="Veterinarian">Veterinarian</SelectItem>
-              <SelectItem value="Supplier">Supplier</SelectItem>
-              <SelectItem value="Trainer">Trainer</SelectItem>
-              <SelectItem value="Staff">Staff</SelectItem>
-              <SelectItem value="Other">Other</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={filterStatus} onValueChange={setFilterStatus}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="Active">Active</SelectItem>
-              <SelectItem value="Inactive">Inactive</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <ClientsTable
-          clients={filteredClients}
-          loading={loading}
-          onUpdateClient={updateClient}
-          onDeleteClient={deleteClient}
-        />
+        <Button onClick={handleAddNewClient} className="shrink-0">
+          <Plus className="mr-2 h-4 w-4" /> Add New Client
+        </Button>
       </div>
-    </ClientManagementGuard>
+      
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg font-medium">Client Overview</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col gap-4 mb-6">
+            {/* Search and Filters Row */}
+            <div className="flex flex-col md:flex-row justify-between gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search clients..."
+                  className="pl-8"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+
+              <div className="flex gap-2">
+                <div className="w-40">
+                  <Select 
+                    value={clientTypeFilter} 
+                    onValueChange={(value) => setClientTypeFilter(value as ClientTypeDisplay | "All")}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Client Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {clientTypes.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="w-32">
+                  <Select 
+                    value={statusFilter} 
+                    onValueChange={(value) => setStatusFilter(value as ClientStatusDisplay | "All")}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {statuses.map((status) => (
+                        <SelectItem key={status} value={status}>
+                          {status}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            {/* View Selector Row */}
+            <div className="flex justify-between items-center">
+              <div className="text-sm text-muted-foreground">
+                Showing {filteredClients.length} client{filteredClients.length !== 1 ? 's' : ''}
+              </div>
+              <ClientViewSelector
+                currentView={currentView}
+                onViewChange={setCurrentView}
+                gridSize={gridSize}
+                onGridSizeChange={setGridSize}
+              />
+            </div>
+          </div>
+
+          {/* Render Current View */}
+          {renderCurrentView()}
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
