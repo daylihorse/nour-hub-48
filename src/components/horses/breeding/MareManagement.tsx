@@ -1,4 +1,6 @@
+
 import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MareFilters from "./components/MareFilters";
 import MareStats from "./components/MareStats";
 import MareHeader from "./components/MareHeader";
@@ -10,6 +12,9 @@ import EditMareDialog from "./components/EditMareDialog";
 import AddMareDialog from "./AddMareDialog";
 import VetCheckupDialog from "./VetCheckupDialog";
 import MedicalRecordsDialog from "./MedicalRecordsDialog";
+import TrainingRecords from "@/components/horses/training/TrainingRecords";
+import HealthRecords from "@/components/horses/health/HealthRecords";
+import PerformanceRecords from "@/components/horses/performance/PerformanceRecords";
 import { useMareManagement } from "./hooks/useMareManagement";
 import { Mare } from "@/types/breeding/mare";
 
@@ -24,6 +29,8 @@ const MareManagement = () => {
     gridSize,
     setGridSize,
   } = useMareManagement();
+  
+  const [activeTab, setActiveTab] = useState("mares");
   
   const [editDialog, setEditDialog] = useState<{
     isOpen: boolean;
@@ -116,26 +123,71 @@ const MareManagement = () => {
 
   return (
     <div className="space-y-6">
-      <MareHeader 
-        viewSelector={
-          <BreedingRecordsViewSelector 
-            currentView={viewMode}
-            onViewChange={setViewMode}
-            gridSize={gridSize}
-            onGridSizeChange={setGridSize}
-          />
-        }
-        onAddMare={() => setAddMareDialog(true)}
-      />
-      
-      <MareFilters 
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-      />
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-4 bg-purple-50 border border-purple-200 p-1 h-12">
+          <TabsTrigger 
+            value="mares" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
+            Mares
+          </TabsTrigger>
+          <TabsTrigger 
+            value="training" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
+            Training
+          </TabsTrigger>
+          <TabsTrigger 
+            value="health" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
+            Health Records
+          </TabsTrigger>
+          <TabsTrigger 
+            value="performance" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
+            Performance Records
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="mares" className="mt-6">
+          <div className="space-y-6">
+            <MareHeader 
+              viewSelector={
+                <BreedingRecordsViewSelector 
+                  currentView={viewMode}
+                  onViewChange={setViewMode}
+                  gridSize={gridSize}
+                  onGridSizeChange={setGridSize}
+                />
+              }
+              onAddMare={() => setAddMareDialog(true)}
+            />
+            
+            <MareFilters 
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+            />
 
-      <MareStats />
+            <MareStats />
 
-      {renderView()}
+            {renderView()}
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="training" className="mt-6">
+          <TrainingRecords />
+        </TabsContent>
+        
+        <TabsContent value="health" className="mt-6">
+          <HealthRecords />
+        </TabsContent>
+        
+        <TabsContent value="performance" className="mt-6">
+          <PerformanceRecords />
+        </TabsContent>
+      </Tabs>
 
       {/* Dialogs */}
       <EditMareDialog

@@ -6,6 +6,9 @@ import MarePregnancyTable from "../tables/MarePregnancyTable";
 import MareFoalingHistoryTable from "../tables/MareFoalingHistoryTable";
 import MareHealthRecordsTable from "../tables/MareHealthRecordsTable";
 import MareHeatCycleTable from "../tables/MareHeatCycleTable";
+import TrainingRecords from "@/components/horses/training/TrainingRecords";
+import HealthRecords from "@/components/horses/health/HealthRecords";
+import PerformanceRecords from "@/components/horses/performance/PerformanceRecords";
 
 interface MareDetailTabsProps {
   mareId: string;
@@ -26,7 +29,7 @@ const MareDetailTabs = ({
 }: MareDetailTabsProps) => {
   return (
     <Tabs value={activeTab} onValueChange={onActiveTabChange} className="w-full">
-      <TabsList className="grid w-full grid-cols-6 bg-slate-100 p-1 h-12">
+      <TabsList className="grid w-full grid-cols-9 bg-slate-100 p-1 h-12">
         <TabsTrigger 
           value="basic-info"
           className="text-slate-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium transition-all"
@@ -62,6 +65,24 @@ const MareDetailTabs = ({
           className="text-slate-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium transition-all"
         >
           Heat Cycles
+        </TabsTrigger>
+        <TabsTrigger 
+          value="training"
+          className="text-slate-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium transition-all"
+        >
+          Training
+        </TabsTrigger>
+        <TabsTrigger 
+          value="health-extended"
+          className="text-slate-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium transition-all"
+        >
+          Medical History
+        </TabsTrigger>
+        <TabsTrigger 
+          value="performance"
+          className="text-slate-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium transition-all"
+        >
+          Performance
         </TabsTrigger>
       </TabsList>
 
@@ -112,6 +133,18 @@ const MareDetailTabs = ({
           onViewModeChange={onViewModeChange}
           onActionClick={onActionClick}
         />
+      </TabsContent>
+
+      <TabsContent value="training" className="mt-6">
+        <TrainingRecords horseId={mareId} />
+      </TabsContent>
+
+      <TabsContent value="health-extended" className="mt-6">
+        <HealthRecords horseId={mareId} />
+      </TabsContent>
+
+      <TabsContent value="performance" className="mt-6">
+        <PerformanceRecords horseId={mareId} />
       </TabsContent>
     </Tabs>
   );

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -5,8 +6,6 @@ import HorsesDashboard from "@/components/horses/HorsesDashboard";
 import HorseManagement from "@/components/horses/HorseManagement";
 import BreedingManagement from "@/components/horses/breeding/BreedingManagement";
 import PedigreeManagement from "@/components/horses/pedigree/PedigreeManagement";
-import IntegrationDashboard from "@/components/integration/IntegrationDashboard";
-import AutomationRulesPanel from "@/components/integration/AutomationRulesPanel";
 
 const HorsesDepartment = () => {
   const location = useLocation();
@@ -57,7 +56,7 @@ const HorsesDepartment = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-9 bg-slate-900 border border-slate-700 p-1.5 h-12">
+        <TabsList className="grid w-full grid-cols-4 bg-slate-900 border border-slate-700 p-1.5 h-12">
           <TabsTrigger 
             value="dashboard" 
             className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
@@ -82,36 +81,6 @@ const HorsesDepartment = () => {
           >
             Pedigree
           </TabsTrigger>
-          <TabsTrigger 
-            value="performance" 
-            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
-          >
-            Performance
-          </TabsTrigger>
-          <TabsTrigger 
-            value="health" 
-            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
-          >
-            Health Records
-          </TabsTrigger>
-          <TabsTrigger 
-            value="training" 
-            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
-          >
-            Training
-          </TabsTrigger>
-          <TabsTrigger 
-            value="integration" 
-            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
-          >
-            Integration
-          </TabsTrigger>
-          <TabsTrigger 
-            value="automation" 
-            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
-          >
-            Automation
-          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="dashboard" className="mt-6">
@@ -128,35 +97,6 @@ const HorsesDepartment = () => {
         
         <TabsContent value="pedigree" className="mt-6">
           <PedigreeManagement />
-        </TabsContent>
-        
-        <TabsContent value="performance" className="mt-6">
-          <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2">Performance Records</h3>
-            <p className="text-muted-foreground">Monitor training progress and competition results</p>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="health" className="mt-6">
-          <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2">Health Records</h3>
-            <p className="text-muted-foreground">Medical history and vaccination tracking</p>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="training" className="mt-6">
-          <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2">Training Management</h3>
-            <p className="text-muted-foreground">Training schedules and progress tracking</p>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="integration" className="mt-6">
-          <IntegrationDashboard />
-        </TabsContent>
-        
-        <TabsContent value="automation" className="mt-6">
-          <AutomationRulesPanel />
         </TabsContent>
       </Tabs>
     </div>
