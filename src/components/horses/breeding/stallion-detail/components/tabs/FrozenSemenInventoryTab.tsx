@@ -21,16 +21,14 @@ const FrozenSemenInventoryTab = ({ stallionId }: FrozenSemenInventoryTabProps) =
     frozenSemen,
     filters,
     setFilters,
-    isLoading,
-    addFrozenSemen,
+    exportData,
     updateFrozenSemen,
-    deleteFrozenSemen,
-    exportData
+    deleteFrozenSemen
   } = useFrozenSemenManagement(stallionId);
 
   const filteredSemen = frozenSemen.filter(semen =>
     semen.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    semen.collectionDate.includes(searchTerm)
+    semen.freezeDate.includes(searchTerm)
   );
 
   const handleAddSemen = () => {
@@ -38,7 +36,7 @@ const FrozenSemenInventoryTab = ({ stallionId }: FrozenSemenInventoryTabProps) =
   };
 
   const handleExport = () => {
-    exportData();
+    exportData("csv");
   };
 
   const getGridColumns = () => {
@@ -135,7 +133,7 @@ const FrozenSemenInventoryTab = ({ stallionId }: FrozenSemenInventoryTabProps) =
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {filteredSemen.reduce((sum, s) => sum + s.strawCount, 0)}
+              {filteredSemen.reduce((sum, s) => sum + s.straws, 0)}
             </div>
           </CardContent>
         </Card>
@@ -145,7 +143,7 @@ const FrozenSemenInventoryTab = ({ stallionId }: FrozenSemenInventoryTabProps) =
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {filteredSemen.reduce((sum, s) => sum + s.availableStraws, 0)}
+              {filteredSemen.reduce((sum, s) => sum + s.straws, 0)}
             </div>
           </CardContent>
         </Card>
@@ -154,9 +152,7 @@ const FrozenSemenInventoryTab = ({ stallionId }: FrozenSemenInventoryTabProps) =
             <CardTitle className="text-sm font-medium">Used</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {filteredSemen.reduce((sum, s) => sum + s.usedStraws, 0)}
-            </div>
+            <div className="text-2xl font-bold">0</div>
           </CardContent>
         </Card>
         <Card>
@@ -170,49 +166,45 @@ const FrozenSemenInventoryTab = ({ stallionId }: FrozenSemenInventoryTabProps) =
       </div>
 
       {/* Semen grid */}
-      {isLoading ? (
-        <div className="text-center py-8">Loading...</div>
-      ) : (
-        <div className={`grid ${getGridColumns()} gap-6`}>
-          {filteredSemen.map((semen) => (
-            <Card key={semen.id} className="hover:shadow-md transition-shadow">
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-lg">{semen.id}</CardTitle>
-                    <p className="text-sm text-muted-foreground">
-                      Collected: {semen.collectionDate}
-                    </p>
-                  </div>
-                  <Badge variant={semen.quality === "Excellent" ? "default" : "secondary"}>
-                    {semen.quality}
-                  </Badge>
+      <div className={`grid ${getGridColumns()} gap-6`}>
+        {filteredSemen.map((semen) => (
+          <Card key={semen.id} className="hover:shadow-md transition-shadow">
+            <CardHeader>
+              <div className="flex justify-between items-start">
+                <div>
+                  <CardTitle className="text-lg">{semen.id}</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Frozen: {semen.freezeDate}
+                  </p>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Total Straws:</span>
-                    <span>{semen.strawCount}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Available:</span>
-                    <span>{semen.availableStraws}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Used:</span>
-                    <span>{semen.usedStraws}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Location:</span>
-                    <span>{semen.storageLocation}</span>
-                  </div>
+                <Badge variant={semen.quality === "Grade A" ? "default" : "secondary"}>
+                  {semen.quality}
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Total Straws:</span>
+                  <span>{semen.straws}</span>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Available:</span>
+                  <span>{semen.straws}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Viability:</span>
+                  <span>{semen.viability}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Location:</span>
+                  <span>{semen.tank} - {semen.location}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };

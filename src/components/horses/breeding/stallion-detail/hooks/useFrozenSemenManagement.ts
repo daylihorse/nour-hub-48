@@ -49,6 +49,7 @@ const mockFrozenSemen: FrozenSemenInventory[] = [
 
 export const useFrozenSemenManagement = (stallionId: string) => {
   const [data, setData] = useState<FrozenSemenInventory[]>(mockFrozenSemen);
+  const [isLoading, setIsLoading] = useState(false);
   const [filters, setFilters] = useState<StallionDetailFilters>({
     searchTerm: "",
     quality: [],
@@ -74,6 +75,15 @@ export const useFrozenSemenManagement = (stallionId: string) => {
     return filtered;
   }, [stallionId, filters, data]);
 
+  const addFrozenSemen = async (newRecord: Omit<FrozenSemenInventory, 'id' | 'createdAt'>) => {
+    const record: FrozenSemenInventory = {
+      ...newRecord,
+      id: `FS${Date.now()}`,
+      createdAt: new Date()
+    };
+    setData(prev => [...prev, record]);
+  };
+
   const updateFrozenSemen = async (id: string, updatedRecord: FrozenSemenInventory) => {
     setData(prev => 
       prev.map(item => item.id === id ? { ...updatedRecord, id } : item)
@@ -93,8 +103,10 @@ export const useFrozenSemenManagement = (stallionId: string) => {
     frozenSemen,
     filters,
     setFilters,
-    exportData,
+    isLoading,
+    addFrozenSemen,
     updateFrozenSemen,
     deleteFrozenSemen,
+    exportData,
   };
 };

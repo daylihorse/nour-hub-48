@@ -38,7 +38,7 @@ const FrozenEmbryoInventoryTab = ({ stallionId }: FrozenEmbryoInventoryTabProps)
   };
 
   const handleExport = () => {
-    exportData();
+    exportData("csv");
   };
 
   const getGridColumns = () => {

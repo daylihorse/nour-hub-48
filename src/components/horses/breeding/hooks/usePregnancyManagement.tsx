@@ -10,6 +10,10 @@ export const usePregnancyManagement = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [gridSize, setGridSize] = useState<GridSize>(3);
   const [statusFilter, setStatusFilter] = useState("all");
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showUltrasoundDialog, setShowUltrasoundDialog] = useState(false);
+  const [showCheckupDialog, setShowCheckupDialog] = useState(false);
+  const [selectedPregnancy, setSelectedPregnancy] = useState<string | null>(null);
   const [dateRange, setDateRange] = useState<{
     from: Date | undefined;
     to: Date | undefined;
@@ -22,12 +26,20 @@ export const usePregnancyManagement = () => {
   const pregnancies: PregnancyRecord[] = [];
 
   const filteredPregnancies = pregnancies.filter(pregnancy => {
-    const matchesSearch = pregnancy.mareName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         pregnancy.stallionName.toLowerCase().includes(searchTerm.toLowerCase());
+    // For now, we'll use placeholder properties until we have proper mare/stallion data
+    const matchesSearch = pregnancy.id.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || pregnancy.status === statusFilter;
     
     return matchesSearch && matchesStatus;
   });
+
+  // Calculate stats
+  const stats = {
+    total: filteredPregnancies.length,
+    confirmed: filteredPregnancies.filter(p => p.status === 'confirmed').length,
+    monitoring: filteredPregnancies.filter(p => p.status === 'monitoring').length,
+    delivered: filteredPregnancies.filter(p => p.status === 'delivered').length,
+  };
 
   return {
     searchTerm,
@@ -40,6 +52,16 @@ export const usePregnancyManagement = () => {
     setStatusFilter,
     dateRange,
     setDateRange,
+    showAddDialog,
+    setShowAddDialog,
+    showUltrasoundDialog,
+    setShowUltrasoundDialog,
+    showCheckupDialog,
+    setShowCheckupDialog,
+    selectedPregnancy,
+    setSelectedPregnancy,
     pregnancies: filteredPregnancies,
+    filteredPregnancies,
+    stats,
   };
 };
