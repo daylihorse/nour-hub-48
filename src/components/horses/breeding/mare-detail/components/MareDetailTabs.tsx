@@ -1,5 +1,5 @@
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollableTabs, ScrollableTabsList, ScrollableTabsTrigger, ScrollableTabsContent } from "@/components/ui/scrollable-tabs";
 import MareBasicInfoTable from "../tables/MareBasicInfoTable";
 import MareBreedingHistoryTable from "../tables/MareBreedingHistoryTable";
 import MarePregnancyTable from "../tables/MarePregnancyTable";
@@ -29,135 +29,135 @@ const MareDetailTabs = ({
   onActionClick 
 }: MareDetailTabsProps) => {
   return (
-    <Tabs value={activeTab} onValueChange={onActiveTabChange} className="w-full">
-      <TabsList className="grid w-full grid-cols-10 bg-slate-100 p-1 h-12">
-        <TabsTrigger 
+    <ScrollableTabs value={activeTab} onValueChange={onActiveTabChange} className="w-full">
+      <ScrollableTabsList className="bg-slate-100 p-1 h-12">
+        <ScrollableTabsTrigger 
           value="basic-info"
           className="text-slate-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium transition-all"
         >
           Basic Info
-        </TabsTrigger>
-        <TabsTrigger 
+        </ScrollableTabsTrigger>
+        <ScrollableTabsTrigger 
           value="breeding-history"
           className="text-slate-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium transition-all"
         >
           Breeding History
-        </TabsTrigger>
-        <TabsTrigger 
+        </ScrollableTabsTrigger>
+        <ScrollableTabsTrigger 
           value="pregnancy"
           className="text-slate-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium transition-all"
         >
           Pregnancy
-        </TabsTrigger>
-        <TabsTrigger 
+        </ScrollableTabsTrigger>
+        <ScrollableTabsTrigger 
           value="foaling"
           className="text-slate-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium transition-all"
         >
           Foaling History
-        </TabsTrigger>
-        <TabsTrigger 
+        </ScrollableTabsTrigger>
+        <ScrollableTabsTrigger 
           value="frozen-embryo"
           className="text-slate-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium transition-all"
         >
           Frozen Embryos
-        </TabsTrigger>
-        <TabsTrigger 
+        </ScrollableTabsTrigger>
+        <ScrollableTabsTrigger 
           value="health"
           className="text-slate-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium transition-all"
         >
           Health Records
-        </TabsTrigger>
-        <TabsTrigger 
+        </ScrollableTabsTrigger>
+        <ScrollableTabsTrigger 
           value="heat-cycle"
           className="text-slate-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium transition-all"
         >
           Heat Cycles
-        </TabsTrigger>
-        <TabsTrigger 
+        </ScrollableTabsTrigger>
+        <ScrollableTabsTrigger 
           value="training"
           className="text-slate-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium transition-all"
         >
           Training
-        </TabsTrigger>
-        <TabsTrigger 
+        </ScrollableTabsTrigger>
+        <ScrollableTabsTrigger 
           value="health-extended"
           className="text-slate-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium transition-all"
         >
           Medical History
-        </TabsTrigger>
-        <TabsTrigger 
+        </ScrollableTabsTrigger>
+        <ScrollableTabsTrigger 
           value="performance"
           className="text-slate-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium transition-all"
         >
           Performance
-        </TabsTrigger>
-      </TabsList>
+        </ScrollableTabsTrigger>
+      </ScrollableTabsList>
 
-      <TabsContent value="basic-info" className="mt-6">
+      <ScrollableTabsContent value="basic-info">
         <MareBasicInfoTable mareId={mareId} viewMode={viewMode} onViewModeChange={onViewModeChange} />
-      </TabsContent>
+      </ScrollableTabsContent>
 
-      <TabsContent value="breeding-history" className="mt-6">
+      <ScrollableTabsContent value="breeding-history">
         <MareBreedingHistoryTable 
           mareId={mareId} 
           viewMode={viewMode} 
           onViewModeChange={onViewModeChange}
           onActionClick={onActionClick}
         />
-      </TabsContent>
+      </ScrollableTabsContent>
 
-      <TabsContent value="pregnancy" className="mt-6">
+      <ScrollableTabsContent value="pregnancy">
         <MarePregnancyTable 
           mareId={mareId} 
           viewMode={viewMode} 
           onViewModeChange={onViewModeChange}
           onActionClick={onActionClick}
         />
-      </TabsContent>
+      </ScrollableTabsContent>
 
-      <TabsContent value="foaling" className="mt-6">
+      <ScrollableTabsContent value="foaling">
         <MareFoalingHistoryTable 
           mareId={mareId} 
           viewMode={viewMode} 
           onViewModeChange={onViewModeChange}
           onActionClick={onActionClick}
         />
-      </TabsContent>
+      </ScrollableTabsContent>
 
-      <TabsContent value="frozen-embryo" className="mt-6">
+      <ScrollableTabsContent value="frozen-embryo">
         <MareFrozenEmbryoInventoryTab mareId={mareId} />
-      </TabsContent>
+      </ScrollableTabsContent>
 
-      <TabsContent value="health" className="mt-6">
+      <ScrollableTabsContent value="health">
         <MareHealthRecordsTable 
           mareId={mareId} 
           viewMode={viewMode} 
           onViewModeChange={onViewModeChange}
           onActionClick={onActionClick}
         />
-      </TabsContent>
+      </ScrollableTabsContent>
 
-      <TabsContent value="heat-cycle" className="mt-6">
+      <ScrollableTabsContent value="heat-cycle">
         <MareHeatCycleTable 
           mareId={mareId} 
           viewMode={viewMode} 
           onViewModeChange={onViewModeChange}
           onActionClick={onActionClick}
         />
-      </TabsContent>
+      </ScrollableTabsContent>
 
-      <TabsContent value="training" className="mt-6">
+      <ScrollableTabsContent value="training">
         <TrainingRecords horseId={mareId} />
-      </TabsContent>
+      </ScrollableTabsContent>
 
-      <TabsContent value="health-extended" className="mt-6">
+      <ScrollableTabsContent value="health-extended">
         <HealthRecords horseId={mareId} />
-      </TabsContent>
+      </ScrollableTabsContent>
 
-      <TabsContent value="performance" className="mt-6">
+      <ScrollableTabsContent value="performance">
         <PerformanceRecords horseId={mareId} />
-      </TabsContent>
-    </Tabs>
+      </ScrollableTabsContent>
+    </ScrollableTabs>
   );
 };
 
