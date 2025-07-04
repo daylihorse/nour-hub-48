@@ -13,6 +13,7 @@ import AddMareDialog from "./AddMareDialog";
 import VetCheckupDialog from "./VetCheckupDialog";
 import MedicalRecordsDialog from "./MedicalRecordsDialog";
 import MareHeatCycleTracking from "./cycles/MareHeatCycleTracking";
+import PregnancyManagement from "./PregnancyManagement";
 import TrainingRecords from "@/components/horses/training/TrainingRecords";
 import HealthRecords from "@/components/horses/health/HealthRecords";
 import PerformanceRecords from "@/components/horses/performance/PerformanceRecords";
@@ -125,12 +126,18 @@ const MareManagement = () => {
   return (
     <div className="space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5 bg-purple-50 border border-purple-200 p-1 h-12">
+        <TabsList className="grid w-full grid-cols-6 bg-purple-50 border border-purple-200 p-1 h-12">
           <TabsTrigger 
             value="mares" 
             className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
           >
             Mares
+          </TabsTrigger>
+          <TabsTrigger 
+            value="pregnancy" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
+            Pregnancy
           </TabsTrigger>
           <TabsTrigger 
             value="heat-cycles" 
@@ -181,6 +188,10 @@ const MareManagement = () => {
 
             {renderView()}
           </div>
+        </TabsContent>
+        
+        <TabsContent value="pregnancy" className="mt-6">
+          <PregnancyManagement />
         </TabsContent>
         
         <TabsContent value="heat-cycles" className="mt-6">

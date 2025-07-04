@@ -4,7 +4,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BreedingDashboard from "./BreedingDashboard";
 import MareManagement from "./MareManagement";
 import StallionManagement from "./StallionManagement";
-import PregnancyManagement from "./PregnancyManagement";
 import FoalingManagement from "./FoalingManagement";
 import BreedingDocumentManager from "./documents/BreedingDocumentManager";
 import BreedingPlanner from "./planning/BreedingPlanner";
@@ -25,7 +24,7 @@ const BreedingManagement = ({ initialTab = "dashboard" }: BreedingManagementProp
   return (
     <div className="space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-9 bg-purple-50 border border-purple-200 p-1 h-12">
+        <TabsList className="grid w-full grid-cols-8 bg-purple-50 border border-purple-200 p-1 h-12">
           <TabsTrigger 
             value="dashboard" 
             className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
@@ -43,12 +42,6 @@ const BreedingManagement = ({ initialTab = "dashboard" }: BreedingManagementProp
             className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
           >
             Stallions
-          </TabsTrigger>
-          <TabsTrigger 
-            value="pregnancy" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
-          >
-            Pregnancy
           </TabsTrigger>
           <TabsTrigger 
             value="foaling" 
@@ -92,10 +85,6 @@ const BreedingManagement = ({ initialTab = "dashboard" }: BreedingManagementProp
 
         <TabsContent value="stallions" className="mt-6">
           <StallionManagement />
-        </TabsContent>
-
-        <TabsContent value="pregnancy" className="mt-6">
-          <PregnancyManagement />
         </TabsContent>
 
         <TabsContent value="foaling" className="mt-6">
