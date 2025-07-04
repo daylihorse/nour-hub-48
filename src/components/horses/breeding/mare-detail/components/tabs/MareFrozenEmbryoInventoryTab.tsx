@@ -4,12 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Plus, Filter, Download, LayoutGrid, List, Table2 } from "lucide-react";
+import { Search, Plus, Filter, Download } from "lucide-react";
 import { useMareFrozenEmbryoManagement } from "../../hooks/useMareFrozenEmbryoManagement";
 import { GridSize } from "../../../components/GridSizeSelector";
 import MareFrozenEmbryoGridView from "./MareFrozenEmbryoGridView";
 import MareFrozenEmbryoListView from "./MareFrozenEmbryoListView";
 import MareFrozenEmbryoTableView from "./MareFrozenEmbryoTableView";
+import MareFrozenEmbryoViewSelector from "./MareFrozenEmbryoViewSelector";
 
 interface MareFrozenEmbryoInventoryTabProps {
   mareId?: string;
@@ -123,54 +124,12 @@ const MareFrozenEmbryoInventoryTab = ({ mareId }: MareFrozenEmbryoInventoryTabPr
           <Filter className="h-4 w-4 mr-2" />
           Filters
         </Button>
-        <div className="flex gap-1 border rounded-md p-1">
-          <Button
-            variant={viewMode === "grid" ? "secondary" : "ghost"}
-            size="sm"
-            onClick={() => setViewMode("grid")}
-          >
-            <LayoutGrid className="h-4 w-4" />
-          </Button>
-          <Button
-            variant={viewMode === "list" ? "secondary" : "ghost"}
-            size="sm"
-            onClick={() => setViewMode("list")}
-          >
-            <List className="h-4 w-4" />
-          </Button>
-          <Button
-            variant={viewMode === "table" ? "secondary" : "ghost"}
-            size="sm"
-            onClick={() => setViewMode("table")}
-          >
-            <Table2 className="h-4 w-4" />
-          </Button>
-        </div>
-        {viewMode === "grid" && (
-          <div className="flex gap-1 border rounded-md p-1">
-            <Button
-              variant={gridSize === 2 ? "secondary" : "ghost"}
-              size="sm"
-              onClick={() => setGridSize(2)}
-            >
-              2
-            </Button>
-            <Button
-              variant={gridSize === 3 ? "secondary" : "ghost"}
-              size="sm"
-              onClick={() => setGridSize(3)}
-            >
-              3
-            </Button>
-            <Button
-              variant={gridSize === 4 ? "secondary" : "ghost"}
-              size="sm"
-              onClick={() => setGridSize(4)}
-            >
-              4
-            </Button>
-          </div>
-        )}
+        <MareFrozenEmbryoViewSelector
+          viewMode={viewMode}
+          gridSize={gridSize}
+          onViewModeChange={setViewMode}
+          onGridSizeChange={setGridSize}
+        />
       </div>
 
       {/* Statistics cards */}
