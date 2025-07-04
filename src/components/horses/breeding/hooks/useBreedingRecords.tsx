@@ -10,7 +10,7 @@ export const useBreedingRecords = () => {
   const [typeFilter, setTypeFilter] = useState("all");
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [gridSize, setGridSize] = useState<GridSize>(3);
+  const [gridSize, setGridSize] = useState<GridSize>("medium");
 
   // Mock breeding records data
   const breedingRecords: BreedingRecord[] = [

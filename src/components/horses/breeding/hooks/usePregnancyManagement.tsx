@@ -12,7 +12,7 @@ export const usePregnancyManagement = () => {
   const [showCheckupDialog, setShowCheckupDialog] = useState(false);
   const [selectedPregnancy, setSelectedPregnancy] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [gridSize, setGridSize] = useState<GridSize>(3);
+  const [gridSize, setGridSize] = useState<GridSize>("medium");
 
   // Mock pregnancy data
   const pregnancies: PregnancyRecord[] = [

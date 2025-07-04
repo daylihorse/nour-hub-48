@@ -21,7 +21,7 @@ interface BreedingRecordsViewSelectorProps {
 const BreedingRecordsViewSelector = ({ 
   currentView, 
   onViewChange,
-  gridSize = 3,
+  gridSize = "medium",
   onGridSizeChange = () => {},
 }: BreedingRecordsViewSelectorProps) => {
   return (
@@ -31,27 +31,27 @@ const BreedingRecordsViewSelector = ({
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className="flex items-center gap-1">
               <LayoutGrid className="h-4 w-4 mr-1" />
-              <span>Columns: {gridSize}</span>
+              <span>Grid Size</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem 
-              className={gridSize === 2 ? "bg-muted" : ""} 
-              onClick={() => onGridSizeChange(2)}
+              className={gridSize === "large" ? "bg-muted" : ""} 
+              onClick={() => onGridSizeChange("large")}
             >
-              2 Columns
+              Large
             </DropdownMenuItem>
             <DropdownMenuItem 
-              className={gridSize === 3 ? "bg-muted" : ""} 
-              onClick={() => onGridSizeChange(3)}
+              className={gridSize === "medium" ? "bg-muted" : ""} 
+              onClick={() => onGridSizeChange("medium")}
             >
-              3 Columns
+              Medium
             </DropdownMenuItem>
             <DropdownMenuItem 
-              className={gridSize === 4 ? "bg-muted" : ""} 
-              onClick={() => onGridSizeChange(4)}
+              className={gridSize === "small" ? "bg-muted" : ""} 
+              onClick={() => onGridSizeChange("small")}
             >
-              4 Columns
+              Small
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

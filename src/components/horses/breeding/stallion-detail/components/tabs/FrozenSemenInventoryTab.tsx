@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -150,7 +151,7 @@ const FrozenSemenInventoryTab = ({ stallionId, onActionClick }: FrozenSemenInven
         <BreedingRecordsViewSelector 
           currentView={viewMode}
           onViewChange={setViewMode}
-          gridSize={3}
+          gridSize="medium"
           onGridSizeChange={() => {}}
         />
       </div>

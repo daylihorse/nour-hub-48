@@ -17,7 +17,7 @@ const PregnancyGridView = ({
   onScheduleUltrasound, 
   onScheduleCheckup, 
   onEditPregnancy,
-  gridSize = 3
+  gridSize = "medium"
 }: PregnancyGridViewProps) => {
   const navigate = useNavigate();
 
@@ -52,11 +52,11 @@ const PregnancyGridView = ({
   // Determine grid columns based on grid size
   const getGridColumns = () => {
     switch (gridSize) {
-      case 2:
+      case "large":
         return "grid-cols-1 md:grid-cols-2";
-      case 3:
+      case "medium":
         return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
-      case 4:
+      case "small":
         return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
       default:
         return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";

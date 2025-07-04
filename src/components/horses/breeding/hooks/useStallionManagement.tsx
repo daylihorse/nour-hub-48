@@ -7,7 +7,7 @@ import { GridSize } from "../components/GridSizeSelector";
 export const useStallionManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [gridSize, setGridSize] = useState<GridSize>(3);
+  const [gridSize, setGridSize] = useState<GridSize>("medium");
   const { stallions } = useStallionContext();
 
   const filteredStallions = stallions.filter(stallion =>

@@ -6,7 +6,7 @@ import { GridSize } from "../components/GridSizeSelector";
 
 export const useMareManagement = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [gridSize, setGridSize] = useState<GridSize>(3);
+  const [gridSize, setGridSize] = useState<GridSize>("medium");
   
   const {
     searchTerm,
