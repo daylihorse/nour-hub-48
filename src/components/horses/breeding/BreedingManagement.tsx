@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BreedingDashboard from "./BreedingDashboard";
@@ -6,7 +7,6 @@ import StallionManagement from "./StallionManagement";
 import FoalingManagement from "./FoalingManagement";
 import BreedingDocumentManager from "./documents/BreedingDocumentManager";
 import BreedingPlanner from "./planning/BreedingPlanner";
-import GeneticAnalysis from "./analysis/GeneticAnalysis";
 import BreedingCertificateGenerator from "./certificates/BreedingCertificateGenerator";
 import GeldingManagement from "./GeldingManagement";
 
@@ -24,7 +24,7 @@ const BreedingManagement = ({ initialTab = "dashboard" }: BreedingManagementProp
   return (
     <div className="space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-9 bg-purple-50 border border-purple-200 p-1 h-12">
+        <TabsList className="grid w-full grid-cols-8 bg-purple-50 border border-purple-200 p-1 h-12">
           <TabsTrigger 
             value="dashboard" 
             className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
@@ -62,12 +62,6 @@ const BreedingManagement = ({ initialTab = "dashboard" }: BreedingManagementProp
             Planning
           </TabsTrigger>
           <TabsTrigger 
-            value="analysis" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
-          >
-            Analysis
-          </TabsTrigger>
-          <TabsTrigger 
             value="documents" 
             className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
           >
@@ -103,10 +97,6 @@ const BreedingManagement = ({ initialTab = "dashboard" }: BreedingManagementProp
 
         <TabsContent value="planning" className="mt-6">
           <BreedingPlanner />
-        </TabsContent>
-
-        <TabsContent value="analysis" className="mt-6">
-          <GeneticAnalysis />
         </TabsContent>
 
         <TabsContent value="documents" className="mt-6">
