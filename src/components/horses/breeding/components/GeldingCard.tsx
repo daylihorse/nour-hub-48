@@ -31,7 +31,7 @@ const GeldingCard = ({
     }
   };
 
-  const calculateAge = (birthDate: string) => {
+  const calculateAge = (birthDate: Date) => {
     const today = new Date();
     const birth = new Date(birthDate);
     const age = today.getFullYear() - birth.getFullYear();
@@ -53,8 +53,8 @@ const GeldingCard = ({
               <p className="text-sm text-gray-600 font-arabic">{gelding.arabicName}</p>
             )}
           </div>
-          <Badge className={getHealthStatusColor(gelding.health_status)}>
-            {gelding.health_status.replace('_', ' ')}
+          <Badge className={getHealthStatusColor(gelding.healthStatus)}>
+            {gelding.healthStatus.replace('_', ' ')}
           </Badge>
         </div>
       </CardHeader>
@@ -67,7 +67,7 @@ const GeldingCard = ({
           </div>
           <div>
             <span className="text-gray-500">Age:</span>
-            <p className="font-medium">{calculateAge(gelding.birth_date)} years</p>
+            <p className="font-medium">{calculateAge(gelding.birthDate)} years</p>
           </div>
           <div>
             <span className="text-gray-500">Color:</span>
@@ -75,7 +75,7 @@ const GeldingCard = ({
           </div>
           <div>
             <span className="text-gray-500">Owner:</span>
-            <p className="font-medium text-xs">{gelding.owner_name}</p>
+            <p className="font-medium text-xs">{gelding.ownerName}</p>
           </div>
         </div>
 
@@ -83,7 +83,7 @@ const GeldingCard = ({
           <div className="flex items-center justify-between p-2 bg-blue-50 rounded">
             <span className="text-xs text-blue-700">Insured</span>
             <span className="text-xs font-medium text-blue-800">
-              {gelding.insurance_value ? `$${gelding.insurance_value.toLocaleString()}` : 'N/A'}
+              {gelding.insuranceValue ? `$${gelding.insuranceValue.toLocaleString()}` : 'N/A'}
             </span>
           </div>
         )}

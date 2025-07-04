@@ -31,7 +31,7 @@ const GeldingListView = ({
     }
   };
 
-  const calculateAge = (birthDate: string) => {
+  const calculateAge = (birthDate: Date) => {
     const today = new Date();
     const birth = new Date(birthDate);
     const age = today.getFullYear() - birth.getFullYear();
@@ -60,8 +60,8 @@ const GeldingListView = ({
                       <p className="text-sm text-gray-600 font-arabic">{gelding.arabicName}</p>
                     )}
                   </div>
-                  <Badge className={getHealthStatusColor(gelding.health_status)}>
-                    {gelding.health_status.replace('_', ' ')}
+                  <Badge className={getHealthStatusColor(gelding.healthStatus)}>
+                    {gelding.healthStatus.replace('_', ' ')}
                   </Badge>
                 </div>
                 
@@ -72,7 +72,7 @@ const GeldingListView = ({
                   </div>
                   <div>
                     <span className="text-gray-500">Age:</span>
-                    <p className="font-medium">{calculateAge(gelding.birth_date)} years</p>
+                    <p className="font-medium">{calculateAge(gelding.birthDate)} years</p>
                   </div>
                   <div>
                     <span className="text-gray-500">Color:</span>
@@ -80,7 +80,7 @@ const GeldingListView = ({
                   </div>
                   <div>
                     <span className="text-gray-500">Owner:</span>
-                    <p className="font-medium">{gelding.owner_name}</p>
+                    <p className="font-medium">{gelding.ownerName}</p>
                   </div>
                 </div>
               </div>

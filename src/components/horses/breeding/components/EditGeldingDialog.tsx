@@ -78,8 +78,8 @@ const EditGeldingDialog = ({ isOpen, onClose, gelding, onSave }: EditGeldingDial
             <Label htmlFor="ownerName">Owner Name</Label>
             <Input
               id="ownerName"
-              value={formData.owner_name || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, owner_name: e.target.value }))}
+              value={formData.ownerName || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, ownerName: e.target.value }))}
             />
           </div>
           
@@ -87,8 +87,8 @@ const EditGeldingDialog = ({ isOpen, onClose, gelding, onSave }: EditGeldingDial
             <Label htmlFor="ownerContact">Owner Contact</Label>
             <Input
               id="ownerContact"
-              value={formData.owner_contact || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, owner_contact: e.target.value }))}
+              value={formData.ownerContact || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, ownerContact: e.target.value }))}
             />
           </div>
         </div>

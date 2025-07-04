@@ -38,7 +38,7 @@ const GeldingTableView = ({
     }
   };
 
-  const calculateAge = (birthDate: string) => {
+  const calculateAge = (birthDate: Date) => {
     const today = new Date();
     const birth = new Date(birthDate);
     return today.getFullYear() - birth.getFullYear();
@@ -79,12 +79,12 @@ const GeldingTableView = ({
                 </div>
               </TableCell>
               <TableCell>{gelding.breed}</TableCell>
-              <TableCell>{calculateAge(gelding.birth_date)} years</TableCell>
+              <TableCell>{calculateAge(gelding.birthDate)} years</TableCell>
               <TableCell>{gelding.color}</TableCell>
-              <TableCell className="max-w-32 truncate">{gelding.owner_name}</TableCell>
+              <TableCell className="max-w-32 truncate">{gelding.ownerName}</TableCell>
               <TableCell>
-                <Badge className={getHealthStatusColor(gelding.health_status)}>
-                  {gelding.health_status.replace('_', ' ')}
+                <Badge className={getHealthStatusColor(gelding.healthStatus)}>
+                  {gelding.healthStatus.replace('_', ' ')}
                 </Badge>
               </TableCell>
               <TableCell>

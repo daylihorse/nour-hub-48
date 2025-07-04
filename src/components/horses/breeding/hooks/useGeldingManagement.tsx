@@ -11,55 +11,70 @@ const mockGeldings: Horse[] = [
     name: "Thunder Strike",
     arabicName: "صاعقة الرعد",
     breed: "Arabian",
-    gender: "gelding",
-    birth_date: "2018-05-15",
+    gender: "male",
+    adultMaleType: "gelding",
+    birthDate: new Date("2018-05-15"),
     color: "Bay",
-    owner_type: "individual",
-    owner_name: "Sarah Johnson",
-    owner_contact: "+1-555-0123",
-    health_status: "healthy",
+    ownerType: "individual",
+    ownerName: "Sarah Johnson",
+    ownerContact: "+1-555-0123",
+    healthStatus: "healthy",
+    vaccinationStatus: "up_to_date",
+    trainingLevel: "intermediate",
     status: "active",
     insured: true,
-    insurance_provider: "Equine Insurance Co.",
-    insurance_value: 25000,
+    insuranceProvider: "Equine Insurance Co.",
+    insuranceValue: 25000,
     images: [],
-    documents: []
+    documents: [],
+    createdAt: new Date("2018-05-15"),
+    updatedAt: new Date()
   },
   {
     id: "gelding-2",
     name: "Midnight Runner",
     arabicName: "عداء منتصف الليل",
     breed: "Thoroughbred",
-    gender: "gelding",
-    birth_date: "2019-08-22",
+    gender: "male",
+    adultMaleType: "gelding",
+    birthDate: new Date("2019-08-22"),
     color: "Black",
-    owner_type: "individual",
-    owner_name: "Michael Davis",
-    owner_contact: "+1-555-0124",
-    health_status: "healthy",
+    ownerType: "individual",
+    ownerName: "Michael Davis",
+    ownerContact: "+1-555-0124",
+    healthStatus: "healthy",
+    vaccinationStatus: "up_to_date",
+    trainingLevel: "basic",
     status: "active",
     insured: false,
     images: [],
-    documents: []
+    documents: [],
+    createdAt: new Date("2019-08-22"),
+    updatedAt: new Date()
   },
   {
     id: "gelding-3",
     name: "Golden Flash",
     arabicName: "البرق الذهبي",
     breed: "Quarter Horse",
-    gender: "gelding",
-    birth_date: "2017-03-10",
+    gender: "male",
+    adultMaleType: "gelding",
+    birthDate: new Date("2017-03-10"),
     color: "Palomino",
-    owner_type: "company",
-    owner_name: "Elite Stables LLC",
-    owner_contact: "+1-555-0125",
-    health_status: "under_treatment",
+    ownerType: "company",
+    ownerName: "Elite Stables LLC",
+    ownerContact: "+1-555-0125",
+    healthStatus: "under_treatment",
+    vaccinationStatus: "partial",
+    trainingLevel: "advanced",
     status: "active",
     insured: true,
-    insurance_provider: "Horse Guard Insurance",
-    insurance_value: 30000,
+    insuranceProvider: "Horse Guard Insurance",
+    insuranceValue: 30000,
     images: [],
-    documents: []
+    documents: [],
+    createdAt: new Date("2017-03-10"),
+    updatedAt: new Date()
   }
 ];
 
@@ -74,7 +89,7 @@ export const useGeldingManagement = () => {
       gelding.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       gelding.arabicName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       gelding.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      gelding.owner_name.toLowerCase().includes(searchTerm.toLowerCase())
+      gelding.ownerName.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [geldings, searchTerm]);
 
