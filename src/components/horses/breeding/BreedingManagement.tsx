@@ -1,21 +1,15 @@
 
 import { useState, useEffect } from "react";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
-import BreedingTabsList from "./components/BreedingTabsList";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BreedingDashboard from "./BreedingDashboard";
-import StallionManagement from "./StallionManagement";
 import MareManagement from "./MareManagement";
-import BreedingRecords from "./BreedingRecords";
+import StallionManagement from "./StallionManagement";
 import PregnancyManagement from "./PregnancyManagement";
 import FoalingManagement from "./FoalingManagement";
-import GeneticAnalysis from "./analysis/GeneticAnalysis";
-import BreedingPlanner from "./planning/BreedingPlanner";
-import BreedingContractManagement from "./contracts/BreedingContractManagement";
-import MareHeatCycleTracking from "./cycles/MareHeatCycleTracking";
-import BreedingPerformanceAnalytics from "./analytics/BreedingPerformanceAnalytics";
 import BreedingDocumentManager from "./documents/BreedingDocumentManager";
-import IntegrationStatusBar from "@/components/integration/IntegrationStatusBar";
-import { RecordsProvider } from "./records/RecordsProvider";
+import BreedingPlanner from "./planning/BreedingPlanner";
+import GeneticAnalysis from "./analysis/GeneticAnalysis";
+import BreedingCertificateGenerator from "./certificates/BreedingCertificateGenerator";
 
 interface BreedingManagementProps {
   initialTab?: string;
@@ -25,77 +19,106 @@ const BreedingManagement = ({ initialTab = "dashboard" }: BreedingManagementProp
   const [activeTab, setActiveTab] = useState(initialTab);
 
   useEffect(() => {
-    if (initialTab) {
-      setActiveTab(initialTab);
-    }
+    setActiveTab(initialTab);
   }, [initialTab]);
 
   return (
-    <RecordsProvider>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Breeding & Reproduction</h1>
-          <p className="text-muted-foreground">
-            Comprehensive breeding management with genetic analysis, strategic planning, and advanced tracking
-          </p>
-        </div>
+    <div className="space-y-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-9 bg-purple-50 border border-purple-200 p-1 h-12">
+          <TabsTrigger 
+            value="dashboard" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
+            Dashboard
+          </TabsTrigger>
+          <TabsTrigger 
+            value="mares" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
+            Mares
+          </TabsTrigger>
+          <TabsTrigger 
+            value="stallions" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
+            Stallions
+          </TabsTrigger>
+          <TabsTrigger 
+            value="pregnancy" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
+            Pregnancy
+          </TabsTrigger>
+          <TabsTrigger 
+            value="foaling" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
+            Foaling
+          </TabsTrigger>
+          <TabsTrigger 
+            value="planning" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
+            Planning
+          </TabsTrigger>
+          <TabsTrigger 
+            value="analysis" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
+            Analysis
+          </TabsTrigger>
+          <TabsTrigger 
+            value="documents" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
+            Documents
+          </TabsTrigger>
+          <TabsTrigger 
+            value="certificates" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
+            Certificates
+          </TabsTrigger>
+        </TabsList>
 
-        {/* Integration Status Bar */}
-        <IntegrationStatusBar />
-        
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <BreedingTabsList />
-          
-          <TabsContent value="dashboard" className="mt-6">
-            <BreedingDashboard />
-          </TabsContent>
-          
-          <TabsContent value="stallions" className="mt-6">
-            <StallionManagement />
-          </TabsContent>
-          
-          <TabsContent value="mares" className="mt-6">
-            <MareManagement />
-          </TabsContent>
-          
-          <TabsContent value="breeding" className="mt-6">
-            <BreedingRecords />
-          </TabsContent>
-          
-          <TabsContent value="pregnancies" className="mt-6">
-            <PregnancyManagement />
-          </TabsContent>
-          
-          <TabsContent value="foaling" className="mt-6">
-            <FoalingManagement />
-          </TabsContent>
-          
-          <TabsContent value="genetics" className="mt-6">
-            <GeneticAnalysis />
-          </TabsContent>
-          
-          <TabsContent value="planning" className="mt-6">
-            <BreedingPlanner />
-          </TabsContent>
-          
-          <TabsContent value="contracts" className="mt-6">
-            <BreedingContractManagement />
-          </TabsContent>
-          
-          <TabsContent value="cycles" className="mt-6">
-            <MareHeatCycleTracking />
-          </TabsContent>
-          
-          <TabsContent value="analytics" className="mt-6">
-            <BreedingPerformanceAnalytics />
-          </TabsContent>
-          
-          <TabsContent value="documents" className="mt-6">
-            <BreedingDocumentManager />
-          </TabsContent>
-        </Tabs>
-      </div>
-    </RecordsProvider>
+        <TabsContent value="dashboard" className="mt-6">
+          <BreedingDashboard />
+        </TabsContent>
+
+        <TabsContent value="mares" className="mt-6">
+          <MareManagement />
+        </TabsContent>
+
+        <TabsContent value="stallions" className="mt-6">
+          <StallionManagement />
+        </TabsContent>
+
+        <TabsContent value="pregnancy" className="mt-6">
+          <PregnancyManagement />
+        </TabsContent>
+
+        <TabsContent value="foaling" className="mt-6">
+          <FoalingManagement />
+        </TabsContent>
+
+        <TabsContent value="planning" className="mt-6">
+          <BreedingPlanner />
+        </TabsContent>
+
+        <TabsContent value="analysis" className="mt-6">
+          <GeneticAnalysis />
+        </TabsContent>
+
+        <TabsContent value="documents" className="mt-6">
+          <BreedingDocumentManager />
+        </TabsContent>
+
+        <TabsContent value="certificates" className="mt-6">
+          <BreedingCertificateGenerator />
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
 

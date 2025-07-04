@@ -105,12 +105,12 @@ const MareHeatCycleTracking = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold">Mare Heat Cycle Tracking</h2>
-          <p className="text-muted-foreground">
-            Monitor estrus cycles and optimize breeding timing
+          <h2 className="text-2xl font-bold text-purple-900">Heat Cycle Tracking</h2>
+          <p className="text-slate-600">
+            Monitor estrus cycles and optimize breeding timing for all mares
           </p>
         </div>
-        <Button className="flex items-center gap-2">
+        <Button className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700">
           <Plus className="h-4 w-4" />
           Record Heat Cycle
         </Button>
@@ -118,53 +118,73 @@ const MareHeatCycleTracking = () => {
 
       {/* Cycle Stats */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <Card>
+        <Card className="border-purple-200">
           <CardContent className="p-4 text-center">
             <Heart className="h-6 w-6 text-pink-500 mx-auto mb-2" />
-            <div className="text-2xl font-bold">{cycleStats.totalMares}</div>
-            <p className="text-sm text-muted-foreground">Tracked Mares</p>
+            <div className="text-2xl font-bold text-purple-900">{cycleStats.totalMares}</div>
+            <p className="text-sm text-slate-600">Tracked Mares</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-purple-200">
           <CardContent className="p-4 text-center">
             <div className="h-6 w-6 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
               <div className="h-3 w-3 bg-red-500 rounded-full"></div>
             </div>
-            <div className="text-2xl font-bold">{cycleStats.inHeat}</div>
-            <p className="text-sm text-muted-foreground">In Heat</p>
+            <div className="text-2xl font-bold text-purple-900">{cycleStats.inHeat}</div>
+            <p className="text-sm text-slate-600">In Heat</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-purple-200">
           <CardContent className="p-4 text-center">
             <div className="h-6 w-6 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
               <div className="h-3 w-3 bg-green-500 rounded-full"></div>
             </div>
-            <div className="text-2xl font-bold">{cycleStats.ovulated}</div>
-            <p className="text-sm text-muted-foreground">Recently Ovulated</p>
+            <div className="text-2xl font-bold text-purple-900">{cycleStats.ovulated}</div>
+            <p className="text-sm text-slate-600">Recently Ovulated</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-purple-200">
           <CardContent className="p-4 text-center">
             <Calendar className="h-6 w-6 text-blue-500 mx-auto mb-2" />
-            <div className="text-2xl font-bold">{cycleStats.avgCycleLength}</div>
-            <p className="text-sm text-muted-foreground">Avg Cycle (days)</p>
+            <div className="text-2xl font-bold text-purple-900">{cycleStats.avgCycleLength}</div>
+            <p className="text-sm text-slate-600">Avg Cycle (days)</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-purple-200">
           <CardContent className="p-4 text-center">
             <TrendingUp className="h-6 w-6 text-green-500 mx-auto mb-2" />
-            <div className="text-2xl font-bold">{cycleStats.successRate}%</div>
-            <p className="text-sm text-muted-foreground">Success Rate</p>
+            <div className="text-2xl font-bold text-purple-900">{cycleStats.successRate}%</div>
+            <p className="text-sm text-slate-600">Success Rate</p>
           </CardContent>
         </Card>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="calendar">Heat Calendar</TabsTrigger>
-          <TabsTrigger value="breeding-windows">Breeding Windows</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-4 bg-purple-50 border border-purple-200 p-1 h-12">
+          <TabsTrigger 
+            value="overview"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
+            Overview
+          </TabsTrigger>
+          <TabsTrigger 
+            value="calendar"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
+            Heat Calendar
+          </TabsTrigger>
+          <TabsTrigger 
+            value="breeding-windows"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
+            Breeding Windows
+          </TabsTrigger>
+          <TabsTrigger 
+            value="analytics"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
+            Analytics
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="mt-6">
