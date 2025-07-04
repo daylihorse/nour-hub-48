@@ -73,11 +73,11 @@ const StallionDetailTabs = ({
       </TabsContent>
       
       <TabsContent value="frozen-semen" className="mt-6">
-        <FrozenSemenInventoryTab stallionId={stallionId} onActionClick={onActionClick} />
+        <FrozenSemenInventoryTab stallionId={stallionId} />
       </TabsContent>
       
       <TabsContent value="frozen-embryo" className="mt-6">
-        <FrozenEmbryoInventoryTab stallionId={stallionId} onActionClick={onActionClick} />
+        <FrozenEmbryoInventoryTab stallionId={stallionId} />
       </TabsContent>
       
       <TabsContent value="breeding-record" className="mt-6">

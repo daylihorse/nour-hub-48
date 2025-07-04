@@ -15,7 +15,7 @@ export const useGeldingManagement = () => {
   const [showEditDialog, setShowEditDialog] = useState(false);
 
   // Mock geldings data - in real app this would come from API/context
-  const geldings: Horse[] = [];
+  const [geldings, setGeldings] = useState<Horse[]>([]);
 
   const filteredGeldings = geldings.filter(gelding => {
     const matchesSearch = gelding.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -28,8 +28,8 @@ export const useGeldingManagement = () => {
   const stats = {
     total: filteredGeldings.length,
     active: filteredGeldings.filter(g => g.status === 'active').length,
-    training: filteredGeldings.filter(g => g.status === 'training').length,
-    retired: filteredGeldings.filter(g => g.status === 'retired').length,
+    inactive: filteredGeldings.filter(g => g.status === 'inactive').length,
+    transferred: filteredGeldings.filter(g => g.status === 'transferred').length,
   };
 
   const handleAddGelding = () => {
@@ -42,6 +42,14 @@ export const useGeldingManagement = () => {
       setSelectedGelding(gelding);
       setShowEditDialog(true);
     }
+  };
+
+  const updateGelding = (updatedGelding: Horse) => {
+    setGeldings(prevGeldings => 
+      prevGeldings.map(gelding => 
+        gelding.id === updatedGelding.id ? updatedGelding : gelding
+      )
+    );
   };
 
   const handleScheduleCheckup = (geldingId: string) => {
@@ -73,6 +81,7 @@ export const useGeldingManagement = () => {
     selectedGelding,
     showAddDialog,
     showEditDialog,
+    updateGelding,
     handleAddGelding,
     handleEditGelding,
     handleScheduleCheckup,
