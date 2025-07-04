@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { PregnancyRecord } from "@/types/breeding";
 import { ViewMode } from "../components/ViewSelector";
@@ -12,7 +11,7 @@ export const usePregnancyManagement = () => {
   const [showCheckupDialog, setShowCheckupDialog] = useState(false);
   const [selectedPregnancy, setSelectedPregnancy] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [gridSize, setGridSize] = useState<GridSize>("medium");
+  const [gridSize, setGridSize] = useState<GridSize>(3);
 
   // Mock pregnancy data
   const pregnancies: PregnancyRecord[] = [

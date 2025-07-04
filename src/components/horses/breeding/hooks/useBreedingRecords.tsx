@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { BreedingRecord } from "@/types/breeding";
 import { ViewMode } from "../components/ViewSelector";
@@ -10,7 +9,7 @@ export const useBreedingRecords = () => {
   const [typeFilter, setTypeFilter] = useState("all");
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [gridSize, setGridSize] = useState<GridSize>("medium");
+  const [gridSize, setGridSize] = useState<GridSize>(3);
 
   // Mock breeding records data
   const breedingRecords: BreedingRecord[] = [

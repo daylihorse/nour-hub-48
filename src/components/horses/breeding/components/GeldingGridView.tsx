@@ -20,11 +20,11 @@ const GeldingGridView = ({
 }: GeldingGridViewProps) => {
   const getGridCols = () => {
     switch (gridSize) {
-      case "small":
+      case 4:
         return "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6";
-      case "medium":
+      case 3:
         return "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
-      case "large":
+      case 2:
         return "grid-cols-1 sm:grid-cols-2 md:grid-cols-3";
       default:
         return "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4";

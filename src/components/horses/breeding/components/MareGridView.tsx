@@ -17,7 +17,7 @@ const MareGridView = ({
   onEditMare, 
   onScheduleCheckup, 
   onViewMedicalRecords,
-  gridSize = "medium"
+  gridSize = 3
 }: MareGridViewProps) => {
   const navigate = useNavigate();
 
@@ -52,11 +52,11 @@ const MareGridView = ({
   // Determine grid columns based on grid size
   const getGridColumns = () => {
     switch (gridSize) {
-      case "large":
+      case 2:
         return "grid-cols-1 md:grid-cols-2";
-      case "medium":
+      case 3:
         return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
-      case "small":
+      case 4:
         return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
       default:
         return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";

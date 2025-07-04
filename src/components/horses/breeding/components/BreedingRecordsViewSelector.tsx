@@ -21,7 +21,7 @@ interface BreedingRecordsViewSelectorProps {
 const BreedingRecordsViewSelector = ({ 
   currentView, 
   onViewChange,
-  gridSize = "medium",
+  gridSize = 3,
   onGridSizeChange = () => {},
 }: BreedingRecordsViewSelectorProps) => {
   return (
@@ -36,22 +36,22 @@ const BreedingRecordsViewSelector = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem 
-              className={gridSize === "large" ? "bg-muted" : ""} 
-              onClick={() => onGridSizeChange("large")}
+              className={gridSize === 2 ? "bg-muted" : ""} 
+              onClick={() => onGridSizeChange(2)}
             >
-              Large
+              2 Columns
             </DropdownMenuItem>
             <DropdownMenuItem 
-              className={gridSize === "medium" ? "bg-muted" : ""} 
-              onClick={() => onGridSizeChange("medium")}
+              className={gridSize === 3 ? "bg-muted" : ""} 
+              onClick={() => onGridSizeChange(3)}
             >
-              Medium
+              3 Columns
             </DropdownMenuItem>
             <DropdownMenuItem 
-              className={gridSize === "small" ? "bg-muted" : ""} 
-              onClick={() => onGridSizeChange("small")}
+              className={gridSize === 4 ? "bg-muted" : ""} 
+              onClick={() => onGridSizeChange(4)}
             >
-              Small
+              4 Columns
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
