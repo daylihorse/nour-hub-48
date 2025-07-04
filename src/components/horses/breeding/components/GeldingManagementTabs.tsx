@@ -1,5 +1,10 @@
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  SmartTabs, 
+  SmartTabsContent, 
+  SmartTabsList, 
+  SmartTabsTrigger 
+} from "@/components/ui/smart-tabs";
 import TrainingRecords from "@/components/horses/training/TrainingRecords";
 import HealthRecords from "@/components/horses/health/HealthRecords";
 import PerformanceRecords from "@/components/horses/performance/PerformanceRecords";
@@ -13,60 +18,60 @@ interface GeldingManagementTabsProps {
 
 const GeldingManagementTabs = ({ activeTab, onTabChange, geldingsContent }: GeldingManagementTabsProps) => {
   return (
-    <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
-      <TabsList className="grid w-full grid-cols-5 bg-blue-50 border border-blue-200 p-1 h-12">
-        <TabsTrigger 
+    <SmartTabs value={activeTab} onValueChange={onTabChange} className="w-full">
+      <SmartTabsList className="mb-6 bg-blue-50 border border-blue-200 p-1 h-12">
+        <SmartTabsTrigger 
           value="geldings" 
           className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
         >
           Geldings
-        </TabsTrigger>
-        <TabsTrigger 
+        </SmartTabsTrigger>
+        <SmartTabsTrigger 
           value="training" 
           className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
         >
           Training
-        </TabsTrigger>
-        <TabsTrigger 
+        </SmartTabsTrigger>
+        <SmartTabsTrigger 
           value="health" 
           className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
         >
           Health Records
-        </TabsTrigger>
-        <TabsTrigger 
+        </SmartTabsTrigger>
+        <SmartTabsTrigger 
           value="performance" 
           className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
         >
           Performance
-        </TabsTrigger>
-        <TabsTrigger 
+        </SmartTabsTrigger>
+        <SmartTabsTrigger 
           value="competitions" 
           className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
         >
           Competitions
-        </TabsTrigger>
-      </TabsList>
+        </SmartTabsTrigger>
+      </SmartTabsList>
       
-      <TabsContent value="geldings" className="mt-6">
+      <SmartTabsContent value="geldings" className="mt-6">
         {geldingsContent}
-      </TabsContent>
+      </SmartTabsContent>
       
-      <TabsContent value="training" className="mt-6">
+      <SmartTabsContent value="training" className="mt-6">
         <TrainingRecords />
-      </TabsContent>
+      </SmartTabsContent>
       
-      <TabsContent value="health" className="mt-6">
+      <SmartTabsContent value="health" className="mt-6">
         <HealthRecords />
-      </TabsContent>
+      </SmartTabsContent>
       
-      <TabsContent value="performance" className="mt-6">
+      <SmartTabsContent value="performance" className="mt-6">
         <PerformanceRecords />
-      </TabsContent>
+      </SmartTabsContent>
       
-      <TabsContent value="competitions" className="mt-6">
+      <SmartTabsContent value="competitions" className="mt-6">
         <GeldingCompetitionHistory />
-      </TabsContent>
-    </Tabs>
+      </SmartTabsContent>
+    </SmartTabs>
   );
 };
 

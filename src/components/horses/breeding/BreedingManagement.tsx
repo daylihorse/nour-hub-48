@@ -1,11 +1,11 @@
 
 import { useState, useEffect } from "react";
 import { 
-  ScrollableTabs, 
-  ScrollableTabsList, 
-  ScrollableTabsTrigger, 
-  ScrollableTabsContent 
-} from "@/components/ui/scrollable-tabs";
+  SmartTabs, 
+  SmartTabsContent, 
+  SmartTabsList, 
+  SmartTabsTrigger 
+} from "@/components/ui/smart-tabs";
 import BreedingDashboard from "./BreedingDashboard";
 import MareManagement from "./MareManagement";
 import StallionManagement from "./StallionManagement";
@@ -28,66 +28,66 @@ const BreedingManagement = ({ initialTab = "dashboard" }: BreedingManagementProp
 
   return (
     <div className="space-y-6">
-      <ScrollableTabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <ScrollableTabsList className="mb-6">
-          <ScrollableTabsTrigger value="dashboard">
+      <SmartTabs value={activeTab} onValueChange={setActiveTab} className="w-full" maxTabsForRegular={5}>
+        <SmartTabsList className="mb-6">
+          <SmartTabsTrigger value="dashboard">
             Dashboard
-          </ScrollableTabsTrigger>
-          <ScrollableTabsTrigger value="mares">
+          </SmartTabsTrigger>
+          <SmartTabsTrigger value="mares">
             Mares
-          </ScrollableTabsTrigger>
-          <ScrollableTabsTrigger value="stallions">
+          </SmartTabsTrigger>
+          <SmartTabsTrigger value="stallions">
             Stallions
-          </ScrollableTabsTrigger>
-          <ScrollableTabsTrigger value="geldings">
+          </SmartTabsTrigger>
+          <SmartTabsTrigger value="geldings">
             Geldings
-          </ScrollableTabsTrigger>
-          <ScrollableTabsTrigger value="foaling">
+          </SmartTabsTrigger>
+          <SmartTabsTrigger value="foaling">
             Foaling
-          </ScrollableTabsTrigger>
-          <ScrollableTabsTrigger value="planning">
+          </SmartTabsTrigger>
+          <SmartTabsTrigger value="planning">
             Planning
-          </ScrollableTabsTrigger>
-          <ScrollableTabsTrigger value="documents">
+          </SmartTabsTrigger>
+          <SmartTabsTrigger value="documents">
             Documents
-          </ScrollableTabsTrigger>
-          <ScrollableTabsTrigger value="certificates">
+          </SmartTabsTrigger>
+          <SmartTabsTrigger value="certificates">
             Certificates
-          </ScrollableTabsTrigger>
-        </ScrollableTabsList>
+          </SmartTabsTrigger>
+        </SmartTabsList>
 
-        <ScrollableTabsContent value="dashboard">
+        <SmartTabsContent value="dashboard">
           <BreedingDashboard />
-        </ScrollableTabsContent>
+        </SmartTabsContent>
 
-        <ScrollableTabsContent value="mares">
+        <SmartTabsContent value="mares">
           <MareManagement />
-        </ScrollableTabsContent>
+        </SmartTabsContent>
 
-        <ScrollableTabsContent value="stallions">
+        <SmartTabsContent value="stallions">
           <StallionManagement />
-        </ScrollableTabsContent>
+        </SmartTabsContent>
 
-        <ScrollableTabsContent value="geldings">
+        <SmartTabsContent value="geldings">
           <GeldingManagement />
-        </ScrollableTabsContent>
+        </SmartTabsContent>
 
-        <ScrollableTabsContent value="foaling">
+        <SmartTabsContent value="foaling">
           <FoalingManagement />
-        </ScrollableTabsContent>
+        </SmartTabsContent>
 
-        <ScrollableTabsContent value="planning">
+        <SmartTabsContent value="planning">
           <BreedingPlanner />
-        </ScrollableTabsContent>
+        </SmartTabsContent>
 
-        <ScrollableTabsContent value="documents">
+        <SmartTabsContent value="documents">
           <BreedingDocumentManager />
-        </ScrollableTabsContent>
+        </SmartTabsContent>
 
-        <ScrollableTabsContent value="certificates">
+        <SmartTabsContent value="certificates">
           <BreedingCertificateGenerator />
-        </ScrollableTabsContent>
-      </ScrollableTabs>
+        </SmartTabsContent>
+      </SmartTabs>
     </div>
   );
 };
