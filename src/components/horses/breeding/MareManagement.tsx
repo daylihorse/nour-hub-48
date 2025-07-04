@@ -17,6 +17,7 @@ import PregnancyManagement from "./PregnancyManagement";
 import TrainingRecords from "@/components/horses/training/TrainingRecords";
 import HealthRecords from "@/components/horses/health/HealthRecords";
 import PerformanceRecords from "@/components/horses/performance/PerformanceRecords";
+import RecordsProvider from "./records/RecordsProvider";
 import { useMareManagement } from "./hooks/useMareManagement";
 import { Mare } from "@/types/breeding/mare";
 
@@ -124,121 +125,123 @@ const MareManagement = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-6 bg-purple-50 border border-purple-200 p-1 h-12">
-          <TabsTrigger 
-            value="mares" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
-          >
-            Mares
-          </TabsTrigger>
-          <TabsTrigger 
-            value="pregnancy" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
-          >
-            Pregnancy
-          </TabsTrigger>
-          <TabsTrigger 
-            value="heat-cycles" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
-          >
-            Heat Cycles
-          </TabsTrigger>
-          <TabsTrigger 
-            value="training" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
-          >
-            Training
-          </TabsTrigger>
-          <TabsTrigger 
-            value="health" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
-          >
-            Health Records
-          </TabsTrigger>
-          <TabsTrigger 
-            value="performance" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
-          >
-            Performance Records
-          </TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="mares" className="mt-6">
-          <div className="space-y-6">
-            <MareHeader 
-              viewSelector={
-                <BreedingRecordsViewSelector 
-                  currentView={viewMode}
-                  onViewChange={setViewMode}
-                  gridSize={gridSize}
-                  onGridSizeChange={setGridSize}
-                />
-              }
-              onAddMare={() => setAddMareDialog(true)}
-            />
-            
-            <MareFilters 
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-            />
+    <RecordsProvider>
+      <div className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-6 bg-purple-50 border border-purple-200 p-1 h-12">
+            <TabsTrigger 
+              value="mares" 
+              className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+            >
+              Mares
+            </TabsTrigger>
+            <TabsTrigger 
+              value="pregnancy" 
+              className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+            >
+              Pregnancy
+            </TabsTrigger>
+            <TabsTrigger 
+              value="heat-cycles" 
+              className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+            >
+              Heat Cycles
+            </TabsTrigger>
+            <TabsTrigger 
+              value="training" 
+              className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+            >
+              Training
+            </TabsTrigger>
+            <TabsTrigger 
+              value="health" 
+              className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+            >
+              Health Records
+            </TabsTrigger>
+            <TabsTrigger 
+              value="performance" 
+              className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+            >
+              Performance Records
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="mares" className="mt-6">
+            <div className="space-y-6">
+              <MareHeader 
+                viewSelector={
+                  <BreedingRecordsViewSelector 
+                    currentView={viewMode}
+                    onViewChange={setViewMode}
+                    gridSize={gridSize}
+                    onGridSizeChange={setGridSize}
+                  />
+                }
+                onAddMare={() => setAddMareDialog(true)}
+              />
+              
+              <MareFilters 
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+              />
 
-            <MareStats />
+              <MareStats />
 
-            {renderView()}
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="pregnancy" className="mt-6">
-          <PregnancyManagement />
-        </TabsContent>
-        
-        <TabsContent value="heat-cycles" className="mt-6">
-          <MareHeatCycleTracking />
-        </TabsContent>
-        
-        <TabsContent value="training" className="mt-6">
-          <TrainingRecords />
-        </TabsContent>
-        
-        <TabsContent value="health" className="mt-6">
-          <HealthRecords />
-        </TabsContent>
-        
-        <TabsContent value="performance" className="mt-6">
-          <PerformanceRecords />
-        </TabsContent>
-      </Tabs>
+              {renderView()}
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="pregnancy" className="mt-6">
+            <PregnancyManagement />
+          </TabsContent>
+          
+          <TabsContent value="heat-cycles" className="mt-6">
+            <MareHeatCycleTracking />
+          </TabsContent>
+          
+          <TabsContent value="training" className="mt-6">
+            <TrainingRecords />
+          </TabsContent>
+          
+          <TabsContent value="health" className="mt-6">
+            <HealthRecords />
+          </TabsContent>
+          
+          <TabsContent value="performance" className="mt-6">
+            <PerformanceRecords />
+          </TabsContent>
+        </Tabs>
 
-      {/* Dialogs */}
-      <EditMareDialog
-        isOpen={editDialog.isOpen}
-        onClose={handleCloseEditDialog}
-        mare={editDialog.mare}
-        onSave={handleSaveMare}
-      />
+        {/* Dialogs */}
+        <EditMareDialog
+          isOpen={editDialog.isOpen}
+          onClose={handleCloseEditDialog}
+          mare={editDialog.mare}
+          onSave={handleSaveMare}
+        />
 
-      <AddMareDialog
-        open={addMareDialog}
-        onOpenChange={setAddMareDialog}
-        onAddNewMare={() => console.log('Add new mare')}
-        onSelectExistingMare={(mareId) => console.log('Select existing mare:', mareId)}
-      />
+        <AddMareDialog
+          open={addMareDialog}
+          onOpenChange={setAddMareDialog}
+          onAddNewMare={() => console.log('Add new mare')}
+          onSelectExistingMare={(mareId) => console.log('Select existing mare:', mareId)}
+        />
 
-      <VetCheckupDialog
-        open={vetCheckupDialog.open}
-        onOpenChange={(open) => setVetCheckupDialog({ open, pregnancyId: null })}
-        pregnancyId={vetCheckupDialog.pregnancyId}
-      />
+        <VetCheckupDialog
+          open={vetCheckupDialog.open}
+          onOpenChange={(open) => setVetCheckupDialog({ open, pregnancyId: null })}
+          pregnancyId={vetCheckupDialog.pregnancyId}
+        />
 
-      <MedicalRecordsDialog
-        open={medicalRecordsDialog.open}
-        onOpenChange={(open) => setMedicalRecordsDialog({ open: false, mareId: null, mareName: undefined })}
-        mareId={medicalRecordsDialog.mareId}
-        mareName={medicalRecordsDialog.mareName}
-      />
-    </div>
+        <MedicalRecordsDialog
+          open={medicalRecordsDialog.open}
+          onOpenChange={(open) => setMedicalRecordsDialog({ open: false, mareId: null, mareName: undefined })}
+          mareId={medicalRecordsDialog.mareId}
+          mareName={medicalRecordsDialog.mareName}
+        />
+      </div>
+    </RecordsProvider>
   );
 };
 
