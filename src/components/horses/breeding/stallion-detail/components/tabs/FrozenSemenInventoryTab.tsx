@@ -1,179 +1,218 @@
+
 import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, Download, Filter } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
+import { Search, Plus, Filter, Download, LayoutGrid } from "lucide-react";
 import { useFrozenSemenManagement } from "../../hooks/useFrozenSemenManagement";
-import { FrozenSemenInventory } from "@/types/breeding/stallion-detail";
-import BreedingRecordsViewSelector, { ViewMode } from "../../../components/BreedingRecordsViewSelector";
-import FrozenSemenGridView from "./FrozenSemenGridView";
-import FrozenSemenListView from "./FrozenSemenListView";
-import FrozenSemenTableView from "./FrozenSemenTableView";
-import EditFrozenSemenDialog from "./EditFrozenSemenDialog";
-import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
+import { GridSize } from "../../../components/GridSizeSelector";
 
 interface FrozenSemenInventoryTabProps {
   stallionId: string;
-  onActionClick: (action: string, title: string) => void;
 }
 
-const FrozenSemenInventoryTab = ({ stallionId, onActionClick }: FrozenSemenInventoryTabProps) => {
-  const { toast } = useToast();
-  const { frozenSemen, filters, setFilters, exportData, updateFrozenSemen, deleteFrozenSemen } = useFrozenSemenManagement(stallionId);
+const FrozenSemenInventoryTab = ({ stallionId }: FrozenSemenInventoryTabProps) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
+  const [gridSize, setGridSize] = useState<GridSize>(3);
   
-  const [searchTerm, setSearchTerm] = useState(filters.searchTerm || "");
-  const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<FrozenSemenInventory | null>(null);
+  const {
+    frozenSemen,
+    filters,
+    setFilters,
+    isLoading,
+    addFrozenSemen,
+    updateFrozenSemen,
+    deleteFrozenSemen,
+    exportData
+  } = useFrozenSemenManagement(stallionId);
 
-  const handleSearch = (value: string) => {
-    setSearchTerm(value);
-    setFilters({ ...filters, searchTerm: value });
+  const filteredSemen = frozenSemen.filter(semen =>
+    semen.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    semen.collectionDate.includes(searchTerm)
+  );
+
+  const handleAddSemen = () => {
+    console.log("Add new frozen semen");
   };
 
-  const handleEdit = (record: FrozenSemenInventory) => {
-    setSelectedRecord(record);
-    setEditDialogOpen(true);
+  const handleExport = () => {
+    exportData();
   };
 
-  const handleDelete = (record: FrozenSemenInventory) => {
-    setSelectedRecord(record);
-    setDeleteDialogOpen(true);
-  };
-
-  const handleSaveEdit = async (updatedRecord: FrozenSemenInventory) => {
-    try {
-      await updateFrozenSemen(updatedRecord.id, updatedRecord);
-      setEditDialogOpen(false);
-      setSelectedRecord(null);
-      toast({
-        title: "Success",
-        description: "Frozen semen record updated successfully",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update frozen semen record",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!selectedRecord) return;
-    
-    try {
-      await deleteFrozenSemen(selectedRecord.id);
-      setDeleteDialogOpen(false);
-      setSelectedRecord(null);
-      toast({
-        title: "Success",
-        description: "Frozen semen record deleted successfully",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete frozen semen record",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const getQualityColor = (quality: string) => {
-    switch (quality) {
-      case 'Grade A': return 'default' as const;
-      case 'Grade B': return 'secondary' as const;
-      case 'Grade C': return 'outline' as const;
-      default: return 'secondary' as const;
-    }
-  };
-
-  const renderContent = () => {
-    const commonProps = {
-      frozenSemen,
-      onEdit: handleEdit,
-      onDelete: handleDelete,
-      getQualityColor
-    };
-
-    switch (viewMode) {
-      case "grid":
-        return <FrozenSemenGridView {...commonProps} />;
-      case "list":
-        return <FrozenSemenListView {...commonProps} />;
-      case "table":
-        return <FrozenSemenTableView {...commonProps} />;
+  const getGridColumns = () => {
+    switch (gridSize) {
+      case 2:
+        return "grid-cols-1 lg:grid-cols-2";
+      case 3:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+      case 4:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
       default:
-        return <FrozenSemenGridView {...commonProps} />;
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
     }
   };
 
   return (
     <div className="space-y-6">
+      {/* Header with controls */}
       <div className="flex justify-between items-center">
         <div>
-          <h3 className="text-lg font-semibold">Frozen Semen Inventory</h3>
-          <p className="text-muted-foreground">Cryopreserved semen storage and tracking</p>
+          <h2 className="text-2xl font-bold">Frozen Semen Inventory</h2>
+          <p className="text-muted-foreground">
+            Manage frozen semen collection and storage
+          </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => exportData('csv')}>
+          <Button variant="outline" onClick={handleExport}>
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
-          <Button 
-            size="sm"
-            onClick={() => onActionClick("freeze-semen", "Freeze New Semen")}
-          >
+          <Button onClick={handleAddSemen}>
             <Plus className="h-4 w-4 mr-2" />
-            Add Semen
+            Add Collection
           </Button>
         </div>
       </div>
 
-      <div className="flex justify-between items-center gap-4">
-        <div className="flex gap-4 items-center flex-1">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              placeholder="Search by ID, tank, or location..."
-              value={searchTerm}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="pl-10"
-            />
+      {/* Search and filters */}
+      <div className="flex gap-4 items-center">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Input
+            placeholder="Search collections..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Button variant="outline" size="sm">
+          <Filter className="h-4 w-4 mr-2" />
+          Filters
+        </Button>
+        <div className="flex gap-1 border rounded-md p-1">
+          <Button
+            variant={viewMode === "grid" ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => setViewMode("grid")}
+          >
+            <LayoutGrid className="h-4 w-4" />
+          </Button>
+        </div>
+        {viewMode === "grid" && (
+          <div className="flex gap-1 border rounded-md p-1">
+            <Button
+              variant={gridSize === 2 ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setGridSize(2)}
+            >
+              2
+            </Button>
+            <Button
+              variant={gridSize === 3 ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setGridSize(3)}
+            >
+              3
+            </Button>
+            <Button
+              variant={gridSize === 4 ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setGridSize(4)}
+            >
+              4
+            </Button>
           </div>
-          <Button variant="outline" size="sm">
-            <Filter className="h-4 w-4 mr-2" />
-            Filter
-          </Button>
-        </div>
-        <BreedingRecordsViewSelector 
-          currentView={viewMode}
-          onViewChange={setViewMode}
-          gridSize={3}
-          onGridSizeChange={() => {}}
-        />
+        )}
       </div>
 
-      {renderContent()}
+      {/* Statistics cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Total Straws</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {filteredSemen.reduce((sum, s) => sum + s.strawCount, 0)}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Available</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {filteredSemen.reduce((sum, s) => sum + s.availableStraws, 0)}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Used</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {filteredSemen.reduce((sum, s) => sum + s.usedStraws, 0)}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Collections</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{filteredSemen.length}</div>
+          </CardContent>
+        </Card>
+      </div>
 
-      <EditFrozenSemenDialog
-        isOpen={editDialogOpen}
-        onClose={() => {
-          setEditDialogOpen(false);
-          setSelectedRecord(null);
-        }}
-        record={selectedRecord}
-        onSave={handleSaveEdit}
-      />
-
-      <DeleteConfirmationDialog
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        onConfirm={handleConfirmDelete}
-        recordId={selectedRecord?.id}
-        recordType="Frozen Semen"
-      />
+      {/* Semen grid */}
+      {isLoading ? (
+        <div className="text-center py-8">Loading...</div>
+      ) : (
+        <div className={`grid ${getGridColumns()} gap-6`}>
+          {filteredSemen.map((semen) => (
+            <Card key={semen.id} className="hover:shadow-md transition-shadow">
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="text-lg">{semen.id}</CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      Collected: {semen.collectionDate}
+                    </p>
+                  </div>
+                  <Badge variant={semen.quality === "Excellent" ? "default" : "secondary"}>
+                    {semen.quality}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Total Straws:</span>
+                    <span>{semen.strawCount}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Available:</span>
+                    <span>{semen.availableStraws}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Used:</span>
+                    <span>{semen.usedStraws}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Location:</span>
+                    <span>{semen.storageLocation}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

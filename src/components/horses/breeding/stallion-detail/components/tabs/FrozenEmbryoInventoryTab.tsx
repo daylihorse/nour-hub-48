@@ -1,184 +1,218 @@
+
 import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, Download, Filter } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
+import { Search, Plus, Filter, Download, LayoutGrid } from "lucide-react";
 import { useFrozenEmbryoManagement } from "../../hooks/useFrozenEmbryoManagement";
-import { FrozenEmbryoInventory } from "@/types/breeding/stallion-detail";
-import BreedingRecordsViewSelector, { ViewMode } from "../../../components/BreedingRecordsViewSelector";
-import FrozenEmbryoGridView from "./FrozenEmbryoGridView";
-import FrozenEmbryoListView from "./FrozenEmbryoListView";
-import FrozenEmbryoTableView from "./FrozenEmbryoTableView";
-import EditFrozenEmbryoDialog from "./EditFrozenEmbryoDialog";
-import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
+import { GridSize } from "../../../components/GridSizeSelector";
 
 interface FrozenEmbryoInventoryTabProps {
   stallionId: string;
-  onActionClick: (action: string, title: string, data?: any) => void;
 }
 
-const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInventoryTabProps) => {
-  const { toast } = useToast();
-  const { frozenEmbryos, filters, setFilters, exportData, updateFrozenEmbryo, deleteFrozenEmbryo } = useFrozenEmbryoManagement(stallionId);
+const FrozenEmbryoInventoryTab = ({ stallionId }: FrozenEmbryoInventoryTabProps) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
+  const [gridSize, setGridSize] = useState<GridSize>(3);
   
-  const [searchTerm, setSearchTerm] = useState(filters.searchTerm || "");
-  const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<FrozenEmbryoInventory | null>(null);
+  const {
+    frozenEmbryos,
+    filters,
+    setFilters,
+    isLoading,
+    addFrozenEmbryo,
+    updateFrozenEmbryo,
+    deleteFrozenEmbryo,
+    exportData
+  } = useFrozenEmbryoManagement(stallionId);
 
-  const handleSearch = (value: string) => {
-    setSearchTerm(value);
-    setFilters({ ...filters, searchTerm: value });
+  const filteredEmbryos = frozenEmbryos.filter(embryo =>
+    embryo.mareName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    embryo.id.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleAddEmbryo = () => {
+    console.log("Add new frozen embryo");
   };
 
-  const handleView = (record: FrozenEmbryoInventory) => {
-    onActionClick("view-frozen-embryo", `Frozen Embryo Details ${record.id}`, { record });
+  const handleExport = () => {
+    exportData();
   };
 
-  const handleEdit = (record: FrozenEmbryoInventory) => {
-    setSelectedRecord(record);
-    setEditDialogOpen(true);
-  };
-
-  const handleDelete = (record: FrozenEmbryoInventory) => {
-    setSelectedRecord(record);
-    setDeleteDialogOpen(true);
-  };
-
-  const handleSaveEdit = async (updatedRecord: FrozenEmbryoInventory) => {
-    try {
-      await updateFrozenEmbryo(updatedRecord.id, updatedRecord);
-      setEditDialogOpen(false);
-      setSelectedRecord(null);
-      toast({
-        title: "Success",
-        description: "Frozen embryo record updated successfully",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update frozen embryo record",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!selectedRecord) return;
-    
-    try {
-      await deleteFrozenEmbryo(selectedRecord.id);
-      setDeleteDialogOpen(false);
-      setSelectedRecord(null);
-      toast({
-        title: "Success",
-        description: "Frozen embryo record deleted successfully",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete frozen embryo record",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const getGradeColor = (grade: string) => {
-    switch (grade) {
-      case 'Grade 1': return 'default';
-      case 'Grade 2': return 'secondary';
-      case 'Grade 3': return 'outline';
-      default: return 'secondary';
-    }
-  };
-
-  const renderContent = () => {
-    const commonProps = {
-      frozenEmbryos,
-      onView: handleView,
-      onEdit: handleEdit,
-      onDelete: handleDelete,
-      getGradeColor
-    };
-
-    switch (viewMode) {
-      case "grid":
-        return <FrozenEmbryoGridView {...commonProps} />;
-      case "list":
-        return <FrozenEmbryoListView {...commonProps} />;
-      case "table":
-        return <FrozenEmbryoTableView {...commonProps} />;
+  const getGridColumns = () => {
+    switch (gridSize) {
+      case 2:
+        return "grid-cols-1 lg:grid-cols-2";
+      case 3:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+      case 4:
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
       default:
-        return <FrozenEmbryoGridView {...commonProps} />;
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
     }
   };
 
   return (
     <div className="space-y-6">
+      {/* Header with controls */}
       <div className="flex justify-between items-center">
         <div>
-          <h3 className="text-lg font-semibold">Frozen Embryo Inventory</h3>
-          <p className="text-muted-foreground">Cryopreserved embryo storage and tracking</p>
+          <h2 className="text-2xl font-bold">Frozen Embryo Inventory</h2>
+          <p className="text-muted-foreground">
+            Manage frozen embryo collection and storage
+          </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => exportData('csv')}>
+          <Button variant="outline" onClick={handleExport}>
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
-          <Button 
-            size="sm"
-            onClick={() => onActionClick("freeze-embryo", "Freeze New Embryo")}
-          >
+          <Button onClick={handleAddEmbryo}>
             <Plus className="h-4 w-4 mr-2" />
             Add Embryo
           </Button>
         </div>
       </div>
 
-      <div className="flex justify-between items-center gap-4">
-        <div className="flex gap-4 items-center flex-1">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              placeholder="Search by ID, mare name, or tank..."
-              value={searchTerm}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <Button variant="outline" size="sm">
-            <Filter className="h-4 w-4 mr-2" />
-            Filter
+      {/* Search and filters */}
+      <div className="flex gap-4 items-center">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Input
+            placeholder="Search embryos..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Button variant="outline" size="sm">
+          <Filter className="h-4 w-4 mr-2" />
+          Filters
+        </Button>
+        <div className="flex gap-1 border rounded-md p-1">
+          <Button
+            variant={viewMode === "grid" ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => setViewMode("grid")}
+          >
+            <LayoutGrid className="h-4 w-4" />
           </Button>
         </div>
-        <BreedingRecordsViewSelector 
-          currentView={viewMode}
-          onViewChange={setViewMode}
-          gridSize={3}
-          onGridSizeChange={() => {}}
-        />
+        {viewMode === "grid" && (
+          <div className="flex gap-1 border rounded-md p-1">
+            <Button
+              variant={gridSize === 2 ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setGridSize(2)}
+            >
+              2
+            </Button>
+            <Button
+              variant={gridSize === 3 ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setGridSize(3)}
+            >
+              3
+            </Button>
+            <Button
+              variant={gridSize === 4 ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setGridSize(4)}
+            >
+              4
+            </Button>
+          </div>
+        )}
       </div>
 
-      {renderContent()}
+      {/* Statistics cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Total Embryos</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{filteredEmbryos.length}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Grade 1</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {filteredEmbryos.filter(e => e.grade === "Grade 1").length}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Grade 2</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {filteredEmbryos.filter(e => e.grade === "Grade 2").length}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Available</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {filteredEmbryos.length}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
-      <EditFrozenEmbryoDialog
-        isOpen={editDialogOpen}
-        onClose={() => {
-          setEditDialogOpen(false);
-          setSelectedRecord(null);
-        }}
-        record={selectedRecord}
-        onSave={handleSaveEdit}
-      />
-
-      <DeleteConfirmationDialog
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        onConfirm={handleConfirmDelete}
-        recordId={selectedRecord?.id}
-        recordType="Frozen Embryo"
-      />
+      {/* Embryos grid */}
+      {isLoading ? (
+        <div className="text-center py-8">Loading...</div>
+      ) : (
+        <div className={`grid ${getGridColumns()} gap-6`}>
+          {filteredEmbryos.map((embryo) => (
+            <Card key={embryo.id} className="hover:shadow-md transition-shadow">
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="text-lg">{embryo.id}</CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      {embryo.mareName}
+                    </p>
+                  </div>
+                  <Badge variant={embryo.grade === "Grade 1" ? "default" : "secondary"}>
+                    {embryo.grade}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Created:</span>
+                    <span>{embryo.creationDate}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Stage:</span>
+                    <span>{embryo.stage}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Viability:</span>
+                    <span>{embryo.viability}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Location:</span>
+                    <span>{embryo.tank} - {embryo.location}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
