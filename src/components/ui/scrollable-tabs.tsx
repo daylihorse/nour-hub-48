@@ -88,10 +88,10 @@ export const ScrollableTabsList: React.FC<ScrollableTabsListProps> = ({
         <Button
           variant="outline"
           size="icon"
-          className="absolute left-0 z-10 h-8 w-8 bg-white shadow-md border-brown-200 hover:bg-brown-50"
+          className="absolute left-0 z-20 h-10 w-10 bg-white shadow-lg border-brown-200 hover:bg-brown-50 hover:border-brown-300 transition-all duration-200"
           onClick={scrollLeft}
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-5 w-5 text-brown-600" />
         </Button>
       )}
 
@@ -99,14 +99,14 @@ export const ScrollableTabsList: React.FC<ScrollableTabsListProps> = ({
       <div
         ref={scrollContainerRef}
         className={cn(
-          "flex overflow-x-auto scroll-smooth scrollbar-hide",
-          showLeftArrow && "pl-10",
-          showRightArrow && "pr-10",
+          "flex overflow-x-auto scroll-smooth scrollbar-hide w-full",
+          showLeftArrow && "pl-12",
+          showRightArrow && "pr-12",
           className
         )}
         onScroll={checkScrollButtons}
       >
-        <div className="flex bg-brown-50 p-1 rounded-md border border-brown-200 shadow-brown min-w-max">
+        <div className="flex bg-gradient-to-r from-brown-50 to-brown-100/80 p-2 rounded-lg border border-brown-200 shadow-brown-lg backdrop-blur-sm min-w-max">
           {children}
         </div>
       </div>
@@ -116,10 +116,10 @@ export const ScrollableTabsList: React.FC<ScrollableTabsListProps> = ({
         <Button
           variant="outline"
           size="icon"
-          className="absolute right-0 z-10 h-8 w-8 bg-white shadow-md border-brown-200 hover:bg-brown-50"
+          className="absolute right-0 z-20 h-10 w-10 bg-white shadow-lg border-brown-200 hover:bg-brown-50 hover:border-brown-300 transition-all duration-200"
           onClick={scrollRight}
         >
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-5 w-5 text-brown-600" />
         </Button>
       )}
     </div>
@@ -143,15 +143,21 @@ export const ScrollableTabsTrigger: React.FC<ScrollableTabsTriggerProps> = ({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 min-w-max",
+        "inline-flex items-center justify-center whitespace-nowrap rounded-md px-5 py-3 text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brown-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 min-w-max relative group",
         isSelected
-          ? "bg-white text-brown-900 shadow-sm border border-brown-200"
-          : "text-brown-600 hover:bg-white/80 hover:text-brown-900",
+          ? "bg-white text-brown-900 shadow-md border border-brown-300 font-semibold transform scale-105"
+          : "text-brown-700 hover:bg-white/90 hover:text-brown-900 hover:shadow-sm hover:border hover:border-brown-200 hover:scale-102",
+        "h-12 min-h-[3rem]", // Increased height
         className
       )}
       onClick={handleClick}
     >
-      {children}
+      <span className="relative z-10 px-1">
+        {children}
+      </span>
+      {isSelected && (
+        <div className="absolute inset-0 bg-gradient-to-r from-brown-50/50 to-white/50 rounded-md -z-0" />
+      )}
     </button>
   );
 };
@@ -168,7 +174,7 @@ export const ScrollableTabsContent: React.FC<{
   }
 
   return (
-    <div className={cn("mt-6 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2", className)}>
+    <div className={cn("mt-8 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brown-500 focus-visible:ring-offset-2", className)}>
       {children}
     </div>
   );
