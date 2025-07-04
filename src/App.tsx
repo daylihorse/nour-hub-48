@@ -9,11 +9,10 @@ import EnhancedAuthGuard from '@/components/auth/EnhancedAuthGuard';
 
 // Page imports
 import LoginForm from '@/components/auth/LoginForm';
-import Dashboard from '@/pages/Dashboard';
+import Dashboard from '@/pages/dashboard/Dashboard';
 import HorsesDepartment from '@/pages/dashboard/HorsesDepartment';
 import FinanceDepartment from '@/pages/dashboard/FinanceDepartment';
 import ClinicDepartment from '@/pages/dashboard/ClinicDepartment';
-import ClientsProfile from '@/pages/clients/ClientsProfile';
 
 const queryClient = new QueryClient();
 
@@ -50,12 +49,6 @@ function App() {
                 <Route path="/dashboard/clinic" element={
                   <EnhancedAuthGuard>
                     <ClinicDepartment />
-                  </EnhancedAuthGuard>
-                } />
-                
-                <Route path="/clients/:clientId" element={
-                  <EnhancedAuthGuard>
-                    <ClientsProfile />
                   </EnhancedAuthGuard>
                 } />
               </Routes>
