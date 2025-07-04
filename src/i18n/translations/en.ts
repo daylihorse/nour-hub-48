@@ -19,6 +19,7 @@ export interface TranslationKeys {
     subtitle: string;
   };
   breeding: {
+    title: string;
     dashboard: string;
     mares: string;
     stallions: string;
@@ -63,6 +64,7 @@ export const enTranslations: TranslationKeys = {
     subtitle: "Manage all your horses and their information"
   },
   breeding: {
+    title: "Breeding Management",
     dashboard: "Dashboard",
     mares: "Mares",
     stallions: "Stallions",
