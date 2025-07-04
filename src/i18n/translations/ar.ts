@@ -1,19 +1,15 @@
-
 import { TranslationKeys } from './en';
 
 export const arTranslations: TranslationKeys = {
   // Navigation & Layout
   navigation: {
     dashboard: "لوحة التحكم",
-    horses: "سجل الخيول",
-    breeding: "التربية",
+    horses: "الخيول",
+    breeding: "التربية", 
     pedigree: "النسب",
     training: "التدريب",
-    health: "السجلات الصحية",
-    performance: "سجلات الأداء",
-    clinic: "العيادة",
-    finance: "المالية",
-    clients: "العملاء",
+    health: "الصحة",
+    performance: "الأداء"
   },
 
   // Common Actions
@@ -38,27 +34,15 @@ export const arTranslations: TranslationKeys = {
 
   // Dashboard
   dashboard: {
-    title: "مركز الوصول للوحدات",
-    subtitle: "إدارة مؤسستك بوحدات متكاملة قوية",
-    welcome: "مرحباً بك في نظام إدارة الخيل ديلي",
-    quickStats: "الإحصائيات السريعة",
-    recentActivity: "النشاط الأخير",
-    upcomingEvents: "الأحداث القادمة",
+    title: "لوحة التحكم",
+    subtitle: "إدارة مرفق الخيول الخاص بك",
+    welcome: "مرحباً بك في نظام إدارة الخيول"
   },
 
   // Horses Department
   horses: {
     title: "قسم الخيول",
-    subtitle: "نظام شامل لإدارة ومراقبة الخيول",
-    registry: "سجل الخيول",
-    totalHorses: "إجمالي الخيول",
-    activeHorses: "الخيول النشطة",
-    addHorse: "إضافة حصان جديد",
-    horseDetails: "تفاصيل الحصان",
-    basicInfo: "المعلومات الأساسية",
-    medicalHistory: "التاريخ الطبي",
-    trainingRecords: "سجلات التدريب",
-    performanceRecords: "سجلات الأداء",
+    subtitle: "إدارة جميع خيولك ومعلوماتها"
   },
 
   // Horse Form
@@ -120,7 +104,7 @@ export const arTranslations: TranslationKeys = {
     foaling: "الولادة",
     planning: "التخطيط",
     analysis: "التحليل",
-    documents: "الوثائق",
+    documents: "المستندات",
     certificates: "الشهادات",
     pregnancy: "الحمل",
     frozenEmbryo: "الأجنة المجمدة",
@@ -214,4 +198,15 @@ export const arTranslations: TranslationKeys = {
     list: "عرض القائمة",
     table: "عرض الجدول",
   },
+
+  // Clients
+  clients: {
+    profile: {
+      title: "ملف العميل",
+      subtitle: "عرض وإدارة معلومات العميل",
+      details: "تفاصيل العميل",
+      clientId: "معرف العميل",
+      comingSoon: "ميزات ملف العميل قادمة قريباً..."
+    }
+  }
 };
