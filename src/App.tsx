@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/toaster';
 import { EnhancedAuthProvider } from '@/components/auth/EnhancedAuthProvider';
 import { LanguageProvider } from '@/contexts/LanguageContext';
+import { AccessModeProvider } from '@/contexts/AccessModeContext';
 import EnhancedAuthGuard from '@/components/auth/EnhancedAuthGuard';
 
 // Page imports
@@ -21,49 +22,51 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
-        <EnhancedAuthProvider>
-          <Router>
-            <div className="min-h-screen bg-background">
-              <Routes>
-                <Route path="/login" element={<LoginForm />} />
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <AccessModeProvider>
+          <EnhancedAuthProvider>
+            <Router>
+              <div className="min-h-screen bg-background">
+                <Routes>
+                  <Route path="/login" element={<LoginForm />} />
+                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                  
+                  {/* Protected Routes */}
+                  <Route path="/dashboard" element={
+                    <EnhancedAuthGuard>
+                      <Dashboard />
+                    </EnhancedAuthGuard>
+                  } />
+                  
+                  <Route path="/dashboard/horses" element={
+                    <EnhancedAuthGuard>
+                      <HorsesDepartment />
+                    </EnhancedAuthGuard>
+                  } />
+                  
+                  <Route path="/dashboard/finance" element={
+                    <EnhancedAuthGuard>
+                      <FinanceDepartment />
+                    </EnhancedAuthGuard>
+                  } />
+                  
+                  <Route path="/dashboard/clinic" element={
+                    <EnhancedAuthGuard>
+                      <ClinicDepartment />
+                    </EnhancedAuthGuard>
+                  } />
+                  
+                  <Route path="/clients/:clientId" element={
+                    <EnhancedAuthGuard>
+                      <ClientsProfile />
+                    </EnhancedAuthGuard>
+                  } />
+                </Routes>
                 
-                {/* Protected Routes */}
-                <Route path="/dashboard" element={
-                  <EnhancedAuthGuard>
-                    <Dashboard />
-                  </EnhancedAuthGuard>
-                } />
-                
-                <Route path="/dashboard/horses" element={
-                  <EnhancedAuthGuard>
-                    <HorsesDepartment />
-                  </EnhancedAuthGuard>
-                } />
-                
-                <Route path="/dashboard/finance" element={
-                  <EnhancedAuthGuard>
-                    <FinanceDepartment />
-                  </EnhancedAuthGuard>
-                } />
-                
-                <Route path="/dashboard/clinic" element={
-                  <EnhancedAuthGuard>
-                    <ClinicDepartment />
-                  </EnhancedAuthGuard>
-                } />
-                
-                <Route path="/clients/:clientId" element={
-                  <EnhancedAuthGuard>
-                    <ClientsProfile />
-                  </EnhancedAuthGuard>
-                } />
-              </Routes>
-              
-              <Toaster />
-            </div>
-          </Router>
-        </EnhancedAuthProvider>
+                <Toaster />
+              </div>
+            </Router>
+          </EnhancedAuthProvider>
+        </AccessModeProvider>
       </LanguageProvider>
     </QueryClientProvider>
   );
