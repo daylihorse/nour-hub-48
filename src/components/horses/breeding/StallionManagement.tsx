@@ -49,35 +49,23 @@ const StallionManagement = () => {
 
   return (
     <div className="space-y-6">
-      <SmartTabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <SmartTabsList className="mb-6 bg-blue-50 border border-blue-200 p-1 h-12">
-          <SmartTabsTrigger 
-            value="stallions" 
-            className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
-          >
+      <SmartTabs value={activeTab} onValueChange={setActiveTab} className="w-full" maxTabsForRegular={4}>
+        <SmartTabsList className="mb-8">
+          <SmartTabsTrigger value="stallions">
             Stallions
           </SmartTabsTrigger>
-          <SmartTabsTrigger 
-            value="training" 
-            className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
-          >
+          <SmartTabsTrigger value="training">
             Training
           </SmartTabsTrigger>
-          <SmartTabsTrigger 
-            value="health" 
-            className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
-          >
+          <SmartTabsTrigger value="health">
             Health Records
           </SmartTabsTrigger>
-          <SmartTabsTrigger 
-            value="performance" 
-            className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
-          >
+          <SmartTabsTrigger value="performance">
             Performance Records
           </SmartTabsTrigger>
         </SmartTabsList>
         
-        <SmartTabsContent value="stallions" className="mt-6">
+        <SmartTabsContent value="stallions" className="mt-8">
           <div className="space-y-6">
             <StallionHeader 
               viewSelector={
@@ -101,7 +89,7 @@ const StallionManagement = () => {
           </div>
         </SmartTabsContent>
         
-        <SmartTabsContent value="training" className="mt-6">
+        <SmartTabsContent value="training" className="mt-8">
           <TrainingRecords 
             viewMode={recordsViewMode}
             gridSize={recordsGridSize}
@@ -110,7 +98,7 @@ const StallionManagement = () => {
           />
         </SmartTabsContent>
         
-        <SmartTabsContent value="health" className="mt-6">
+        <SmartTabsContent value="health" className="mt-8">
           <HealthRecords 
             viewMode={recordsViewMode}
             gridSize={recordsGridSize}
@@ -119,7 +107,7 @@ const StallionManagement = () => {
           />
         </SmartTabsContent>
         
-        <SmartTabsContent value="performance" className="mt-6">
+        <SmartTabsContent value="performance" className="mt-8">
           <PerformanceRecords 
             viewMode={recordsViewMode}
             gridSize={recordsGridSize}

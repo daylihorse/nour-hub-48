@@ -14,7 +14,7 @@ interface SmartTabsProps {
   onValueChange: (value: string) => void;
   children: React.ReactNode;
   className?: string;
-  maxTabsForRegular?: number; // Default: 5
+  maxTabsForRegular?: number; // Default: 4 (reduced from 5)
 }
 
 interface SmartTabsListProps {
@@ -50,7 +50,7 @@ export const SmartTabs: React.FC<SmartTabsProps> = ({
   onValueChange,
   children,
   className,
-  maxTabsForRegular = 5,
+  maxTabsForRegular = 4, // Reduced for better responsiveness
 }) => {
   const [useScrollable, setUseScrollable] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -63,37 +63,35 @@ export const SmartTabs: React.FC<SmartTabsProps> = ({
       const tabTriggers = containerRef.current.querySelectorAll('[data-tab-trigger]');
       const tabCount = tabTriggers.length;
 
-      // If we have more than maxTabsForRegular tabs, use scrollable
-      if (tabCount > maxTabsForRegular) {
+      // Use more intelligent logic for scrollable vs regular tabs
+      const shouldUseScrollable = tabCount > maxTabsForRegular;
+      
+      // Also check screen size - use scrollable on smaller screens with fewer tabs
+      const isSmallScreen = window.innerWidth < 768; // md breakpoint
+      const isVerySmallScreen = window.innerWidth < 640; // sm breakpoint
+      
+      if (isVerySmallScreen && tabCount > 3) {
         setUseScrollable(true);
-        return;
+      } else if (isSmallScreen && tabCount > maxTabsForRegular - 1) {
+        setUseScrollable(true);
+      } else {
+        setUseScrollable(shouldUseScrollable);
       }
-
-      // Check if tabs would overflow on smaller screens
-      const containerWidth = containerRef.current.offsetWidth;
-      let totalTabWidth = 0;
-
-      tabTriggers.forEach((tab) => {
-        const tabElement = tab as HTMLElement;
-        // Estimate tab width including padding and margins
-        const textWidth = tabElement.textContent?.length || 0;
-        const estimatedWidth = Math.max(textWidth * 8 + 40, 100); // min 100px per tab
-        totalTabWidth += estimatedWidth;
-      });
-
-      // Add some buffer space for the tab container padding
-      const needsScrollable = totalTabWidth > containerWidth - 100;
-      setUseScrollable(needsScrollable);
     };
 
     // Initial check
     checkOverflow();
 
-    // Check on resize
-    const handleResize = () => checkOverflow();
+    // Check on resize with debouncing
+    let resizeTimeout: NodeJS.Timeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(checkOverflow, 150);
+    };
+    
     window.addEventListener('resize', handleResize);
 
-    // Check when children change (tab count changes)
+    // Check when children change
     const observer = new MutationObserver(checkOverflow);
     if (containerRef.current) {
       observer.observe(containerRef.current, { 
@@ -104,6 +102,7 @@ export const SmartTabs: React.FC<SmartTabsProps> = ({
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimeout);
       observer.disconnect();
     };
   }, [maxTabsForRegular, children]);
@@ -112,11 +111,11 @@ export const SmartTabs: React.FC<SmartTabsProps> = ({
     <SmartTabsContext.Provider value={{ value, onValueChange, useScrollable }}>
       <div ref={containerRef} className={cn("w-full", className)}>
         {useScrollable ? (
-          <ScrollableTabs value={value} onValueChange={onValueChange}>
+          <ScrollableTabs value={value} onValueChange={onValueChange} className="w-full">
             {children}
           </ScrollableTabs>
         ) : (
-          <Tabs value={value} onValueChange={onValueChange}>
+          <Tabs value={value} onValueChange={onValueChange} className="w-full">
             {children}
           </Tabs>
         )}
@@ -139,10 +138,18 @@ export const SmartTabsList: React.FC<SmartTabsListProps> = ({
     );
   }
 
+  const tabCount = React.Children.count(children);
+
   return (
-    <TabsList className={cn("grid w-full", className)} style={{
-      gridTemplateColumns: `repeat(${React.Children.count(children)}, minmax(0, 1fr))`
-    }}>
+    <TabsList 
+      className={cn(
+        "grid w-full h-14 p-1.5 bg-gradient-to-r from-brown-50 to-brown-100/80 border border-brown-200 rounded-xl shadow-brown backdrop-blur-sm",
+        className
+      )} 
+      style={{
+        gridTemplateColumns: `repeat(${tabCount}, minmax(0, 1fr))`
+      }}
+    >
       {children}
     </TabsList>
   );
@@ -167,11 +174,22 @@ export const SmartTabsTrigger: React.FC<SmartTabsTriggerProps> = ({
   return (
     <TabsTrigger 
       value={value} 
-      className={className} 
+      className={cn(
+        "relative h-11 px-6 py-2.5 text-sm font-medium text-brown-700 rounded-lg transition-all duration-300 ease-out",
+        "hover:bg-white/90 hover:text-brown-900 hover:shadow-sm hover:scale-[1.02]",
+        "data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-md data-[state=active]:scale-105 data-[state=active]:font-semibold",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brown-500 focus-visible:ring-offset-2",
+        "disabled:pointer-events-none disabled:opacity-50",
+        "group overflow-hidden",
+        className
+      )}
       onClick={onClick}
       data-tab-trigger
     >
-      {children}
+      <span className="relative z-10 whitespace-nowrap">
+        {children}
+      </span>
+      <div className="absolute inset-0 bg-gradient-to-r from-brown-50/50 to-white/50 opacity-0 group-data-[state=active]:opacity-100 transition-opacity duration-300 rounded-lg" />
     </TabsTrigger>
   );
 };
@@ -192,7 +210,13 @@ export const SmartTabsContent: React.FC<SmartTabsContentProps> = ({
   }
 
   return (
-    <TabsContent value={value} className={className}>
+    <TabsContent 
+      value={value} 
+      className={cn(
+        "mt-8 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brown-500 focus-visible:ring-offset-2",
+        className
+      )}
+    >
       {children}
     </TabsContent>
   );

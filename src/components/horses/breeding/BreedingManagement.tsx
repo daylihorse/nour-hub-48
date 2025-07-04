@@ -28,8 +28,8 @@ const BreedingManagement = ({ initialTab = "dashboard" }: BreedingManagementProp
 
   return (
     <div className="space-y-6">
-      <SmartTabs value={activeTab} onValueChange={setActiveTab} className="w-full" maxTabsForRegular={5}>
-        <SmartTabsList className="mb-6">
+      <SmartTabs value={activeTab} onValueChange={setActiveTab} className="w-full" maxTabsForRegular={4}>
+        <SmartTabsList className="mb-8">
           <SmartTabsTrigger value="dashboard">
             Dashboard
           </SmartTabsTrigger>

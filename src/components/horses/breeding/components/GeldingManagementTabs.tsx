@@ -18,57 +18,42 @@ interface GeldingManagementTabsProps {
 
 const GeldingManagementTabs = ({ activeTab, onTabChange, geldingsContent }: GeldingManagementTabsProps) => {
   return (
-    <SmartTabs value={activeTab} onValueChange={onTabChange} className="w-full">
-      <SmartTabsList className="mb-6 bg-blue-50 border border-blue-200 p-1 h-12">
-        <SmartTabsTrigger 
-          value="geldings" 
-          className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
-        >
+    <SmartTabs value={activeTab} onValueChange={onTabChange} className="w-full" maxTabsForRegular={4}>
+      <SmartTabsList className="mb-8">
+        <SmartTabsTrigger value="geldings">
           Geldings
         </SmartTabsTrigger>
-        <SmartTabsTrigger 
-          value="training" 
-          className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
-        >
+        <SmartTabsTrigger value="training">
           Training
         </SmartTabsTrigger>
-        <SmartTabsTrigger 
-          value="health" 
-          className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
-        >
+        <SmartTabsTrigger value="health">
           Health Records
         </SmartTabsTrigger>
-        <SmartTabsTrigger 
-          value="performance" 
-          className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
-        >
+        <SmartTabsTrigger value="performance">
           Performance
         </SmartTabsTrigger>
-        <SmartTabsTrigger 
-          value="competitions" 
-          className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
-        >
+        <SmartTabsTrigger value="competitions">
           Competitions
         </SmartTabsTrigger>
       </SmartTabsList>
       
-      <SmartTabsContent value="geldings" className="mt-6">
+      <SmartTabsContent value="geldings" className="mt-8">
         {geldingsContent}
       </SmartTabsContent>
       
-      <SmartTabsContent value="training" className="mt-6">
+      <SmartTabsContent value="training" className="mt-8">
         <TrainingRecords />
       </SmartTabsContent>
       
-      <SmartTabsContent value="health" className="mt-6">
+      <SmartTabsContent value="health" className="mt-8">
         <HealthRecords />
       </SmartTabsContent>
       
-      <SmartTabsContent value="performance" className="mt-6">
+      <SmartTabsContent value="performance" className="mt-8">
         <PerformanceRecords />
       </SmartTabsContent>
       
-      <SmartTabsContent value="competitions" className="mt-6">
+      <SmartTabsContent value="competitions" className="mt-8">
         <GeldingCompetitionHistory />
       </SmartTabsContent>
     </SmartTabs>

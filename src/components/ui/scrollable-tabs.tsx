@@ -58,70 +58,90 @@ export const ScrollableTabsList: React.FC<ScrollableTabsListProps> = ({
     if (scrollContainerRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
       setShowLeftArrow(scrollLeft > 0);
-      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 1);
+      setShowRightArrow(Math.ceil(scrollLeft) < scrollWidth - clientWidth - 1);
     }
   };
 
   useEffect(() => {
     checkScrollButtons();
-    const handleResize = () => checkScrollButtons();
+    
+    let resizeTimeout: NodeJS.Timeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(checkScrollButtons, 100);
+    };
+    
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(resizeTimeout);
+    };
+  }, [children]);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: -200, behavior: "smooth" });
+      scrollContainerRef.current.scrollBy({ left: -240, behavior: "smooth" });
     }
   };
 
   const scrollRight = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: 200, behavior: "smooth" });
+      scrollContainerRef.current.scrollBy({ left: 240, behavior: "smooth" });
     }
   };
 
   return (
     <div className="relative flex items-center w-full">
-      {/* Left Arrow */}
+      {/* Left Arrow - Enhanced */}
       {showLeftArrow && (
         <Button
           variant="outline"
           size="icon"
-          className="absolute left-0 z-20 h-10 w-10 bg-white shadow-lg border-brown-200 hover:bg-brown-50 hover:border-brown-300 transition-all duration-200"
+          className="absolute left-0 z-20 h-12 w-12 bg-white/95 shadow-brown border-brown-200 hover:bg-brown-50 hover:border-brown-300 hover:shadow-brown-lg transition-all duration-300 backdrop-blur-sm"
           onClick={scrollLeft}
         >
-          <ChevronLeft className="h-5 w-5 text-brown-600" />
+          <ChevronLeft className="h-5 w-5 text-brown-700" />
         </Button>
       )}
 
-      {/* Scrollable Container */}
+      {/* Scrollable Container - Enhanced */}
       <div
         ref={scrollContainerRef}
         className={cn(
-          "flex overflow-x-auto scroll-smooth scrollbar-hide w-full",
-          showLeftArrow && "pl-12",
-          showRightArrow && "pr-12",
+          "flex overflow-x-auto scroll-smooth scrollbar-hide w-full transition-all duration-300",
+          showLeftArrow && "pl-14",
+          showRightArrow && "pr-14",
           className
         )}
         onScroll={checkScrollButtons}
+        style={{
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        }}
       >
-        <div className="flex bg-gradient-to-r from-brown-50 to-brown-100/80 p-2 rounded-lg border border-brown-200 shadow-brown-lg backdrop-blur-sm min-w-max">
+        <div className="flex bg-gradient-to-r from-brown-50 to-brown-100/80 p-2 rounded-xl border border-brown-200 shadow-brown backdrop-blur-sm min-w-max h-14">
           {children}
         </div>
       </div>
 
-      {/* Right Arrow */}
+      {/* Right Arrow - Enhanced */}
       {showRightArrow && (
         <Button
           variant="outline"
           size="icon"
-          className="absolute right-0 z-20 h-10 w-10 bg-white shadow-lg border-brown-200 hover:bg-brown-50 hover:border-brown-300 transition-all duration-200"
+          className="absolute right-0 z-20 h-12 w-12 bg-white/95 shadow-brown border-brown-200 hover:bg-brown-50 hover:border-brown-300 hover:shadow-brown-lg transition-all duration-300 backdrop-blur-sm"
           onClick={scrollRight}
         >
-          <ChevronRight className="h-5 w-5 text-brown-600" />
+          <ChevronRight className="h-5 w-5 text-brown-700" />
         </Button>
       )}
+      
+      <style jsx>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </div>
   );
 };
@@ -143,11 +163,11 @@ export const ScrollableTabsTrigger: React.FC<ScrollableTabsTriggerProps> = ({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-md px-5 py-3 text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brown-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 min-w-max relative group",
+        "inline-flex items-center justify-center whitespace-nowrap rounded-lg px-6 py-2.5 text-sm font-medium ring-offset-background transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brown-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 min-w-max relative group overflow-hidden",
         isSelected
-          ? "bg-white text-brown-900 shadow-md border border-brown-300 font-semibold transform scale-105"
-          : "text-brown-700 hover:bg-white/90 hover:text-brown-900 hover:shadow-sm hover:border hover:border-brown-200 hover:scale-102",
-        "h-12 min-h-[3rem]", // Increased height
+          ? "bg-white text-brown-900 shadow-md border border-brown-300/50 font-semibold transform scale-105"
+          : "text-brown-700 hover:bg-white/90 hover:text-brown-900 hover:shadow-sm hover:scale-[1.02]",
+        "h-10 min-h-[2.5rem] mx-1", // Consistent height
         className
       )}
       onClick={handleClick}
@@ -156,7 +176,7 @@ export const ScrollableTabsTrigger: React.FC<ScrollableTabsTriggerProps> = ({
         {children}
       </span>
       {isSelected && (
-        <div className="absolute inset-0 bg-gradient-to-r from-brown-50/50 to-white/50 rounded-md -z-0" />
+        <div className="absolute inset-0 bg-gradient-to-r from-brown-50/50 to-white/50 rounded-lg transition-opacity duration-300" />
       )}
     </button>
   );
