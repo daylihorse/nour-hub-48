@@ -1,8 +1,11 @@
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Calendar, Trophy, MapPin, Clock, Plus, TrendingUp } from "lucide-react";
+import { Plus, TrendingUp } from "lucide-react";
+import RecordsViewSelector, { ViewMode, GridSize } from "../records/RecordsViewSelector";
+import PerformanceRecordsGridView from "./PerformanceRecordsGridView";
+import PerformanceRecordsListView from "./PerformanceRecordsListView";
+import PerformanceRecordsTableView from "./PerformanceRecordsTableView";
 
 interface PerformanceRecord {
   id: string;
@@ -22,6 +25,10 @@ interface PerformanceRecord {
 interface PerformanceRecordsProps {
   horseId?: string;
   horseName?: string;
+  viewMode?: ViewMode;
+  gridSize?: GridSize;
+  onViewModeChange?: (mode: ViewMode) => void;
+  onGridSizeChange?: (size: GridSize) => void;
 }
 
 const mockPerformanceRecords: PerformanceRecord[] = [
@@ -61,35 +68,49 @@ const mockPerformanceRecords: PerformanceRecord[] = [
   }
 ];
 
-const getEventTypeColor = (type: string) => {
-  switch (type) {
-    case 'competition':
-      return 'bg-red-100 text-red-800';
-    case 'training':
-      return 'bg-blue-100 text-blue-800';
-    case 'assessment':
-      return 'bg-purple-100 text-purple-800';
-    case 'show':
-      return 'bg-green-100 text-green-800';
-    default:
-      return 'bg-gray-100 text-gray-800';
-  }
-};
+const PerformanceRecords = ({ 
+  horseId, 
+  horseName,
+  viewMode: externalViewMode,
+  gridSize: externalGridSize,
+  onViewModeChange,
+  onGridSizeChange
+}: PerformanceRecordsProps) => {
+  const [internalViewMode, setInternalViewMode] = useState<ViewMode>("grid");
+  const [internalGridSize, setInternalGridSize] = useState<GridSize>(3);
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'completed':
-      return 'bg-green-100 text-green-800';
-    case 'upcoming':
-      return 'bg-blue-100 text-blue-800';
-    case 'cancelled':
-      return 'bg-red-100 text-red-800';
-    default:
-      return 'bg-gray-100 text-gray-800';
-  }
-};
+  const currentViewMode = externalViewMode ?? internalViewMode;
+  const currentGridSize = externalGridSize ?? internalGridSize;
 
-const PerformanceRecords = ({ horseId, horseName }: PerformanceRecordsProps) => {
+  const handleViewModeChange = (mode: ViewMode) => {
+    if (onViewModeChange) {
+      onViewModeChange(mode);
+    } else {
+      setInternalViewMode(mode);
+    }
+  };
+
+  const handleGridSizeChange = (size: GridSize) => {
+    if (onGridSizeChange) {
+      onGridSizeChange(size);
+    } else {
+      setInternalGridSize(size);
+    }
+  };
+
+  const renderView = () => {
+    switch (currentViewMode) {
+      case "grid":
+        return <PerformanceRecordsGridView records={mockPerformanceRecords} gridSize={currentGridSize} />;
+      case "list":
+        return <PerformanceRecordsListView records={mockPerformanceRecords} />;
+      case "table":
+        return <PerformanceRecordsTableView records={mockPerformanceRecords} />;
+      default:
+        return <PerformanceRecordsGridView records={mockPerformanceRecords} gridSize={currentGridSize} />;
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -99,86 +120,27 @@ const PerformanceRecords = ({ horseId, horseName }: PerformanceRecordsProps) => 
             <p className="text-sm text-muted-foreground">Competition and training records for {horseName}</p>
           )}
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline">
-            <TrendingUp className="h-4 w-4 mr-2" />
-            View Analytics
-          </Button>
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Record
-          </Button>
+        <div className="flex items-center gap-4">
+          <RecordsViewSelector
+            currentView={currentViewMode}
+            onViewChange={handleViewModeChange}
+            gridSize={currentGridSize}
+            onGridSizeChange={handleGridSizeChange}
+          />
+          <div className="flex gap-2">
+            <Button variant="outline">
+              <TrendingUp className="h-4 w-4 mr-2" />
+              View Analytics
+            </Button>
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Record
+            </Button>
+          </div>
         </div>
       </div>
 
-      <div className="grid gap-4">
-        {mockPerformanceRecords.map((record) => (
-          <Card key={record.id}>
-            <CardHeader className="pb-3">
-              <div className="flex justify-between items-start">
-                <CardTitle className="text-base">{record.eventName}</CardTitle>
-                <div className="flex gap-2">
-                  <Badge className={getStatusColor(record.status)}>
-                    {record.status}
-                  </Badge>
-                  <Badge className={getEventTypeColor(record.eventType)}>
-                    {record.eventType}
-                  </Badge>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{record.date}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{record.location}</span>
-                </div>
-              </div>
-
-              <div className="mb-3">
-                <Badge variant="outline" className="text-xs">
-                  {record.discipline}
-                </Badge>
-              </div>
-
-              {record.placement && record.totalParticipants && (
-                <div className="flex items-center gap-2 mb-2">
-                  <Trophy className="h-4 w-4 text-yellow-600" />
-                  <span className="text-sm font-medium">
-                    Placed {record.placement} out of {record.totalParticipants}
-                  </span>
-                </div>
-              )}
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
-                {record.score && (
-                  <div>
-                    <span className="text-sm text-muted-foreground">Score: </span>
-                    <span className="text-sm font-medium">{record.score}</span>
-                  </div>
-                )}
-                {record.time && (
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">{record.time}</span>
-                  </div>
-                )}
-              </div>
-
-              {record.notes && (
-                <div>
-                  <h4 className="text-sm font-medium mb-1">Notes:</h4>
-                  <p className="text-sm text-muted-foreground">{record.notes}</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {renderView()}
     </div>
   );
 };

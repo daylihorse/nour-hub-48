@@ -12,6 +12,7 @@ import TrainingRecords from "@/components/horses/training/TrainingRecords";
 import HealthRecords from "@/components/horses/health/HealthRecords";
 import PerformanceRecords from "@/components/horses/performance/PerformanceRecords";
 import { useStallionManagement } from "./hooks/useStallionManagement";
+import { ViewMode, GridSize } from "../records/RecordsViewSelector";
 
 const StallionManagement = () => {
   const {
@@ -25,6 +26,8 @@ const StallionManagement = () => {
   } = useStallionManagement();
 
   const [activeTab, setActiveTab] = useState("stallions");
+  const [recordsViewMode, setRecordsViewMode] = useState<ViewMode>("grid");
+  const [recordsGridSize, setRecordsGridSize] = useState<GridSize>(3);
 
   const renderView = () => {
     switch (viewMode) {
@@ -94,15 +97,30 @@ const StallionManagement = () => {
         </TabsContent>
         
         <TabsContent value="training" className="mt-6">
-          <TrainingRecords />
+          <TrainingRecords 
+            viewMode={recordsViewMode}
+            gridSize={recordsGridSize}
+            onViewModeChange={setRecordsViewMode}
+            onGridSizeChange={setRecordsGridSize}
+          />
         </TabsContent>
         
         <TabsContent value="health" className="mt-6">
-          <HealthRecords />
+          <HealthRecords 
+            viewMode={recordsViewMode}
+            gridSize={recordsGridSize}
+            onViewModeChange={setRecordsViewMode}
+            onGridSizeChange={setRecordsGridSize}
+          />
         </TabsContent>
         
         <TabsContent value="performance" className="mt-6">
-          <PerformanceRecords />
+          <PerformanceRecords 
+            viewMode={recordsViewMode}
+            gridSize={recordsGridSize}
+            onViewModeChange={setRecordsViewMode}
+            onGridSizeChange={setRecordsGridSize}
+          />
         </TabsContent>
       </Tabs>
     </div>
