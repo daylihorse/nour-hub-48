@@ -6,6 +6,7 @@ import MarePregnancyTable from "../tables/MarePregnancyTable";
 import MareFoalingHistoryTable from "../tables/MareFoalingHistoryTable";
 import MareHealthRecordsTable from "../tables/MareHealthRecordsTable";
 import MareHeatCycleTable from "../tables/MareHeatCycleTable";
+import FrozenEmbryoInventoryTab from "../../stallion-detail/components/tabs/FrozenEmbryoInventoryTab";
 import TrainingRecords from "@/components/horses/training/TrainingRecords";
 import HealthRecords from "@/components/horses/health/HealthRecords";
 import PerformanceRecords from "@/components/horses/performance/PerformanceRecords";
@@ -16,7 +17,7 @@ interface MareDetailTabsProps {
   viewMode: 'grid' | 'list' | 'table';
   onActiveTabChange: (tab: string) => void;
   onViewModeChange: (mode: 'grid' | 'list' | 'table') => void;
-  onActionClick: (type: 'checkup' | 'breeding' | 'health' | 'birth', title: string) => void;
+  onActionClick: (type: 'checkup' | 'breeding' | 'health' | 'birth' | 'freeze-embryo', title: string, data?: any) => void;
 }
 
 const MareDetailTabs = ({ 
@@ -29,7 +30,7 @@ const MareDetailTabs = ({
 }: MareDetailTabsProps) => {
   return (
     <Tabs value={activeTab} onValueChange={onActiveTabChange} className="w-full">
-      <TabsList className="grid w-full grid-cols-9 bg-slate-100 p-1 h-12">
+      <TabsList className="grid w-full grid-cols-10 bg-slate-100 p-1 h-12">
         <TabsTrigger 
           value="basic-info"
           className="text-slate-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium transition-all"
@@ -53,6 +54,12 @@ const MareDetailTabs = ({
           className="text-slate-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium transition-all"
         >
           Foaling History
+        </TabsTrigger>
+        <TabsTrigger 
+          value="frozen-embryo"
+          className="text-slate-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium transition-all"
+        >
+          Frozen Embryo
         </TabsTrigger>
         <TabsTrigger 
           value="health"
@@ -113,6 +120,13 @@ const MareDetailTabs = ({
           mareId={mareId} 
           viewMode={viewMode} 
           onViewModeChange={onViewModeChange}
+          onActionClick={onActionClick}
+        />
+      </TabsContent>
+
+      <TabsContent value="frozen-embryo" className="mt-6">
+        <FrozenEmbryoInventoryTab 
+          stallionId={mareId} 
           onActionClick={onActionClick}
         />
       </TabsContent>
