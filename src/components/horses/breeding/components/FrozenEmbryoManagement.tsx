@@ -13,11 +13,15 @@ import FrozenEmbryoListView from "../stallion-detail/components/tabs/FrozenEmbry
 import FrozenEmbryoTableView from "../stallion-detail/components/tabs/FrozenEmbryoTableView";
 import EditFrozenEmbryoDialog from "../stallion-detail/components/tabs/EditFrozenEmbryoDialog";
 import DeleteConfirmationDialog from "../stallion-detail/components/tabs/DeleteConfirmationDialog";
+import { useTranslation } from "@/hooks/useTranslation";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type ViewMode = "grid" | "list" | "table";
 
 const FrozenEmbryoManagement = () => {
   const { toast } = useToast();
+  const { t } = useTranslation();
+  const { isRTL } = useLanguage();
   const { frozenEmbryos, filters, setFilters, exportData, updateFrozenEmbryo, deleteFrozenEmbryo } = useFrozenEmbryoManagement("mare-management");
   
   const [searchTerm, setSearchTerm] = useState(filters.searchTerm || "");
@@ -53,12 +57,12 @@ const FrozenEmbryoManagement = () => {
       setEditDialogOpen(false);
       setSelectedRecord(null);
       toast({
-        title: "Success",
+        title: t('ui.success'),
         description: "Frozen embryo record updated successfully",
       });
     } catch (error) {
       toast({
-        title: "Error",
+        title: t('ui.error'),
         description: "Failed to update frozen embryo record",
         variant: "destructive",
       });
@@ -73,12 +77,12 @@ const FrozenEmbryoManagement = () => {
       setDeleteDialogOpen(false);
       setSelectedRecord(null);
       toast({
-        title: "Success",
+        title: t('ui.success'),
         description: "Frozen embryo record deleted successfully",
       });
     } catch (error) {
       toast({
-        title: "Error",
+        title: t('ui.error'),
         description: "Failed to delete frozen embryo record",
         variant: "destructive",
       });
@@ -116,38 +120,39 @@ const FrozenEmbryoManagement = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h3 className="text-lg font-semibold">Frozen Embryo Management</h3>
-          <p className="text-muted-foreground">Manage cryopreserved embryo inventory and tracking</p>
+    <div className={`space-y-6 ${isRTL ? 'rtl' : 'ltr'}`}>
+      <div className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
+        <div className={isRTL ? 'text-right' : 'text-left'}>
+          <h3 className="text-lg font-semibold">{t('breeding.frozenEmbryoManagement')}</h3>
+          <p className="text-muted-foreground">{t('breeding.cryopreservedInventory')}</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => exportData('csv')}>
             <Download className="h-4 w-4 mr-2" />
-            Export
+            {t('actions.export')}
           </Button>
           <Button size="sm">
             <Plus className="h-4 w-4 mr-2" />
-            Add Embryo
+            {t('actions.add')} Embryo
           </Button>
         </div>
       </div>
 
-      <div className="flex justify-between items-center gap-4">
-        <div className="flex gap-4 items-center flex-1">
+      <div className={`flex justify-between items-center gap-4 ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
+        <div className={`flex gap-4 items-center flex-1 ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Search className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4`} />
             <Input
-              placeholder="Search by ID, mare name, or tank..."
+              placeholder={`${t('actions.search')} by ID, mare name, or tank...`}
               value={searchTerm}
               onChange={(e) => handleSearch(e.target.value)}
-              className="pl-10"
+              className={isRTL ? 'pr-10 text-right' : 'pl-10'}
+              dir={isRTL ? 'rtl' : 'ltr'}
             />
           </div>
           <Button variant="outline" size="sm">
             <Filter className="h-4 w-4 mr-2" />
-            Filter
+            {t('actions.filter')}
           </Button>
         </div>
         <BreedingRecordsViewSelector 

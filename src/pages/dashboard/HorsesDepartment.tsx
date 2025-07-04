@@ -6,12 +6,16 @@ import HorsesDashboard from "@/components/horses/HorsesDashboard";
 import HorseManagement from "@/components/horses/HorseManagement";
 import BreedingManagement from "@/components/horses/breeding/BreedingManagement";
 import PedigreeManagement from "@/components/horses/pedigree/PedigreeManagement";
+import { useTranslation } from "@/hooks/useTranslation";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const HorsesDepartment = () => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [breedingSubTab, setBreedingSubTab] = useState("dashboard");
+  const { t } = useTranslation();
+  const { isRTL } = useLanguage();
 
   // Extract clientId from URL parameters
   const clientId = searchParams.get('clientId');
@@ -49,10 +53,10 @@ const HorsesDepartment = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Horses Department</h1>
-        <p className="text-muted-foreground">Comprehensive horse management and monitoring system</p>
+    <div className={`space-y-6 ${isRTL ? 'rtl' : 'ltr'}`}>
+      <div className={isRTL ? 'text-right' : 'text-left'}>
+        <h1 className="text-3xl font-bold">{t('horses.title')}</h1>
+        <p className="text-muted-foreground">{t('horses.subtitle')}</p>
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -61,25 +65,25 @@ const HorsesDepartment = () => {
             value="dashboard" 
             className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
           >
-            Dashboard
+            {t('navigation.dashboard')}
           </TabsTrigger>
           <TabsTrigger 
             value="horses" 
             className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
           >
-            Horse Registry
+            {t('navigation.horses')}
           </TabsTrigger>
           <TabsTrigger 
             value="breeding" 
             className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
           >
-            Breeding
+            {t('navigation.breeding')}
           </TabsTrigger>
           <TabsTrigger 
             value="pedigree" 
             className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
           >
-            Pedigree
+            {t('navigation.pedigree')}
           </TabsTrigger>
         </TabsList>
         
