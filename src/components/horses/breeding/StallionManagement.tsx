@@ -49,7 +49,12 @@ const StallionManagement = () => {
 
   return (
     <div className="space-y-6">
-      <SmartTabs value={activeTab} onValueChange={setActiveTab} className="w-full" maxTabsForRegular={4}>
+      <SmartTabs 
+        value={activeTab} 
+        onValueChange={setActiveTab} 
+        className="w-full" 
+        maxTabsForRegular={4}
+      >
         <SmartTabsList className="mb-8">
           <SmartTabsTrigger value="stallions">
             Stallions

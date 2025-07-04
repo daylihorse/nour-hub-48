@@ -1,5 +1,5 @@
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -53,22 +53,37 @@ export const ScrollableTabsList: React.FC<ScrollableTabsListProps> = ({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  const checkScrollButtons = () => {
-    if (scrollContainerRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
-      setShowLeftArrow(scrollLeft > 0);
-      setShowRightArrow(Math.ceil(scrollLeft) < scrollWidth - clientWidth - 1);
-    }
-  };
-
-  useEffect(() => {
-    checkScrollButtons();
+  const checkScrollButtons = useCallback(() => {
+    if (!scrollContainerRef.current) return;
     
+    const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+    const newShowLeft = scrollLeft > 5; // Small threshold to avoid flickering
+    const newShowRight = scrollLeft < scrollWidth - clientWidth - 5;
+    
+    setShowLeftArrow(newShowLeft);
+    setShowRightArrow(newShowRight);
+  }, []);
+
+  // Initialize scroll state
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      checkScrollButtons();
+      setIsInitialized(true);
+    }, 100); // Small delay to ensure DOM is ready
+
+    return () => clearTimeout(timer);
+  }, [checkScrollButtons]);
+
+  // Handle resize with debouncing
+  useEffect(() => {
+    if (!isInitialized) return;
+
     let resizeTimeout: NodeJS.Timeout;
     const handleResize = () => {
       clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(checkScrollButtons, 100);
+      resizeTimeout = setTimeout(checkScrollButtons, 150);
     };
     
     window.addEventListener("resize", handleResize);
@@ -77,41 +92,41 @@ export const ScrollableTabsList: React.FC<ScrollableTabsListProps> = ({
       window.removeEventListener("resize", handleResize);
       clearTimeout(resizeTimeout);
     };
-  }, [children]);
+  }, [checkScrollButtons, isInitialized]);
 
-  const scrollLeft = () => {
+  const scrollLeft = useCallback(() => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: -240, behavior: "smooth" });
+      scrollContainerRef.current.scrollBy({ left: -200, behavior: "smooth" });
     }
-  };
+  }, []);
 
-  const scrollRight = () => {
+  const scrollRight = useCallback(() => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: 240, behavior: "smooth" });
+      scrollContainerRef.current.scrollBy({ left: 200, behavior: "smooth" });
     }
-  };
+  }, []);
 
   return (
     <div className="relative flex items-center w-full">
-      {/* Left Arrow - Enhanced */}
+      {/* Left Arrow */}
       {showLeftArrow && (
         <Button
           variant="outline"
           size="icon"
-          className="absolute left-0 z-20 h-12 w-12 bg-white/95 shadow-brown border-brown-200 hover:bg-brown-50 hover:border-brown-300 hover:shadow-brown-lg transition-all duration-300 backdrop-blur-sm"
+          className="absolute left-0 z-10 h-10 w-10 bg-background shadow-md border hover:bg-accent"
           onClick={scrollLeft}
         >
-          <ChevronLeft className="h-5 w-5 text-brown-700" />
+          <ChevronLeft className="h-4 w-4" />
         </Button>
       )}
 
-      {/* Scrollable Container - Enhanced */}
+      {/* Scrollable Container */}
       <div
         ref={scrollContainerRef}
         className={cn(
-          "flex overflow-x-auto scroll-smooth scrollbar-hide w-full transition-all duration-300",
-          showLeftArrow && "pl-14",
-          showRightArrow && "pr-14",
+          "flex overflow-x-auto scroll-smooth scrollbar-hide w-full",
+          showLeftArrow && "pl-12",
+          showRightArrow && "pr-12",
           className
         )}
         onScroll={checkScrollButtons}
@@ -120,20 +135,20 @@ export const ScrollableTabsList: React.FC<ScrollableTabsListProps> = ({
           msOverflowStyle: 'none',
         }}
       >
-        <div className="flex bg-gradient-to-r from-brown-50 to-brown-100/80 p-2 rounded-xl border border-brown-200 shadow-brown backdrop-blur-sm min-w-max h-14">
+        <div className="flex bg-muted p-1 rounded-lg min-w-max h-12">
           {children}
         </div>
       </div>
 
-      {/* Right Arrow - Enhanced */}
+      {/* Right Arrow */}
       {showRightArrow && (
         <Button
           variant="outline"
           size="icon"
-          className="absolute right-0 z-20 h-12 w-12 bg-white/95 shadow-brown border-brown-200 hover:bg-brown-50 hover:border-brown-300 hover:shadow-brown-lg transition-all duration-300 backdrop-blur-sm"
+          className="absolute right-0 z-10 h-10 w-10 bg-background shadow-md border hover:bg-accent"
           onClick={scrollRight}
         >
-          <ChevronRight className="h-5 w-5 text-brown-700" />
+          <ChevronRight className="h-4 w-4" />
         </Button>
       )}
     </div>
@@ -149,29 +164,23 @@ export const ScrollableTabsTrigger: React.FC<ScrollableTabsTriggerProps> = ({
   const { value: selectedValue, onValueChange } = React.useContext(ScrollableTabsContext);
   const isSelected = selectedValue === value;
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     onValueChange(value);
     onClick?.();
-  };
+  }, [value, onValueChange, onClick]);
 
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-lg px-6 py-2.5 text-sm font-medium ring-offset-background transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brown-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 min-w-max relative group overflow-hidden",
+        "inline-flex items-center justify-center whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 min-w-max mx-1",
         isSelected
-          ? "bg-white text-brown-900 shadow-md border border-brown-300/50 font-semibold transform scale-105"
-          : "text-brown-700 hover:bg-white/90 hover:text-brown-900 hover:shadow-sm hover:scale-[1.02]",
-        "h-10 min-h-[2.5rem] mx-1", // Consistent height
+          ? "bg-background text-foreground shadow-sm"
+          : "text-muted-foreground hover:text-foreground hover:bg-background/50",
         className
       )}
       onClick={handleClick}
     >
-      <span className="relative z-10 px-1">
-        {children}
-      </span>
-      {isSelected && (
-        <div className="absolute inset-0 bg-gradient-to-r from-brown-50/50 to-white/50 rounded-lg transition-opacity duration-300" />
-      )}
+      {children}
     </button>
   );
 };
@@ -188,7 +197,7 @@ export const ScrollableTabsContent: React.FC<{
   }
 
   return (
-    <div className={cn("mt-8 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brown-500 focus-visible:ring-offset-2", className)}>
+    <div className={cn("mt-6 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2", className)}>
       {children}
     </div>
   );

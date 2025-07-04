@@ -27,7 +27,13 @@ const StallionDetailTabs = ({
   onActionClick 
 }: StallionDetailTabsProps) => {
   return (
-    <SmartTabs value={activeTab} onValueChange={onActiveTabChange} className="w-full" maxTabsForRegular={4}>
+    <SmartTabs 
+      value={activeTab} 
+      onValueChange={onActiveTabChange} 
+      className="w-full" 
+      maxTabsForRegular={4}
+      forceScrollable={true} // Force scrollable due to 7 tabs
+    >
       <SmartTabsList className="mb-8">
         <SmartTabsTrigger value="collected-semen">
           Collected Semen

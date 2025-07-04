@@ -28,7 +28,13 @@ const BreedingManagement = ({ initialTab = "dashboard" }: BreedingManagementProp
 
   return (
     <div className="space-y-6">
-      <SmartTabs value={activeTab} onValueChange={setActiveTab} className="w-full" maxTabsForRegular={4}>
+      <SmartTabs 
+        value={activeTab} 
+        onValueChange={setActiveTab} 
+        className="w-full" 
+        maxTabsForRegular={4}
+        forceScrollable={true} // Force scrollable due to 8 tabs
+      >
         <SmartTabsList className="mb-8">
           <SmartTabsTrigger value="dashboard">
             Dashboard

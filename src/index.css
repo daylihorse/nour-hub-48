@@ -94,46 +94,8 @@
   }
 }
 
-/* Enhanced brown gradient backgrounds for better visual appeal */
 @layer utilities {
-  .bg-brown-gradient {
-    background: linear-gradient(135deg, hsl(25, 47%, 35%) 0%, hsl(28, 40%, 45%) 100%);
-  }
-  
-  .bg-brown-gradient-light {
-    background: linear-gradient(135deg, hsl(30, 15%, 90%) 0%, hsl(28, 40%, 75%) 100%);
-  }
-  
-  .text-brown-primary {
-    color: hsl(25, 47%, 35%);
-  }
-  
-  .border-brown-primary {
-    border-color: hsl(25, 47%, 35%);
-  }
-  
-  .shadow-brown {
-    box-shadow: 0 4px 14px 0 hsla(25, 47%, 35%, 0.15);
-  }
-  
-  .shadow-brown-lg {
-    box-shadow: 0 10px 25px -3px hsla(25, 47%, 35%, 0.2), 0 4px 6px -2px hsla(25, 47%, 35%, 0.1);
-  }
-  
-  /* Enhanced tab animations */
-  .tab-hover-scale {
-    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
-  }
-  
-  .tab-hover-scale:hover {
-    transform: scale(1.02);
-  }
-  
-  .tab-active-scale {
-    transform: scale(1.05);
-  }
-  
-  /* Smooth scrollbar hide for better UX */
+  /* Simplified scrollbar hide for better performance */
   .scrollbar-hide {
     scrollbar-width: none;
     -ms-overflow-style: none;

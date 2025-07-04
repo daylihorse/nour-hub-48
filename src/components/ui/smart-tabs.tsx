@@ -14,7 +14,8 @@ interface SmartTabsProps {
   onValueChange: (value: string) => void;
   children: React.ReactNode;
   className?: string;
-  maxTabsForRegular?: number; // Default: 4 (reduced from 5)
+  maxTabsForRegular?: number;
+  forceScrollable?: boolean; // New prop to force scrollable mode
 }
 
 interface SmartTabsListProps {
@@ -50,62 +51,51 @@ export const SmartTabs: React.FC<SmartTabsProps> = ({
   onValueChange,
   children,
   className,
-  maxTabsForRegular = 4, // Reduced for better responsiveness
+  maxTabsForRegular = 4,
+  forceScrollable = false,
 }) => {
-  const [useScrollable, setUseScrollable] = useState(false);
+  const [useScrollable, setUseScrollable] = useState(forceScrollable);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
+  // Simplified logic - only check once on mount and when children change significantly
   useEffect(() => {
-    const checkOverflow = () => {
-      if (!containerRef.current) return;
-
-      // Count the number of tabs
-      const tabTriggers = containerRef.current.querySelectorAll('[data-tab-trigger]');
-      const tabCount = tabTriggers.length;
-
-      // Use more intelligent logic for scrollable vs regular tabs
-      const shouldUseScrollable = tabCount > maxTabsForRegular;
-      
-      // Also check screen size - use scrollable on smaller screens with fewer tabs
-      const isSmallScreen = window.innerWidth < 768; // md breakpoint
-      const isVerySmallScreen = window.innerWidth < 640; // sm breakpoint
-      
-      if (isVerySmallScreen && tabCount > 3) {
-        setUseScrollable(true);
-      } else if (isSmallScreen && tabCount > maxTabsForRegular - 1) {
-        setUseScrollable(true);
-      } else {
-        setUseScrollable(shouldUseScrollable);
-      }
-    };
-
-    // Initial check
-    checkOverflow();
-
-    // Check on resize with debouncing
-    let resizeTimeout: NodeJS.Timeout;
-    const handleResize = () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(checkOverflow, 150);
-    };
-    
-    window.addEventListener('resize', handleResize);
-
-    // Check when children change
-    const observer = new MutationObserver(checkOverflow);
-    if (containerRef.current) {
-      observer.observe(containerRef.current, { 
-        childList: true, 
-        subtree: true 
-      });
+    if (forceScrollable) {
+      setUseScrollable(true);
+      setIsInitialized(true);
+      return;
     }
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      clearTimeout(resizeTimeout);
-      observer.disconnect();
+    const checkTabMode = () => {
+      if (!containerRef.current) return;
+
+      // Count tabs more reliably
+      const tabTriggers = React.Children.toArray(children).find(
+        child => React.isValidElement(child) && child.type === SmartTabsList
+      );
+      
+      if (!tabTriggers || !React.isValidElement(tabTriggers)) {
+        setIsInitialized(true);
+        return;
+      }
+
+      const tabCount = React.Children.count(tabTriggers.props.children);
+      const shouldUseScrollable = tabCount > maxTabsForRegular;
+      
+      setUseScrollable(shouldUseScrollable);
+      setIsInitialized(true);
     };
-  }, [maxTabsForRegular, children]);
+
+    // Only check once when component mounts
+    if (!isInitialized) {
+      checkTabMode();
+    }
+  }, [children, maxTabsForRegular, forceScrollable, isInitialized]);
+
+  // Don't render until we've determined the mode to prevent switching
+  if (!isInitialized) {
+    return <div className="h-14 w-full animate-pulse bg-muted rounded-lg" />;
+  }
 
   return (
     <SmartTabsContext.Provider value={{ value, onValueChange, useScrollable }}>
@@ -143,7 +133,7 @@ export const SmartTabsList: React.FC<SmartTabsListProps> = ({
   return (
     <TabsList 
       className={cn(
-        "grid w-full h-14 p-1.5 bg-gradient-to-r from-brown-50 to-brown-100/80 border border-brown-200 rounded-xl shadow-brown backdrop-blur-sm",
+        "grid w-full h-12 p-1 bg-muted rounded-lg",
         className
       )} 
       style={{
@@ -175,21 +165,16 @@ export const SmartTabsTrigger: React.FC<SmartTabsTriggerProps> = ({
     <TabsTrigger 
       value={value} 
       className={cn(
-        "relative h-11 px-6 py-2.5 text-sm font-medium text-brown-700 rounded-lg transition-all duration-300 ease-out",
-        "hover:bg-white/90 hover:text-brown-900 hover:shadow-sm hover:scale-[1.02]",
-        "data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-md data-[state=active]:scale-105 data-[state=active]:font-semibold",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brown-500 focus-visible:ring-offset-2",
-        "disabled:pointer-events-none disabled:opacity-50",
-        "group overflow-hidden",
+        "relative h-10 px-4 py-2 text-sm font-medium rounded-md transition-all duration-200",
+        "data-[state=active]:bg-background data-[state=active]:shadow-sm",
         className
       )}
       onClick={onClick}
       data-tab-trigger
     >
-      <span className="relative z-10 whitespace-nowrap">
+      <span className="whitespace-nowrap">
         {children}
       </span>
-      <div className="absolute inset-0 bg-gradient-to-r from-brown-50/50 to-white/50 opacity-0 group-data-[state=active]:opacity-100 transition-opacity duration-300 rounded-lg" />
     </TabsTrigger>
   );
 };
@@ -213,7 +198,7 @@ export const SmartTabsContent: React.FC<SmartTabsContentProps> = ({
     <TabsContent 
       value={value} 
       className={cn(
-        "mt-8 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brown-500 focus-visible:ring-offset-2",
+        "mt-6 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         className
       )}
     >

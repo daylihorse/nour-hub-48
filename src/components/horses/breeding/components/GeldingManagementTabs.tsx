@@ -18,7 +18,12 @@ interface GeldingManagementTabsProps {
 
 const GeldingManagementTabs = ({ activeTab, onTabChange, geldingsContent }: GeldingManagementTabsProps) => {
   return (
-    <SmartTabs value={activeTab} onValueChange={onTabChange} className="w-full" maxTabsForRegular={4}>
+    <SmartTabs 
+      value={activeTab} 
+      onValueChange={onTabChange} 
+      className="w-full" 
+      maxTabsForRegular={4}
+    >
       <SmartTabsList className="mb-8">
         <SmartTabsTrigger value="geldings">
           Geldings
