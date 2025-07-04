@@ -4,17 +4,57 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Download, FileText, Printer, Eye } from "lucide-react";
 import { BreedingRecord } from "@/types/breeding";
 
 interface BreedingCertificateGeneratorProps {
-  record: BreedingRecord;
+  record?: BreedingRecord;
   onDownload?: () => void;
   onPrint?: () => void;
 }
 
 const BreedingCertificateGenerator = ({ record, onDownload, onPrint }: BreedingCertificateGeneratorProps) => {
+  const [selectedRecordId, setSelectedRecordId] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
+
+  // Mock breeding records for selection
+  const mockBreedingRecords: BreedingRecord[] = [
+    {
+      id: "BR001",
+      horseId: "H001",
+      horseName: "Whisper",
+      type: "breeding",
+      status: "completed",
+      mateId: "H002",
+      mateName: "Thunder",
+      breedingDate: new Date("2024-01-15"),
+      breedingMethod: "natural",
+      veterinarian: "Dr. Smith",
+      notes: "Successful breeding session",
+      cost: 2500,
+      createdAt: new Date("2024-01-15"),
+      updatedAt: new Date("2024-01-15")
+    },
+    {
+      id: "BR002",
+      horseId: "H003",
+      horseName: "Grace",
+      type: "breeding",
+      status: "completed",
+      mateId: "H004",
+      mateName: "Storm",
+      breedingDate: new Date("2024-02-10"),
+      breedingMethod: "artificial_insemination",
+      veterinarian: "Dr. Johnson",
+      notes: "AI procedure completed successfully",
+      cost: 3000,
+      createdAt: new Date("2024-02-10"),
+      updatedAt: new Date("2024-02-10")
+    }
+  ];
+
+  const selectedRecord = record || mockBreedingRecords.find(r => r.id === selectedRecordId);
 
   const handleGenerate = async () => {
     setIsGenerating(true);
@@ -31,8 +71,64 @@ const BreedingCertificateGenerator = ({ record, onDownload, onPrint }: BreedingC
     }).format(date);
   };
 
+  // If no record is provided and none selected, show record selection
+  if (!selectedRecord) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Select Breeding Record
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-muted-foreground">
+              Please select a breeding record to generate a certificate for:
+            </p>
+            <Select value={selectedRecordId} onValueChange={setSelectedRecordId}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a breeding record..." />
+              </SelectTrigger>
+              <SelectContent>
+                {mockBreedingRecords.map((breedingRecord) => (
+                  <SelectItem key={breedingRecord.id} value={breedingRecord.id}>
+                    {breedingRecord.horseName} × {breedingRecord.mateName} - {formatDate(breedingRecord.breedingDate!)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
+      {/* Record Selection (if no record prop provided) */}
+      {!record && (
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium">Selected Record:</p>
+                <p className="text-sm text-muted-foreground">
+                  {selectedRecord.horseName} × {selectedRecord.mateName} - {formatDate(selectedRecord.breedingDate!)}
+                </p>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setSelectedRecordId("")}
+              >
+                Change Selection
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Certificate Preview */}
       <Card className="border-2 border-dashed border-blue-200">
         <CardHeader className="text-center bg-gradient-to-r from-blue-50 to-purple-50">
@@ -48,7 +144,7 @@ const BreedingCertificateGenerator = ({ record, onDownload, onPrint }: BreedingC
         <CardContent className="p-8 space-y-6">
           {/* Header Information */}
           <div className="text-center space-y-2">
-            <h3 className="text-xl font-semibold">Certificate No: {record.id}</h3>
+            <h3 className="text-xl font-semibold">Certificate No: {selectedRecord.id}</h3>
             <p className="text-muted-foreground">
               Issued on {formatDate(new Date())}
             </p>
@@ -63,11 +159,11 @@ const BreedingCertificateGenerator = ({ record, onDownload, onPrint }: BreedingC
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="font-medium">Name:</span>
-                  <span>{record.horseName}</span>
+                  <span>{selectedRecord.horseName}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Registration:</span>
-                  <span>{record.horseId}</span>
+                  <span>{selectedRecord.horseId}</span>
                 </div>
               </div>
             </div>
@@ -77,11 +173,11 @@ const BreedingCertificateGenerator = ({ record, onDownload, onPrint }: BreedingC
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="font-medium">Name:</span>
-                  <span>{record.mateName || 'N/A'}</span>
+                  <span>{selectedRecord.mateName || 'N/A'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Registration:</span>
-                  <span>{record.mateId || 'N/A'}</span>
+                  <span>{selectedRecord.mateId || 'N/A'}</span>
                 </div>
               </div>
             </div>
@@ -95,44 +191,44 @@ const BreedingCertificateGenerator = ({ record, onDownload, onPrint }: BreedingC
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <span className="font-medium block">Breeding Date:</span>
-                <span>{record.breedingDate ? formatDate(record.breedingDate) : 'N/A'}</span>
+                <span>{selectedRecord.breedingDate ? formatDate(selectedRecord.breedingDate) : 'N/A'}</span>
               </div>
               <div className="space-y-2">
                 <span className="font-medium block">Method:</span>
                 <Badge variant="outline">
-                  {record.breedingMethod?.replace('_', ' ').toUpperCase() || 'Natural'}
+                  {selectedRecord.breedingMethod?.replace('_', ' ').toUpperCase() || 'Natural'}
                 </Badge>
               </div>
               <div className="space-y-2">
                 <span className="font-medium block">Status:</span>
-                <Badge variant={record.status === 'completed' ? 'default' : 'secondary'}>
-                  {record.status?.toUpperCase()}
+                <Badge variant={selectedRecord.status === 'completed' ? 'default' : 'secondary'}>
+                  {selectedRecord.status?.toUpperCase()}
                 </Badge>
               </div>
             </div>
           </div>
 
           {/* Veterinarian Information */}
-          {record.veterinarian && (
+          {selectedRecord.veterinarian && (
             <>
               <Separator />
               <div className="space-y-2">
                 <h4 className="font-semibold text-lg border-b pb-2">Veterinary Supervision</h4>
                 <div className="flex justify-between">
                   <span className="font-medium">Supervising Veterinarian:</span>
-                  <span>{record.veterinarian}</span>
+                  <span>{selectedRecord.veterinarian}</span>
                 </div>
               </div>
             </>
           )}
 
           {/* Notes */}
-          {record.notes && (
+          {selectedRecord.notes && (
             <>
               <Separator />
               <div className="space-y-2">
                 <h4 className="font-semibold text-lg border-b pb-2">Additional Notes</h4>
-                <p className="text-sm text-muted-foreground">{record.notes}</p>
+                <p className="text-sm text-muted-foreground">{selectedRecord.notes}</p>
               </div>
             </>
           )}
@@ -141,7 +237,7 @@ const BreedingCertificateGenerator = ({ record, onDownload, onPrint }: BreedingC
           <Separator />
           <div className="text-center text-xs text-muted-foreground">
             <p>This certificate is generated by the Horse Management System</p>
-            <p>Certificate ID: {record.id} | Generated: {formatDate(new Date())}</p>
+            <p>Certificate ID: {selectedRecord.id} | Generated: {formatDate(new Date())}</p>
           </div>
         </CardContent>
       </Card>
