@@ -1,10 +1,5 @@
 
-import { 
-  SmartTabs, 
-  SmartTabsContent, 
-  SmartTabsList, 
-  SmartTabsTrigger 
-} from "@/components/ui/smart-tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CollectedSemenTab from "./tabs/CollectedSemenTab";
 import FrozenSemenInventoryTab from "./tabs/FrozenSemenInventoryTab";
 import FrozenEmbryoInventoryTab from "./tabs/FrozenEmbryoInventoryTab";
@@ -27,65 +22,80 @@ const StallionDetailTabs = ({
   onActionClick 
 }: StallionDetailTabsProps) => {
   return (
-    <SmartTabs 
-      value={activeTab} 
-      onValueChange={onActiveTabChange} 
-      className="w-full" 
-      maxTabsForRegular={4}
-      forceScrollable={true} // Force scrollable due to 7 tabs
-    >
-      <SmartTabsList className="mb-8">
-        <SmartTabsTrigger value="collected-semen">
+    <Tabs value={activeTab} onValueChange={onActiveTabChange} className="w-full">
+      <TabsList className="grid w-full grid-cols-7 bg-blue-50 border border-blue-200 p-1 h-12">
+        <TabsTrigger 
+          value="collected-semen" 
+          className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
+        >
           Collected Semen
-        </SmartTabsTrigger>
-        <SmartTabsTrigger value="frozen-semen">
+        </TabsTrigger>
+        <TabsTrigger 
+          value="frozen-semen" 
+          className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
+        >
           Frozen Semen
-        </SmartTabsTrigger>
-        <SmartTabsTrigger value="frozen-embryo">
+        </TabsTrigger>
+        <TabsTrigger 
+          value="frozen-embryo" 
+          className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
+        >
           Frozen Embryo
-        </SmartTabsTrigger>
-        <SmartTabsTrigger value="breeding-record">
+        </TabsTrigger>
+        <TabsTrigger 
+          value="breeding-record" 
+          className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
+        >
           Breeding Record
-        </SmartTabsTrigger>
-        <SmartTabsTrigger value="training">
+        </TabsTrigger>
+        <TabsTrigger 
+          value="training" 
+          className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
+        >
           Training
-        </SmartTabsTrigger>
-        <SmartTabsTrigger value="health">
+        </TabsTrigger>
+        <TabsTrigger 
+          value="health" 
+          className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
+        >
           Health Records
-        </SmartTabsTrigger>
-        <SmartTabsTrigger value="performance">
+        </TabsTrigger>
+        <TabsTrigger 
+          value="performance" 
+          className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
+        >
           Performance
-        </SmartTabsTrigger>
-      </SmartTabsList>
+        </TabsTrigger>
+      </TabsList>
       
-      <SmartTabsContent value="collected-semen" className="mt-8">
+      <TabsContent value="collected-semen" className="mt-6">
         <CollectedSemenTab stallionId={stallionId} onActionClick={onActionClick} />
-      </SmartTabsContent>
+      </TabsContent>
       
-      <SmartTabsContent value="frozen-semen" className="mt-8">
+      <TabsContent value="frozen-semen" className="mt-6">
         <FrozenSemenInventoryTab stallionId={stallionId} />
-      </SmartTabsContent>
+      </TabsContent>
       
-      <SmartTabsContent value="frozen-embryo" className="mt-8">
+      <TabsContent value="frozen-embryo" className="mt-6">
         <FrozenEmbryoInventoryTab stallionId={stallionId} />
-      </SmartTabsContent>
+      </TabsContent>
       
-      <SmartTabsContent value="breeding-record" className="mt-8">
+      <TabsContent value="breeding-record" className="mt-6">
         <EnhancedBreedingRecordTab stallionId={stallionId} onActionClick={onActionClick} />
-      </SmartTabsContent>
+      </TabsContent>
       
-      <SmartTabsContent value="training" className="mt-8">
+      <TabsContent value="training" className="mt-6">
         <TrainingRecords horseId={stallionId} />
-      </SmartTabsContent>
+      </TabsContent>
       
-      <SmartTabsContent value="health" className="mt-8">
+      <TabsContent value="health" className="mt-6">
         <HealthRecords horseId={stallionId} />
-      </SmartTabsContent>
+      </TabsContent>
       
-      <SmartTabsContent value="performance" className="mt-8">
+      <TabsContent value="performance" className="mt-6">
         <PerformanceRecords horseId={stallionId} />
-      </SmartTabsContent>
-    </SmartTabs>
+      </TabsContent>
+    </Tabs>
   );
 };
 

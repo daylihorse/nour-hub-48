@@ -1,11 +1,6 @@
 
 import { useState } from "react";
-import { 
-  SmartTabs, 
-  SmartTabsContent, 
-  SmartTabsList, 
-  SmartTabsTrigger 
-} from "@/components/ui/smart-tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StallionHeader from "./components/StallionHeader";
 import StallionFilters from "./components/StallionFilters";
 import StallionGrid from "./components/StallionGrid";
@@ -49,28 +44,35 @@ const StallionManagement = () => {
 
   return (
     <div className="space-y-6">
-      <SmartTabs 
-        value={activeTab} 
-        onValueChange={setActiveTab} 
-        className="w-full" 
-        maxTabsForRegular={4}
-      >
-        <SmartTabsList className="mb-8">
-          <SmartTabsTrigger value="stallions">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-4 bg-blue-50 border border-blue-200 p-1 h-12">
+          <TabsTrigger 
+            value="stallions" 
+            className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
+          >
             Stallions
-          </SmartTabsTrigger>
-          <SmartTabsTrigger value="training">
+          </TabsTrigger>
+          <TabsTrigger 
+            value="training" 
+            className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
+          >
             Training
-          </SmartTabsTrigger>
-          <SmartTabsTrigger value="health">
+          </TabsTrigger>
+          <TabsTrigger 
+            value="health" 
+            className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
+          >
             Health Records
-          </SmartTabsTrigger>
-          <SmartTabsTrigger value="performance">
+          </TabsTrigger>
+          <TabsTrigger 
+            value="performance" 
+            className="text-blue-700 data-[state=active]:bg-blue-500 data-[state=active]:text-white font-medium"
+          >
             Performance Records
-          </SmartTabsTrigger>
-        </SmartTabsList>
+          </TabsTrigger>
+        </TabsList>
         
-        <SmartTabsContent value="stallions" className="mt-8">
+        <TabsContent value="stallions" className="mt-6">
           <div className="space-y-6">
             <StallionHeader 
               viewSelector={
@@ -92,35 +94,35 @@ const StallionManagement = () => {
 
             <StallionStats />
           </div>
-        </SmartTabsContent>
+        </TabsContent>
         
-        <SmartTabsContent value="training" className="mt-8">
+        <TabsContent value="training" className="mt-6">
           <TrainingRecords 
             viewMode={recordsViewMode}
             gridSize={recordsGridSize}
             onViewModeChange={setRecordsViewMode}
             onGridSizeChange={setRecordsGridSize}
           />
-        </SmartTabsContent>
+        </TabsContent>
         
-        <SmartTabsContent value="health" className="mt-8">
+        <TabsContent value="health" className="mt-6">
           <HealthRecords 
             viewMode={recordsViewMode}
             gridSize={recordsGridSize}
             onViewModeChange={setRecordsViewMode}
             onGridSizeChange={setRecordsGridSize}
           />
-        </SmartTabsContent>
+        </TabsContent>
         
-        <SmartTabsContent value="performance" className="mt-8">
+        <TabsContent value="performance" className="mt-6">
           <PerformanceRecords 
             viewMode={recordsViewMode}
             gridSize={recordsGridSize}
             onViewModeChange={setRecordsViewMode}
             onGridSizeChange={setRecordsGridSize}
           />
-        </SmartTabsContent>
-      </SmartTabs>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

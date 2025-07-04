@@ -1,9 +1,5 @@
-import { 
-  ScrollableTabs, 
-  ScrollableTabsList, 
-  ScrollableTabsTrigger, 
-  ScrollableTabsContent 
-} from "@/components/ui/scrollable-tabs";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MareHeatCycleTracking from "../cycles/MareHeatCycleTracking";
 import PregnancyManagement from "../PregnancyManagement";
 import MareFrozenEmbryoInventoryTab from "../mare-detail/components/tabs/MareFrozenEmbryoInventoryTab";
@@ -19,59 +15,80 @@ interface MareManagementTabsProps {
 
 const MareManagementTabs = ({ activeTab, onTabChange, maresContent }: MareManagementTabsProps) => {
   return (
-    <ScrollableTabs value={activeTab} onValueChange={onTabChange} className="w-full">
-      <ScrollableTabsList className="mb-6">
-        <ScrollableTabsTrigger value="mares">
+    <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
+      <TabsList className="grid w-full grid-cols-7 bg-purple-50 border border-purple-200 p-1 h-12">
+        <TabsTrigger 
+          value="mares" 
+          className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+        >
           Mares
-        </ScrollableTabsTrigger>
-        <ScrollableTabsTrigger value="pregnancy">
+        </TabsTrigger>
+        <TabsTrigger 
+          value="pregnancy" 
+          className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+        >
           Pregnancy
-        </ScrollableTabsTrigger>
-        <ScrollableTabsTrigger value="heat-cycles">
+        </TabsTrigger>
+        <TabsTrigger 
+          value="heat-cycles" 
+          className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+        >
           Heat Cycles
-        </ScrollableTabsTrigger>
-        <ScrollableTabsTrigger value="frozen-embryos">
+        </TabsTrigger>
+        <TabsTrigger 
+          value="frozen-embryos" 
+          className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+        >
           Frozen Embryos
-        </ScrollableTabsTrigger>
-        <ScrollableTabsTrigger value="training">
+        </TabsTrigger>
+        <TabsTrigger 
+          value="training" 
+          className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+        >
           Training
-        </ScrollableTabsTrigger>
-        <ScrollableTabsTrigger value="health">
+        </TabsTrigger>
+        <TabsTrigger 
+          value="health" 
+          className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+        >
           Health Records
-        </ScrollableTabsTrigger>
-        <ScrollableTabsTrigger value="performance">
+        </TabsTrigger>
+        <TabsTrigger 
+          value="performance" 
+          className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+        >
           Performance Records
-        </ScrollableTabsTrigger>
-      </ScrollableTabsList>
+        </TabsTrigger>
+      </TabsList>
       
-      <ScrollableTabsContent value="mares">
+      <TabsContent value="mares" className="mt-6">
         {maresContent}
-      </ScrollableTabsContent>
+      </TabsContent>
       
-      <ScrollableTabsContent value="pregnancy">
+      <TabsContent value="pregnancy" className="mt-6">
         <PregnancyManagement />
-      </ScrollableTabsContent>
+      </TabsContent>
       
-      <ScrollableTabsContent value="heat-cycles">
+      <TabsContent value="heat-cycles" className="mt-6">
         <MareHeatCycleTracking />
-      </ScrollableTabsContent>
+      </TabsContent>
       
-      <ScrollableTabsContent value="frozen-embryos">
+      <TabsContent value="frozen-embryos" className="mt-6">
         <MareFrozenEmbryoInventoryTab />
-      </ScrollableTabsContent>
+      </TabsContent>
       
-      <ScrollableTabsContent value="training">
+      <TabsContent value="training" className="mt-6">
         <TrainingRecords />
-      </ScrollableTabsContent>
+      </TabsContent>
       
-      <ScrollableTabsContent value="health">
+      <TabsContent value="health" className="mt-6">
         <HealthRecords />
-      </ScrollableTabsContent>
+      </TabsContent>
       
-      <ScrollableTabsContent value="performance">
+      <TabsContent value="performance" className="mt-6">
         <PerformanceRecords />
-      </ScrollableTabsContent>
-    </ScrollableTabs>
+      </TabsContent>
+    </Tabs>
   );
 };
 

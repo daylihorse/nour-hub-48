@@ -1,11 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { 
-  SmartTabs, 
-  SmartTabsContent, 
-  SmartTabsList, 
-  SmartTabsTrigger 
-} from "@/components/ui/smart-tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BreedingDashboard from "./BreedingDashboard";
 import MareManagement from "./MareManagement";
 import StallionManagement from "./StallionManagement";
@@ -28,72 +23,90 @@ const BreedingManagement = ({ initialTab = "dashboard" }: BreedingManagementProp
 
   return (
     <div className="space-y-6">
-      <SmartTabs 
-        value={activeTab} 
-        onValueChange={setActiveTab} 
-        className="w-full" 
-        maxTabsForRegular={4}
-        forceScrollable={true} // Force scrollable due to 8 tabs
-      >
-        <SmartTabsList className="mb-8">
-          <SmartTabsTrigger value="dashboard">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-8 bg-purple-50 border border-purple-200 p-1 h-12">
+          <TabsTrigger 
+            value="dashboard" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
             Dashboard
-          </SmartTabsTrigger>
-          <SmartTabsTrigger value="mares">
+          </TabsTrigger>
+          <TabsTrigger 
+            value="mares" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
             Mares
-          </SmartTabsTrigger>
-          <SmartTabsTrigger value="stallions">
+          </TabsTrigger>
+          <TabsTrigger 
+            value="stallions" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
             Stallions
-          </SmartTabsTrigger>
-          <SmartTabsTrigger value="geldings">
+          </TabsTrigger>
+          <TabsTrigger 
+            value="geldings" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
             Geldings
-          </SmartTabsTrigger>
-          <SmartTabsTrigger value="foaling">
+          </TabsTrigger>
+          <TabsTrigger 
+            value="foaling" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
             Foaling
-          </SmartTabsTrigger>
-          <SmartTabsTrigger value="planning">
+          </TabsTrigger>
+          <TabsTrigger 
+            value="planning" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
             Planning
-          </SmartTabsTrigger>
-          <SmartTabsTrigger value="documents">
+          </TabsTrigger>
+          <TabsTrigger 
+            value="documents" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
             Documents
-          </SmartTabsTrigger>
-          <SmartTabsTrigger value="certificates">
+          </TabsTrigger>
+          <TabsTrigger 
+            value="certificates" 
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+          >
             Certificates
-          </SmartTabsTrigger>
-        </SmartTabsList>
+          </TabsTrigger>
+        </TabsList>
 
-        <SmartTabsContent value="dashboard">
+        <TabsContent value="dashboard" className="mt-6">
           <BreedingDashboard />
-        </SmartTabsContent>
+        </TabsContent>
 
-        <SmartTabsContent value="mares">
+        <TabsContent value="mares" className="mt-6">
           <MareManagement />
-        </SmartTabsContent>
+        </TabsContent>
 
-        <SmartTabsContent value="stallions">
+        <TabsContent value="stallions" className="mt-6">
           <StallionManagement />
-        </SmartTabsContent>
+        </TabsContent>
 
-        <SmartTabsContent value="geldings">
+        <TabsContent value="geldings" className="mt-6">
           <GeldingManagement />
-        </SmartTabsContent>
+        </TabsContent>
 
-        <SmartTabsContent value="foaling">
+        <TabsContent value="foaling" className="mt-6">
           <FoalingManagement />
-        </SmartTabsContent>
+        </TabsContent>
 
-        <SmartTabsContent value="planning">
+        <TabsContent value="planning" className="mt-6">
           <BreedingPlanner />
-        </SmartTabsContent>
+        </TabsContent>
 
-        <SmartTabsContent value="documents">
+        <TabsContent value="documents" className="mt-6">
           <BreedingDocumentManager />
-        </SmartTabsContent>
+        </TabsContent>
 
-        <SmartTabsContent value="certificates">
+        <TabsContent value="certificates" className="mt-6">
           <BreedingCertificateGenerator />
-        </SmartTabsContent>
-      </SmartTabs>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
