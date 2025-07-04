@@ -136,12 +136,6 @@ export const ScrollableTabsList: React.FC<ScrollableTabsListProps> = ({
           <ChevronRight className="h-5 w-5 text-brown-700" />
         </Button>
       )}
-      
-      <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </div>
   );
 };
