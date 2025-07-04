@@ -10,6 +10,8 @@ import BreedingPlanner from "./planning/BreedingPlanner";
 import GeneticAnalysis from "./analysis/GeneticAnalysis";
 import BreedingCertificateGenerator from "./certificates/BreedingCertificateGenerator";
 import GeldingManagement from "./GeldingManagement";
+import { MareProvider } from "@/contexts/MareContext";
+import { StallionProvider } from "@/contexts/StallionContext";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -91,11 +93,15 @@ const BreedingManagement = ({ initialTab = "dashboard" }: BreedingManagementProp
         </TabsContent>
 
         <TabsContent value="mares" className="mt-6">
-          <MareManagement />
+          <MareProvider>
+            <MareManagement />
+          </MareProvider>
         </TabsContent>
 
         <TabsContent value="stallions" className="mt-6">
-          <StallionManagement />
+          <StallionProvider>
+            <StallionManagement />
+          </StallionProvider>
         </TabsContent>
 
         <TabsContent value="geldings" className="mt-6">
