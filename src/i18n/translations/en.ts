@@ -1,4 +1,49 @@
-export const enTranslations = {
+
+export interface TranslationKeys {
+  navigation: {
+    dashboard: string;
+    horses: string;
+    breeding: string;
+    pedigree: string;
+    training: string;
+    health: string;
+    performance: string;
+  };
+  dashboard: {
+    title: string;
+    subtitle: string;
+    welcome: string;
+  };
+  horses: {
+    title: string;
+    subtitle: string;
+  };
+  breeding: {
+    dashboard: string;
+    mares: string;
+    stallions: string;
+    geldings: string;
+    foaling: string;
+    planning: string;
+    analysis: string;
+    documents: string;
+    certificates: string;
+    pregnancy: string;
+    frozenEmbryo: string;
+    heatCycles: string;
+  };
+  clients: {
+    profile: {
+      title: string;
+      subtitle: string;
+      details: string;
+      clientId: string;
+      comingSoon: string;
+    };
+  };
+}
+
+export const enTranslations: TranslationKeys = {
   navigation: {
     dashboard: "Dashboard",
     horses: "Horses",
