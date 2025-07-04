@@ -1,31 +1,37 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
 
-export type AccessMode = 'demo' | 'public' | 'auth';
+export type AccessMode = 'demo' | 'public';
 
 interface AccessModeContextType {
   accessMode: AccessMode;
   setAccessMode: (mode: AccessMode) => void;
-  isDemoMode: boolean;
   isPublicMode: boolean;
-  isAuthMode: boolean;
+  isDemoMode: boolean;
 }
 
-const AccessModeContext = createContext<AccessModeContextType | undefined>(undefined);
+const AccessModeContext = createContext<AccessModeContextType | null>(null);
+
+export const useAccessMode = () => {
+  const context = useContext(AccessModeContext);
+  if (!context) {
+    throw new Error('useAccessMode must be used within AccessModeProvider');
+  }
+  return context;
+};
 
 interface AccessModeProviderProps {
   children: ReactNode;
 }
 
 export const AccessModeProvider = ({ children }: AccessModeProviderProps) => {
-  const [accessMode, setAccessMode] = useState<AccessMode>('demo');
+  const [accessMode, setAccessMode] = useState<AccessMode>('public');
 
   const value: AccessModeContextType = {
     accessMode,
     setAccessMode,
-    isDemoMode: accessMode === 'demo',
     isPublicMode: accessMode === 'public',
-    isAuthMode: accessMode === 'auth',
+    isDemoMode: accessMode === 'demo',
   };
 
   return (
@@ -33,12 +39,4 @@ export const AccessModeProvider = ({ children }: AccessModeProviderProps) => {
       {children}
     </AccessModeContext.Provider>
   );
-};
-
-export const useAccessMode = () => {
-  const context = useContext(AccessModeContext);
-  if (context === undefined) {
-    throw new Error('useAccessMode must be used within an AccessModeProvider');
-  }
-  return context;
 };

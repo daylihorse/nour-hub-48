@@ -31,7 +31,7 @@ const BreedingRecordsViewSelector = ({
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className="flex items-center gap-1">
               <LayoutGrid className="h-4 w-4 mr-1" />
-              <span>Grid Size</span>
+              <span>Columns: {gridSize}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BreedingDashboard from "./BreedingDashboard";
@@ -10,10 +9,6 @@ import BreedingPlanner from "./planning/BreedingPlanner";
 import GeneticAnalysis from "./analysis/GeneticAnalysis";
 import BreedingCertificateGenerator from "./certificates/BreedingCertificateGenerator";
 import GeldingManagement from "./GeldingManagement";
-import { MareProvider } from "@/contexts/MareContext";
-import { StallionProvider } from "@/contexts/StallionContext";
-import { useTranslation } from "@/hooks/useTranslation";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 interface BreedingManagementProps {
   initialTab?: string;
@@ -21,110 +16,104 @@ interface BreedingManagementProps {
 
 const BreedingManagement = ({ initialTab = "dashboard" }: BreedingManagementProps) => {
   const [activeTab, setActiveTab] = useState(initialTab);
-  const { t } = useTranslation();
-  const { isRTL } = useLanguage();
 
   useEffect(() => {
     setActiveTab(initialTab);
   }, [initialTab]);
 
   return (
-    <div className={`space-y-8 ${isRTL ? 'rtl' : 'ltr'}`}>
+    <div className="space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-9 bg-purple-50 border border-purple-200 p-1.5 h-14">
+        <TabsList className="grid w-full grid-cols-9 bg-purple-50 border border-purple-200 p-1 h-12">
           <TabsTrigger 
             value="dashboard" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium px-4 py-2"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
           >
-            {t('breeding.dashboard')}
+            Dashboard
           </TabsTrigger>
           <TabsTrigger 
             value="mares" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium px-4 py-2"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
           >
-            {t('breeding.mares')}
+            Mares
           </TabsTrigger>
           <TabsTrigger 
             value="stallions" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium px-4 py-2"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
           >
-            {t('breeding.stallions')}
+            Stallions
           </TabsTrigger>
           <TabsTrigger 
             value="geldings" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium px-4 py-2"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
           >
-            {t('breeding.geldings')}
+            Geldings
           </TabsTrigger>
           <TabsTrigger 
             value="foaling" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium px-4 py-2"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
           >
-            {t('breeding.foaling')}
+            Foaling
           </TabsTrigger>
           <TabsTrigger 
             value="planning" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium px-4 py-2"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
           >
-            {t('breeding.planning')}
+            Planning
           </TabsTrigger>
           <TabsTrigger 
             value="analysis" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium px-4 py-2"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
           >
-            {t('breeding.analysis')}
+            Analysis
           </TabsTrigger>
           <TabsTrigger 
             value="documents" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium px-4 py-2"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
           >
-            {t('breeding.documents')}
+            Documents
           </TabsTrigger>
           <TabsTrigger 
             value="certificates" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium px-4 py-2"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
           >
-            {t('breeding.certificates')}
+            Certificates
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="dashboard" className="mt-8">
+        <TabsContent value="dashboard" className="mt-6">
           <BreedingDashboard />
         </TabsContent>
 
-        <TabsContent value="mares" className="mt-8">
-          <MareProvider>
-            <MareManagement />
-          </MareProvider>
+        <TabsContent value="mares" className="mt-6">
+          <MareManagement />
         </TabsContent>
 
-        <TabsContent value="stallions" className="mt-8">
-          <StallionProvider>
-            <StallionManagement />
-          </StallionProvider>
+        <TabsContent value="stallions" className="mt-6">
+          <StallionManagement />
         </TabsContent>
 
-        <TabsContent value="geldings" className="mt-8">
+        <TabsContent value="geldings" className="mt-6">
           <GeldingManagement />
         </TabsContent>
 
-        <TabsContent value="foaling" className="mt-8">
+        <TabsContent value="foaling" className="mt-6">
           <FoalingManagement />
         </TabsContent>
 
-        <TabsContent value="planning" className="mt-8">
+        <TabsContent value="planning" className="mt-6">
           <BreedingPlanner />
         </TabsContent>
 
-        <TabsContent value="analysis" className="mt-8">
+        <TabsContent value="analysis" className="mt-6">
           <GeneticAnalysis />
         </TabsContent>
 
-        <TabsContent value="documents" className="mt-8">
+        <TabsContent value="documents" className="mt-6">
           <BreedingDocumentManager />
         </TabsContent>
 
-        <TabsContent value="certificates" className="mt-8">
+        <TabsContent value="certificates" className="mt-6">
           <BreedingCertificateGenerator />
         </TabsContent>
       </Tabs>

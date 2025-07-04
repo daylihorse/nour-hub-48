@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Grid3X3, Grid2X2, SquareEqual } from "lucide-react";
 
-export type GridSize = 2 | 3 | 4;
+export type GridSize = "small" | "medium" | "large";
 
 interface GridSizeSelectorProps {
   gridSize: GridSize;
@@ -16,27 +16,27 @@ const GridSizeSelector = ({ gridSize, setGridSize, viewMode }: GridSizeSelectorP
   return (
     <div className="flex border rounded-md overflow-hidden">
       <Button
-        variant={gridSize === 4 ? "secondary" : "ghost"}
+        variant={gridSize === "small" ? "secondary" : "ghost"}
         className="rounded-none"
-        onClick={() => setGridSize(4)}
+        onClick={() => setGridSize("small")}
         size="sm"
       >
         <Grid3X3 className="h-4 w-4" />
       </Button>
       
       <Button
-        variant={gridSize === 3 ? "secondary" : "ghost"}
+        variant={gridSize === "medium" ? "secondary" : "ghost"}
         className="rounded-none"
-        onClick={() => setGridSize(3)}
+        onClick={() => setGridSize("medium")}
         size="sm"
       >
         <Grid2X2 className="h-4 w-4" />
       </Button>
       
       <Button
-        variant={gridSize === 2 ? "secondary" : "ghost"}
+        variant={gridSize === "large" ? "secondary" : "ghost"}
         className="rounded-none"
-        onClick={() => setGridSize(2)}
+        onClick={() => setGridSize("large")}
         size="sm"
       >
         <SquareEqual className="h-4 w-4" />

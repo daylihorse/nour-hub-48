@@ -2,8 +2,6 @@
 import React from "react";
 import AlertsButton from "@/components/common/AlertsButton";
 import ModuleStatusButton from "@/components/common/ModuleStatusButton";
-import { useTranslation } from "@/hooks/useTranslation";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 interface DashboardHeaderProps {
   totalAlerts: number;
@@ -20,14 +18,11 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   onAlertsClick,
   onModulesClick
 }) => {
-  const { t } = useTranslation();
-  const { isRTL } = useLanguage();
-
   return (
-    <div className={`flex justify-between items-start ${isRTL ? 'rtl' : 'ltr'}`}>
-      <div className={isRTL ? 'text-right' : 'text-left'}>
-        <h2 className="text-2xl font-bold text-brown-900">{t('dashboard.title')}</h2>
-        <p className="text-brown-600">{t('dashboard.subtitle')}</p>
+    <div className="flex justify-between items-start">
+      <div>
+        <h2 className="text-2xl font-bold text-brown-900">Module Access Center</h2>
+        <p className="text-brown-600">Manage your organization with powerful integrated modules</p>
       </div>
       <div className="flex gap-3">
         <ModuleStatusButton 

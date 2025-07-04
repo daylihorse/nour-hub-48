@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from "react";
 import { Horse } from "@/types/horse";
 import { ViewMode } from "../components/ViewSelector";
@@ -81,7 +82,7 @@ export const useGeldingManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [geldings, setGeldings] = useState<Horse[]>(mockGeldings);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [gridSize, setGridSize] = useState<GridSize>(3);
+  const [gridSize, setGridSize] = useState<GridSize>("medium");
 
   const filteredGeldings = useMemo(() => {
     return geldings.filter(gelding =>
