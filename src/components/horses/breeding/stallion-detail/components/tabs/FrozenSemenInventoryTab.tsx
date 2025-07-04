@@ -6,12 +6,15 @@ import { Search, Plus, Download, Filter } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useFrozenSemenManagement } from "../../hooks/useFrozenSemenManagement";
 import { FrozenSemenInventory } from "@/types/breeding/stallion-detail";
-import BreedingRecordsViewSelector, { ViewMode } from "../../../components/BreedingRecordsViewSelector";
+import BreedingRecordsViewSelector from "../../../components/BreedingRecordsViewSelector";
+import { GridSize } from "../../../components/GridSizeSelector";
 import FrozenSemenGridView from "./FrozenSemenGridView";
 import FrozenSemenListView from "./FrozenSemenListView";
 import FrozenSemenTableView from "./FrozenSemenTableView";
 import EditFrozenSemenDialog from "./EditFrozenSemenDialog";
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
+
+type ViewMode = "grid" | "list" | "table";
 
 interface FrozenSemenInventoryTabProps {
   stallionId: string;
@@ -24,6 +27,7 @@ const FrozenSemenInventoryTab = ({ stallionId, onActionClick }: FrozenSemenInven
   
   const [searchTerm, setSearchTerm] = useState(filters.searchTerm || "");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [gridSize, setGridSize] = useState<GridSize>(3);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<FrozenSemenInventory | null>(null);
@@ -151,8 +155,8 @@ const FrozenSemenInventoryTab = ({ stallionId, onActionClick }: FrozenSemenInven
         <BreedingRecordsViewSelector 
           currentView={viewMode}
           onViewChange={setViewMode}
-          gridSize="medium"
-          onGridSizeChange={() => {}}
+          gridSize={gridSize}
+          onGridSizeChange={setGridSize}
         />
       </div>
 

@@ -6,12 +6,15 @@ import { Search, Plus, Download, Filter } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useFrozenEmbryoManagement } from "../../hooks/useFrozenEmbryoManagement";
 import { FrozenEmbryoInventory } from "@/types/breeding/stallion-detail";
-import BreedingRecordsViewSelector, { ViewMode } from "../../../components/BreedingRecordsViewSelector";
+import BreedingRecordsViewSelector from "../../../components/BreedingRecordsViewSelector";
+import { GridSize } from "../../../components/GridSizeSelector";
 import FrozenEmbryoGridView from "./FrozenEmbryoGridView";
 import FrozenEmbryoListView from "./FrozenEmbryoListView";
 import FrozenEmbryoTableView from "./FrozenEmbryoTableView";
 import EditFrozenEmbryoDialog from "./EditFrozenEmbryoDialog";
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
+
+type ViewMode = "grid" | "list" | "table";
 
 interface FrozenEmbryoInventoryTabProps {
   stallionId: string;
@@ -24,6 +27,7 @@ const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInv
   
   const [searchTerm, setSearchTerm] = useState(filters.searchTerm || "");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [gridSize, setGridSize] = useState<GridSize>(3);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<FrozenEmbryoInventory | null>(null);
@@ -156,8 +160,8 @@ const FrozenEmbryoInventoryTab = ({ stallionId, onActionClick }: FrozenEmbryoInv
         <BreedingRecordsViewSelector 
           currentView={viewMode}
           onViewChange={setViewMode}
-          gridSize="medium"
-          onGridSizeChange={() => {}}
+          gridSize={gridSize}
+          onGridSizeChange={setGridSize}
         />
       </div>
 

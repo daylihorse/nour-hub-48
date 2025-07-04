@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 
 interface ActionDialog {
@@ -8,7 +9,7 @@ interface ActionDialog {
 }
 
 export const useStallionDetailState = () => {
-  const [activeTab, setActiveTab] = useState("collected-semen");
+  const [activeTab, setActiveTab] = useState("breeding");
   const [actionDialog, setActionDialog] = useState<ActionDialog>({
     isOpen: false,
     type: "",
