@@ -1,6 +1,11 @@
 
 import { useState, useEffect } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  ScrollableTabs, 
+  ScrollableTabsList, 
+  ScrollableTabsTrigger, 
+  ScrollableTabsContent 
+} from "@/components/ui/scrollable-tabs";
 import BreedingDashboard from "./BreedingDashboard";
 import MareManagement from "./MareManagement";
 import StallionManagement from "./StallionManagement";
@@ -23,90 +28,66 @@ const BreedingManagement = ({ initialTab = "dashboard" }: BreedingManagementProp
 
   return (
     <div className="space-y-6">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-8 bg-purple-50 border border-purple-200 p-1 h-12">
-          <TabsTrigger 
-            value="dashboard" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
-          >
+      <ScrollableTabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <ScrollableTabsList className="mb-6">
+          <ScrollableTabsTrigger value="dashboard">
             Dashboard
-          </TabsTrigger>
-          <TabsTrigger 
-            value="mares" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
-          >
+          </ScrollableTabsTrigger>
+          <ScrollableTabsTrigger value="mares">
             Mares
-          </TabsTrigger>
-          <TabsTrigger 
-            value="stallions" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
-          >
+          </ScrollableTabsTrigger>
+          <ScrollableTabsTrigger value="stallions">
             Stallions
-          </TabsTrigger>
-          <TabsTrigger 
-            value="geldings" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
-          >
+          </ScrollableTabsTrigger>
+          <ScrollableTabsTrigger value="geldings">
             Geldings
-          </TabsTrigger>
-          <TabsTrigger 
-            value="foaling" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
-          >
+          </ScrollableTabsTrigger>
+          <ScrollableTabsTrigger value="foaling">
             Foaling
-          </TabsTrigger>
-          <TabsTrigger 
-            value="planning" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
-          >
+          </ScrollableTabsTrigger>
+          <ScrollableTabsTrigger value="planning">
             Planning
-          </TabsTrigger>
-          <TabsTrigger 
-            value="documents" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
-          >
+          </ScrollableTabsTrigger>
+          <ScrollableTabsTrigger value="documents">
             Documents
-          </TabsTrigger>
-          <TabsTrigger 
-            value="certificates" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
-          >
+          </ScrollableTabsTrigger>
+          <ScrollableTabsTrigger value="certificates">
             Certificates
-          </TabsTrigger>
-        </TabsList>
+          </ScrollableTabsTrigger>
+        </ScrollableTabsList>
 
-        <TabsContent value="dashboard" className="mt-6">
+        <ScrollableTabsContent value="dashboard">
           <BreedingDashboard />
-        </TabsContent>
+        </ScrollableTabsContent>
 
-        <TabsContent value="mares" className="mt-6">
+        <ScrollableTabsContent value="mares">
           <MareManagement />
-        </TabsContent>
+        </ScrollableTabsContent>
 
-        <TabsContent value="stallions" className="mt-6">
+        <ScrollableTabsContent value="stallions">
           <StallionManagement />
-        </TabsContent>
+        </ScrollableTabsContent>
 
-        <TabsContent value="geldings" className="mt-6">
+        <ScrollableTabsContent value="geldings">
           <GeldingManagement />
-        </TabsContent>
+        </ScrollableTabsContent>
 
-        <TabsContent value="foaling" className="mt-6">
+        <ScrollableTabsContent value="foaling">
           <FoalingManagement />
-        </TabsContent>
+        </ScrollableTabsContent>
 
-        <TabsContent value="planning" className="mt-6">
+        <ScrollableTabsContent value="planning">
           <BreedingPlanner />
-        </TabsContent>
+        </ScrollableTabsContent>
 
-        <TabsContent value="documents" className="mt-6">
+        <ScrollableTabsContent value="documents">
           <BreedingDocumentManager />
-        </TabsContent>
+        </ScrollableTabsContent>
 
-        <TabsContent value="certificates" className="mt-6">
+        <ScrollableTabsContent value="certificates">
           <BreedingCertificateGenerator />
-        </TabsContent>
-      </Tabs>
+        </ScrollableTabsContent>
+      </ScrollableTabs>
     </div>
   );
 };
