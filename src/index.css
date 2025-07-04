@@ -119,4 +119,45 @@
   .shadow-brown-lg {
     box-shadow: 0 10px 25px -3px hsla(25, 47%, 35%, 0.2), 0 4px 6px -2px hsla(25, 47%, 35%, 0.1);
   }
+  
+  /* Enhanced spacing utilities */
+  .space-y-comfortable > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-y-reverse: 0;
+    margin-top: calc(2rem * calc(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc(2rem * var(--tw-space-y-reverse));
+  }
+  
+  .space-y-generous > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-y-reverse: 0;
+    margin-top: calc(2.5rem * calc(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc(2.5rem * var(--tw-space-y-reverse));
+  }
+  
+  .p-comfortable {
+    padding: 1.5rem;
+  }
+  
+  .p-generous {
+    padding: 2rem;
+  }
+  
+  .px-comfortable {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  .py-comfortable {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+  
+  .px-generous {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  
+  .py-generous {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
 }

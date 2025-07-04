@@ -29,102 +29,102 @@ const BreedingManagement = ({ initialTab = "dashboard" }: BreedingManagementProp
   }, [initialTab]);
 
   return (
-    <div className={`space-y-6 ${isRTL ? 'rtl' : 'ltr'}`}>
+    <div className={`space-y-8 ${isRTL ? 'rtl' : 'ltr'}`}>
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-9 bg-purple-50 border border-purple-200 p-1 h-12">
+        <TabsList className="grid w-full grid-cols-9 bg-purple-50 border border-purple-200 p-1.5 h-14">
           <TabsTrigger 
             value="dashboard" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium px-4 py-2"
           >
             {t('breeding.dashboard')}
           </TabsTrigger>
           <TabsTrigger 
             value="mares" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium px-4 py-2"
           >
             {t('breeding.mares')}
           </TabsTrigger>
           <TabsTrigger 
             value="stallions" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium px-4 py-2"
           >
             {t('breeding.stallions')}
           </TabsTrigger>
           <TabsTrigger 
             value="geldings" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium px-4 py-2"
           >
             {t('breeding.geldings')}
           </TabsTrigger>
           <TabsTrigger 
             value="foaling" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium px-4 py-2"
           >
             {t('breeding.foaling')}
           </TabsTrigger>
           <TabsTrigger 
             value="planning" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium px-4 py-2"
           >
             {t('breeding.planning')}
           </TabsTrigger>
           <TabsTrigger 
             value="analysis" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium px-4 py-2"
           >
             {t('breeding.analysis')}
           </TabsTrigger>
           <TabsTrigger 
             value="documents" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium px-4 py-2"
           >
             {t('breeding.documents')}
           </TabsTrigger>
           <TabsTrigger 
             value="certificates" 
-            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium"
+            className="text-purple-700 data-[state=active]:bg-purple-500 data-[state=active]:text-white font-medium px-4 py-2"
           >
             {t('breeding.certificates')}
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="dashboard" className="mt-6">
+        <TabsContent value="dashboard" className="mt-8">
           <BreedingDashboard />
         </TabsContent>
 
-        <TabsContent value="mares" className="mt-6">
+        <TabsContent value="mares" className="mt-8">
           <MareProvider>
             <MareManagement />
           </MareProvider>
         </TabsContent>
 
-        <TabsContent value="stallions" className="mt-6">
+        <TabsContent value="stallions" className="mt-8">
           <StallionProvider>
             <StallionManagement />
           </StallionProvider>
         </TabsContent>
 
-        <TabsContent value="geldings" className="mt-6">
+        <TabsContent value="geldings" className="mt-8">
           <GeldingManagement />
         </TabsContent>
 
-        <TabsContent value="foaling" className="mt-6">
+        <TabsContent value="foaling" className="mt-8">
           <FoalingManagement />
         </TabsContent>
 
-        <TabsContent value="planning" className="mt-6">
+        <TabsContent value="planning" className="mt-8">
           <BreedingPlanner />
         </TabsContent>
 
-        <TabsContent value="analysis" className="mt-6">
+        <TabsContent value="analysis" className="mt-8">
           <GeneticAnalysis />
         </TabsContent>
 
-        <TabsContent value="documents" className="mt-6">
+        <TabsContent value="documents" className="mt-8">
           <BreedingDocumentManager />
         </TabsContent>
 
-        <TabsContent value="certificates" className="mt-6">
+        <TabsContent value="certificates" className="mt-8">
           <BreedingCertificateGenerator />
         </TabsContent>
       </Tabs>

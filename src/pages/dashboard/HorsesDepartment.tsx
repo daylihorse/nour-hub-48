@@ -53,53 +53,53 @@ const HorsesDepartment = () => {
   };
 
   return (
-    <div className={`space-y-6 ${isRTL ? 'rtl' : 'ltr'}`}>
+    <div className={`space-y-8 ${isRTL ? 'rtl' : 'ltr'}`}>
       <div className={isRTL ? 'text-right' : 'text-left'}>
         <h1 className="text-3xl font-bold">{t('horses.title')}</h1>
-        <p className="text-muted-foreground">{t('horses.subtitle')}</p>
+        <p className="text-muted-foreground mt-2">{t('horses.subtitle')}</p>
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4 bg-slate-900 border border-slate-700 p-1.5 h-12">
+        <TabsList className="grid w-full grid-cols-4 bg-slate-900 border border-slate-700 p-1.5 h-14">
           <TabsTrigger 
             value="dashboard" 
-            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
+            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 px-4 py-2"
           >
             {t('navigation.dashboard')}
           </TabsTrigger>
           <TabsTrigger 
             value="horses" 
-            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
+            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 px-4 py-2"
           >
             {t('navigation.horses')}
           </TabsTrigger>
           <TabsTrigger 
             value="breeding" 
-            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
+            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 px-4 py-2"
           >
             {t('navigation.breeding')}
           </TabsTrigger>
           <TabsTrigger 
             value="pedigree" 
-            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
+            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200 px-4 py-2"
           >
             {t('navigation.pedigree')}
           </TabsTrigger>
         </TabsList>
         
-        <TabsContent value="dashboard" className="mt-6">
+        <TabsContent value="dashboard" className="mt-8">
           <HorsesDashboard onNavigateToBreeding={handleNavigateToBreeding} />
         </TabsContent>
         
-        <TabsContent value="horses" className="mt-6">
+        <TabsContent value="horses" className="mt-8">
           <HorseManagement clientId={clientId} />
         </TabsContent>
         
-        <TabsContent value="breeding" className="mt-6">
+        <TabsContent value="breeding" className="mt-8">
           <BreedingManagement initialTab={breedingSubTab} />
         </TabsContent>
         
-        <TabsContent value="pedigree" className="mt-6">
+        <TabsContent value="pedigree" className="mt-8">
           <PedigreeManagement />
         </TabsContent>
       </Tabs>
