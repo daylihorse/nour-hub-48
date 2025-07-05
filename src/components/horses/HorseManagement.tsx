@@ -79,7 +79,13 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
             Back to Horses
           </Button>
         </div>
-        <AddHorseForm onCancel={() => setShowAddForm(false)} />
+        <AddHorseForm 
+          onCancel={() => setShowAddForm(false)} 
+          onSave={(data) => {
+            console.log('Horse data saved:', data);
+            setShowAddForm(false);
+          }}
+        />
       </div>
     );
   }
@@ -113,8 +119,11 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
       </div>
 
       {/* View Controls */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <HorseViewSelector viewMode={viewMode} onViewModeChange={setViewMode} />
+        <div className="flex items-center justify-between">
+          <HorseViewSelector 
+            currentView={viewMode} 
+            onViewChange={setViewMode}
+          />
         
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm">
@@ -130,10 +139,18 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
           <HorseGridView onViewDetails={handleViewDetails} />
         </TabsContent>
         <TabsContent value="list">
-          <HorseListView onViewDetails={handleViewDetails} />
+          <HorseListView 
+            horses={[]} 
+            onViewDetails={(horse) => handleViewDetails(horse.id)} 
+            onEdit={(horse) => console.log('Edit horse:', horse)}
+          />
         </TabsContent>
         <TabsContent value="table">
-          <HorseTableView onViewDetails={handleViewDetails} />
+          <HorseTableView 
+            horses={[]} 
+            onViewDetails={(horse) => handleViewDetails(horse.id)} 
+            onEdit={(horse) => console.log('Edit horse:', horse)}
+          />
         </TabsContent>
       </Tabs>
     </div>

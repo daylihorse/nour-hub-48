@@ -4,14 +4,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { ThemeProvider } from "next-themes";
-import EnhancedAuthProvider from "./components/auth/EnhancedAuthProvider";
+import { EnhancedAuthProvider } from "./components/auth/EnhancedAuthProvider";
 import EnhancedAuthGuard from "./components/auth/EnhancedAuthGuard";
-import MainLayout from "./components/layout/MainLayout";
-import Dashboard from "./pages/Dashboard";
+import DashboardLayout from "./components/layout/DashboardLayout";
+import Dashboard from "./pages/Index";
 import HorsesDepartment from "./pages/dashboard/HorsesDepartment";
-import ClientManagement from "./pages/dashboard/ClientManagement";
+import ClientManagement from "./pages/dashboard/ClientsDepartment";
 import ClientProfile from "./pages/dashboard/ClientProfile";
-import InventoryDepartment from "./pages/dashboard/InventoryDepartment";
+import InventoryDepartment from "./pages/dashboard/InventoryManagement";
 import HRDepartment from "./pages/dashboard/HRDepartment";
 import FinanceDepartment from "./pages/dashboard/FinanceDepartment";
 import ClinicDepartment from "./pages/dashboard/ClinicDepartment";
@@ -34,7 +34,7 @@ function App() {
                   path="/*"
                   element={
                     <EnhancedAuthGuard>
-                      <MainLayout>
+                      <DashboardLayout>
                         <Routes>
                           <Route path="/" element={<Dashboard />} />
                           <Route path="/horses/*" element={<HorsesDepartment />} />
@@ -47,7 +47,7 @@ function App() {
                           <Route path="/laboratory" element={<LaboratoryDepartment />} />
                           <Route path="*" element={<Navigate to="/" replace />} />
                         </Routes>
-                      </MainLayout>
+                      </DashboardLayout>
                     </EnhancedAuthGuard>
                   }
                 />

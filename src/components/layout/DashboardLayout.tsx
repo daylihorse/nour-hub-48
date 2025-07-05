@@ -5,7 +5,7 @@ import DashboardHeader from "./DashboardHeader";
 import { Outlet } from "react-router-dom";
 import TenantProvider from "@/components/tenant/TenantProvider";
 
-const DashboardLayout = () => {
+const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <TenantProvider>
       <SidebarProvider>
@@ -21,7 +21,7 @@ const DashboardLayout = () => {
             {/* Main Content Area */}
             <main className="flex-1 overflow-auto">
               <div className="p-6">
-                <Outlet />
+                {children}
               </div>
             </main>
           </div>
