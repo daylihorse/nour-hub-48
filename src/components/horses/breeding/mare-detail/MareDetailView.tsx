@@ -44,6 +44,10 @@ const MareDetailView = () => {
     }
   }, [mare, mareId, error, clearError]);
 
+  const handleViewModeChange = (mode: 'grid' | 'list' | 'table') => {
+    setViewMode(mode);
+  };
+
   return (
     <MareDetailErrorBoundary
       error={error}
@@ -91,7 +95,7 @@ const MareDetailView = () => {
             activeTab={activeTab}
             viewMode={viewMode}
             onActiveTabChange={setActiveTab}
-            onViewModeChange={setViewMode}
+            onViewModeChange={handleViewModeChange}
             onActionClick={openActionDialog}
           />
 

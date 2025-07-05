@@ -14,9 +14,9 @@ import MareFoalingHistoryTable from "../tables/MareFoalingHistoryTable";
 interface MareDetailTabsProps {
   mareId: string;
   activeTab: string;
-  viewMode: string;
+  viewMode: 'grid' | 'list' | 'table';
   onActiveTabChange: (tab: string) => void;
-  onViewModeChange: (mode: string) => void;
+  onViewModeChange: (mode: 'grid' | 'list' | 'table') => void;
   onActionClick: (action: string, title: string, data?: any) => void;
 }
 
@@ -80,15 +80,30 @@ const MareDetailTabs = ({
       </TabsContent>
       
       <TabsContent value="breeding-history" className="mt-6">
-        <MareBreedingHistoryTable mareId={mareId} />
+        <MareBreedingHistoryTable 
+          mareId={mareId} 
+          viewMode={viewMode}
+          onViewModeChange={onViewModeChange}
+          onActionClick={onActionClick}
+        />
       </TabsContent>
       
       <TabsContent value="pregnancy" className="mt-6">
-        <MarePregnancyTable mareId={mareId} />
+        <MarePregnancyTable 
+          mareId={mareId}
+          viewMode={viewMode}
+          onViewModeChange={onViewModeChange}
+          onActionClick={onActionClick}
+        />
       </TabsContent>
       
       <TabsContent value="foaling-history" className="mt-6">
-        <MareFoalingHistoryTable mareId={mareId} />
+        <MareFoalingHistoryTable 
+          mareId={mareId}
+          viewMode={viewMode}
+          onViewModeChange={onViewModeChange}
+          onActionClick={onActionClick}
+        />
       </TabsContent>
       
       <TabsContent value="frozen-embryos" className="mt-6">

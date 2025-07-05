@@ -6,8 +6,6 @@ import { User, Calendar, Heart, Activity } from "lucide-react";
 
 interface MareBasicInfoTableProps {
   mareId: string;
-  viewMode: 'grid' | 'list' | 'table';
-  onViewModeChange: (mode: 'grid' | 'list' | 'table') => void;
 }
 
 const MareBasicInfoTable = ({ mareId }: MareBasicInfoTableProps) => {
