@@ -9,7 +9,7 @@ import HorseGridView from "./components/HorseGridView";
 import HorseListView from "./components/HorseListView";
 import HorseTableView from "./components/HorseTableView";
 import HorseViewSelector from "./components/HorseViewSelector";
-import EnhancedAddHorseForm from "./EnhancedAddHorseForm";
+import AddHorseForm from "./AddHorseForm";
 import HorseDetailsView from "./details/HorseDetailsView";
 
 interface HorseManagementProps {
@@ -79,10 +79,10 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
             Back to Horses
           </Button>
         </div>
-        <EnhancedAddHorseForm 
+        <AddHorseForm 
           onCancel={() => setShowAddForm(false)} 
           onSave={(data) => {
-            console.log('Enhanced horse data saved:', data);
+            console.log('Horse data saved:', data);
             setShowAddForm(false);
           }}
         />
