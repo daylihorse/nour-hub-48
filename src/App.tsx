@@ -8,7 +8,7 @@ import { AccessModeProvider } from "@/contexts/AccessModeContext";
 import { EnhancedAuthProvider } from "./components/auth/EnhancedAuthProvider";
 import EnhancedAuthGuard from "./components/auth/EnhancedAuthGuard";
 import DashboardLayout from "./components/layout/DashboardLayout";
-import Dashboard from "./pages/Index";
+import Dashboard from "./pages/dashboard/Dashboard";
 import HorsesDepartment from "./pages/dashboard/HorsesDepartment";
 import ClientManagement from "./pages/dashboard/ClientsDepartment";
 import ClientProfile from "./pages/dashboard/ClientProfile";
