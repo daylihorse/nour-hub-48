@@ -4,7 +4,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { HorseFormData } from "@/types/horse";
 import DynamicDatePicker from "../../form-components/DynamicDatePicker";
-import { calculateAge } from "../../utils/ageCalculation";
+import AgeDisplay from "../../form-components/AgeDisplay";
 
 const PhysicalDetailsSection = () => {
   const form = useFormContext<HorseFormData>();
@@ -21,12 +21,7 @@ const PhysicalDetailsSection = () => {
           maxDate={new Date()}
           minDate={new Date("1990-01-01")}
         />
-        {birthDate && (
-          <div className="text-sm text-muted-foreground mt-1">
-            <span className="font-medium">Calculated Age: </span>
-            {calculateAge(new Date(birthDate))}
-          </div>
-        )}
+        {birthDate && <AgeDisplay birthDate={birthDate} />}
       </div>
 
       <FormField

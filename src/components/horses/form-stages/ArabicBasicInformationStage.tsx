@@ -1,10 +1,15 @@
 
+import { useFormContext } from "react-hook-form";
 import ArabicFormInput from "../form-components/ArabicFormInput";
 import ArabicFormSelect from "../form-components/ArabicFormSelect";
 import ArabicDatePicker from "../form-components/ArabicDatePicker";
+import AgeDisplay from "../form-components/AgeDisplay";
 import { horseBreeds, horseColors, genderOptions } from "../form-components/constants/formOptions";
 
 const ArabicBasicInformationStage = () => {
+  const form = useFormContext();
+  const birthDate = form.watch("birthDate");
+
   return (
     <div className="space-y-6" dir="rtl">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -37,14 +42,17 @@ const ArabicBasicInformationStage = () => {
           required
         />
 
-        <ArabicDatePicker
-          name="birthDate"
-          label="Birth Date"
-          placeholder="Pick a date"
-          required
-          minDate={new Date("1990-01-01")}
-          maxDate={new Date()}
-        />
+        <div className="space-y-2">
+          <ArabicDatePicker
+            name="birthDate"
+            label="Birth Date"
+            placeholder="Pick a date"
+            required
+            minDate={new Date("1990-01-01")}
+            maxDate={new Date()}
+          />
+          {birthDate && <AgeDisplay birthDate={birthDate} isArabic={true} />}
+        </div>
 
         <ArabicFormSelect
           name="color"

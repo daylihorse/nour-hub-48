@@ -4,6 +4,7 @@ import { HorseFormData } from "@/types/horse-unified";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import AgeDisplay from "../AgeDisplay";
 
 const BasicInformationStage = () => {
   const { register, setValue, watch, formState: { errors } } = useFormContext<HorseFormData>();
@@ -12,6 +13,7 @@ const BasicInformationStage = () => {
   const watchedAgeClass = watch("ageClass");
   const watchedAdultMaleType = watch("adultMaleType");
   const watchedIsPregnant = watch("isPregnant");
+  const birthDate = watch("birthDate");
 
   return (
     <div className="space-y-6">
@@ -86,6 +88,7 @@ const BasicInformationStage = () => {
             type="date"
             {...register("birthDate")}
           />
+          {birthDate && <AgeDisplay birthDate={birthDate} />}
           {errors.birthDate && (
             <p className="text-sm text-red-600">{errors.birthDate.message}</p>
           )}
