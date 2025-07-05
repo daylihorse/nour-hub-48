@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Plus, Download, Upload, Filter } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { HorseFormData } from "@/types/horse-unified";
 import HorseGridView from "./components/HorseGridView";
 import HorseListView from "./components/HorseListView";
 import HorseTableView from "./components/HorseTableView";
@@ -45,15 +44,6 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
     navigate(`/horses/${horseId}`);
   };
 
-  const handleSaveHorse = (data: HorseFormData) => {
-    console.log('Saving horse:', data);
-    setShowAddForm(false);
-    toast({
-      title: "Horse Added",
-      description: "Horse has been successfully added to the registry",
-    });
-  };
-
   const handleExport = () => {
     toast({
       title: "Export Started",
@@ -89,10 +79,7 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
             Back to Horses
           </Button>
         </div>
-        <AddHorseForm 
-          onSave={handleSaveHorse}
-          onCancel={() => setShowAddForm(false)} 
-        />
+        <AddHorseForm onCancel={() => setShowAddForm(false)} />
       </div>
     );
   }
@@ -127,10 +114,7 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
 
       {/* View Controls */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <HorseViewSelector 
-          currentView={viewMode} 
-          onViewChange={setViewMode} 
-        />
+        <HorseViewSelector viewMode={viewMode} onViewModeChange={setViewMode} />
         
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm">
