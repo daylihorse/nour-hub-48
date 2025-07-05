@@ -1,186 +1,428 @@
-
 import { useState, useEffect } from "react";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Plus, Download, Upload, Filter } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
-import { HorseFormData } from "@/types/horse-unified";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Plus, Search, Filter, ArrowLeft, User } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import EnglishAddHorseForm from "./EnglishAddHorseForm";
+import HorseDetailsView from "./HorseDetailsView";
+import HorseViewSelector, { ViewMode, GridSize } from "./components/HorseViewSelector";
 import HorseGridView from "./components/HorseGridView";
 import HorseListView from "./components/HorseListView";
 import HorseTableView from "./components/HorseTableView";
-import HorseViewSelector from "./components/HorseViewSelector";
-import AddHorseForm from "./AddHorseForm";
-import HorseDetailsView from "./details/HorseDetailsView";
+import { HorseFormData } from "@/types/horse-unified";
+import { useToast } from "@/hooks/use-toast";
+import { getClientById } from "@/data/clients";
 
 interface HorseManagementProps {
   clientId?: string | null;
 }
 
 const HorseManagement = ({ clientId }: HorseManagementProps) => {
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'table'>('grid');
-  const [showAddForm, setShowAddForm] = useState(false);
-  const navigate = useNavigate();
   const location = useLocation();
+  const navigate = useNavigate();
   const { toast } = useToast();
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [showHorseDetails, setShowHorseDetails] = useState(false);
+  const [showHorseEdit, setShowHorseEdit] = useState(false);
+  const [selectedHorse, setSelectedHorse] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [gridSize, setGridSize] = useState<GridSize>(3);
 
-  // Check if we're in a sub-route (horse details)
-  const isDetailsView = location.pathname.includes('/horses/') && location.pathname.split('/').length > 2;
-
+  // Handle navigation state from breeding management
   useEffect(() => {
-    if (clientId) {
-      console.log(`Filtering horses for client: ${clientId}`);
-      toast({
-        title: "Client Filter Applied",
-        description: `Showing horses for selected client`,
-      });
+    if (location.state?.showAddForm) {
+      setShowAddForm(true);
     }
-  }, [clientId, toast]);
+  }, [location.state]);
+
+  console.log("HorseManagement rendering, showAddForm:", showAddForm, "clientId:", clientId);
+
+  // Enhanced mock data for existing horses with owner information and horse images
+  const allHorses = [
+    {
+      id: "1",
+      name: "Thunder",
+      breed: "Arabian",
+      gender: "stallion",
+      owner: "John Smith",
+      ownerId: "client-001",
+      status: "active",
+      age: 8,
+      registrationNumber: "AR-001",
+      image: "/api/placeholder/200/200" // Placeholder horse image
+    },
+    {
+      id: "2", 
+      name: "Lightning",
+      breed: "Thoroughbred",
+      gender: "mare",
+      owner: "John Smith",
+      ownerId: "client-001",
+      status: "active",
+      age: 6,
+      registrationNumber: "TB-002",
+      image: "/api/placeholder/200/200" // Placeholder horse image
+    },
+    {
+      id: "3",
+      name: "Storm",
+      breed: "Quarter Horse",
+      gender: "gelding",
+      owner: "John Smith",
+      ownerId: "client-001",
+      status: "active",
+      age: 12,
+      registrationNumber: "QH-003",
+      image: "/api/placeholder/200/200" // Placeholder horse image
+    },
+    {
+      id: "4",
+      name: "Moonlight",
+      breed: "Arabian",
+      gender: "mare",
+      owner: "Sarah Williams", 
+      ownerId: "client-003",
+      status: "active",
+      age: 5,
+      registrationNumber: "AR-004",
+      image: "/api/placeholder/200/200" // Placeholder horse image
+    },
+    {
+      id: "5",
+      name: "Spirit",
+      breed: "Mustang",
+      gender: "stallion",
+      owner: "Sarah Williams",
+      ownerId: "client-003",
+      status: "active",
+      age: 7,
+      registrationNumber: "MS-005",
+      image: "/api/placeholder/200/200" // Placeholder horse image
+    },
+    {
+      id: "6",
+      name: "Starlight",
+      breed: "Arabian",
+      gender: "mare",
+      owner: "Lisa Martinez",
+      ownerId: "client-007",
+      status: "active",
+      age: 4,
+      registrationNumber: "AR-006",
+      image: "/api/placeholder/200/200" // Placeholder horse image
+    },
+    {
+      id: "7",
+      name: "Phoenix",
+      breed: "Thoroughbred",
+      gender: "stallion",
+      owner: "Lisa Martinez",
+      ownerId: "client-007",
+      status: "active",
+      age: 9,
+      registrationNumber: "TB-007",
+      image: "/api/placeholder/200/200" // Placeholder horse image
+    }
+  ];
+
+  // Filter horses based on clientId if provided
+  const horses = clientId 
+    ? allHorses.filter(horse => horse.ownerId === clientId)
+    : allHorses;
+
+  // Get client name from actual client data
+  const client = clientId ? getClientById(clientId) : null;
+  const clientName = client?.name || "Unknown Client";
+
+  const filteredHorses = horses.filter(horse =>
+    horse.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    horse.breed.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    horse.owner.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleSaveHorse = async (data: HorseFormData) => {
     try {
-      console.log("Saving horse:", data);
+      // Here you would typically save to a database
+      console.log("Saving horse data:", data);
+      
       toast({
-        title: "Success",
-        description: "Horse registered successfully!",
+        title: "Success!",
+        description: `${data.name} has been registered successfully and added to the breeding program.`,
       });
+      
       setShowAddForm(false);
     } catch (error) {
       console.error("Error saving horse:", error);
       toast({
         title: "Error",
-        description: "Failed to save horse. Please try again.",
+        description: "Failed to register horse. Please try again.",
         variant: "destructive",
       });
     }
   };
 
-  const handleViewHorse = (horseId: string) => {
-    navigate(`/horses/${horseId}`);
+  const handleCancelAdd = () => {
+    console.log("Canceling add horse form");
+    setShowAddForm(false);
   };
 
-  const handleEditHorse = (horseId: string) => {
-    console.log("Edit horse:", horseId);
+  const handleAddNewHorse = () => {
+    console.log("Add new horse button clicked");
+    setShowAddForm(true);
+  };
+
+  const handleBackToAllHorses = () => {
+    navigate("/dashboard/horses");
+  };
+
+  const handleViewDetails = (horse: any) => {
+    setSelectedHorse(horse);
+    setShowHorseDetails(true);
+  };
+
+  const handleEditHorse = (horse: any) => {
+    setSelectedHorse(horse);
+    setShowHorseEdit(true);
+  };
+
+  const handleBackToList = () => {
+    setShowHorseDetails(false);
+    setShowHorseEdit(false);
+    setSelectedHorse(null);
+  };
+
+  const handleSaveEdit = (data: HorseFormData) => {
+    console.log("Saving edited horse data:", data);
     toast({
-      title: "Edit Horse",
-      description: "Edit functionality coming soon!",
+      title: "Success!",
+      description: `${data.name} has been updated successfully.`,
     });
+    setShowHorseEdit(false);
+    setSelectedHorse(null);
   };
 
-  const handleDeleteHorse = (horseId: string) => {
-    console.log("Delete horse:", horseId);
-    toast({
-      title: "Delete Horse",
-      description: "Delete functionality coming soon!",
-      variant: "destructive",
-    });
+  // Convert horse data to HorseFormData format for editing
+  const convertHorseToFormData = (horse: any): HorseFormData => {
+    return {
+      name: horse.name || "",
+      arabicName: horse.arabicName || "",
+      breed: horse.breed || "",
+      gender: horse.gender || undefined,
+      ageClass: horse.ageClass || "",
+      adultMaleType: horse.adultMaleType || undefined,
+      castrationDate: horse.castrationDate || "",
+      isPregnant: horse.isPregnant || undefined,
+      pregnancyDuration: horse.pregnancyDuration || undefined,
+      color: horse.color || "",
+      height: horse.height || undefined,
+      weight: horse.weight || undefined,
+      birthDate: horse.birthDate || "",
+      ownerType: horse.ownerType || undefined,
+      ownerName: horse.owner || "",
+      ownerContact: horse.ownerContact || "",
+      registrationNumber: horse.registrationNumber || "",
+      passportNumber: horse.passportNumber || "",
+      microchipId: horse.microchipId || "",
+      sire: horse.sire || "",
+      dam: horse.dam || "",
+      bloodlineOrigin: horse.bloodlineOrigin || "",
+      healthStatus: horse.healthStatus || undefined,
+      vaccinationStatus: horse.vaccinationStatus || undefined,
+      lastVetCheckup: horse.lastVetCheckup || "",
+      medicalConditions: horse.medicalConditions || "",
+      allergies: horse.allergies || "",
+      trainingLevel: horse.trainingLevel || "",
+      disciplines: horse.disciplines || "",
+      competitionHistory: horse.competitionHistory || "",
+      achievements: horse.achievements || "",
+      stallNumber: horse.stallNumber || "",
+      feedingSchedule: horse.feedingSchedule || "",
+      exerciseRoutine: horse.exerciseRoutine || "",
+      specialNeeds: horse.specialNeeds || "",
+      insured: horse.insured || false,
+      insuranceProvider: horse.insuranceProvider || "",
+      insuranceValue: horse.insuranceValue || undefined,
+      purchasePrice: horse.purchasePrice || undefined,
+      marketValue: horse.marketValue || undefined,
+      images: horse.images || [],
+      documents: horse.documents || [],
+      status: horse.status || undefined,
+    };
   };
 
-  if (isDetailsView) {
-    return (
-      <Routes>
-        <Route path=":horseId" element={<HorseDetailsView />} />
-      </Routes>
-    );
-  }
+  // Render different views based on viewMode
+  const renderHorsesView = () => {
+    const viewProps = {
+      horses: filteredHorses,
+      onViewDetails: handleViewDetails,
+      onEdit: handleEditHorse,
+      clientId,
+    };
+
+    switch (viewMode) {
+      case "grid":
+        return <HorseGridView {...viewProps} gridSize={gridSize} />;
+      case "list":
+        return <HorseListView {...viewProps} />;
+      case "table":
+        return <HorseTableView {...viewProps} />;
+      default:
+        return <HorseGridView {...viewProps} gridSize={gridSize} />;
+    }
+  };
 
   if (showAddForm) {
+    console.log("Rendering EnglishAddHorseForm...");
     return (
-      <AddHorseForm
+      <EnglishAddHorseForm 
         onSave={handleSaveHorse}
-        onCancel={() => setShowAddForm(false)}
+        onCancel={handleCancelAdd}
       />
     );
   }
 
+  if (showHorseDetails && selectedHorse) {
+    return (
+      <HorseDetailsView
+        horse={selectedHorse}
+        onBack={handleBackToList}
+        onEdit={() => {
+          setShowHorseDetails(false);
+          setShowHorseEdit(true);
+        }}
+      />
+    );
+  }
+
+  if (showHorseEdit && selectedHorse) {
+    const editData = convertHorseToFormData(selectedHorse);
+    return (
+      <EnglishAddHorseForm
+        editData={editData}
+        onSave={handleSaveEdit}
+        onCancel={() => {
+          setShowHorseEdit(false);
+          setShowHorseDetails(true);
+        }}
+      />
+    );
+  }
+
+  console.log("Rendering horse list view...");
+
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      {/* Client Filter Notice */}
+      {clientId && (
+        <Card className="border-blue-200 bg-blue-50">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                  <User className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-blue-900">Viewing horses for {clientName}</h3>
+                  <p className="text-sm text-blue-700">
+                    Showing {filteredHorses.length} horse{filteredHorses.length !== 1 ? 's' : ''} owned by this client
+                  </p>
+                </div>
+              </div>
+              <Button 
+                variant="outline" 
+                onClick={handleBackToAllHorses}
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                View All Horses
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Horse Management</h1>
+          <h2 className="text-2xl font-bold">
+            {clientId ? `${clientName}'s Horses` : "Horse Registry"}
+          </h2>
           <p className="text-muted-foreground">
-            Manage your stable's horses and their information
+            {clientId ? `Manage horses owned by ${clientName}` : "Manage all horses in the stable"}
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm">
-            <Upload className="mr-2 h-4 w-4" />
-            Import
-          </Button>
-          <Button variant="outline" size="sm">
-            <Download className="mr-2 h-4 w-4" />
-            Export
-          </Button>
-          <Button onClick={() => setShowAddForm(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Horse
+        <div className="flex items-center gap-3">
+          <HorseViewSelector 
+            currentView={viewMode} 
+            onViewChange={setViewMode}
+            gridSize={gridSize}
+            onGridSizeChange={setGridSize}
+          />
+          <Button 
+            onClick={handleAddNewHorse}
+            className="flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Add New Horse
           </Button>
         </div>
       </div>
 
-      <Tabs defaultValue="all" className="space-y-6">
-        <div className="flex justify-between items-center">
-          <TabsList>
-            <TabsTrigger value="all">All Horses</TabsTrigger>
-            <TabsTrigger value="stallions">Stallions</TabsTrigger>
-            <TabsTrigger value="mares">Mares</TabsTrigger>
-            <TabsTrigger value="foals">Foals</TabsTrigger>
-          </TabsList>
-          
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm">
-              <Filter className="mr-2 h-4 w-4" />
-              Filter
+      {/* Search and Filters */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <Input
+                  placeholder="Search horses by name, breed, or owner..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            <Button variant="outline" className="flex items-center gap-2">
+              <Filter className="h-4 w-4" />
+              Filters
             </Button>
-            <HorseViewSelector 
-              currentView={viewMode} 
-              onViewChange={setViewMode} 
-            />
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        <TabsContent value="all" className="space-y-6">
-          {viewMode === 'grid' && (
-            <HorseGridView
-              onViewHorse={handleViewHorse}
-              onEditHorse={handleEditHorse}
-              onDeleteHorse={handleDeleteHorse}
-            />
-          )}
-          {viewMode === 'list' && (
-            <HorseListView
-              onViewHorse={handleViewHorse}
-              onEditHorse={handleEditHorse}
-              onDeleteHorse={handleDeleteHorse}
-            />
-          )}
-          {viewMode === 'table' && (
-            <HorseTableView
-              onViewHorse={handleViewHorse}
-              onEditHorse={handleEditHorse}
-              onDeleteHorse={handleDeleteHorse}
-            />
-          )}
-        </TabsContent>
-
-        <TabsContent value="stallions" className="space-y-6">
-          <div className="text-center py-12">
-            <p className="text-gray-500">Stallion management coming soon!</p>
+      {/* Results Summary */}
+      {filteredHorses.length === 0 ? (
+        <Card>
+          <CardContent className="p-8 text-center">
+            <div className="text-muted-foreground">
+              {searchQuery ? (
+                <p>No horses found matching "{searchQuery}"</p>
+              ) : clientId ? (
+                <p>{clientName} doesn't have any horses registered yet.</p>
+              ) : (
+                <p>No horses found.</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <>
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              Showing {filteredHorses.length} of {horses.length} horses
+              {searchQuery && ` matching "${searchQuery}"`}
+            </p>
           </div>
-        </TabsContent>
 
-        <TabsContent value="mares" className="space-y-6">
-          <div className="text-center py-12">
-            <p className="text-gray-500">Mare management coming soon!</p>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="foals" className="space-y-6">
-          <div className="text-center py-12">
-            <p className="text-gray-500">Foal management coming soon!</p>
-          </div>
-        </TabsContent>
-      </Tabs>
+          {/* Dynamic Horse View */}
+          {renderHorsesView()}
+        </>
+      )}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 
 import { useFormContext } from "react-hook-form";
-import { FormStage } from "@/types/horse-unified";
+import { FormStage } from "@/types/horse";
 import { stageValidationSchemas } from "@/components/horses/form-schema/EnhancedHorseFormSchema";
 
 export const useStageValidation = () => {

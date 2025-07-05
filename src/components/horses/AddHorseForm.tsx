@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { HorseFormData } from "@/types/horse-unified";
+import { HorseFormData } from "@/types/horse";
 import { horseFormSchema } from "./form-schema/HorseFormSchema";
 import { useToast } from "@/hooks/use-toast";
 import { formStages } from "./config/formStages";
@@ -27,14 +27,15 @@ const AddHorseForm = ({ onSave, onCancel }: AddHorseFormProps) => {
     defaultValues: {
       name: "",
       breed: "",
-      gender: "mare",
-      birthDate: new Date().toISOString().split('T')[0],
+      gender: "female",
+      birthDate: new Date(),
       color: "",
       ownerType: "individual",
       ownerName: "",
       ownerContact: "",
       healthStatus: "healthy",
       vaccinationStatus: "up_to_date",
+      trainingLevel: "untrained",
       insured: false,
       images: [],
       documents: [],

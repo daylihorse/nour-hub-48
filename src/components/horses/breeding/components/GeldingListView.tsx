@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Edit, Stethoscope, FileText } from "lucide-react";
-import { Horse } from "@/types/horse-unified";
+import { Horse } from "@/types/horse";
 
 interface GeldingListViewProps {
   geldings: Horse[];
@@ -31,7 +31,7 @@ const GeldingListView = ({
     }
   };
 
-  const calculateAge = (birthDate: string) => {
+  const calculateAge = (birthDate: Date) => {
     const today = new Date();
     const birth = new Date(birthDate);
     const age = today.getFullYear() - birth.getFullYear();

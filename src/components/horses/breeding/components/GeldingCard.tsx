@@ -1,10 +1,9 @@
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Edit, Calendar, Stethoscope } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Horse } from "@/types/horse-unified";
+import { Badge } from "@/components/ui/badge";
+import { Edit, Stethoscope, FileText, Calendar } from "lucide-react";
+import { Horse } from "@/types/horse";
 
 interface GeldingCardProps {
   gelding: Horse;
@@ -13,33 +12,33 @@ interface GeldingCardProps {
   onViewMedicalRecords: () => void;
 }
 
-const GeldingCard = ({ gelding, onEdit, onScheduleCheckup, onViewMedicalRecords }: GeldingCardProps) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'inactive': return 'bg-gray-100 text-gray-800';
-      case 'transferred': return 'bg-blue-100 text-blue-800';
-      case 'deceased': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
+const GeldingCard = ({
+  gelding,
+  onEdit,
+  onScheduleCheckup,
+  onViewMedicalRecords,
+}: GeldingCardProps) => {
   const getHealthStatusColor = (status: string) => {
     switch (status) {
-      case 'healthy': return 'bg-green-100 text-green-800';
-      case 'under_treatment': return 'bg-yellow-100 text-yellow-800';
-      case 'quarantine': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "healthy":
+        return "bg-green-100 text-green-800";
+      case "under_treatment":
+        return "bg-yellow-100 text-yellow-800";
+      case "quarantine":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
-  const calculateAge = (birthDate: string) => {
-    const birth = new Date(birthDate);
+  const calculateAge = (birthDate: Date) => {
     const today = new Date();
-    let age = today.getFullYear() - birth.getFullYear();
+    const birth = new Date(birthDate);
+    const age = today.getFullYear() - birth.getFullYear();
     const monthDiff = today.getMonth() - birth.getMonth();
+    
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      age--;
+      return age - 1;
     }
     return age;
   };
@@ -49,70 +48,72 @@ const GeldingCard = ({ gelding, onEdit, onScheduleCheckup, onViewMedicalRecords 
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start">
           <div>
-            <CardTitle className="text-lg">{gelding.name}</CardTitle>
+            <h3 className="font-semibold text-lg text-gray-900">{gelding.name}</h3>
             {gelding.arabicName && (
-              <p className="text-sm text-muted-foreground">{gelding.arabicName}</p>
+              <p className="text-sm text-gray-600 font-arabic">{gelding.arabicName}</p>
             )}
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={onEdit}>
-                <Edit className="mr-2 h-4 w-4" />
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={onScheduleCheckup}>
-                <Calendar className="mr-2 h-4 w-4" />
-                Schedule Checkup
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={onViewMedicalRecords}>
-                <Stethoscope className="mr-2 h-4 w-4" />
-                Medical Records
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Badge className={getHealthStatusColor(gelding.healthStatus)}>
+            {gelding.healthStatus.replace('_', ' ')}
+          </Badge>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
-          <div className="grid grid-cols-2 gap-2 text-sm">
-            <div>
-              <span className="font-medium">Age:</span> {calculateAge(gelding.birthDate)} years
-            </div>
-            <div>
-              <span className="font-medium">Breed:</span> {gelding.breed}
-            </div>
-            <div>
-              <span className="font-medium">Color:</span> {gelding.color}
-            </div>
-            <div>
-              <span className="font-medium">Owner:</span> {gelding.ownerName}
-            </div>
+      
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-2 gap-2 text-sm">
+          <div>
+            <span className="text-gray-500">Breed:</span>
+            <p className="font-medium">{gelding.breed}</p>
           </div>
-          
-          <div className="text-sm">
-            <span className="font-medium">Location:</span> {gelding.currentLocation || 'Not specified'}
-            {gelding.stallNumber && <span> - Stall {gelding.stallNumber}</span>}
+          <div>
+            <span className="text-gray-500">Age:</span>
+            <p className="font-medium">{calculateAge(gelding.birthDate)} years</p>
           </div>
+          <div>
+            <span className="text-gray-500">Color:</span>
+            <p className="font-medium">{gelding.color}</p>
+          </div>
+          <div>
+            <span className="text-gray-500">Owner:</span>
+            <p className="font-medium text-xs">{gelding.ownerName}</p>
+          </div>
+        </div>
 
-          <div className="flex gap-2 flex-wrap">
-            <Badge className={getStatusColor(gelding.status)}>
-              {gelding.status}
-            </Badge>
-            <Badge className={getHealthStatusColor(gelding.healthStatus)}>
-              {gelding.healthStatus.replace('_', ' ')}
-            </Badge>
+        {gelding.insured && (
+          <div className="flex items-center justify-between p-2 bg-blue-50 rounded">
+            <span className="text-xs text-blue-700">Insured</span>
+            <span className="text-xs font-medium text-blue-800">
+              {gelding.insuranceValue ? `$${gelding.insuranceValue.toLocaleString()}` : 'N/A'}
+            </span>
           </div>
+        )}
 
-          {gelding.registrationNumber && (
-            <div className="text-xs text-muted-foreground">
-              Reg: {gelding.registrationNumber}
-            </div>
-          )}
+        <div className="flex gap-2 pt-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onEdit}
+            className="flex-1"
+          >
+            <Edit className="h-3 w-3 mr-1" />
+            Edit
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onScheduleCheckup}
+            className="flex-1"
+          >
+            <Stethoscope className="h-3 w-3 mr-1" />
+            Checkup
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onViewMedicalRecords}
+          >
+            <FileText className="h-3 w-3" />
+          </Button>
         </div>
       </CardContent>
     </Card>
