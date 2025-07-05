@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams, Routes, Route } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import HorsesDashboard from "@/components/horses/HorsesDashboard";
 import HorseManagement from "@/components/horses/HorseManagement";
@@ -16,6 +16,12 @@ const HorsesDepartment = () => {
   // Extract clientId from URL parameters
   const clientId = searchParams.get('clientId');
 
+  // Check if we're in horse details view
+  const isHorseDetailsView = location.pathname.includes('/horses/') && 
+                            location.pathname.split('/').length > 2 &&
+                            !location.pathname.includes('/breeding') &&
+                            !location.pathname.includes('/pedigree');
+
   // Handle navigation state from other components
   useEffect(() => {
     if (location.state) {
@@ -29,10 +35,15 @@ const HorsesDepartment = () => {
     }
     
     // If clientId is provided, automatically switch to horses tab to show filtered horses
-    if (clientId) {
+    if (clientId && !isHorseDetailsView) {
       setActiveTab("horses");
     }
-  }, [location.state, clientId]);
+
+    // Set active tab based on current route
+    if (location.pathname.startsWith('/horses') && !isHorseDetailsView) {
+      setActiveTab("horses");
+    }
+  }, [location.state, clientId, isHorseDetailsView, location.pathname]);
 
   const handleNavigateToBreeding = (tab: string) => {
     setActiveTab("breeding");
@@ -47,6 +58,21 @@ const HorsesDepartment = () => {
     };
     setBreedingSubTab(tabMapping[tab] || "dashboard");
   };
+
+  // If we're in horse details view, render the horse management with routing
+  if (isHorseDetailsView) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold">Horses Department</h1>
+          <p className="text-muted-foreground">Comprehensive horse management and monitoring system</p>
+        </div>
+        <Routes>
+          <Route path="horses/*" element={<HorseManagement clientId={clientId} />} />
+        </Routes>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
