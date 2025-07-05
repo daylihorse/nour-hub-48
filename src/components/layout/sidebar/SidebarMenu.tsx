@@ -18,25 +18,25 @@ const SidebarMenu = () => {
   // Filter menu items based on tenant features
   const filteredMenuItems = menuItems.filter(item => {
     const featureMap: Record<string, string> = {
-      '/dashboard/horses': 'horses',
-      '/dashboard/laboratory': 'laboratory',
-      '/dashboard/clinic': 'clinic',
-      '/dashboard/pharmacy': 'pharmacy',
-      '/dashboard/finance': 'finance',
-      '/dashboard/hr': 'hr',
-      '/dashboard/inventory': 'inventory',
-      '/dashboard/marketplace': 'marketplace',
-      '/dashboard/training': 'training',
-      '/dashboard/rooms': 'rooms',
-      '/dashboard/maintenance': 'maintenance',
-      '/dashboard/messages': 'messages',
+      '/horses': 'horses',
+      '/laboratory': 'laboratory',
+      '/clinic': 'clinic',
+      '/pharmacy': 'pharmacy',
+      '/finance': 'finance',
+      '/hr': 'hr',
+      '/inventory': 'inventory',
+      '/marketplace': 'marketplace',
+      '/training': 'training',
+      '/rooms': 'rooms',
+      '/maintenance': 'maintenance',
+      '/messages': 'messages',
     };
 
     const feature = featureMap[item.url];
     // Special case for dashboard - always show
-    if (item.url === '/dashboard') return true;
+    if (item.url === '/') return true;
     // Special case for clients - always show
-    if (item.url === '/dashboard/clients') return true;
+    if (item.url === '/clients') return true;
     
     // If no feature mapping exists, or the feature is enabled, show the item
     return !feature || isFeatureEnabled(feature);

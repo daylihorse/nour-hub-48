@@ -29,92 +29,92 @@ export interface MenuItem {
 export const menuItems: MenuItem[] = [
   { 
     title: "Overview", 
-    url: "/dashboard", 
+    url: "/", 
     icon: BarChart3 
   },
   { 
     title: "Horses Department", 
-    url: "/dashboard/horses", 
+    url: "/horses", 
     icon: Rabbit 
   },
   { 
     title: "Paddock Management", 
-    url: "/dashboard/paddocks", 
+    url: "/paddocks", 
     icon: MapPin 
   },
   { 
     title: "Clients", 
-    url: "/dashboard/clients", 
+    url: "/clients", 
     icon: UserCheck 
   },
   { 
     title: "Laboratory", 
-    url: "/dashboard/laboratory", 
+    url: "/laboratory", 
     icon: FlaskRound 
   },
   { 
     title: "Clinic", 
-    url: "/dashboard/clinic", 
+    url: "/clinic", 
     icon: Hospital 
   },
   { 
     title: "Pharmacy", 
-    url: "/dashboard/pharmacy", 
+    url: "/pharmacy", 
     icon: Pill 
   },
   { 
     title: "Finance", 
-    url: "/dashboard/finance", 
+    url: "/finance", 
     icon: DollarSign 
   },
   { 
     title: "HR Department", 
-    url: "/dashboard/hr", 
+    url: "/hr", 
     icon: Users 
   },
   { 
     title: "Inventory & Warehouse", 
-    url: "/dashboard/inventory", 
+    url: "/inventory", 
     icon: Package 
   },
   { 
     title: "Marketplace", 
-    url: "/dashboard/marketplace", 
+    url: "/marketplace", 
     icon: Store 
   },
   { 
     title: "Horse Movements", 
-    url: "/dashboard/movements", 
+    url: "/movements", 
     icon: ArrowRightLeft 
   },
   { 
     title: "Training Center", 
-    url: "/dashboard/training", 
+    url: "/training", 
     icon: Dumbbell 
   },
   { 
     title: "Riding Reservations", 
-    url: "/dashboard/academy", 
+    url: "/academy", 
     icon: Rabbit 
   },
   { 
     title: "Stable Rooms", 
-    url: "/dashboard/rooms", 
+    url: "/rooms", 
     icon: Warehouse 
   },
   { 
     title: "Maintenance", 
-    url: "/dashboard/maintenance", 
+    url: "/maintenance", 
     icon: Wrench 
   },
   { 
     title: "Messages", 
-    url: "/dashboard/messages", 
+    url: "/messages", 
     icon: MessageSquare 
   },
   {
     title: "Settings",
-    url: "/dashboard/settings",
+    url: "/settings",
     icon: Settings
   }
 ];
