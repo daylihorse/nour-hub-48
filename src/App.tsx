@@ -6,16 +6,13 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { ThemeProvider } from "next-themes";
 import { EnhancedAuthProvider } from "./components/auth/EnhancedAuthProvider";
 import EnhancedAuthGuard from "./components/auth/EnhancedAuthGuard";
-import MainLayout from "./components/layout/MainLayout";
-import Dashboard from "./pages/Dashboard";
+import DashboardLayout from "./components/layout/DashboardLayout";
 import HorsesDepartment from "./pages/dashboard/HorsesDepartment";
-import ClientManagement from "./pages/dashboard/ClientManagement";
 import ClientProfile from "./pages/dashboard/ClientProfile";
-import InventoryDepartment from "./pages/dashboard/InventoryDepartment";
-import HRDepartment from "./pages/dashboard/HRDepartment";
 import FinanceDepartment from "./pages/dashboard/FinanceDepartment";
 import ClinicDepartment from "./pages/dashboard/ClinicDepartment";
 import LaboratoryDepartment from "./pages/dashboard/LaboratoryDepartment";
+import HRDepartment from "./pages/dashboard/HRDepartment";
 import Login from "./pages/Login";
 import "./App.css";
 
@@ -34,20 +31,18 @@ function App() {
                   path="/*"
                   element={
                     <EnhancedAuthGuard>
-                      <MainLayout>
+                      <DashboardLayout>
                         <Routes>
-                          <Route path="/" element={<Dashboard />} />
+                          <Route path="/" element={<HorsesDepartment />} />
                           <Route path="/horses/*" element={<HorsesDepartment />} />
-                          <Route path="/clients" element={<ClientManagement />} />
                           <Route path="/clients/:clientId" element={<ClientProfile />} />
-                          <Route path="/inventory" element={<InventoryDepartment />} />
                           <Route path="/hr" element={<HRDepartment />} />
                           <Route path="/finance" element={<FinanceDepartment />} />
                           <Route path="/clinic" element={<ClinicDepartment />} />
                           <Route path="/laboratory" element={<LaboratoryDepartment />} />
                           <Route path="*" element={<Navigate to="/" replace />} />
                         </Routes>
-                      </MainLayout>
+                      </DashboardLayout>
                     </EnhancedAuthGuard>
                   }
                 />

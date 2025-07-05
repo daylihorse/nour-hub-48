@@ -1,7 +1,7 @@
 
 import GeldingCard from "./GeldingCard";
 import { GridSize } from "./GridSizeSelector";
-import { Horse } from "@/types/horse";
+import { Horse } from "@/types/horse-unified";
 
 interface GeldingGridViewProps {
   geldings: Horse[];

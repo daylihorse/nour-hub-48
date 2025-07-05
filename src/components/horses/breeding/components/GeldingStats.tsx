@@ -8,8 +8,8 @@ const GeldingStats = () => {
   
   const totalGeldings = geldings.length;
   const activeGeldings = geldings.filter(g => g.status === 'active').length;
-  const healthyGeldings = geldings.filter(g => g.health_status === 'healthy').length;
-  const underTreatment = geldings.filter(g => g.health_status === 'under_treatment').length;
+  const healthyGeldings = geldings.filter(g => g.healthStatus === 'healthy').length;
+  const underTreatment = geldings.filter(g => g.healthStatus === 'under_treatment').length;
   
   const healthPercentage = totalGeldings > 0 ? Math.round((healthyGeldings / totalGeldings) * 100) : 0;
 

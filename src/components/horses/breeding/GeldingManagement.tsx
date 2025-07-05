@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useGeldings } from "@/hooks/useGeldings";
 import { useGeldingDialogs } from "./hooks/useGeldingDialogs";
-import { Horse } from "@/types/horse";
+import { Horse } from "@/types/horse-unified";
 import RecordsProvider from "./records/RecordsProvider";
 import GeldingManagementTabs from "./components/GeldingManagementTabs";
 import GeldingManagementContent from "./components/GeldingManagementContent";
@@ -31,7 +31,7 @@ const GeldingManagement = () => {
   const filteredGeldings = geldings.filter(gelding => 
     gelding.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     gelding.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    gelding.owner_name.toLowerCase().includes(searchTerm.toLowerCase())
+    gelding.ownerName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleEditGelding = (geldingId: string) => {
@@ -39,7 +39,7 @@ const GeldingManagement = () => {
     if (gelding) {
       setEditDialog({
         isOpen: true,
-        gelding: gelding as Horse,
+        gelding: gelding,
       });
     }
   };
@@ -95,7 +95,7 @@ const GeldingManagement = () => {
     <GeldingManagementContent
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
-      filteredGeldings={filteredGeldings as Horse[]}
+      filteredGeldings={filteredGeldings}
       viewMode={viewMode}
       setViewMode={setViewMode}
       gridSize={gridSize}
