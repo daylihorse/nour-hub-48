@@ -24,9 +24,10 @@ const EnhancedGenderAgeClassSection = () => {
   // Calculate age and classification rules when gender or birth date changes
   useEffect(() => {
     if (selectedGender && birthDate) {
-      const age = calculateAge(birthDate);
+      const birthDateString = birthDate instanceof Date ? birthDate.toISOString().split('T')[0] : birthDate;
+      const age = calculateAge(birthDateString);
       const rules = getClassificationRules(age, selectedGender);
-      const autoClassification = autoClassifyHorse(birthDate, selectedGender);
+      const autoClassification = autoClassifyHorse(birthDateString, selectedGender);
       
       // Auto-set age class for horses under 3 years
       if (rules.isUnder3Years && rules.availableClasses.length === 1) {
@@ -46,7 +47,8 @@ const EnhancedGenderAgeClassSection = () => {
 
   const getAge = () => {
     if (!birthDate) return null;
-    return calculateAge(birthDate);
+    const birthDateString = birthDate instanceof Date ? birthDate.toISOString().split('T')[0] : birthDate;
+    return calculateAge(birthDateString);
   };
 
   const getRules = () => {
@@ -98,7 +100,7 @@ const EnhancedGenderAgeClassSection = () => {
             <FormControl>
               <Input
                 type="date"
-                value={field.value || ''}
+                value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : field.value || ''}
                 onChange={field.onChange}
               />
             </FormControl>
