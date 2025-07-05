@@ -1,4 +1,8 @@
-import { ScrollableTabs, ScrollableTabsList, ScrollableTabsTrigger, ScrollableTabsContent } from "@/components/ui/scrollable-tabs";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useRef, useState, useEffect } from "react";
 import MareBasicInfoTable from "../tables/MareBasicInfoTable";
 import MareBreedingHistoryTable from "../tables/MareBreedingHistoryTable";
 import MarePregnancyTable from "../tables/MarePregnancyTable";
@@ -27,136 +31,204 @@ const MareDetailTabs = ({
   onViewModeChange, 
   onActionClick 
 }: MareDetailTabsProps) => {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(false);
+
+  const checkScrollButtons = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setShowLeftArrow(scrollLeft > 0);
+      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 1);
+    }
+  };
+
+  useEffect(() => {
+    checkScrollButtons();
+    const handleResize = () => checkScrollButtons();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: -200, behavior: "smooth" });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: 200, behavior: "smooth" });
+    }
+  };
+
   return (
-    <ScrollableTabs value={activeTab} onValueChange={onActiveTabChange} className="w-full">
-      <ScrollableTabsList className="bg-brown-50 p-2 h-16 border-2 border-brown-300 shadow-brown-lg">
-        <ScrollableTabsTrigger 
-          value="basic-info"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
-        >
-          Basic Info
-        </ScrollableTabsTrigger>
-        <ScrollableTabsTrigger 
-          value="breeding-history"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
-        >
-          Breeding History
-        </ScrollableTabsTrigger>
-        <ScrollableTabsTrigger 
-          value="pregnancy"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
-        >
-          Pregnancy
-        </ScrollableTabsTrigger>
-        <ScrollableTabsTrigger 
-          value="foaling"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
-        >
-          Foaling History
-        </ScrollableTabsTrigger>
-        <ScrollableTabsTrigger 
-          value="frozen-embryo"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
-        >
-          Frozen Embryos
-        </ScrollableTabsTrigger>
-        <ScrollableTabsTrigger 
-          value="health"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
-        >
-          Health Records
-        </ScrollableTabsTrigger>
-        <ScrollableTabsTrigger 
-          value="heat-cycle"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
-        >
-          Heat Cycles
-        </ScrollableTabsTrigger>
-        <ScrollableTabsTrigger 
-          value="training"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
-        >
-          Training
-        </ScrollableTabsTrigger>
-        <ScrollableTabsTrigger 
-          value="health-extended"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
-        >
-          Medical History
-        </ScrollableTabsTrigger>
-        <ScrollableTabsTrigger 
-          value="performance"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
-        >
-          Performance
-        </ScrollableTabsTrigger>
-      </ScrollableTabsList>
+    <Tabs value={activeTab} onValueChange={onActiveTabChange} className="w-full">
+      <div className="relative">
+        {/* Left Arrow */}
+        {showLeftArrow && (
+          <Button
+            variant="outline"
+            size="icon"
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 bg-white shadow-md border hover:bg-gray-50"
+            onClick={scrollLeft}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+        )}
 
-      <ScrollableTabsContent value="basic-info">
+        {/* Scrollable Tabs Container */}
+        <div
+          ref={scrollContainerRef}
+          className="overflow-x-auto scrollbar-hide scroll-smooth"
+          onScroll={checkScrollButtons}
+          style={{
+            paddingLeft: showLeftArrow ? '40px' : '0',
+            paddingRight: showRightArrow ? '40px' : '0'
+          }}
+        >
+          <TabsList className="inline-flex h-12 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground min-w-max">
+            <TabsTrigger 
+              value="basic-info"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+            >
+              Basic Info
+            </TabsTrigger>
+            <TabsTrigger 
+              value="breeding-history"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+            >
+              Breeding History
+            </TabsTrigger>
+            <TabsTrigger 
+              value="pregnancy"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+            >
+              Pregnancy
+            </TabsTrigger>
+            <TabsTrigger 
+              value="foaling"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+            >
+              Foaling History
+            </TabsTrigger>
+            <TabsTrigger 
+              value="frozen-embryo"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+            >
+              Frozen Embryos
+            </TabsTrigger>
+            <TabsTrigger 
+              value="health"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+            >
+              Health Records
+            </TabsTrigger>
+            <TabsTrigger 
+              value="heat-cycle"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+            >
+              Heat Cycles
+            </TabsTrigger>
+            <TabsTrigger 
+              value="training"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+            >
+              Training
+            </TabsTrigger>
+            <TabsTrigger 
+              value="health-extended"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+            >
+              Medical History
+            </TabsTrigger>
+            <TabsTrigger 
+              value="performance"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+            >
+              Performance
+            </TabsTrigger>
+          </TabsList>
+        </div>
+
+        {/* Right Arrow */}
+        {showRightArrow && (
+          <Button
+            variant="outline"
+            size="icon"
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 h-8 w-8 bg-white shadow-md border hover:bg-gray-50"
+            onClick={scrollRight}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+
+      <TabsContent value="basic-info">
         <MareBasicInfoTable mareId={mareId} viewMode={viewMode} onViewModeChange={onViewModeChange} />
-      </ScrollableTabsContent>
+      </TabsContent>
 
-      <ScrollableTabsContent value="breeding-history">
+      <TabsContent value="breeding-history">
         <MareBreedingHistoryTable 
           mareId={mareId} 
           viewMode={viewMode} 
           onViewModeChange={onViewModeChange}
           onActionClick={onActionClick}
         />
-      </ScrollableTabsContent>
+      </TabsContent>
 
-      <ScrollableTabsContent value="pregnancy">
+      <TabsContent value="pregnancy">
         <MarePregnancyTable 
           mareId={mareId} 
           viewMode={viewMode} 
           onViewModeChange={onViewModeChange}
           onActionClick={onActionClick}
         />
-      </ScrollableTabsContent>
+      </TabsContent>
 
-      <ScrollableTabsContent value="foaling">
+      <TabsContent value="foaling">
         <MareFoalingHistoryTable 
           mareId={mareId} 
           viewMode={viewMode} 
           onViewModeChange={onViewModeChange}
           onActionClick={onActionClick}
         />
-      </ScrollableTabsContent>
+      </TabsContent>
 
-      <ScrollableTabsContent value="frozen-embryo">
+      <TabsContent value="frozen-embryo">
         <MareFrozenEmbryoInventoryTab mareId={mareId} />
-      </ScrollableTabsContent>
+      </TabsContent>
 
-      <ScrollableTabsContent value="health">
+      <TabsContent value="health">
         <MareHealthRecordsTable 
           mareId={mareId} 
           viewMode={viewMode} 
           onViewModeChange={onViewModeChange}
           onActionClick={onActionClick}
         />
-      </ScrollableTabsContent>
+      </TabsContent>
 
-      <ScrollableTabsContent value="heat-cycle">
+      <TabsContent value="heat-cycle">
         <MareHeatCycleTable 
           mareId={mareId} 
           viewMode={viewMode} 
           onViewModeChange={onViewModeChange}
           onActionClick={onActionClick}
         />
-      </ScrollableTabsContent>
+      </TabsContent>
 
-      <ScrollableTabsContent value="training">
+      <TabsContent value="training">
         <TrainingRecords horseId={mareId} />
-      </ScrollableTabsContent>
+      </TabsContent>
 
-      <ScrollableTabsContent value="health-extended">
+      <TabsContent value="health-extended">
         <HealthRecords horseId={mareId} />
-      </ScrollableTabsContent>
+      </TabsContent>
 
-      <ScrollableTabsContent value="performance">
+      <TabsContent value="performance">
         <PerformanceRecords horseId={mareId} />
-      </ScrollableTabsContent>
-    </ScrollableTabs>
+      </TabsContent>
+    </Tabs>
   );
 };
 
