@@ -1,4 +1,3 @@
-
 import { ScrollableTabs, ScrollableTabsList, ScrollableTabsTrigger, ScrollableTabsContent } from "@/components/ui/scrollable-tabs";
 import MareBasicInfoTable from "../tables/MareBasicInfoTable";
 import MareBreedingHistoryTable from "../tables/MareBreedingHistoryTable";
@@ -30,64 +29,64 @@ const MareDetailTabs = ({
 }: MareDetailTabsProps) => {
   return (
     <ScrollableTabs value={activeTab} onValueChange={onActiveTabChange} className="w-full">
-      <ScrollableTabsList className="bg-brown-50 p-1 h-12 border border-brown-200">
+      <ScrollableTabsList className="bg-brown-50 p-2 h-16 border-2 border-brown-300 shadow-brown-lg">
         <ScrollableTabsTrigger 
           value="basic-info"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-brown-200 font-medium transition-all"
+          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
         >
           Basic Info
         </ScrollableTabsTrigger>
         <ScrollableTabsTrigger 
           value="breeding-history"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-brown-200 font-medium transition-all"
+          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
         >
           Breeding History
         </ScrollableTabsTrigger>
         <ScrollableTabsTrigger 
           value="pregnancy"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-brown-200 font-medium transition-all"
+          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
         >
           Pregnancy
         </ScrollableTabsTrigger>
         <ScrollableTabsTrigger 
           value="foaling"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-brown-200 font-medium transition-all"
+          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
         >
           Foaling History
         </ScrollableTabsTrigger>
         <ScrollableTabsTrigger 
           value="frozen-embryo"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-brown-200 font-medium transition-all"
+          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
         >
           Frozen Embryos
         </ScrollableTabsTrigger>
         <ScrollableTabsTrigger 
           value="health"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-brown-200 font-medium transition-all"
+          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
         >
           Health Records
         </ScrollableTabsTrigger>
         <ScrollableTabsTrigger 
           value="heat-cycle"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-brown-200 font-medium transition-all"
+          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
         >
           Heat Cycles
         </ScrollableTabsTrigger>
         <ScrollableTabsTrigger 
           value="training"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-brown-200 font-medium transition-all"
+          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
         >
           Training
         </ScrollableTabsTrigger>
         <ScrollableTabsTrigger 
           value="health-extended"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-brown-200 font-medium transition-all"
+          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
         >
           Medical History
         </ScrollableTabsTrigger>
         <ScrollableTabsTrigger 
           value="performance"
-          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-brown-200 font-medium transition-all"
+          className="text-brown-700 data-[state=active]:bg-white data-[state=active]:text-brown-900 data-[state=active]:shadow-brown data-[state=active]:border-2 data-[state=active]:border-brown-300 font-bold text-base px-6 py-3 transition-all hover:bg-brown-100"
         >
           Performance
         </ScrollableTabsTrigger>

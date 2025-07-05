@@ -83,15 +83,15 @@ export const ScrollableTabsList: React.FC<ScrollableTabsListProps> = ({
 
   return (
     <div className="relative flex items-center w-full">
-      {/* Left Arrow */}
+      {/* Left Arrow - Enhanced Size */}
       {showLeftArrow && (
         <Button
           variant="outline"
           size="icon"
-          className="absolute left-0 z-10 h-8 w-8 bg-white shadow-md border-brown-200 hover:bg-brown-50"
+          className="absolute left-0 z-10 h-12 w-12 bg-white shadow-brown-lg border-2 border-brown-300 hover:bg-brown-50 hover:shadow-brown"
           onClick={scrollLeft}
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-6 w-6 text-brown-700" />
         </Button>
       )}
 
@@ -100,26 +100,26 @@ export const ScrollableTabsList: React.FC<ScrollableTabsListProps> = ({
         ref={scrollContainerRef}
         className={cn(
           "flex overflow-x-auto scroll-smooth scrollbar-hide",
-          showLeftArrow && "pl-10",
-          showRightArrow && "pr-10",
+          showLeftArrow && "pl-14",
+          showRightArrow && "pr-14",
           className
         )}
         onScroll={checkScrollButtons}
       >
-        <div className="flex bg-brown-50 p-1 rounded-md border border-brown-200 shadow-brown min-w-max">
+        <div className="flex bg-brown-50 p-2 rounded-lg border-2 border-brown-300 shadow-brown-lg min-w-max">
           {children}
         </div>
       </div>
 
-      {/* Right Arrow */}
+      {/* Right Arrow - Enhanced Size */}
       {showRightArrow && (
         <Button
           variant="outline"
           size="icon"
-          className="absolute right-0 z-10 h-8 w-8 bg-white shadow-md border-brown-200 hover:bg-brown-50"
+          className="absolute right-0 z-10 h-12 w-12 bg-white shadow-brown-lg border-2 border-brown-300 hover:bg-brown-50 hover:shadow-brown"
           onClick={scrollRight}
         >
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-6 w-6 text-brown-700" />
         </Button>
       )}
     </div>
@@ -143,10 +143,10 @@ export const ScrollableTabsTrigger: React.FC<ScrollableTabsTriggerProps> = ({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 min-w-max",
+        "inline-flex items-center justify-center whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 min-w-max",
         isSelected
-          ? "bg-white text-brown-900 shadow-sm border border-brown-200"
-          : "text-brown-600 hover:bg-white/80 hover:text-brown-900",
+          ? "bg-white text-brown-900 shadow-brown border-2 border-brown-300"
+          : "text-brown-600 hover:bg-white/80 hover:text-brown-900 hover:shadow-sm",
         className
       )}
       onClick={handleClick}
@@ -168,7 +168,7 @@ export const ScrollableTabsContent: React.FC<{
   }
 
   return (
-    <div className={cn("mt-6 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2", className)}>
+    <div className={cn("mt-8 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2", className)}>
       {children}
     </div>
   );
