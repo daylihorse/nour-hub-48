@@ -1,6 +1,6 @@
 
 import { Card } from "@/components/ui/card";
-import { HorseFormData } from "@/types/horse";
+import { HorseFormData } from "@/types/horse-unified";
 import SimpleHorseFormHeader from "./simple-form/SimpleHorseFormHeader";
 import SimpleHorseFormProvider from "./simple-form/SimpleHorseFormProvider";
 import SimpleHorseFormContent from "./simple-form/SimpleHorseFormContent";

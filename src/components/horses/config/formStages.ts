@@ -1,3 +1,77 @@
 
-// Re-export from consolidated configuration for backward compatibility
-export { formStages } from "./consolidatedFormStages";
+import { FormStage } from "@/types/horse-unified";
+
+export const formStages: FormStage[] = [
+  {
+    id: "basic",
+    title: "Basic Information",
+    description: "Horse identification and basic details",
+    fields: ["name", "arabicName", "breed", "gender", "birthDate", "color"],
+    isComplete: false,
+    isRequired: true,
+  },
+  {
+    id: "ownership",
+    title: "Ownership & Documentation",
+    description: "Owner information and registration details",
+    fields: ["ownerType", "ownerName", "ownerContact", "registrationNumber", "passportNumber", "microchipId"],
+    isComplete: false,
+    isRequired: true,
+  },
+  {
+    id: "pedigree",
+    title: "Pedigree",
+    description: "Bloodline and breeding information",
+    fields: ["sire", "dam", "bloodlineOrigin"],
+    isComplete: false,
+    isRequired: false,
+  },
+  {
+    id: "health",
+    title: "Health & Medical",
+    description: "Health status and medical information",
+    fields: ["healthStatus", "vaccinationStatus", "lastVetCheckup", "medicalConditions", "allergies"],
+    isComplete: false,
+    isRequired: true,
+  },
+  {
+    id: "training",
+    title: "Training & Performance",
+    description: "Training level and achievements",
+    fields: ["trainingLevel", "disciplines", "competitionHistory", "achievements"],
+    isComplete: false,
+    isRequired: false,
+  },
+  {
+    id: "stable",
+    title: "Stable Management",
+    description: "Location and care information",
+    fields: ["currentLocation", "stallNumber", "feedingSchedule", "exerciseRoutine", "specialNeeds"],
+    isComplete: false,
+    isRequired: false,
+  },
+  {
+    id: "insurance",
+    title: "Insurance & Financial",
+    description: "Insurance and financial details",
+    fields: ["insured", "insuranceProvider", "insuranceValue", "purchasePrice", "marketValue"],
+    isComplete: false,
+    isRequired: false,
+  },
+  {
+    id: "documents",
+    title: "Documents & Images",
+    description: "Upload documents and photos",
+    fields: ["images", "documents"],
+    isComplete: false,
+    isRequired: false,
+  },
+  {
+    id: "review",
+    title: "Review & Submit",
+    description: "Review all information before submitting",
+    fields: [],
+    isComplete: false,
+    isRequired: true,
+  },
+];
