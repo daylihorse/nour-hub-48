@@ -22,8 +22,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-        <EnhancedAuthProvider>
-          <Router>
+        <Router>
+          <EnhancedAuthProvider>
             <div className="min-h-screen bg-background">
               <Routes>
                 <Route path="/login" element={<Login />} />
@@ -50,8 +50,8 @@ function App() {
             </div>
             <Toaster />
             <Sonner />
-          </Router>
-        </EnhancedAuthProvider>
+          </EnhancedAuthProvider>
+        </Router>
       </ThemeProvider>
     </QueryClientProvider>
   );

@@ -43,6 +43,7 @@ export interface Horse {
   achievements?: string;
   
   // Stable Management
+  currentLocation?: string;
   stallNumber?: string;
   feedingSchedule?: string;
   exerciseRoutine?: string;
