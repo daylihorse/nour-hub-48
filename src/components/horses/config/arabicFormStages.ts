@@ -1,20 +1,19 @@
-
 import { FormStage } from "@/types/horse";
 
 export const arabicFormStages: FormStage[] = [
   {
     id: "basic",
     title: "المعلومات الأساسية",
-    description: "تفاصيل الحصان الأساسية",
-    fields: ["name", "arabicName", "breed", "gender", "birthDate", "color", "height", "weight"],
+    description: "تفاصيل الحصان الأساسية والتعريف",
+    fields: ["name", "arabicName", "breed", "gender", "birthDate", "color", "height", "weight", "registrationNumber", "passportNumber", "microchipId"],
     isComplete: false,
     isRequired: true,
   },
   {
     id: "ownership",
-    title: "الملكية والوثائق",
-    description: "تفاصيل المالك والتسجيل",
-    fields: ["ownerType", "ownerName", "ownerContact", "registrationNumber", "passportNumber", "microchipId"],
+    title: "الملكية",
+    description: "تفاصيل المالك",
+    fields: ["ownerType", "ownerName", "ownerContact"],
     isComplete: false,
     isRequired: true,
   },

@@ -134,6 +134,39 @@ const BasicInformationStage = () => {
           />
         </div>
       </div>
+
+      {/* Identification Section */}
+      <div className="border-t pt-6">
+        <h4 className="text-lg font-semibold mb-4">Identification</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="registrationNumber">Registration Number</Label>
+            <Input
+              id="registrationNumber"
+              {...register("registrationNumber")}
+              placeholder="Enter registration number"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="passportNumber">Passport Number</Label>
+            <Input
+              id="passportNumber"
+              {...register("passportNumber")}
+              placeholder="Enter passport number"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="microchipId">Microchip ID</Label>
+            <Input
+              id="microchipId"
+              {...register("microchipId")}
+              placeholder="Enter microchip ID"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

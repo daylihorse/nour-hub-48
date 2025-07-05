@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useMareContext } from "@/contexts/MareContext";
-import { User, Calendar, Heart, Activity } from "lucide-react";
+import { User, Calendar, Heart, Activity, IdCard, CreditCard, Zap } from "lucide-react";
 
 interface MareBasicInfoTableProps {
   mareId: string;
@@ -114,6 +114,41 @@ const MareBasicInfoTable = ({ mareId }: MareBasicInfoTableProps) => {
                   </p>
                 </div>
               )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Identification Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <IdCard className="h-5 w-5" />
+            Identification
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <CreditCard className="h-4 w-4" />
+                Registration Number
+              </label>
+              <p className="mt-1">ARA-2018-0047</p>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <IdCard className="h-4 w-4" />
+                Passport Number
+              </label>
+              <p className="mt-1">UAE-2018-0047</p>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <Zap className="h-4 w-4" />
+                Microchip ID
+              </label>
+              <p className="mt-1">985112345678901</p>
             </div>
           </div>
         </CardContent>

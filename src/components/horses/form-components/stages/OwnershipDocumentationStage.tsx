@@ -51,33 +51,6 @@ const OwnershipDocumentationStage = () => {
             <p className="text-sm text-red-600">{errors.ownerContact.message}</p>
           )}
         </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="registrationNumber">Registration Number</Label>
-          <Input
-            id="registrationNumber"
-            {...register("registrationNumber")}
-            placeholder="Enter registration number"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="passportNumber">Passport Number</Label>
-          <Input
-            id="passportNumber"
-            {...register("passportNumber")}
-            placeholder="Enter passport number"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="microchipId">Microchip ID</Label>
-          <Input
-            id="microchipId"
-            {...register("microchipId")}
-            placeholder="Enter microchip ID"
-          />
-        </div>
       </div>
     </div>
   );

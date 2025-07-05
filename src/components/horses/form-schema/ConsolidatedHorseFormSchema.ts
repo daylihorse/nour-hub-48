@@ -1,4 +1,3 @@
-
 import { z } from "zod";
 
 export const horseFormSchema = z.object({
@@ -18,6 +17,9 @@ export const horseFormSchema = z.object({
   color: z.string().min(1, "Color is required"),
   height: z.number().positive().optional(),
   weight: z.number().positive().optional(),
+  registrationNumber: z.string().optional(),
+  passportNumber: z.string().optional(),
+  microchipId: z.string().optional(),
   
   // Ownership & Documentation
   ownerType: z.enum(["individual", "company", "partnership"], {
@@ -25,9 +27,6 @@ export const horseFormSchema = z.object({
   }),
   ownerName: z.string().min(2, "Owner name is required"),
   ownerContact: z.string().min(1, "Owner contact is required"),
-  registrationNumber: z.string().optional(),
-  passportNumber: z.string().optional(),
-  microchipId: z.string().optional(),
   
   // Pedigree
   sire: z.string().optional(),
@@ -91,15 +90,15 @@ export const basicInformationSchema = horseFormSchema.pick({
   color: true,
   height: true,
   weight: true,
+  registrationNumber: true,
+  passportNumber: true,
+  microchipId: true,
 });
 
 export const ownershipDocumentationSchema = horseFormSchema.pick({
   ownerType: true,
   ownerName: true,
   ownerContact: true,
-  registrationNumber: true,
-  passportNumber: true,
-  microchipId: true,
 });
 
 export const pedigreeSchema = horseFormSchema.pick({

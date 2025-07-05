@@ -1,15 +1,14 @@
-
 import { FormStage } from "@/types/horse-unified";
 
 export const formStages: FormStage[] = [
   {
     id: "basic",
     title: "Basic Information",
-    description: "Enter the horse's basic details including name, breed, gender, and physical characteristics.",
+    description: "Enter the horse's basic details including name, breed, gender, physical characteristics, and identification.",
     fields: [
       "name", "arabicName", "breed", "gender", "ageClass", "adultMaleType", 
       "castrationDate", "isPregnant", "pregnancyDuration", "birthDate", 
-      "color", "height", "weight"
+      "color", "height", "weight", "registrationNumber", "passportNumber", "microchipId"
     ],
     isComplete: false,
     isRequired: true,
@@ -17,10 +16,9 @@ export const formStages: FormStage[] = [
   {
     id: "ownership",
     title: "Ownership & Documentation",
-    description: "Provide owner information and registration details.",
+    description: "Provide owner information and contact details.",
     fields: [
-      "ownerType", "ownerName", "ownerContact", "registrationNumber", 
-      "passportNumber", "microchipId"
+      "ownerType", "ownerName", "ownerContact"
     ],
     isComplete: false,
     isRequired: true,

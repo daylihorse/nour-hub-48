@@ -61,48 +61,6 @@ const OwnershipDocumentationStage = () => {
             </FormItem>
           )}
         />
-
-        <FormField
-          control={form.control}
-          name="registrationNumber"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Registration Number</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter registration number" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="passportNumber"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Passport Number</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter passport number" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="microchipId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Microchip ID</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter microchip ID" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
       </div>
     </div>
   );

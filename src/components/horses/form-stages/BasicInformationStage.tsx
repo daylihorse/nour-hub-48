@@ -3,6 +3,7 @@ import BasicDetailsSection from "./basic-components/BasicDetailsSection";
 import GenderAgeClassSection from "./basic-components/GenderAgeClassSection";
 import ConditionalFieldsSection from "./basic-components/ConditionalFieldsSection";
 import PhysicalDetailsSection from "./basic-components/PhysicalDetailsSection";
+import IdentificationSection from "./basic-components/IdentificationSection";
 
 const BasicInformationStage = () => {
   return (
@@ -13,6 +14,7 @@ const BasicInformationStage = () => {
         <ConditionalFieldsSection />
         <PhysicalDetailsSection />
       </div>
+      <IdentificationSection />
     </div>
   );
 };
