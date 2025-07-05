@@ -1,55 +1,28 @@
 
-export type HorseGender = 'stallion' | 'mare' | 'gelding';
-export type HorseStatus = 'active' | 'inactive' | 'transferred' | 'deceased';
-
 export interface Horse {
   id: string;
-  name: string;
-  arabicName?: string;
-  breed: string;
-  gender: HorseGender;
-  birthDate: string;
-  color: string;
-  status: HorseStatus;
-  ownerName: string;
-  registrationNumber: string;
-  microchipId?: string;
-  height?: number;
-  weight?: number;
-}
-
-// Form-related types
-export type OwnerType = 'individual' | 'company' | 'partnership';
-export type HealthStatus = 'healthy' | 'under_treatment' | 'quarantine';
-export type VaccinationStatus = 'up_to_date' | 'partial' | 'none';
-export type AgeClass = 'foal' | 'yearling' | 'adult';
-export type AdultMaleType = 'stallion' | 'gelding';
-
-export interface HorseFormData {
   // Basic Information
   name: string;
   arabicName?: string;
   breed: string;
-  gender: HorseGender;
-  ageClass?: AgeClass;
-  adultMaleType?: AdultMaleType;
+  gender: 'stallion' | 'mare' | 'gelding';
+  ageClass?: string;
+  adultMaleType?: 'stallion' | 'gelding';
   castrationDate?: string;
-  isPregnant?: boolean;
+  isPregnant?: 'yes' | 'no';
   pregnancyDuration?: number;
   birthDate: string;
   color: string;
   height?: number;
   weight?: number;
   
-  // Identification
+  // Ownership & Documentation
+  ownerType: 'individual' | 'company' | 'partnership';
+  ownerName: string;
+  ownerContact: string;
   registrationNumber?: string;
   passportNumber?: string;
   microchipId?: string;
-  
-  // Ownership
-  ownerType: OwnerType;
-  ownerName: string;
-  ownerContact: string;
   
   // Pedigree
   sire?: string;
@@ -57,8 +30,8 @@ export interface HorseFormData {
   bloodlineOrigin?: string;
   
   // Health & Medical
-  healthStatus: HealthStatus;
-  vaccinationStatus: VaccinationStatus;
+  healthStatus: 'healthy' | 'under_treatment' | 'quarantine';
+  vaccinationStatus: 'up_to_date' | 'partial' | 'none';
   lastVetCheckup?: string;
   medicalConditions?: string;
   allergies?: string;
@@ -82,13 +55,15 @@ export interface HorseFormData {
   purchasePrice?: number;
   marketValue?: number;
   
-  // Files
-  images: File[];
-  documents: File[];
+  // Documents & Images
+  images: string[];
+  documents: string[];
   
-  // Status
-  status: HorseStatus;
+  // System fields
+  status: 'active' | 'inactive' | 'transferred' | 'deceased';
 }
+
+export interface HorseFormData extends Omit<Horse, 'id'> {}
 
 export interface FormStage {
   id: string;
@@ -98,3 +73,10 @@ export interface FormStage {
   isComplete: boolean;
   isRequired: boolean;
 }
+
+// Gender-specific types for better type safety
+export type HorseGender = 'stallion' | 'mare' | 'gelding';
+export type OwnerType = 'individual' | 'company' | 'partnership';
+export type HealthStatus = 'healthy' | 'under_treatment' | 'quarantine';
+export type VaccinationStatus = 'up_to_date' | 'partial' | 'none';
+export type HorseStatus = 'active' | 'inactive' | 'transferred' | 'deceased';

@@ -12,7 +12,7 @@ import ReviewSubmitStage from "./stages/ReviewSubmitStage";
 
 interface StageContentRendererProps {
   stage: FormStage;
-  onSubmit?: () => void;
+  onSubmit: () => void;
 }
 
 const StageContentRenderer = ({ stage, onSubmit }: StageContentRendererProps) => {
@@ -34,9 +34,14 @@ const StageContentRenderer = ({ stage, onSubmit }: StageContentRendererProps) =>
     case "documents":
       return <DocumentsImagesStage />;
     case "review":
-      return <ReviewSubmitStage onSubmit={onSubmit || (() => {})} />;
+      return <ReviewSubmitStage onSubmit={onSubmit} />;
     default:
-      return <div>Stage not found</div>;
+      return (
+        <div className="p-6 text-center">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Stage Not Found</h3>
+          <p className="text-gray-600">The requested form stage could not be found.</p>
+        </div>
+      );
   }
 };
 

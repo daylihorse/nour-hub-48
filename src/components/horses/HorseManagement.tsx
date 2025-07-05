@@ -11,7 +11,6 @@ import HorseTableView from "./components/HorseTableView";
 import HorseViewSelector from "./components/HorseViewSelector";
 import AddHorseForm from "./AddHorseForm";
 import HorseDetailsView from "./details/HorseDetailsView";
-import { HorseFormData } from "@/types/horse";
 
 interface HorseManagementProps {
   clientId?: string | null;
@@ -43,15 +42,6 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
 
   const handleViewDetails = (horseId: string) => {
     navigate(`/horses/${horseId}`);
-  };
-
-  const handleSaveHorse = (data: HorseFormData) => {
-    console.log('Saving horse:', data);
-    toast({
-      title: "Success",
-      description: "Horse registered successfully!",
-    });
-    setShowAddForm(false);
   };
 
   const handleExport = () => {
@@ -89,7 +79,7 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
             Back to Horses
           </Button>
         </div>
-        <AddHorseForm onSave={handleSaveHorse} onCancel={() => setShowAddForm(false)} />
+        <AddHorseForm onCancel={() => setShowAddForm(false)} />
       </div>
     );
   }
@@ -124,7 +114,7 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
 
       {/* View Controls */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <HorseViewSelector currentView={viewMode} onViewChange={setViewMode} />
+        <HorseViewSelector viewMode={viewMode} onViewModeChange={setViewMode} />
         
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm">

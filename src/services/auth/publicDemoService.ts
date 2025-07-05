@@ -1,60 +1,144 @@
 
+import { User, Tenant, TenantUser } from '@/types/tenant';
+
 export const publicDemoService = {
-  getDemoAccounts: () => [
-    {
-      tenantName: 'Al Shaqab Racing',
-      tenantType: 'racing',
-      email: 'admin@alshaqab.qa',
-      password: 'demo123',
-      role: 'owner'
-    },
-    {
-      tenantName: 'Desert Rose Stables',
-      tenantType: 'training',
-      email: 'manager@desertroses.com',
-      password: 'demo123',
-      role: 'manager'
-    },
-    {
-      tenantName: 'Emirates Equestrian',
-      tenantType: 'facility',
-      email: 'owner@emirateseq.ae',
-      password: 'demo123',
-      role: 'owner'
-    }
-  ],
+  createPublicUser(): User {
+    return {
+      id: 'public-user-id',
+      email: 'demo@example.com',
+      first_name: 'Demo',
+      last_name: 'User',
+      firstName: 'Demo',
+      lastName: 'User',
+      avatar: null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      tenants: [{
+        id: 'public-tenant-user-id',
+        tenant_id: 'public-tenant-id',
+        tenantId: 'public-tenant-id',
+        user_id: 'public-user-id',
+        role: 'owner',
+        permissions: ['*'],
+        status: 'active',
+        joined_at: new Date().toISOString(),
+      }]
+    };
+  },
 
-  createPublicUser: () => ({
-    id: 'public-user',
-    email: 'public@demo.com',
-    name: 'Public User',
-    firstName: 'Public',
-    lastName: 'User',
-    tenants: []
-  }),
+  createPublicTenant(): Tenant {
+    return {
+      id: 'public-tenant-id',
+      name: 'Demo Stable',
+      type: 'stable',
+      subscription_tier: 'premium',
+      subscriptionTier: 'premium',
+      status: 'active',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      settings: {
+        timezone: 'UTC',
+        currency: 'USD',
+        language: 'en',
+        features: {
+          horses: true,
+          laboratory: true,
+          clinic: true,
+          pharmacy: true,
+          marketplace: true,
+          finance: true,
+          hr: true,
+          inventory: true,
+          training: true,
+          rooms: true,
+          maintenance: true,
+          messages: true,
+        }
+      },
+      metadata: {}
+    };
+  },
 
-  createPublicTenant: () => ({
-    id: 'public-tenant',
-    name: 'Public Demo Facility',
-    type: 'facility'
-  }),
+  getDemoAccounts() {
+    return [
+      {
+        tenantName: 'Green Valley Stables',
+        tenantType: 'stable',
+        email: 'owner@greenvalley.com',
+        password: 'demo123',
+        role: 'owner'
+      },
+      {
+        tenantName: 'Elite Veterinary Clinic',
+        tenantType: 'clinic',
+        email: 'vet@eliteclinic.com',
+        password: 'demo123',
+        role: 'admin'
+      },
+      {
+        tenantName: 'Arabian Horse Laboratory',
+        tenantType: 'laboratory',
+        email: 'lab@arabianlab.com',
+        password: 'demo123',
+        role: 'manager'
+      }
+    ];
+  },
 
-  createTenantFromDemoAccount: (account: any) => ({
-    id: `tenant-${account.tenantName.toLowerCase().replace(/\s+/g, '-')}`,
-    name: account.tenantName,
-    type: account.tenantType
-  }),
+  createTenantFromDemoAccount(account: any): Tenant {
+    return {
+      id: `demo-tenant-${account.tenantType}`,
+      name: account.tenantName,
+      type: account.tenantType,
+      subscription_tier: 'premium',
+      subscriptionTier: 'premium',
+      status: 'active',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      settings: {
+        timezone: 'UTC',
+        currency: 'USD',
+        language: 'en',
+        features: {
+          horses: true,
+          laboratory: account.tenantType === 'laboratory',
+          clinic: account.tenantType === 'clinic',
+          pharmacy: true,
+          marketplace: true,
+          finance: true,
+          hr: true,
+          inventory: true,
+          training: true,
+          rooms: true,
+          maintenance: true,
+          messages: true,
+        }
+      },
+      metadata: {}
+    };
+  },
 
-  createUserFromDemoAccount: (account: any, tenant: any) => ({
-    id: 'demo-user',
-    email: account.email,
-    name: 'Demo User',
-    firstName: 'Demo',
-    lastName: 'User',
-    tenants: [{
-      tenantId: tenant.id,
-      role: account.role,
-      permissions: ['*']
-    }]
-  })
+  createUserFromDemoAccount(account: any, tenant: Tenant): User {
+    return {
+      id: `demo-user-${account.tenantType}`,
+      email: account.email,
+      first_name: 'Demo',
+      last_name: 'User',
+      firstName: 'Demo',
+      lastName: 'User',
+      avatar: null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      tenants: [{
+        id: `demo-tenant-user-${account.tenantType}`,
+        tenant_id: tenant.id,
+        tenantId: tenant.id,
+        user_id: `demo-user-${account.tenantType}`,
+        role: account.role,
+        permissions: account.role === 'owner' ? ['*'] : ['read', 'write'],
+        status: 'active',
+        joined_at: new Date().toISOString(),
+      }]
+    };
+  }
 };

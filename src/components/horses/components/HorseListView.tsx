@@ -1,162 +1,140 @@
-
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Eye, Edit, MoreHorizontal } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import AgeDisplay from "../form-components/AgeDisplay";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-// Mock data - in a real app, this would come from your data store
-const mockHorses = [
-  {
-    id: "1",
-    name: "Thunder Storm",
-    arabicName: "عاصفة الرعد",
-    breed: "Arabian",
-    gender: "stallion",
-    birthDate: "2018-05-15",
-    color: "Bay",
-    status: "active",
-    ownerName: "Elite Equestrian Center",
-    registrationNumber: "AHR-2018-001234"
-  },
-  {
-    id: "2",
-    name: "Midnight Grace",
-    arabicName: "نعمة منتصف الليل",
-    breed: "Arabian",
-    gender: "mare",
-    birthDate: "2019-03-22",
-    color: "Black",
-    status: "active",
-    ownerName: "Desert Winds Stables",
-    registrationNumber: "AHR-2019-005678"
-  },
-  {
-    id: "3",
-    name: "Golden Spirit",
-    breed: "Thoroughbred",
-    gender: "gelding",
-    birthDate: "2017-08-10",
-    color: "Chestnut",
-    status: "active",
-    ownerName: "Sunrise Ranch",
-    registrationNumber: "THB-2017-009876"
-  }
-];
-
-interface HorseListViewProps {
-  onViewDetails?: (horseId: string) => void;
+interface Horse {
+  id: string;
+  name: string;
+  breed: string;
+  gender: string;
+  owner: string;
+  ownerId: string;
+  status: string;
+  age: number;
+  registrationNumber: string;
+  image?: string;
 }
 
-const HorseListView = ({ onViewDetails }: HorseListViewProps) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'bg-green-100 text-green-800';
-      case 'inactive':
-        return 'bg-gray-100 text-gray-800';
-      case 'transferred':
-        return 'bg-blue-100 text-blue-800';
-      case 'deceased':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
+interface HorseListViewProps {
+  horses: Horse[];
+  onViewDetails: (horse: Horse) => void;
+  onEdit: (horse: Horse) => void;
+  clientId?: string | null;
+}
+
+const HorseListView = ({ horses, onViewDetails, onEdit, clientId }: HorseListViewProps) => {
+  // Generate a placeholder horse image based on horse name and breed
+  const getHorseImagePlaceholder = (horse: Horse) => {
+    const colors = [
+      "bg-amber-100 text-amber-700",
+      "bg-emerald-100 text-emerald-700", 
+      "bg-blue-100 text-blue-700",
+      "bg-purple-100 text-purple-700",
+      "bg-rose-100 text-rose-700",
+      "bg-indigo-100 text-indigo-700"
+    ];
+    const colorIndex = horse.name.length % colors.length;
+    return colors[colorIndex];
   };
 
-  const getGenderColor = (gender: string) => {
-    switch (gender) {
+  const getGenderBadgeColor = (gender: string) => {
+    switch (gender.toLowerCase()) {
       case 'stallion':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'mare':
-        return 'bg-purple-100 text-purple-800';
+        return 'bg-pink-100 text-pink-800 border-pink-200';
       case 'gelding':
-        return 'bg-teal-100 text-teal-800';
+        return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'filly':
+        return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'colt':
+        return 'bg-green-100 text-green-800 border-green-200';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
   return (
     <div className="space-y-4">
-      {mockHorses.map((horse) => (
+      {horses.map((horse) => (
         <Card key={horse.id} className="hover:shadow-md transition-shadow">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div>
-                  <h3 className="text-lg font-semibold">{horse.name}</h3>
-                  {horse.arabicName && (
-                    <p className="text-sm text-muted-foreground" dir="rtl">
-                      {horse.arabicName}
-                    </p>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge className={getStatusColor(horse.status)}>
-                    {horse.status}
-                  </Badge>
-                  <Badge className={getGenderColor(horse.gender)}>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-4">
+              {/* Horse Photo */}
+              <Avatar className="h-20 w-20 flex-shrink-0">
+                <AvatarImage 
+                  src={horse.image || `/placeholder-horse-${horse.id}.jpg`} 
+                  alt={horse.name}
+                />
+                <AvatarFallback className={`text-lg font-semibold ${getHorseImagePlaceholder(horse)}`}>
+                  {horse.name.charAt(0)}{horse.breed.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              
+              {/* Horse Information */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center space-x-3 mb-2">
+                  <h3 className="text-lg font-semibold truncate">{horse.name}</h3>
+                  <Badge 
+                    variant="outline" 
+                    className={`text-xs capitalize ${getGenderBadgeColor(horse.gender)}`}
+                  >
                     {horse.gender}
                   </Badge>
+                  <Badge 
+                    variant="secondary" 
+                    className={`text-xs capitalize ${
+                      horse.status === 'active' 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-gray-100 text-gray-800'
+                    }`}
+                  >
+                    {horse.status}
+                  </Badge>
+                </div>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div>
+                    <span className="text-muted-foreground">Breed:</span>
+                    <p className="font-medium">{horse.breed}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Age:</span>
+                    <p>{horse.age} years</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Registration:</span>
+                    <p className="font-mono text-xs">{horse.registrationNumber}</p>
+                  </div>
+                  {!clientId && (
+                    <div>
+                      <span className="text-muted-foreground">Owner:</span>
+                      <p className="truncate" title={horse.owner}>{horse.owner}</p>
+                    </div>
+                  )}
                 </div>
               </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-8 w-8 p-0">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => onViewDetails?.(horse.id)}>
-                    <Eye className="mr-2 h-4 w-4" />
-                    View Details
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Edit className="mr-2 h-4 w-4" />
-                    Edit
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-              <div>
-                <span className="font-medium text-muted-foreground">Breed:</span>
-                <p>{horse.breed}</p>
+              
+              {/* Action Buttons */}
+              <div className="flex flex-col gap-2 flex-shrink-0">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => onViewDetails(horse)}
+                  className="w-24"
+                >
+                  View Details
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => onEdit(horse)}
+                  className="w-24"
+                >
+                  Edit
+                </Button>
               </div>
-              <div>
-                <span className="font-medium text-muted-foreground">Color:</span>
-                <p>{horse.color}</p>
-              </div>
-              <div>
-                <span className="font-medium text-muted-foreground">Age:</span>
-                <AgeDisplay birthDate={horse.birthDate} className="mt-1" />
-              </div>
-              <div>
-                <span className="font-medium text-muted-foreground">Owner:</span>
-                <p>{horse.ownerName}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 mt-4">
-              <Button 
-                size="sm" 
-                onClick={() => onViewDetails?.(horse.id)}
-              >
-                <Eye className="mr-2 h-4 w-4" />
-                View Details
-              </Button>
-              <Button size="sm" variant="outline">
-                <Edit className="mr-2 h-4 w-4" />
-                Edit
-              </Button>
             </div>
           </CardContent>
         </Card>
@@ -165,4 +143,4 @@ const HorseListView = ({ onViewDetails }: HorseListViewProps) => {
   );
 };
 
-export default HorseListView;
+export default HorseListView; 
