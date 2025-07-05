@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { Client, ClientType, ClientStatus, ClientTypeDisplay, ClientStatusDisplay } from '@/types/client';
+import { mockClients } from '@/data/clients';
 
 export interface DatabaseClient {
   id: string;
@@ -77,22 +78,13 @@ export const useClients = () => {
 
   const fetchClients = async () => {
     try {
-      const { data, error } = await supabase
-        .from('clients')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      
-      const transformedClients = (data || []).map((dbClient: any) => 
-        transformDatabaseClient(dbClient as DatabaseClient)
-      );
-      setClients(transformedClients);
+      // Use mock data instead of database
+      setClients(mockClients as Client[]);
     } catch (error) {
-      console.error('Error fetching clients:', error);
+      console.error('Error loading clients:', error);
       toast({
         title: 'Error',
-        description: 'Failed to fetch clients',
+        description: 'Failed to load clients',
         variant: 'destructive',
       });
     } finally {
