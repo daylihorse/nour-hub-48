@@ -1,3 +1,4 @@
+export * from "./horse-unified";
 
 export interface Horse {
   id: string;
@@ -5,13 +6,13 @@ export interface Horse {
   name: string;
   arabicName?: string;
   breed: string;
-  gender: 'stallion' | 'mare' | 'gelding';
+  gender: 'male' | 'female';
   ageClass?: string;
   adultMaleType?: 'stallion' | 'gelding';
   castrationDate?: string;
   isPregnant?: 'yes' | 'no';
   pregnancyDuration?: number;
-  birthDate: string;
+  birthDate: Date;
   color: string;
   height?: number;
   weight?: number;
@@ -32,21 +33,21 @@ export interface Horse {
   // Health & Medical
   healthStatus: 'healthy' | 'under_treatment' | 'quarantine';
   vaccinationStatus: 'up_to_date' | 'partial' | 'none';
-  lastVetCheckup?: string;
-  medicalConditions?: string;
-  allergies?: string;
+  lastVetCheckup?: Date;
+  medicalConditions?: string[];
+  allergies?: string[];
   
   // Training & Performance
-  trainingLevel?: string;
-  disciplines?: string;
-  competitionHistory?: string;
-  achievements?: string;
+  trainingLevel: 'untrained' | 'basic' | 'intermediate' | 'advanced' | 'professional';
+  disciplines?: string[];
+  competitionHistory?: string[];
+  achievements?: string[];
   
   // Stable Management
   stallNumber?: string;
   feedingSchedule?: string;
   exerciseRoutine?: string;
-  specialNeeds?: string;
+  specialNeeds?: string[];
   
   // Insurance & Financial
   insured: boolean;
@@ -60,10 +61,12 @@ export interface Horse {
   documents: string[];
   
   // System fields
+  createdAt: Date;
+  updatedAt: Date;
   status: 'active' | 'inactive' | 'transferred' | 'deceased';
 }
 
-export interface HorseFormData extends Omit<Horse, 'id'> {}
+export interface HorseFormData extends Omit<Horse, 'id' | 'createdAt' | 'updatedAt'> {}
 
 export interface FormStage {
   id: string;
@@ -73,10 +76,3 @@ export interface FormStage {
   isComplete: boolean;
   isRequired: boolean;
 }
-
-// Gender-specific types for better type safety
-export type HorseGender = 'stallion' | 'mare' | 'gelding';
-export type OwnerType = 'individual' | 'company' | 'partnership';
-export type HealthStatus = 'healthy' | 'under_treatment' | 'quarantine';
-export type VaccinationStatus = 'up_to_date' | 'partial' | 'none';
-export type HorseStatus = 'active' | 'inactive' | 'transferred' | 'deceased';

@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { FormStage } from "@/types/horse-unified";
+import { FormStage } from "@/types/horse";
 
 interface FormNavigationButtonsProps {
   currentStage: number;

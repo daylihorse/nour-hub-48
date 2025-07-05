@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useGeldings } from "@/hooks/useGeldings";
 import { useGeldingDialogs } from "./hooks/useGeldingDialogs";
-import { Horse } from "@/types/horse-unified";
+import { Horse } from "@/types/horse";
 import RecordsProvider from "./records/RecordsProvider";
 import GeldingManagementTabs from "./components/GeldingManagementTabs";
 import GeldingManagementContent from "./components/GeldingManagementContent";
@@ -12,7 +12,7 @@ const GeldingManagement = () => {
   const { data: geldings = [], isLoading, error } = useGeldings();
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list" | "table">("grid");
-  const [gridSize, setGridSize] = useState<2 | 3 | 4>(3);
+  const [gridSize, setGridSize] = useState<3>(3);
   const [activeTab, setActiveTab] = useState("geldings");
   
   const {
@@ -31,7 +31,7 @@ const GeldingManagement = () => {
   const filteredGeldings = geldings.filter(gelding => 
     gelding.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     gelding.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    gelding.ownerName.toLowerCase().includes(searchTerm.toLowerCase())
+    gelding.owner_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleEditGelding = (geldingId: string) => {
@@ -39,7 +39,7 @@ const GeldingManagement = () => {
     if (gelding) {
       setEditDialog({
         isOpen: true,
-        gelding: gelding,
+        gelding: gelding as Horse,
       });
     }
   };
@@ -95,11 +95,11 @@ const GeldingManagement = () => {
     <GeldingManagementContent
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
-      filteredGeldings={filteredGeldings}
+      filteredGeldings={filteredGeldings as Horse[]}
       viewMode={viewMode}
       setViewMode={setViewMode}
       gridSize={gridSize}
-      setGridSize={(size: 2 | 3 | 4) => setGridSize(size)}
+      setGridSize={setGridSize}
       onEditGelding={handleEditGelding}
       onScheduleCheckup={handleScheduleCheckup}
       onViewMedicalRecords={handleViewMedicalRecords}

@@ -94,10 +94,12 @@ const GeldingCard = ({ gelding, onEdit, onScheduleCheckup, onViewMedicalRecords 
             </div>
           </div>
           
-          <div className="text-sm">
-            <span className="font-medium">Location:</span> {gelding.currentLocation || 'Not specified'}
-            {gelding.stallNumber && <span> - Stall {gelding.stallNumber}</span>}
-          </div>
+          {gelding.currentLocation && (
+            <div className="text-sm">
+              <span className="font-medium">Location:</span> {gelding.currentLocation}
+              {gelding.stallNumber && <span> - Stall {gelding.stallNumber}</span>}
+            </div>
+          )}
 
           <div className="flex gap-2 flex-wrap">
             <Badge className={getStatusColor(gelding.status)}>

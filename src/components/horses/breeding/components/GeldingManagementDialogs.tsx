@@ -3,7 +3,7 @@ import EditGeldingDialog from "./EditGeldingDialog";
 import AddGeldingDialog from "./AddGeldingDialog";
 import VetCheckupDialog from "../VetCheckupDialog";
 import MedicalRecordsDialog from "../MedicalRecordsDialog";
-import { Horse } from "@/types/horse-unified";
+import { Horse } from "@/types/horse";
 
 interface GeldingManagementDialogsProps {
   editDialog: {

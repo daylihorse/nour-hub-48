@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Horse } from "@/types/horse-unified";
+import { Horse } from "@/types/horse";
 
 export const useGeldingDialogs = () => {
   const [editDialog, setEditDialog] = useState<{
