@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Download, Upload, Filter } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { HorseFormData } from "@/types/horse-unified";
 import HorseGridView from "./components/HorseGridView";
 import HorseListView from "./components/HorseListView";
 import HorseTableView from "./components/HorseTableView";
@@ -36,29 +37,45 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
     }
   }, [clientId, toast]);
 
-  const handleAddHorse = () => {
-    setShowAddForm(true);
+  const handleSaveHorse = async (data: HorseFormData) => {
+    try {
+      console.log("Saving horse:", data);
+      toast({
+        title: "Success",
+        description: "Horse registered successfully!",
+      });
+      setShowAddForm(false);
+    } catch (error) {
+      console.error("Error saving horse:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save horse. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleViewDetails = (horseId: string) => {
+  const handleViewHorse = (horseId: string) => {
     navigate(`/horses/${horseId}`);
   };
 
-  const handleExport = () => {
+  const handleEditHorse = (horseId: string) => {
+    console.log("Edit horse:", horseId);
     toast({
-      title: "Export Started",
-      description: "Your horse data is being exported...",
+      title: "Edit Horse",
+      description: "Edit functionality coming soon!",
     });
   };
 
-  const handleImport = () => {
+  const handleDeleteHorse = (horseId: string) => {
+    console.log("Delete horse:", horseId);
     toast({
-      title: "Import Feature",
-      description: "Import functionality will be available soon.",
+      title: "Delete Horse",
+      description: "Delete functionality coming soon!",
+      variant: "destructive",
     });
   };
 
-  // If showing details view, render the nested route
   if (isDetailsView) {
     return (
       <Routes>
@@ -69,88 +86,99 @@ const HorseManagement = ({ clientId }: HorseManagementProps) => {
 
   if (showAddForm) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Add New Horse</h2>
-          <Button 
-            variant="outline" 
-            onClick={() => setShowAddForm(false)}
-          >
-            Back to Horses
-          </Button>
-        </div>
-        <AddHorseForm 
-          onCancel={() => setShowAddForm(false)} 
-          onSave={(data) => {
-            console.log('Horse data saved:', data);
-            setShowAddForm(false);
-          }}
-        />
-      </div>
+      <AddHorseForm
+        onSave={handleSaveHorse}
+        onCancel={() => setShowAddForm(false)}
+      />
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold">Horse Registry</h2>
+          <h1 className="text-3xl font-bold">Horse Management</h1>
           <p className="text-muted-foreground">
-            Manage and track all horses in your facility
-            {clientId && " (filtered by client)"}
+            Manage your stable's horses and their information
           </p>
         </div>
-        
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={handleImport}>
-            <Upload className="h-4 w-4 mr-2" />
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm">
+            <Upload className="mr-2 h-4 w-4" />
             Import
           </Button>
-          <Button variant="outline" size="sm" onClick={handleExport}>
-            <Download className="h-4 w-4 mr-2" />
+          <Button variant="outline" size="sm">
+            <Download className="mr-2 h-4 w-4" />
             Export
           </Button>
-          <Button size="sm" onClick={handleAddHorse}>
-            <Plus className="h-4 w-4 mr-2" />
+          <Button onClick={() => setShowAddForm(true)}>
+            <Plus className="mr-2 h-4 w-4" />
             Add Horse
           </Button>
         </div>
       </div>
 
-      {/* View Controls */}
-        <div className="flex items-center justify-between">
-          <HorseViewSelector 
-            currentView={viewMode} 
-            onViewChange={setViewMode}
-          />
-        
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
-            <Filter className="h-4 w-4 mr-2" />
-            Filters
-          </Button>
+      <Tabs defaultValue="all" className="space-y-6">
+        <div className="flex justify-between items-center">
+          <TabsList>
+            <TabsTrigger value="all">All Horses</TabsTrigger>
+            <TabsTrigger value="stallions">Stallions</TabsTrigger>
+            <TabsTrigger value="mares">Mares</TabsTrigger>
+            <TabsTrigger value="foals">Foals</TabsTrigger>
+          </TabsList>
+          
+          <div className="flex items-center gap-4">
+            <Button variant="outline" size="sm">
+              <Filter className="mr-2 h-4 w-4" />
+              Filter
+            </Button>
+            <HorseViewSelector 
+              currentView={viewMode} 
+              onViewChange={setViewMode} 
+            />
+          </div>
         </div>
-      </div>
 
-      {/* Content */}
-      <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'grid' | 'list' | 'table')}>
-        <TabsContent value="grid">
-          <HorseGridView onViewDetails={handleViewDetails} />
+        <TabsContent value="all" className="space-y-6">
+          {viewMode === 'grid' && (
+            <HorseGridView
+              onViewHorse={handleViewHorse}
+              onEditHorse={handleEditHorse}
+              onDeleteHorse={handleDeleteHorse}
+            />
+          )}
+          {viewMode === 'list' && (
+            <HorseListView
+              onViewHorse={handleViewHorse}
+              onEditHorse={handleEditHorse}
+              onDeleteHorse={handleDeleteHorse}
+            />
+          )}
+          {viewMode === 'table' && (
+            <HorseTableView
+              onViewHorse={handleViewHorse}
+              onEditHorse={handleEditHorse}
+              onDeleteHorse={handleDeleteHorse}
+            />
+          )}
         </TabsContent>
-        <TabsContent value="list">
-          <HorseListView 
-            horses={[]} 
-            onViewDetails={(horse) => handleViewDetails(horse.id)} 
-            onEdit={(horse) => console.log('Edit horse:', horse)}
-          />
+
+        <TabsContent value="stallions" className="space-y-6">
+          <div className="text-center py-12">
+            <p className="text-gray-500">Stallion management coming soon!</p>
+          </div>
         </TabsContent>
-        <TabsContent value="table">
-          <HorseTableView 
-            horses={[]} 
-            onViewDetails={(horse) => handleViewDetails(horse.id)} 
-            onEdit={(horse) => console.log('Edit horse:', horse)}
-          />
+
+        <TabsContent value="mares" className="space-y-6">
+          <div className="text-center py-12">
+            <p className="text-gray-500">Mare management coming soon!</p>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="foals" className="space-y-6">
+          <div className="text-center py-12">
+            <p className="text-gray-500">Foal management coming soon!</p>
+          </div>
         </TabsContent>
       </Tabs>
     </div>

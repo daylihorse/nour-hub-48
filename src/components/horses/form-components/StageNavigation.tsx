@@ -1,7 +1,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, Circle } from "lucide-react";
-import { FormStage } from "@/types/horse";
+import { FormStage } from "@/types/horse-unified";
 
 interface StageNavigationProps {
   formStages: FormStage[];

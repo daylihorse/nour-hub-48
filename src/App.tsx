@@ -7,15 +7,12 @@ import { ThemeProvider } from "next-themes";
 import { EnhancedAuthProvider } from "./components/auth/EnhancedAuthProvider";
 import EnhancedAuthGuard from "./components/auth/EnhancedAuthGuard";
 import DashboardLayout from "./components/layout/DashboardLayout";
-import Dashboard from "./pages/Index";
 import HorsesDepartment from "./pages/dashboard/HorsesDepartment";
-import ClientManagement from "./pages/dashboard/ClientsDepartment";
 import ClientProfile from "./pages/dashboard/ClientProfile";
-import InventoryDepartment from "./pages/dashboard/InventoryManagement";
-import HRDepartment from "./pages/dashboard/HRDepartment";
 import FinanceDepartment from "./pages/dashboard/FinanceDepartment";
 import ClinicDepartment from "./pages/dashboard/ClinicDepartment";
 import LaboratoryDepartment from "./pages/dashboard/LaboratoryDepartment";
+import HRDepartment from "./pages/dashboard/HRDepartment";
 import Login from "./pages/Login";
 import "./App.css";
 
@@ -25,8 +22,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-        <EnhancedAuthProvider>
-          <Router>
+        <Router>
+          <EnhancedAuthProvider>
             <div className="min-h-screen bg-background">
               <Routes>
                 <Route path="/login" element={<Login />} />
@@ -36,11 +33,9 @@ function App() {
                     <EnhancedAuthGuard>
                       <DashboardLayout>
                         <Routes>
-                          <Route path="/" element={<Dashboard />} />
+                          <Route path="/" element={<HorsesDepartment />} />
                           <Route path="/horses/*" element={<HorsesDepartment />} />
-                          <Route path="/clients" element={<ClientManagement />} />
                           <Route path="/clients/:clientId" element={<ClientProfile />} />
-                          <Route path="/inventory" element={<InventoryDepartment />} />
                           <Route path="/hr" element={<HRDepartment />} />
                           <Route path="/finance" element={<FinanceDepartment />} />
                           <Route path="/clinic" element={<ClinicDepartment />} />
@@ -55,8 +50,8 @@ function App() {
             </div>
             <Toaster />
             <Sonner />
-          </Router>
-        </EnhancedAuthProvider>
+          </EnhancedAuthProvider>
+        </Router>
       </ThemeProvider>
     </QueryClientProvider>
   );

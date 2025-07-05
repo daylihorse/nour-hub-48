@@ -7,8 +7,9 @@ import GeldingListView from "./GeldingListView";
 import GeldingTableView from "./GeldingTableView";
 import BreedingRecordsViewSelector from "./BreedingRecordsViewSelector";
 import { ViewMode } from "./ViewSelector";
-import { GridSize } from "./GridSizeSelector";
-import { Horse } from "@/types/horse";
+import { Horse } from "@/types/horse-unified";
+
+export type GridSize = 2 | 3 | 4;
 
 interface GeldingManagementContentProps {
   searchTerm: string;
