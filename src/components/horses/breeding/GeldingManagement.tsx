@@ -12,7 +12,7 @@ const GeldingManagement = () => {
   const { data: geldings = [], isLoading, error } = useGeldings();
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list" | "table">("grid");
-  const [gridSize, setGridSize] = useState<3>(3);
+  const [gridSize, setGridSize] = useState<2 | 3 | 4>(3);
   const [activeTab, setActiveTab] = useState("geldings");
   
   const {
@@ -99,7 +99,7 @@ const GeldingManagement = () => {
       viewMode={viewMode}
       setViewMode={setViewMode}
       gridSize={gridSize}
-      setGridSize={setGridSize}
+      setGridSize={(size: 2 | 3 | 4) => setGridSize(size)}
       onEditGelding={handleEditGelding}
       onScheduleCheckup={handleScheduleCheckup}
       onViewMedicalRecords={handleViewMedicalRecords}

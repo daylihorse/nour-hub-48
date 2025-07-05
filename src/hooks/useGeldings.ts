@@ -18,7 +18,7 @@ export const useGeldings = () => {
         throw error;
       }
 
-      // Map database fields to Horse interface
+      // Map database fields to Horse interface with all required properties
       return (data || []).map(horse => ({
         id: horse.id,
         name: horse.name,
@@ -45,6 +45,7 @@ export const useGeldings = () => {
         status: horse.status as 'active' | 'inactive' | 'transferred' | 'deceased',
         healthStatus: horse.health_status as 'healthy' | 'under_treatment' | 'quarantine',
         insuranceProvider: horse.insurance_provider,
+        vaccinationStatus: 'up_to_date' as 'up_to_date' | 'partial' | 'none', // Default value since not in DB
         images: [],
         documents: []
       }));
