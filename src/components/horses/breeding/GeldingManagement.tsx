@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useGeldingManagement } from "./hooks/useGeldingManagement";
+import { useGeldings } from "@/hooks/useGeldings";
 import { useGeldingDialogs } from "./hooks/useGeldingDialogs";
 import { Horse } from "@/types/horse";
 import RecordsProvider from "./records/RecordsProvider";
@@ -9,17 +9,10 @@ import GeldingManagementContent from "./components/GeldingManagementContent";
 import GeldingManagementDialogs from "./components/GeldingManagementDialogs";
 
 const GeldingManagement = () => {
-  const {
-    searchTerm,
-    setSearchTerm,
-    filteredGeldings,
-    updateGelding,
-    viewMode,
-    setViewMode,
-    gridSize,
-    setGridSize,
-  } = useGeldingManagement();
-  
+  const { data: geldings = [], isLoading, error } = useGeldings();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [viewMode, setViewMode] = useState<"grid" | "list" | "table">("grid");
+  const [gridSize, setGridSize] = useState<3>(3);
   const [activeTab, setActiveTab] = useState("geldings");
   
   const {
@@ -34,18 +27,26 @@ const GeldingManagement = () => {
     handleCloseEditDialog,
   } = useGeldingDialogs();
 
+  // Filter geldings based on search term
+  const filteredGeldings = geldings.filter(gelding => 
+    gelding.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    gelding.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    gelding.owner_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const handleEditGelding = (geldingId: string) => {
     const gelding = filteredGeldings.find(g => g.id === geldingId);
     if (gelding) {
       setEditDialog({
         isOpen: true,
-        gelding,
+        gelding: gelding as Horse,
       });
     }
   };
 
   const handleSaveGelding = (updatedGelding: Horse) => {
-    updateGelding(updatedGelding);
+    // TODO: Implement save functionality with Supabase
+    console.log('Save gelding:', updatedGelding);
     handleCloseEditDialog();
   };
 
@@ -69,11 +70,32 @@ const GeldingManagement = () => {
     setAddGeldingDialog(true);
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p>Loading geldings...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center text-red-600">
+          <p>Error loading geldings: {error.message}</p>
+        </div>
+      </div>
+    );
+  }
+
   const geldingsContent = (
     <GeldingManagementContent
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
-      filteredGeldings={filteredGeldings}
+      filteredGeldings={filteredGeldings as Horse[]}
       viewMode={viewMode}
       setViewMode={setViewMode}
       gridSize={gridSize}
