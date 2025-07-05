@@ -5,9 +5,11 @@ import { CheckCircle, AlertCircle } from "lucide-react";
 interface ValidationFeedbackProps {
   stage: FormStage;
   errors?: string[];
+  currentStage?: number;
+  completedStages?: Set<number>;
 }
 
-const ValidationFeedback = ({ stage, errors }: ValidationFeedbackProps) => {
+const ValidationFeedback = ({ stage, errors, currentStage, completedStages }: ValidationFeedbackProps) => {
   if (!errors || errors.length === 0) {
     if (stage.isComplete) {
       return (
