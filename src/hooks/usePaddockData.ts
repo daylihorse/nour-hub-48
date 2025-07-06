@@ -6,6 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 export const usePaddockData = () => {
   const [paddocks, setPaddocks] = useState<Paddock[]>([]);
   const [maintenanceTasks, setMaintenanceTasks] = useState<MaintenanceTask[]>([]);
+  const [maintenanceRecords, setMaintenanceRecords] = useState<any[]>([]);
   const [rotationPlans, setRotationPlans] = useState<RotationPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -205,9 +206,73 @@ export const usePaddockData = () => {
     }
   };
 
+  const createPaddock = addPaddock;
+  const assignHorseToPaddock = assignHorse;
+  const scheduleMaintenanceTask = async (taskData: any) => {
+    try {
+      const newTask = await housingService.createMaintenanceTask(taskData);
+      setMaintenanceTasks(prev => [...prev, newTask]);
+      toast({
+        title: "Success",
+        description: "Maintenance task scheduled successfully",
+      });
+      return newTask;
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to schedule maintenance task",
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
+
+  const completeMaintenanceTask = async (id: string, completionData: any) => {
+    try {
+      const updatedTask = await housingService.updateMaintenanceTask(id, {
+        status: 'completed',
+        completedDate: new Date(),
+        ...completionData
+      });
+      setMaintenanceTasks(prev => prev.map(t => t.id === id ? updatedTask : t));
+      toast({
+        title: "Success",
+        description: "Maintenance task completed successfully",
+      });
+      return updatedTask;
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to complete maintenance task",
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
+
+  const createRotationPlan = async (planData: any) => {
+    try {
+      const newPlan = await housingService.createRotationPlan(planData);
+      setRotationPlans(prev => [...prev, newPlan]);
+      toast({
+        title: "Success",
+        description: "Rotation plan created successfully",
+      });
+      return newPlan;
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create rotation plan",
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
+
   return {
     paddocks,
     maintenanceTasks,
+    maintenanceRecords,
     rotationPlans,
     loading,
     error,
@@ -220,6 +285,11 @@ export const usePaddockData = () => {
     getFilteredPaddocks,
     getStatusColor,
     getTypeColor,
-    refreshData: loadPaddockData
+    refreshData: loadPaddockData,
+    createPaddock,
+    assignHorseToPaddock,
+    scheduleMaintenanceTask,
+    completeMaintenanceTask,
+    createRotationPlan
   };
 };

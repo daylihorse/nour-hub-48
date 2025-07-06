@@ -30,8 +30,8 @@ interface Paddock {
 
 interface PaddockDetailsDialogProps {
   paddock: Paddock | null;
-  isOpen: boolean;
-  onClose: () => void;
+  open: boolean;
+  onOpenChange: () => void;
   onEdit: (paddock: Paddock) => void;
   getStatusColor: (status: string) => string;
   getTypeColor: (type: string) => string;
@@ -39,8 +39,8 @@ interface PaddockDetailsDialogProps {
 
 const PaddockDetailsDialog = ({
   paddock,
-  isOpen,
-  onClose,
+  open,
+  onOpenChange,
   onEdit,
   getStatusColor,
   getTypeColor,
@@ -48,7 +48,7 @@ const PaddockDetailsDialog = ({
   if (!paddock) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center justify-between">
@@ -220,7 +220,7 @@ const PaddockDetailsDialog = ({
 
           {/* Actions */}
           <div className="flex justify-end gap-2 pt-4">
-            <Button variant="outline" onClick={onClose}>
+            <Button variant="outline" onClick={() => onOpenChange()}>
               Close
             </Button>
             <Button onClick={() => onEdit(paddock)}>

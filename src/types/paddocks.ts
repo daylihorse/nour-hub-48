@@ -118,3 +118,31 @@ export interface PaddockStats {
   utilizationRate: number;
   upcomingMaintenance: number;
 }
+
+export interface PaddockMaintenanceRecord {
+  id: string;
+  paddockId: string;
+  maintenanceType: string;
+  description: string;
+  performedDate: Date;
+  performedBy: string;
+  cost?: number;
+  notes?: string;
+  attachments?: string[];
+  tenantId: string;
+}
+
+export interface PaddockRotationPlan extends RotationPlan {
+  rotationInterval: number; // days between rotations
+}
+
+export interface PaddockEnvironmentalData {
+  id: string;
+  paddockId: string;
+  temperature: number;
+  humidity: number;
+  soilMoisture: number;
+  weatherCondition: string;
+  recordedAt: Date;
+  tenantId: string;
+}

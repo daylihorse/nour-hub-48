@@ -41,7 +41,7 @@ interface AssignmentFormData {
 
 const PaddockHorseAssignment = () => {
   const { paddocks } = usePaddockData();
-  const housingService = useHousingService();
+  const housingService = useHousingService;
   const [assignments, setAssignments] = useState<any[]>([]);
   
   // Initialize form
@@ -60,7 +60,7 @@ const PaddockHorseAssignment = () => {
   );
   
   // Handle form submission
-  const onSubmit = (data: AssignmentFormData) => {
+  const onSubmit = async (data: AssignmentFormData) => {
     try {
       // Find the selected horse
       const selectedHorse = mockHorses.find(h => h.id === data.horseId);
@@ -75,20 +75,22 @@ const PaddockHorseAssignment = () => {
       }
       
       // Assign horse to paddock using our housing service
-      const assignment = housingService.assignHorseToPaddock({
-        paddockId: data.paddockId,
+      await housingService.assignHorseToPaddock(
+        data.paddockId,
+        selectedHorse.id,
+        selectedHorse.name,
+        data.notes
+      );
+      
+      // Update local assignments state  
+      const assignment = {
         horseId: selectedHorse.id,
         horseName: selectedHorse.name,
-        assignedDate: new Date(),
+        paddockId: data.paddockId,
         assignmentType: data.assignmentType,
-        status: 'active',
-        assignedBy: "current-user", // In a real app, this would be the current user
         notes: data.notes,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      });
-      
-      // Update local assignments state
+        assignedDate: new Date()
+      };
       setAssignments(prev => [...prev, assignment]);
       
       toast({

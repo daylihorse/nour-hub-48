@@ -1,1 +1,2 @@
-export * from './housingService'; 
+export * from './housingService';
+export { housingService as useHousingService } from './housingService';

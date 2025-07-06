@@ -163,12 +163,19 @@ const PaddockManagement = () => {
   });
 
   /** Handle add new paddock */
-  const handleAddPaddock = (paddockData: any) => {
-    const newPaddock = createPaddock(paddockData);
-    if (newPaddock) {
+  const handleAddPaddock = async (paddockData: any) => {
+    try {
+      const newPaddock = await createPaddock(paddockData);
       toast({
         title: "Success",
         description: `Paddock ${newPaddock.name} created successfully`,
+      });
+      setShowAddDialog(false);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create paddock",
+        variant: "destructive",
       });
     }
   };
@@ -212,14 +219,21 @@ const PaddockManagement = () => {
   };
 
   /** Handle edit save */
-  const handleEditSave = (updatedPaddock: any) => {
-    if (updatePaddock(updatedPaddock.id, updatedPaddock)) {
+  const handleEditSave = async (updatedPaddock: any) => {
+    try {
+      await updatePaddock(selectedPaddock?.id!, updatedPaddock);
       toast({
         title: "Success",
-        description: `Paddock ${updatedPaddock.name} updated successfully`,
+        description: "Paddock updated successfully",
       });
       setShowEditDialog(false);
       setSelectedPaddock(null);
+    } catch (error) {
+      toast({
+        title: "Error", 
+        description: "Failed to update paddock",
+        variant: "destructive",
+      });
     }
   };
 
@@ -364,15 +378,15 @@ const PaddockManagement = () => {
 
       {/* Dialogs */}
       <AddPaddockDialog
-        isOpen={showAddDialog}
-        onClose={() => setShowAddDialog(false)}
-        onAddPaddock={handleAddPaddock}
+        open={showAddDialog}
+        onOpenChange={() => setShowAddDialog(false)}
+        onSubmit={handleAddPaddock}
       />
 
       <PaddockDetailsDialog
         paddock={selectedPaddock}
-        isOpen={showDetailsDialog}
-        onClose={() => {
+        open={showDetailsDialog}
+        onOpenChange={() => {
           setShowDetailsDialog(false);
           setSelectedPaddock(null);
         }}
@@ -383,12 +397,12 @@ const PaddockManagement = () => {
 
       <EditPaddockDialog
         paddock={selectedPaddock}
-        isOpen={showEditDialog}
-        onClose={() => {
+        open={showEditDialog}
+        onOpenChange={() => {
           setShowEditDialog(false);
           setSelectedPaddock(null);
         }}
-        onSave={handleEditSave}
+        onSubmit={handleEditSave}
       />
 
       <DeleteConfirmationDialog
@@ -400,13 +414,13 @@ const PaddockManagement = () => {
       />
 
       <AssignHorseDialog
-        isOpen={showAssignHorseDialog}
-        onClose={() => {
+        open={showAssignHorseDialog}
+        onOpenChange={() => {
           setShowAssignHorseDialog(false);
           setSelectedPaddock(null);
         }}
         paddock={selectedPaddock}
-        onAssign={handleHorseAssignment}
+        onSubmit={handleHorseAssignment}
       />
     </div>
   );
