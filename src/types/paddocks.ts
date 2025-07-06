@@ -1,131 +1,120 @@
-
-export type PaddockStatus = 'available' | 'occupied' | 'maintenance' | 'reserved';
-export type PaddockType = 'grazing' | 'exercise' | 'turnout' | 'breeding' | 'quarantine' | 'rehabilitation';
-export type MaintenanceType = 'fence_repair' | 'gate_maintenance' | 'drainage' | 'grass_maintenance' | 'water_system' | 'shelter_repair';
-export type MaintenanceStatus = 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
-
-export interface PaddockSize {
-  length: number;
-  width: number;
-  unit: string;
-}
-
-export interface PaddockLocation {
-  section: string;
-  coordinates?: {
-    latitude: number;
-    longitude: number;
-  };
-}
-
-export interface HorseAssignmentInfo {
-  horseId: string;
-  horseName: string;
-  assignedDate: Date;
-}
-
-export interface PaddockRotationSchedule {
-  inRotationPlan: boolean;
-  lastRotation?: Date;
-  nextRotation?: Date;
-  restPeriod?: number;
-}
-
-export interface PaddockMaintenanceHistory {
-  lastMaintenance?: Date;
-  nextScheduledMaintenance?: Date;
-  maintenanceType?: MaintenanceType;
-}
-
 export interface Paddock {
   id: string;
   name: string;
   number: string;
-  status: PaddockStatus;
-  type: PaddockType;
-  size: PaddockSize;
+  type: 'pasture' | 'exercise' | 'quarantine' | 'breeding' | 'training';
+  status: 'available' | 'occupied' | 'maintenance' | 'reserved';
+  location: {
+    section: string;
+    coordinates?: {
+      lat: number;
+      lng: number;
+    };
+  };
+  size: {
+    length: number;
+    width: number;
+    unit: 'meters' | 'feet';
+    area?: number;
+  };
   capacity: number;
   currentOccupancy: number;
-  location: PaddockLocation;
-  features?: string[];
-  assignedHorses?: HorseAssignmentInfo[];
-  rotationSchedule?: PaddockRotationSchedule;
-  maintenanceHistory?: PaddockMaintenanceHistory;
+  assignedHorses?: AssignedHorse[];
+  facilities: {
+    waterSource: boolean;
+    shelter: boolean;
+    fencing: 'wood' | 'metal' | 'electric' | 'composite';
+    gates: number;
+    lighting: boolean;
+  };
+  soilCondition: {
+    type: 'grass' | 'sand' | 'dirt' | 'mixed';
+    drainage: 'excellent' | 'good' | 'fair' | 'poor';
+    lastTested: Date;
+  };
+  rotationSchedule?: {
+    nextRotation: Date;
+    restPeriod: number; // days
+    lastRotation?: Date;
+  };
+  maintenanceSchedule?: {
+    lastMaintenance: Date;
+    nextMaintenance: Date;
+    type: string;
+  };
+  notes?: string;
   createdAt: Date;
   updatedAt: Date;
+  tenantId: string;
+  createdBy?: string;
 }
 
-export interface PaddockAssignment {
-  id: string;
-  paddockId: string;
+export interface AssignedHorse {
   horseId: string;
   horseName: string;
-  assignedDate: Date;
-  scheduledEndDate?: Date;
-  actualEndDate?: Date;
-  assignmentType?: string;
-  status: 'active' | 'completed' | 'scheduled';
-  assignedBy: string;
+  assignedAt: Date;
+  expectedDuration?: number; // days
   notes?: string;
-  reason?: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
-export interface PaddockMaintenanceRecord {
+export interface PaddockFilters {
+  status?: string;
+  type?: string;
+  availability?: 'available' | 'occupied' | 'all';
+  section?: string;
+}
+
+export interface MaintenanceTask {
   id: string;
   paddockId: string;
-  type: MaintenanceType;
-  description: string;
+  paddockName: string;
+  type: 'fence_repair' | 'gate_maintenance' | 'water_system' | 'drainage' | 'soil_treatment' | 'general';
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
   scheduledDate: Date;
   completedDate?: Date;
-  status: MaintenanceStatus;
+  estimatedDuration: number; // hours
   assignedTo?: string;
+  description: string;
   cost?: number;
   notes?: string;
-  nextMaintenanceDate?: Date;
+  attachments?: string[];
   createdAt: Date;
+  updatedAt: Date;
+  tenantId: string;
+}
+
+export interface RotationPlan {
+  id: string;
+  name: string;
+  description?: string;
+  duration: number; // days per rotation
+  restPeriod: number; // days of rest
+  paddockIds: string[];
+  horseGroups: HorseGroup[];
+  status: 'active' | 'paused' | 'completed';
+  startDate: Date;
+  endDate?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  tenantId: string;
 }
 
 export interface HorseGroup {
-  groupId: string;
-  groupName: string;
+  id: string;
+  name: string;
   horseIds: string[];
-  currentPaddockId: string;
+  currentPaddockId?: string;
   rotationOrder: number;
 }
 
-export interface PaddockRotationPlan {
-  id: string;
-  name: string;
-  paddockIds: string[];
-  horseGroups: HorseGroup[];
-  rotationInterval: number;
-  restPeriod: number;
-  startDate: Date;
-  endDate?: Date;
-  status: 'active' | 'paused' | 'completed' | 'cancelled';
-  automaticRotation: boolean;
-  notifications?: {
-    enabled: boolean;
-    daysBeforeRotation: number;
-    recipients: string[];
-  };
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface HorseAssignment {
-  id: string;
-  horseId: string;
-  horseName: string;
-  paddockId: string;
-  assignedDate: Date;
-  scheduledEndDate?: Date;
-  actualEndDate?: Date;
-  assignedBy: string;
-  reason?: string;
-  status: 'active' | 'completed' | 'scheduled';
-  createdAt: Date;
-  updatedAt: Date;
+export interface PaddockStats {
+  totalPaddocks: number;
+  availablePaddocks: number;
+  occupiedPaddocks: number;
+  maintenancePaddocks: number;
+  totalCapacity: number;
+  currentOccupancy: number;
+  utilizationRate: number;
+  upcomingMaintenance: number;
 }

@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -9,275 +12,316 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Paddock } from "@/types/paddocks";
 
 interface AddPaddockDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onAddPaddock: (paddockData: any) => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSubmit: (data: Omit<Paddock, 'id' | 'createdAt' | 'updatedAt' | 'tenantId'>) => void;
 }
 
-const AddPaddockDialog = ({ isOpen, onClose, onAddPaddock }: AddPaddockDialogProps) => {
-  const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    name: "",
-    number: "",
-    type: "",
-    status: "available",
-    location: {
-      section: "",
-      coordinates: { x: 0, y: 0 },
-    },
-    capacity: 0,
-    size: {
-      length: 0,
-      width: 0,
-      unit: "meters",
-    },
-    description: "",
-    features: [],
-    amenities: [],
-  });
+const AddPaddockDialog = ({ open, onOpenChange, onSubmit }: AddPaddockDialogProps) => {
+  const [loading, setLoading] = useState(false);
+  const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm();
 
-  const handleInputChange = (field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const handleLocationChange = (field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      location: {
-        ...prev.location,
-        [field]: value
-      }
-    }));
-  };
-
-  const handleSizeChange = (field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      size: {
-        ...prev.size,
-        [field]: value
-      }
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Basic validation
-    if (!formData.name || !formData.number || !formData.type || !formData.location.section) {
-      toast({
-        title: "Error",
-        description: "Please fill in all required fields",
-        variant: "destructive",
-      });
-      return;
+  const handleFormSubmit = async (data: any) => {
+    setLoading(true);
+    try {
+      const paddockData = {
+        ...data,
+        currentOccupancy: 0,
+        assignedHorses: [],
+        size: {
+          length: Number(data.length),
+          width: Number(data.width),
+          unit: data.unit,
+          area: Number(data.length) * Number(data.width)
+        },
+        location: {
+          section: data.section,
+          coordinates: data.coordinates ? {
+            lat: Number(data.lat),
+            lng: Number(data.lng)
+          } : undefined
+        },
+        facilities: {
+          waterSource: data.waterSource || false,
+          shelter: data.shelter || false,
+          fencing: data.fencing,
+          gates: Number(data.gates) || 1,
+          lighting: data.lighting || false
+        },
+        soilCondition: {
+          type: data.soilType,
+          drainage: data.drainage,
+          lastTested: new Date()
+        },
+        capacity: Number(data.capacity)
+      };
+      
+      onSubmit(paddockData);
+      reset();
+    } catch (error) {
+      console.error("Failed to create paddock:", error);
+    } finally {
+      setLoading(false);
     }
-
-    // Create paddock data
-    const paddockData = {
-      ...formData,
-      currentOccupancy: 0,
-      assignedHorses: [],
-      maintenanceSchedule: null,
-      rotationSchedule: null,
-    };
-
-    onAddPaddock(paddockData);
-    
-    // Reset form
-    setFormData({
-      name: "",
-      number: "",
-      type: "",
-      status: "available",
-      location: {
-        section: "",
-        coordinates: { x: 0, y: 0 },
-      },
-      capacity: 0,
-      size: {
-        length: 0,
-        width: 0,
-        unit: "meters",
-      },
-      description: "",
-      features: [],
-      amenities: [],
-    });
-    
-    onClose();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Paddock</DialogTitle>
+          <DialogDescription>
+            Create a new paddock with all necessary details and specifications.
+          </DialogDescription>
         </DialogHeader>
-        
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Basic Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="name">Paddock Name *</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => handleInputChange("name", e.target.value)}
-                placeholder="e.g., North Pasture"
-                required
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="number">Paddock Number *</Label>
-              <Input
-                id="number"
-                value={formData.number}
-                onChange={(e) => handleInputChange("number", e.target.value)}
-                placeholder="e.g., NP-001"
-                required
-              />
-            </div>
-          </div>
 
-          {/* Type and Status */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="type">Paddock Type *</Label>
-              <Select value={formData.type} onValueChange={(value) => handleInputChange("type", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="grazing">Grazing</SelectItem>
-                  <SelectItem value="exercise">Exercise</SelectItem>
-                  <SelectItem value="turnout">Turnout</SelectItem>
-                  <SelectItem value="breeding">Breeding</SelectItem>
-                  <SelectItem value="quarantine">Quarantine</SelectItem>
-                  <SelectItem value="rehabilitation">Rehabilitation</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div>
-              <Label htmlFor="status">Status</Label>
-              <Select value={formData.status} onValueChange={(value) => handleInputChange("status", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="available">Available</SelectItem>
-                  <SelectItem value="occupied">Occupied</SelectItem>
-                  <SelectItem value="maintenance">Maintenance</SelectItem>
-                  <SelectItem value="reserved">Reserved</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+          <Tabs defaultValue="basic" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="basic">Basic Info</TabsTrigger>
+              <TabsTrigger value="facilities">Facilities</TabsTrigger>
+              <TabsTrigger value="conditions">Conditions</TabsTrigger>
+            </TabsList>
 
-          {/* Location and Capacity */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="section">Location Section *</Label>
-              <Input
-                id="section"
-                value={formData.location.section}
-                onChange={(e) => handleLocationChange("section", e.target.value)}
-                placeholder="e.g., North Section"
-                required
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="capacity">Horse Capacity</Label>
-              <Input
-                id="capacity"
-                type="number"
-                min="0"
-                value={formData.capacity}
-                onChange={(e) => handleInputChange("capacity", parseInt(e.target.value) || 0)}
-                placeholder="Maximum number of horses"
-              />
-            </div>
-          </div>
+            <TabsContent value="basic" className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Paddock Name *</Label>
+                  <Input
+                    id="name"
+                    {...register("name", { required: "Name is required" })}
+                    placeholder="e.g., Paddock Alpha"
+                  />
+                  {errors.name && <p className="text-sm text-destructive">{errors.name.message as string}</p>}
+                </div>
 
-          {/* Size */}
-          <div>
-            <Label>Paddock Size</Label>
-            <div className="grid grid-cols-3 gap-4 mt-2">
-              <div>
+                <div className="space-y-2">
+                  <Label htmlFor="number">Paddock Number *</Label>
+                  <Input
+                    id="number"
+                    {...register("number", { required: "Number is required" })}
+                    placeholder="e.g., P-001"
+                  />
+                  {errors.number && <p className="text-sm text-destructive">{errors.number.message as string}</p>}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="type">Type *</Label>
+                  <Select onValueChange={(value) => setValue("type", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pasture">Pasture</SelectItem>
+                      <SelectItem value="exercise">Exercise</SelectItem>
+                      <SelectItem value="quarantine">Quarantine</SelectItem>
+                      <SelectItem value="breeding">Breeding</SelectItem>
+                      <SelectItem value="training">Training</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="status">Status *</Label>
+                  <Select onValueChange={(value) => setValue("status", value)} defaultValue="available">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="available">Available</SelectItem>
+                      <SelectItem value="occupied">Occupied</SelectItem>
+                      <SelectItem value="maintenance">Maintenance</SelectItem>
+                      <SelectItem value="reserved">Reserved</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="section">Section *</Label>
                 <Input
+                  id="section"
+                  {...register("section", { required: "Section is required" })}
+                  placeholder="e.g., North Field"
+                />
+                {errors.section && <p className="text-sm text-destructive">{errors.section.message as string}</p>}
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="length">Length *</Label>
+                  <Input
+                    id="length"
+                    type="number"
+                    {...register("length", { required: "Length is required", min: 1 })}
+                    placeholder="100"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="width">Width *</Label>
+                  <Input
+                    id="width"
+                    type="number"
+                    {...register("width", { required: "Width is required", min: 1 })}
+                    placeholder="80"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="unit">Unit *</Label>
+                  <Select onValueChange={(value) => setValue("unit", value)} defaultValue="meters">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select unit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="meters">Meters</SelectItem>
+                      <SelectItem value="feet">Feet</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="capacity">Capacity (Horses) *</Label>
+                <Input
+                  id="capacity"
                   type="number"
-                  min="0"
-                  value={formData.size.length}
-                  onChange={(e) => handleSizeChange("length", parseInt(e.target.value) || 0)}
-                  placeholder="Length"
+                  {...register("capacity", { required: "Capacity is required", min: 1 })}
+                  placeholder="8"
+                />
+                {errors.capacity && <p className="text-sm text-destructive">{errors.capacity.message as string}</p>}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="facilities" className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="waterSource"
+                    {...register("waterSource")}
+                    onCheckedChange={(checked) => setValue("waterSource", checked)}
+                  />
+                  <Label htmlFor="waterSource">Water Source Available</Label>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="shelter"
+                    {...register("shelter")}
+                    onCheckedChange={(checked) => setValue("shelter", checked)}
+                  />
+                  <Label htmlFor="shelter">Shelter Available</Label>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="lighting"
+                  {...register("lighting")}
+                  onCheckedChange={(checked) => setValue("lighting", checked)}
+                />
+                <Label htmlFor="lighting">Lighting Available</Label>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="fencing">Fencing Type *</Label>
+                  <Select onValueChange={(value) => setValue("fencing", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select fencing type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="wood">Wood</SelectItem>
+                      <SelectItem value="metal">Metal</SelectItem>
+                      <SelectItem value="electric">Electric</SelectItem>
+                      <SelectItem value="composite">Composite</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="gates">Number of Gates</Label>
+                  <Input
+                    id="gates"
+                    type="number"
+                    {...register("gates")}
+                    placeholder="1"
+                    defaultValue={1}
+                  />
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="conditions" className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="soilType">Soil Type *</Label>
+                  <Select onValueChange={(value) => setValue("soilType", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select soil type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="grass">Grass</SelectItem>
+                      <SelectItem value="sand">Sand</SelectItem>
+                      <SelectItem value="dirt">Dirt</SelectItem>
+                      <SelectItem value="mixed">Mixed</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="drainage">Drainage *</Label>
+                  <Select onValueChange={(value) => setValue("drainage", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select drainage" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="excellent">Excellent</SelectItem>
+                      <SelectItem value="good">Good</SelectItem>
+                      <SelectItem value="fair">Fair</SelectItem>
+                      <SelectItem value="poor">Poor</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="notes">Additional Notes</Label>
+                <Textarea
+                  id="notes"
+                  {...register("notes")}
+                  placeholder="Any additional information about this paddock..."
+                  rows={3}
                 />
               </div>
-              <div>
-                <Input
-                  type="number"
-                  min="0"
-                  value={formData.size.width}
-                  onChange={(e) => handleSizeChange("width", parseInt(e.target.value) || 0)}
-                  placeholder="Width"
-                />
-              </div>
-              <div>
-                <Select value={formData.size.unit} onValueChange={(value) => handleSizeChange("unit", value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="meters">Meters</SelectItem>
-                    <SelectItem value="feet">Feet</SelectItem>
-                    <SelectItem value="acres">Acres</SelectItem>
-                    <SelectItem value="hectares">Hectares</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
 
-          {/* Description */}
-          <div>
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => handleInputChange("description", e.target.value)}
-              placeholder="Additional details about the paddock..."
-              rows={3}
-            />
-          </div>
+              <div className="text-sm text-muted-foreground p-3 bg-muted/50 rounded">
+                <strong>Optional:</strong> You can add GPS coordinates later for precise location mapping.
+              </div>
+            </TabsContent>
+          </Tabs>
 
-          {/* Actions */}
-          <div className="flex justify-end gap-2 pt-6">
-            <Button type="button" variant="outline" onClick={onClose}>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit">
-              Add Paddock
+            <Button type="submit" disabled={loading}>
+              {loading ? "Creating..." : "Create Paddock"}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default AddPaddockDialog; 
+export default AddPaddockDialog;

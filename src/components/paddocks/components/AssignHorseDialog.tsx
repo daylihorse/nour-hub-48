@@ -1,166 +1,193 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Zap, Heart } from "lucide-react";
-
-// Mock horse data - in a real app this would come from an API or context
-const mockHorses = [
-  { id: "h1", name: "Thunder", breed: "Arabian" },
-  { id: "h2", name: "Lightning", breed: "Thoroughbred" },
-  { id: "h3", name: "Storm", breed: "Quarter Horse" },
-  { id: "h4", name: "Shadow", breed: "Appaloosa" },
-  { id: "h5", name: "Midnight", breed: "Friesian" },
-  { id: "h6", name: "Apollo", breed: "Andalusian" },
-  { id: "h7", name: "Phoenix", breed: "Mustang" },
-  { id: "h8", name: "Spirit", breed: "Clydesdale" },
-];
-
-interface Paddock {
-  id: string;
-  name: string;
-  number: string;
-  capacity: number;
-  currentOccupancy: number;
-}
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Users, AlertCircle } from "lucide-react";
+import { Paddock } from "@/types/paddocks";
 
 interface AssignHorseDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  paddock: Paddock | null;
-  onAssign: (horseId: string, horseName: string, assignmentType: string, reason?: string) => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  paddock: Paddock;
+  onSubmit: (horseId: string, horseName: string, notes?: string) => void;
 }
 
-const AssignHorseDialog = ({
-  isOpen,
-  onClose,
-  paddock,
-  onAssign
-}: AssignHorseDialogProps) => {
-  const [selectedHorse, setSelectedHorse] = useState("");
-  const [assignmentType, setAssignmentType] = useState("grazing");
-  const [reason, setReason] = useState("");
+// Mock horses data - in real app, this would come from API
+const mockHorses = [
+  { id: '1', name: 'Thunder', status: 'available' },
+  { id: '2', name: 'Lightning', status: 'available' },
+  { id: '3', name: 'Storm', status: 'available' },
+  { id: '4', name: 'Blaze', status: 'available' },
+  { id: '5', name: 'Spirit', status: 'available' },
+  { id: '6', name: 'Midnight', status: 'assigned' },
+  { id: '7', name: 'Star', status: 'available' },
+  { id: '8', name: 'Diamond', status: 'medical' },
+];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
+const AssignHorseDialog = ({ open, onOpenChange, paddock, onSubmit }: AssignHorseDialogProps) => {
+  const [loading, setLoading] = useState(false);
+  const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm();
+
+  const selectedHorseId = watch("horseId");
+  const selectedHorse = mockHorses.find(h => h.id === selectedHorseId);
+  const availableHorses = mockHorses.filter(h => h.status === 'available');
+  const assignedHorseIds = paddock.assignedHorses?.map(h => h.horseId) || [];
+  const unassignedHorses = availableHorses.filter(h => !assignedHorseIds.includes(h.id));
+  
+  const remainingCapacity = paddock.capacity - paddock.currentOccupancy;
+  const canAssignMore = remainingCapacity > 0;
+
+  const handleFormSubmit = async (data: any) => {
     if (!selectedHorse) return;
     
-    const horse = mockHorses.find(h => h.id === selectedHorse);
-    if (!horse) return;
-    
-    onAssign(selectedHorse, horse.name, assignmentType, reason);
-    
-    // Reset form
-    setSelectedHorse("");
-    setAssignmentType("grazing");
-    setReason("");
-    onClose();
+    setLoading(true);
+    try {
+      await onSubmit(selectedHorse.id, selectedHorse.name, data.notes);
+      reset();
+    } catch (error) {
+      console.error("Failed to assign horse:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const availableSpace = paddock ? paddock.capacity - paddock.currentOccupancy : 0;
-
-  if (!paddock) return null;
+  const handleClose = () => {
+    reset();
+    onOpenChange(false);
+  };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>
-            <div className="flex items-center gap-2">
-              <Zap className="h-5 w-5" />
-              Assign Horse to {paddock.name}
-            </div>
+          <DialogTitle className="flex items-center gap-2">
+            <Users className="h-5 w-5" />
+            Assign Horse to Paddock
           </DialogTitle>
+          <DialogDescription>
+            Assign a horse to {paddock.name} ({paddock.number})
+          </DialogDescription>
         </DialogHeader>
-        
-        <div className="mb-4 p-3 bg-muted rounded-lg">
-          <p className="text-sm font-medium">Paddock Information</p>
-          <p className="text-sm text-muted-foreground">
-            Available Space: {availableSpace} / {paddock.capacity} horses
-          </p>
+
+        {/* Paddock Status */}
+        <div className="p-4 bg-muted/50 rounded-lg space-y-2">
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-medium">Current Occupancy:</span>
+            <Badge variant={canAssignMore ? "secondary" : "destructive"}>
+              {paddock.currentOccupancy}/{paddock.capacity} horses
+            </Badge>
+          </div>
+          {!canAssignMore && (
+            <div className="flex items-center gap-2 text-sm text-destructive">
+              <AlertCircle className="h-4 w-4" />
+              Paddock is at full capacity
+            </div>
+          )}
+          {remainingCapacity > 0 && (
+            <div className="text-sm text-muted-foreground">
+              {remainingCapacity} space{remainingCapacity !== 1 ? 's' : ''} remaining
+            </div>
+          )}
         </div>
 
-        {availableSpace <= 0 ? (
-          <div className="p-4 text-center">
-            <p className="text-muted-foreground">
-              This paddock is at full capacity. Please free up space before assigning new horses.
-            </p>
-            <Button variant="outline" className="mt-4" onClick={onClose}>
-              Close
-            </Button>
+        {/* Current Assigned Horses */}
+        {paddock.assignedHorses && paddock.assignedHorses.length > 0 && (
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Currently Assigned:</Label>
+            <div className="flex flex-wrap gap-2">
+              {paddock.assignedHorses.map((horse) => (
+                <Badge key={horse.horseId} variant="outline">
+                  {horse.horseName}
+                </Badge>
+              ))}
+            </div>
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
+        )}
+
+        {canAssignMore && unassignedHorses.length > 0 ? (
+          <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="horse">Select Horse</Label>
-              <Select value={selectedHorse} onValueChange={setSelectedHorse} required>
+              <Label htmlFor="horseId">Select Horse *</Label>
+              <Select onValueChange={(value) => setValue("horseId", value)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Choose a horse" />
+                  <SelectValue placeholder="Choose a horse to assign" />
                 </SelectTrigger>
                 <SelectContent>
-                  {mockHorses.map((horse) => (
+                  {unassignedHorses.map((horse) => (
                     <SelectItem key={horse.id} value={horse.id}>
-                      <div className="flex items-center gap-2">
-                        <Heart className="h-4 w-4" />
-                        {horse.name} - {horse.breed}
-                      </div>
+                      {horse.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              {errors.horseId && <p className="text-sm text-destructive">Please select a horse</p>}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="assignmentType">Assignment Type</Label>
-              <Select value={assignmentType} onValueChange={setAssignmentType}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="grazing">Grazing</SelectItem>
-                  <SelectItem value="exercise">Exercise</SelectItem>
-                  <SelectItem value="turnout">Turnout</SelectItem>
-                  <SelectItem value="breeding">Breeding</SelectItem>
-                  <SelectItem value="quarantine">Quarantine</SelectItem>
-                  <SelectItem value="rehabilitation">Rehabilitation</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {selectedHorse && (
+              <div className="p-3 bg-primary/5 rounded-lg">
+                <div className="text-sm font-medium">Selected Horse:</div>
+                <div className="text-lg">{selectedHorse.name}</div>
+                <Badge variant="secondary" className="mt-1">
+                  {selectedHorse.status}
+                </Badge>
+              </div>
+            )}
 
             <div className="space-y-2">
-              <Label htmlFor="reason">Reason / Notes (Optional)</Label>
+              <Label htmlFor="notes">Assignment Notes (Optional)</Label>
               <Textarea
-                id="reason"
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                placeholder="Any additional notes about this assignment..."
+                id="notes"
+                {...register("notes")}
+                placeholder="Any special notes about this assignment..."
                 rows={3}
               />
             </div>
 
-            <div className="flex justify-end gap-2">
-              <Button type="button" variant="outline" onClick={onClose}>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={handleClose}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={!selectedHorse}>
-                Assign Horse
+              <Button type="submit" disabled={loading || !selectedHorse}>
+                {loading ? "Assigning..." : "Assign Horse"}
               </Button>
-            </div>
+            </DialogFooter>
           </form>
+        ) : (
+          <div className="space-y-4">
+            {!canAssignMore && (
+              <div className="text-center text-muted-foreground py-8">
+                <AlertCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                <p>This paddock is at full capacity.</p>
+                <p className="text-sm">Remove some horses before assigning new ones.</p>
+              </div>
+            )}
+
+            {canAssignMore && unassignedHorses.length === 0 && (
+              <div className="text-center text-muted-foreground py-8">
+                <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                <p>No available horses to assign.</p>
+                <p className="text-sm">All horses are either already assigned or unavailable.</p>
+              </div>
+            )}
+
+            <DialogFooter>
+              <Button variant="outline" onClick={handleClose}>
+                Close
+              </Button>
+            </DialogFooter>
+          </div>
         )}
       </DialogContent>
     </Dialog>

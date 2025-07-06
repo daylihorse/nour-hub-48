@@ -18,76 +18,64 @@ interface PaddockViewSelectorProps {
 }
 
 const PaddockViewSelector = ({ 
-  currentView, 
+  currentView,
   onViewChange,
   gridSize = 3,
-  onGridSizeChange = () => {},
+  onGridSizeChange,
 }: PaddockViewSelectorProps) => {
   return (
     <div className="flex items-center gap-2">
-      {currentView === "grid" && (
+      {/* View Mode Buttons */}
+      <div className="flex border border-border rounded-md">
+        <Button
+          variant={currentView === "grid" ? "default" : "ghost"}
+          size="sm"
+          onClick={() => onViewChange("grid")}
+          className="rounded-r-none"
+        >
+          <LayoutGrid className="h-4 w-4" />
+        </Button>
+        <Button
+          variant={currentView === "list" ? "default" : "ghost"}
+          size="sm"
+          onClick={() => onViewChange("list")}
+          className="rounded-none border-x"
+        >
+          <List className="h-4 w-4" />
+        </Button>
+        <Button
+          variant={currentView === "table" ? "default" : "ghost"}
+          size="sm"
+          onClick={() => onViewChange("table")}
+          className="rounded-l-none"
+        >
+          <TableIcon className="h-4 w-4" />
+        </Button>
+      </div>
+
+      {/* Grid Size Selector (only visible in grid view) */}
+      {currentView === "grid" && onGridSizeChange && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="flex items-center gap-1">
-              <LayoutGrid className="h-4 w-4 mr-1" />
-              <span>Columns: {gridSize}</span>
+            <Button variant="outline" size="sm">
+              {gridSize} Columns
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem 
-              className={gridSize === 2 ? "bg-muted" : ""} 
-              onClick={() => onGridSizeChange(2)}
-            >
+          <DropdownMenuContent align="end" className="bg-popover">
+            <DropdownMenuItem onClick={() => onGridSizeChange(2)}>
               2 Columns
             </DropdownMenuItem>
-            <DropdownMenuItem 
-              className={gridSize === 3 ? "bg-muted" : ""} 
-              onClick={() => onGridSizeChange(3)}
-            >
+            <DropdownMenuItem onClick={() => onGridSizeChange(3)}>
               3 Columns
             </DropdownMenuItem>
-            <DropdownMenuItem 
-              className={gridSize === 4 ? "bg-muted" : ""} 
-              onClick={() => onGridSizeChange(4)}
-            >
+            <DropdownMenuItem onClick={() => onGridSizeChange(4)}>
               4 Columns
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )}
-      <div className="flex border rounded-md overflow-hidden">
-        <Button
-          variant={currentView === "grid" ? "secondary" : "ghost"}
-          className={`rounded-none ${currentView === "grid" ? "" : "bg-background"}`}
-          onClick={() => onViewChange("grid")}
-          size="sm"
-        >
-          <LayoutGrid className="h-4 w-4 mr-1" />
-          Grid
-        </Button>
-        
-        <Button
-          variant={currentView === "list" ? "secondary" : "ghost"}
-          className={`rounded-none ${currentView === "list" ? "" : "bg-background"}`}
-          onClick={() => onViewChange("list")}
-          size="sm"
-        >
-          <List className="h-4 w-4 mr-1" />
-          List
-        </Button>
-        
-        <Button
-          variant={currentView === "table" ? "secondary" : "ghost"}
-          className={`rounded-none ${currentView === "table" ? "" : "bg-background"}`}
-          onClick={() => onViewChange("table")}
-          size="sm"
-        >
-          <TableIcon className="h-4 w-4 mr-1" />
-          Table
-        </Button>
-      </div>
     </div>
   );
 };
 
-export default PaddockViewSelector; 
+export default PaddockViewSelector;
