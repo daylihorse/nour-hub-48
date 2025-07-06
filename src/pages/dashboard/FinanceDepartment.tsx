@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import EnhancedFinanceDashboard from "@/components/finance/EnhancedFinanceDashboard";
 import PurchaseManagement from "@/components/finance/PurchaseManagement";
 import SalesManagement from "@/components/finance/SalesManagement";
 import CustomerSupplierManagement from "@/components/finance/CustomerSupplierManagement";
@@ -12,7 +11,7 @@ import CompanySettings from "@/components/finance/CompanySettings";
 import TaskManagement from "@/components/tasks/TaskManagement";
 
 const FinanceDepartment = () => {
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeTab, setActiveTab] = useState("purchases");
 
   return (
     <div className="space-y-6">
@@ -22,8 +21,7 @@ const FinanceDepartment = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-8">
-          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="purchases">Purchases</TabsTrigger>
           <TabsTrigger value="sales">Sales</TabsTrigger>
           <TabsTrigger value="customers">Customers</TabsTrigger>
@@ -32,10 +30,6 @@ const FinanceDepartment = () => {
           <TabsTrigger value="reports">Reports</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="dashboard" className="mt-6">
-          <EnhancedFinanceDashboard />
-        </TabsContent>
         
         <TabsContent value="purchases" className="mt-6">
           <PurchaseManagement />
