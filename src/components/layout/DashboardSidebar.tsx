@@ -14,14 +14,20 @@ import {
 import SidebarMenu from "./sidebar/SidebarMenu";
 import SidebarFooter from "./sidebar/SidebarFooter";
 import DashboardSidebarHeader from "./sidebar/DashboardSidebarHeader";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const DashboardSidebar = () => {
   const { state } = useSidebar();
+  const { direction } = useLanguage();
   const collapsed = state === "collapsed";
 
   return (
     <TooltipProvider>
-      <Sidebar className={collapsed ? "w-16" : "w-64"} collapsible="icon">
+      <Sidebar 
+        className={`${collapsed ? "w-16" : "w-64"} ${direction === 'rtl' ? 'border-l border-r-0' : 'border-r border-l-0'}`} 
+        collapsible="icon"
+        side={direction === 'rtl' ? 'right' : 'left'}
+      >
         <SidebarHeader>
           <DashboardSidebarHeader />
         </SidebarHeader>

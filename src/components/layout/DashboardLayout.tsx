@@ -4,12 +4,15 @@ import DashboardSidebar from "./DashboardSidebar";
 import DashboardHeader from "./DashboardHeader";
 import { Outlet } from "react-router-dom";
 import TenantProvider from "@/components/tenant/TenantProvider";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const DashboardLayout = () => {
+  const { direction } = useLanguage();
+  
   return (
     <TenantProvider>
       <SidebarProvider>
-        <div className="min-h-screen flex w-full bg-background">
+        <div className={`min-h-screen flex w-full bg-background ${direction === 'rtl' ? 'flex-row-reverse' : ''}`}>
           {/* Sidebar */}
           <DashboardSidebar />
           
