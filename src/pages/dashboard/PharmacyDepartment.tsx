@@ -1,8 +1,7 @@
 
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Pill, Package, ShoppingCart, FileText, Users, BarChart3, Shield } from "lucide-react";
-import PharmacyDashboard from "@/components/pharmacy/PharmacyDashboard";
+import { Pill, Package, ShoppingCart, FileText, Users, Shield } from "lucide-react";
 import PharmacyInventory from "@/components/pharmacy/PharmacyInventory";
 import PrescriptionManagement from "@/components/pharmacy/PrescriptionManagement";
 import PharmacyPOSSystem from "@/components/pharmacy/pos/PharmacyPOSSystem";
@@ -13,7 +12,7 @@ import POSChoiceDialog from "@/components/pos/POSChoiceDialog";
 import { usePOSChoice } from "@/hooks/usePOSChoice";
 
 const PharmacyDepartment = () => {
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeTab, setActiveTab] = useState("inventory");
   const [showPOS, setShowPOS] = useState(false);
   
   const {
@@ -45,11 +44,7 @@ const PharmacyDepartment = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-7">
-          <TabsTrigger value="dashboard" className="flex items-center gap-2">
-            <BarChart3 className="h-4 w-4" />
-            Dashboard
-          </TabsTrigger>
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="inventory" className="flex items-center gap-2">
             <Package className="h-4 w-4" />
             Inventory
@@ -79,10 +74,6 @@ const PharmacyDepartment = () => {
             Reports
           </TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="dashboard" className="mt-6">
-          <PharmacyDashboard />
-        </TabsContent>
         
         <TabsContent value="inventory" className="mt-6">
           <PharmacyInventory />
