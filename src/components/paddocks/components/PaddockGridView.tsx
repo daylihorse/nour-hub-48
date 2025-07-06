@@ -1,154 +1,193 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Edit2, Trash2, Users, Calendar, Eye } from "lucide-react";
-import { GridSize } from "./PaddockViewSelector";
+import { Button } from "@/components/ui/button";
+import { MapPin, Users, Calendar, Settings, Edit, Trash2, Eye } from "lucide-react";
 import { Paddock } from "@/types/paddocks";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface PaddockGridViewProps {
   paddocks: Paddock[];
-  onViewDetails: (paddock: Paddock) => void;
-  onEditPaddock: (paddock: Paddock) => void;
-  onDeletePaddock: (paddock: Paddock) => void;
-  onAssignHorse?: (paddock: Paddock) => void;
-  gridSize?: GridSize;
-  getStatusColor: (status: string) => string;
-  getTypeColor: (type: string) => string;
+  onEdit: (id: string, data: Partial<Paddock>) => void;
+  onDelete: (id: string) => void;
 }
 
-const PaddockGridView = ({
-  paddocks,
-  onViewDetails,
-  onEditPaddock,
-  onDeletePaddock,
-  onAssignHorse,
-  gridSize = 3,
-  getStatusColor,
-  getTypeColor,
-}: PaddockGridViewProps) => {
-  const getGridColumns = () => {
-    switch (gridSize) {
-      case 2:
-        return "grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2";
-      case 3:
-        return "grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
-      case 4:
-        return "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
-      default:
-        return "grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+const PaddockGridView = ({ paddocks, onEdit, onDelete }: PaddockGridViewProps) => {
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "available": return "bg-green-100 text-green-800";
+      case "occupied": return "bg-blue-100 text-blue-800";
+      case "maintenance": return "bg-yellow-100 text-yellow-800";
+      case "reserved": return "bg-purple-100 text-purple-800";
+      default: return "bg-gray-100 text-gray-800";
     }
   };
 
+  const getTypeIcon = (type: string) => {
+    switch (type) {
+      case "grazing": return "🌱";
+      case "exercise": return "🏃";
+      case "turnout": return "🔄";
+      case "breeding": return "💝";
+      case "quarantine": return "🏥";
+      case "rehabilitation": return "🔧";
+      default: return "📍";
+    }
+  };
+
+  const getOccupancyPercentage = (paddock: Paddock) => {
+    return paddock.capacity > 0 ? (paddock.currentOccupancy / paddock.capacity) * 100 : 0;
+  };
+
   return (
-    <div className={`grid ${getGridColumns()} gap-6`}>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {paddocks.map((paddock) => (
         <Card key={paddock.id} className="hover:shadow-lg transition-shadow">
           <CardHeader className="pb-3">
             <div className="flex items-start justify-between">
               <div>
-                <CardTitle className="text-lg">{paddock.name}</CardTitle>
-                <p className="text-sm text-muted-foreground">{paddock.number}</p>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span>{getTypeIcon(paddock.type)}</span>
+                  {paddock.name}
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">#{paddock.number}</p>
               </div>
-              <div className="flex items-center gap-1">
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => onViewDetails(paddock)}
-                  title="View Details"
-                >
-                  <Eye className="h-4 w-4" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => onEditPaddock(paddock)}
-                  title="Edit Paddock"
-                >
-                  <Edit2 className="h-4 w-4" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => onDeletePaddock(paddock)}
-                  title="Delete Paddock"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+              <div className="flex items-center gap-2">
+                <Badge className={getStatusColor(paddock.status)}>
+                  {paddock.status}
+                </Badge>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm">
+                      <Settings className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem>
+                      <Eye className="h-4 w-4 mr-2" />
+                      View Details
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      className="text-destructive"
+                      onClick={() => onDelete(paddock.id)}
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Status and Type */}
-            <div className="flex gap-2">
-              <Badge className={getStatusColor(paddock.status)}>
-                {paddock.status}
-              </Badge>
-              <Badge variant="outline" className={getTypeColor(paddock.type)}>
-                {paddock.type}
-              </Badge>
+          
+          <CardContent className="space-y-3">
+            {/* Location */}
+            <div className="flex items-center gap-2 text-sm">
+              <MapPin className="h-4 w-4 text-muted-foreground" />
+              <span>{paddock.location.section}</span>
             </div>
 
-            {/* Basic Info */}
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-muted-foreground" />
-                <span>{paddock.location.section}</span>
+            {/* Size */}
+            <div className="text-sm">
+              <span className="text-muted-foreground">Size: </span>
+              <span>{paddock.size.length} x {paddock.size.width} {paddock.size.unit}</span>
+            </div>
+
+            {/* Capacity */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                  <span>Occupancy</span>
+                </div>
+                <span>{paddock.currentOccupancy}/{paddock.capacity}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-muted-foreground" />
-                <span>{paddock.currentOccupancy}/{paddock.capacity} horses</span>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <span>Size: {paddock.size.length}×{paddock.size.width} {paddock.size.unit}</span>
+              
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className={`h-2 rounded-full transition-all ${
+                    getOccupancyPercentage(paddock) >= 90 ? 'bg-red-500' :
+                    getOccupancyPercentage(paddock) >= 70 ? 'bg-yellow-500' :
+                    'bg-green-500'
+                  }`}
+                  style={{ width: `${getOccupancyPercentage(paddock)}%` }}
+                />
               </div>
             </div>
 
             {/* Assigned Horses */}
             {paddock.assignedHorses && paddock.assignedHorses.length > 0 && (
-              <div>
-                <p className="text-sm font-medium mb-1">Assigned Horses:</p>
-                <div className="space-y-1">
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Assigned Horses:</p>
+                <div className="flex flex-wrap gap-1">
                   {paddock.assignedHorses.slice(0, 3).map((horse) => (
-                    <div key={horse.horseId} className="text-xs text-muted-foreground">
+                    <Badge key={horse.horseId} variant="outline" className="text-xs">
                       {horse.horseName}
-                    </div>
+                    </Badge>
                   ))}
                   {paddock.assignedHorses.length > 3 && (
-                    <div className="text-xs text-muted-foreground">
+                    <Badge variant="outline" className="text-xs">
                       +{paddock.assignedHorses.length - 3} more
-                    </div>
+                    </Badge>
                   )}
                 </div>
               </div>
             )}
 
-            {/* Next Rotation */}
-            {paddock.rotationSchedule?.nextRotation && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Calendar className="h-4 w-4" />
-                <span>Next rotation: {paddock.rotationSchedule.nextRotation.toLocaleDateString()}</span>
+            {/* Features */}
+            {paddock.features && paddock.features.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Features:</p>
+                <div className="flex flex-wrap gap-1">
+                  {paddock.features.slice(0, 2).map((feature) => (
+                    <Badge key={feature} variant="secondary" className="text-xs">
+                      {feature}
+                    </Badge>
+                  ))}
+                  {paddock.features.length > 2 && (
+                    <Badge variant="secondary" className="text-xs">
+                      +{paddock.features.length - 2}
+                    </Badge>
+                  )}
+                </div>
               </div>
             )}
 
-            {/* Actions */}
+            {/* Maintenance Status */}
+            {paddock.maintenanceHistory?.nextScheduledMaintenance && (
+              <div className="flex items-center gap-2 text-sm text-yellow-600">
+                <Calendar className="h-4 w-4" />
+                <span>
+                  Maintenance: {new Date(paddock.maintenanceHistory.nextScheduledMaintenance).toLocaleDateString()}
+                </span>
+              </div>
+            )}
+
+            {/* Action Buttons */}
             <div className="flex gap-2 pt-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="flex-1"
-                onClick={() => onViewDetails(paddock)}
-              >
-                View Details
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="flex-1"
-                onClick={() => onAssignHorse?.(paddock)}
-              >
-                Assign Horses
-              </Button>
+              {paddock.status === "available" && (
+                <Button size="sm" className="flex-1">
+                  Assign Horses
+                </Button>
+              )}
+              {paddock.status === "occupied" && (
+                <Button variant="outline" size="sm" className="flex-1">
+                  Manage Assignment
+                </Button>
+              )}
+              {paddock.status === "maintenance" && (
+                <Button variant="outline" size="sm" className="flex-1">
+                  View Maintenance
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
