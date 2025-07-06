@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import PaddockDashboard from "@/components/paddocks/PaddockDashboard";
 import PaddockManagement from "@/components/paddocks/PaddockManagement";
 import PaddockMaintenanceScheduler from "@/components/paddocks/PaddockMaintenanceScheduler";
 import PaddockRotationPlanner from "@/components/paddocks/PaddockRotationPlanner";
-import { BarChart3, MapPin, Calendar, Settings } from "lucide-react";
+import { MapPin, Calendar, Settings } from "lucide-react";
 
 const Paddocks = () => {
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeTab, setActiveTab] = useState("paddocks");
 
   return (
     <div className="space-y-6">
@@ -17,11 +16,7 @@ const Paddocks = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="dashboard" className="flex items-center gap-2">
-            <BarChart3 className="h-4 w-4" />
-            Dashboard
-          </TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="paddocks" className="flex items-center gap-2">
             <MapPin className="h-4 w-4" />
             Paddocks
@@ -35,10 +30,6 @@ const Paddocks = () => {
             Maintenance
           </TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="dashboard" className="mt-6">
-          <PaddockDashboard />
-        </TabsContent>
         
         <TabsContent value="paddocks" className="mt-6">
           <PaddockManagement />
