@@ -9,20 +9,29 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import EnhancedAddEmployee from "@/components/hr/EnhancedAddEmployee";
+import AddEmployee from "@/components/hr/AddEmployee";
+import { useEmployees } from "@/hooks/useEmployees";
 import EnhancedEmployeeRecords from "@/components/hr/EnhancedEmployeeRecords";
 import WorkSchedules from "@/components/hr/WorkSchedules";
 import Payroll from "@/components/hr/Payroll";
 import PerformanceReviews from "@/components/hr/PerformanceReviews";
 import TrainingRecords from "@/components/hr/TrainingRecords";
-import { useEmployees } from "@/hooks/useEmployees";
-import { mapDatabaseEmployeesToEmployees } from "@/utils/employeeMapper";
+import { mapDatabaseEmployeesToEmployees, mapEmployeeToDatabaseEmployee } from "@/utils/employeeMapper";
 
 const HRDepartment = () => {
-  const { employees: dbEmployees } = useEmployees();
+  const { employees: dbEmployees, addEmployee } = useEmployees();
   
   // Convert database employees to component employee type
   const employees = mapDatabaseEmployeesToEmployees(dbEmployees);
+
+  const handleAddEmployee = async (employee: any) => {
+    try {
+      const dbEmployee = mapEmployeeToDatabaseEmployee(employee);
+      await addEmployee(dbEmployee);
+    } catch (error) {
+      console.error('Error adding employee:', error);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -46,7 +55,7 @@ const HRDepartment = () => {
         </TabsContent>
 
         <TabsContent value="add">
-          <EnhancedAddEmployee />
+          <AddEmployee onSubmit={handleAddEmployee} />
         </TabsContent>
 
         <TabsContent value="schedules">

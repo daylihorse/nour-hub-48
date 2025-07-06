@@ -1,38 +1,61 @@
-import { useState } from "react";
-import { FormDescription, FormLabel } from "@/components/ui/form";
+import { Control } from "react-hook-form";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
+
 interface DepartmentsSectionProps {
+  control: Control<any>;
   selectedDepartments: string[];
-  setSelectedDepartments: (deps: string[]) => void;
+  setSelectedDepartments: (departments: string[]) => void;
 }
-const departments = ["Horses", "Laboratory", "Clinic", "Finance", "HR", "Inventory", "Training", "Maintenance"];
-export const DepartmentsSection = ({
-  selectedDepartments,
-  setSelectedDepartments
+
+const departments = [
+  "Human Resources",
+  "Finance",
+  "Operations",
+  "Training",
+  "Veterinary",
+  "Stable Management",
+  "Breeding",
+  "Administration",
+  "Security",
+  "Maintenance"
+];
+
+export const DepartmentsSection = ({ 
+  control, 
+  selectedDepartments, 
+  setSelectedDepartments 
 }: DepartmentsSectionProps) => {
-  const toggleDepartment = (department: string) => {
-    setSelectedDepartments(selectedDepartments.includes(department) ? selectedDepartments.filter(d => d !== department) : [...selectedDepartments, department]);
+  const handleDepartmentChange = (department: string, checked: boolean) => {
+    if (checked) {
+      setSelectedDepartments([...selectedDepartments, department]);
+    } else {
+      setSelectedDepartments(selectedDepartments.filter(d => d !== department));
+    }
   };
-  return <div>
-      <FormLabel className="block mb-2">Departments</FormLabel>
-      <div className="space-y-2">
-        <div className="grid grid-cols-2 gap-2">
-          {departments.map(dept => <div key={dept} className="flex items-center space-x-2">
-              <Checkbox id={`dept-${dept}`} checked={selectedDepartments.includes(dept)} onCheckedChange={() => toggleDepartment(dept)} />
-              <label htmlFor={`dept-${dept}`} className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                {dept}
-              </label>
-            </div>)}
-        </div>
-        <div className="flex flex-wrap gap-1 mt-2">
-          {selectedDepartments.length > 0 ? selectedDepartments.map(dept => <Badge key={dept} variant="secondary" className="flex items-center gap-1">
-                {dept}
-                <button type="button" onClick={() => toggleDepartment(dept)} className="ml-1 h-4 w-4 rounded-full bg-muted/20 inline-flex items-center justify-center text-muted-foreground hover:bg-muted">
-                  ×
-                </button>
-              </Badge>) : <FormDescription>No Departments Selected</FormDescription>}
-        </div>
+
+  return (
+    <div className="space-y-4">
+      <FormLabel>Departments</FormLabel>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {departments.map((department) => (
+          <div key={department} className="flex items-center space-x-2">
+            <Checkbox
+              id={department}
+              checked={selectedDepartments.includes(department)}
+              onCheckedChange={(checked) => 
+                handleDepartmentChange(department, checked as boolean)
+              }
+            />
+            <label
+              htmlFor={department}
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              {department}
+            </label>
+          </div>
+        ))}
       </div>
-    </div>;
+    </div>
+  );
 };

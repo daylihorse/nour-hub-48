@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
@@ -15,6 +14,7 @@ import { PersonalInfoSection } from "./form-sections/PersonalInfoSection";
 import { PhoneSection } from "./form-sections/PhoneSection";
 import { DepartmentsSection } from "./form-sections/DepartmentsSection";
 import { EmploymentDetailsSection } from "./form-sections/EmploymentDetailsSection";
+import { AddressSection } from "./form-sections/AddressSection";
 
 interface AddEmployeeProps {
   onSubmit: (employee: Employee) => void;
@@ -164,15 +164,11 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
             </div>
           </div>
           
-          {/* Position & Employment Details */}
+          {/* Address Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium">Employment Details</h3>
+            <h3 className="text-lg font-medium">Address Information</h3>
             <div className="bg-muted/20 p-4 rounded-md">
-              <EmploymentDetailsSection 
-                control={form.control} 
-                date={date} 
-                setDate={setDate}
-              />
+              <AddressSection control={form.control} />
             </div>
           </div>
           
@@ -181,15 +177,29 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
             <h3 className="text-lg font-medium">Department Assignment</h3>
             <div className="bg-muted/20 p-4 rounded-md">
               <DepartmentsSection 
-                selectedDepartments={selectedDepartments} 
+                control={form.control}
+                selectedDepartments={selectedDepartments}
                 setSelectedDepartments={setSelectedDepartments}
               />
             </div>
           </div>
+          
+          {/* Employment Details */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Employment Details</h3>
+            <div className="bg-muted/20 p-4 rounded-md">
+              <EmploymentDetailsSection 
+                control={form.control} 
+                date={date} 
+                setDate={setDate} 
+              />
+            </div>
+          </div>
         </div>
-
-        <Button type="submit" className="w-full md:w-auto">
-          <UserPlus className="mr-2 h-4 w-4" /> Add Employee
+        
+        <Button type="submit" className="w-full">
+          <UserPlus className="mr-2 h-4 w-4" />
+          Add Employee
         </Button>
       </form>
     </Form>

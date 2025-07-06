@@ -1,94 +1,111 @@
+import { Control } from "react-hook-form";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { UserRound } from "lucide-react";
-import { Control } from "react-hook-form";
+
 interface PersonalInfoSectionProps {
   control: Control<any>;
 }
-export const PersonalInfoSection = ({
-  control
-}: PersonalInfoSectionProps) => {
-  return <>
-      <div className="grid grid-cols-2 gap-4">
-        <FormField control={control} name="firstName" render={({
-        field
-      }) => <FormItem className="rounded-xl">
-              <FormLabel>First Name (English)</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter first name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>} />
-        
-        <FormField control={control} name="firstNameArabic" render={({
-        field
-      }) => <FormItem>
-              <FormLabel>First Name (Arabic)</FormLabel>
-              <FormControl>
-                <Input placeholder="أدخل الاسم الأول" dir="rtl" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>} />
-      </div>
-      
-      <div className="grid grid-cols-2 gap-4">
-        <FormField control={control} name="lastName" render={({
-        field
-      }) => <FormItem className="rounded-md bg-slate-50 px-0 mx-0 my-[13px]">
-              <FormLabel>Last Name (English)</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter last name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>} />
-        
-        <FormField control={control} name="lastNameArabic" render={({
-        field
-      }) => <FormItem className="my-[13px]">
-              <FormLabel>Last Name (Arabic)</FormLabel>
-              <FormControl>
-                <Input placeholder="أدخل اسم العائلة" dir="rtl" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>} />
-      </div>
-      
-      <div className="grid grid-cols-2 gap-4">
-        <FormField control={control} name="nickname" render={({
-        field
-      }) => <FormItem className="my-[13px]">
-              <FormLabel>Nickname (English)</FormLabel>
-              <FormControl>
-                <div className="flex items-center">
-                  <UserRound className="mr-2 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="Enter nickname (optional)" {...field} />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>} />
-        
-        <FormField control={control} name="nicknameArabic" render={({
-        field
-      }) => <FormItem className="my-[13px]">
-              <FormLabel>Nickname (Arabic)</FormLabel>
-              <FormControl>
-                <div className="flex items-center">
-                  <UserRound className="mr-2 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="أدخل اللقب (اختياري)" dir="rtl" {...field} />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>} />
-      </div>
-      
-      <FormField control={control} name="email" render={({
-      field
-    }) => <FormItem>
-            <FormLabel>Email</FormLabel>
+
+export const PersonalInfoSection = ({ control }: PersonalInfoSectionProps) => {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <FormField
+        control={control}
+        name="firstName"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>First Name</FormLabel>
             <FormControl>
-              <Input placeholder="email@example.com" type="email" {...field} />
+              <Input placeholder="Enter first name" {...field} />
             </FormControl>
             <FormMessage />
-          </FormItem>} />
-    </>;
+          </FormItem>
+        )}
+      />
+      
+      <FormField
+        control={control}
+        name="firstNameArabic"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>First Name (Arabic)</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter first name in Arabic" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      
+      <FormField
+        control={control}
+        name="lastName"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Last Name</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter last name" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      
+      <FormField
+        control={control}
+        name="lastNameArabic"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Last Name (Arabic)</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter last name in Arabic" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      
+      <FormField
+        control={control}
+        name="nickname"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Nickname</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter nickname" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      
+      <FormField
+        control={control}
+        name="nicknameArabic"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Nickname (Arabic)</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter nickname in Arabic" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      
+      <FormField
+        control={control}
+        name="email"
+        render={({ field }) => (
+          <FormItem className="md:col-span-2">
+            <FormLabel>Email</FormLabel>
+            <FormControl>
+              <Input type="email" placeholder="Enter email address" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
+  );
 };
