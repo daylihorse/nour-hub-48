@@ -121,4 +121,15 @@ export default {
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
+	future: {
+		hoverOnlyWhenSupported: true,
+	},
+	corePlugins: {
+		// Enable RTL support
+		textAlign: true,
+		float: true,
+		clear: true,
+		skew: true,
+		caretColor: true,
+	},
 } satisfies Config;

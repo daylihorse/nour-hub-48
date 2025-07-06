@@ -42,7 +42,7 @@ export const DepartmentsSection = ({
       <FormLabel>{t('hr.departments')}</FormLabel>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {departments.map((department) => (
-          <div key={department} className="flex items-center space-x-2">
+          <div key={department} className="flex items-center space-x-2 rtl:space-x-reverse rtl:flex-row-reverse">
             <Checkbox
               id={department}
               checked={selectedDepartments.includes(department)}
@@ -52,7 +52,7 @@ export const DepartmentsSection = ({
             />
             <label
               htmlFor={department}
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 rtl:text-right"
             >
               {department}
             </label>

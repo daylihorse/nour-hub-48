@@ -42,10 +42,10 @@ export const PhoneSection = ({ control }: PhoneSectionProps) => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <FormLabel>{t('hr.phone_numbers')}</FormLabel>
+      <div className="flex items-center justify-between rtl:flex-row-reverse">
+        <FormLabel className="text-start">{t('hr.phone_numbers')}</FormLabel>
         <Button type="button" variant="outline" size="sm" onClick={addPhone}>
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
           {t('hr.add_phone')}
         </Button>
       </div>
@@ -57,10 +57,10 @@ export const PhoneSection = ({ control }: PhoneSectionProps) => {
             name={`phones.${index}.countryCode`}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('hr.country_code')}</FormLabel>
+                <FormLabel className="text-start">{t('hr.country_code')}</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="rtl:text-right">
                       <SelectValue placeholder={t('hr.code')} />
                     </SelectTrigger>
                   </FormControl>
@@ -82,9 +82,9 @@ export const PhoneSection = ({ control }: PhoneSectionProps) => {
             name={`phones.${index}.number`}
             render={({ field }) => (
               <FormItem className="md:col-span-2">
-                <FormLabel>{t('hr.phone_number')}</FormLabel>
+                <FormLabel className="text-start">{t('hr.phone_number')}</FormLabel>
                 <FormControl>
-                  <Input placeholder={t('hr.phone_number_placeholder')} {...field} />
+                  <Input placeholder={t('hr.phone_number_placeholder')} {...field} className="rtl:text-right" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -92,13 +92,13 @@ export const PhoneSection = ({ control }: PhoneSectionProps) => {
           />
           
           <div className="space-y-2">
-            <FormLabel>{t('hr.apps')}</FormLabel>
+            <FormLabel className="text-start">{t('hr.apps')}</FormLabel>
             <div className="flex flex-col space-y-2">
               <FormField
                 control={control}
                 name={`phones.${index}.hasWhatsapp`}
                 render={({ field }) => (
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 rtl:space-x-reverse rtl:flex-row-reverse">
                     <Checkbox
                       id={`whatsapp-${index}`}
                       checked={field.value}
@@ -106,7 +106,7 @@ export const PhoneSection = ({ control }: PhoneSectionProps) => {
                     />
                     <label
                       htmlFor={`whatsapp-${index}`}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 rtl:text-right"
                     >
                       {t('hr.whatsapp')}
                     </label>
@@ -118,7 +118,7 @@ export const PhoneSection = ({ control }: PhoneSectionProps) => {
                 control={control}
                 name={`phones.${index}.hasTelegram`}
                 render={({ field }) => (
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 rtl:space-x-reverse rtl:flex-row-reverse">
                     <Checkbox
                       id={`telegram-${index}`}
                       checked={field.value}
@@ -126,7 +126,7 @@ export const PhoneSection = ({ control }: PhoneSectionProps) => {
                     />
                     <label
                       htmlFor={`telegram-${index}`}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 rtl:text-right"
                     >
                       {t('hr.telegram')}
                     </label>
@@ -136,7 +136,7 @@ export const PhoneSection = ({ control }: PhoneSectionProps) => {
             </div>
           </div>
           
-          <div className="flex items-end">
+          <div className="flex items-end rtl:justify-start">
             <Button
               type="button"
               variant="outline"

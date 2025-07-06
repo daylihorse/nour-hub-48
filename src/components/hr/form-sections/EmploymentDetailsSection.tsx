@@ -60,8 +60,8 @@ export const EmploymentDetailsSection = ({ control, date, setDate }: EmploymentD
                 <FormControl>
                   <Button
                     variant={"outline"}
-                    className={cn(
-                      "w-full pl-3 text-left font-normal",
+                     className={cn(
+                      "w-full pl-3 text-left font-normal rtl:pr-3 rtl:pl-0 rtl:text-right",
                       !field.value && "text-muted-foreground"
                     )}
                   >
@@ -70,7 +70,7 @@ export const EmploymentDetailsSection = ({ control, date, setDate }: EmploymentD
                     ) : (
                       <span>{t('hr.pick_date')}</span>
                     )}
-                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50 rtl:mr-auto rtl:ml-0" />
                   </Button>
                 </FormControl>
               </PopoverTrigger>

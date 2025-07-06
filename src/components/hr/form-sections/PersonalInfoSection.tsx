@@ -17,9 +17,9 @@ export const PersonalInfoSection = ({ control }: PersonalInfoSectionProps) => {
         name="firstName"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t('hr.first_name')}</FormLabel>
+            <FormLabel className="text-start">{t('hr.first_name')}</FormLabel>
             <FormControl>
-              <Input placeholder={t('hr.first_name')} {...field} />
+              <Input placeholder={t('hr.first_name')} {...field} className="rtl:text-right" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -31,9 +31,9 @@ export const PersonalInfoSection = ({ control }: PersonalInfoSectionProps) => {
         name="firstNameArabic"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t('hr.first_name_arabic')}</FormLabel>
+            <FormLabel className="text-start">{t('hr.first_name_arabic')}</FormLabel>
             <FormControl>
-              <Input placeholder={t('hr.first_name_arabic')} {...field} />
+              <Input placeholder={t('hr.first_name_arabic')} {...field} className="rtl:text-right" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -45,9 +45,9 @@ export const PersonalInfoSection = ({ control }: PersonalInfoSectionProps) => {
         name="lastName"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t('hr.last_name')}</FormLabel>
+            <FormLabel className="text-start">{t('hr.last_name')}</FormLabel>
             <FormControl>
-              <Input placeholder={t('hr.last_name')} {...field} />
+              <Input placeholder={t('hr.last_name')} {...field} className="rtl:text-right" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -59,9 +59,37 @@ export const PersonalInfoSection = ({ control }: PersonalInfoSectionProps) => {
         name="lastNameArabic"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t('hr.last_name_arabic')}</FormLabel>
+            <FormLabel className="text-start">{t('hr.last_name_arabic')}</FormLabel>
             <FormControl>
-              <Input placeholder={t('hr.last_name_arabic')} {...field} />
+              <Input placeholder={t('hr.last_name_arabic')} {...field} className="rtl:text-right" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      
+      <FormField
+        control={control}
+        name="nickname"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className="text-start">{t('hr.nickname')}</FormLabel>
+            <FormControl>
+              <Input placeholder={t('hr.nickname')} {...field} className="rtl:text-right" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      
+      <FormField
+        control={control}
+        name="nicknameArabic"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className="text-start">{t('hr.nickname_arabic')}</FormLabel>
+            <FormControl>
+              <Input placeholder={t('hr.nickname_arabic')} {...field} className="rtl:text-right" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -73,9 +101,9 @@ export const PersonalInfoSection = ({ control }: PersonalInfoSectionProps) => {
         name="email"
         render={({ field }) => (
           <FormItem className="md:col-span-2">
-            <FormLabel>{t('hr.email')}</FormLabel>
+            <FormLabel className="text-start">{t('hr.email')}</FormLabel>
             <FormControl>
-              <Input type="email" placeholder={t('hr.email')} {...field} />
+              <Input type="email" placeholder={t('hr.email')} {...field} className="rtl:text-right" />
             </FormControl>
             <FormMessage />
           </FormItem>

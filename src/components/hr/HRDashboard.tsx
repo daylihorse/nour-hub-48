@@ -16,12 +16,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Employee } from "@/types/employee";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface HRDashboardProps {
   employees: Employee[];
 }
 
 const HRDashboard = ({ employees }: HRDashboardProps) => {
+  const { direction } = useLanguage();
   // Calculate metrics based on employees data
   const metrics = useMemo(() => {
     const total = employees.length;
