@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import HorsesDashboard from "@/components/horses/HorsesDashboard";
 import HorseManagement from "@/components/horses/HorseManagement";
 import BreedingManagement from "@/components/horses/breeding/BreedingManagement";
 import PedigreeManagement from "@/components/horses/pedigree/PedigreeManagement";
@@ -10,7 +9,7 @@ import PedigreeManagement from "@/components/horses/pedigree/PedigreeManagement"
 const HorsesDepartment = () => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeTab, setActiveTab] = useState("horses");
   const [breedingSubTab, setBreedingSubTab] = useState("dashboard");
 
   // Extract clientId from URL parameters
@@ -34,20 +33,6 @@ const HorsesDepartment = () => {
     }
   }, [location.state, clientId]);
 
-  const handleNavigateToBreeding = (tab: string) => {
-    setActiveTab("breeding");
-    // Map quick access IDs to breeding management tabs
-    const tabMapping: { [key: string]: string } = {
-      records: "breeding",
-      certificates: "breeding", // Note: Certificates are part of the documents tab
-      pedigree: "dashboard", // Using dashboard as it has pedigree overview
-      analytics: "analytics",
-      documents: "documents",
-      planning: "planning"
-    };
-    setBreedingSubTab(tabMapping[tab] || "dashboard");
-  };
-
   return (
     <div className="space-y-6">
       <div>
@@ -56,13 +41,7 @@ const HorsesDepartment = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4 bg-slate-900 border border-slate-700 p-1.5 h-12">
-          <TabsTrigger 
-            value="dashboard" 
-            className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
-          >
-            Dashboard
-          </TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3 bg-slate-900 border border-slate-700 p-1.5 h-12">
           <TabsTrigger 
             value="horses" 
             className="text-white data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-lg font-semibold transition-all duration-200"
@@ -82,10 +61,6 @@ const HorsesDepartment = () => {
             Pedigree
           </TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="dashboard" className="mt-6">
-          <HorsesDashboard onNavigateToBreeding={handleNavigateToBreeding} />
-        </TabsContent>
         
         <TabsContent value="horses" className="mt-6">
           <HorseManagement clientId={clientId} />
