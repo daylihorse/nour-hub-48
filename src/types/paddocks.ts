@@ -134,6 +134,12 @@ export interface PaddockMaintenanceRecord {
 
 export interface PaddockRotationPlan extends RotationPlan {
   rotationInterval: number; // days between rotations
+  automaticRotation?: boolean;
+  notifications?: {
+    enabled: boolean;
+    daysBeforeRotation: number;
+    recipients: string[];
+  };
 }
 
 export interface PaddockEnvironmentalData {

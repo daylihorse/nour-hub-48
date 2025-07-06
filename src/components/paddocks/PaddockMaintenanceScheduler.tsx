@@ -142,14 +142,13 @@ const PaddockMaintenanceScheduler = () => {
     
     const maintenanceTask: Omit<PaddockMaintenanceRecord, "id" | "createdAt"> = {
       paddockId: selectedPaddock,
-      type: maintenanceType as any,
+      maintenanceType: maintenanceType as any,
       description,
-      scheduledDate: scheduledDate,
-      status: "scheduled",
-      assignedTo,
+      performedDate: scheduledDate,
+      performedBy: assignedTo || "Unknown",
       cost: estimatedCost ? parseFloat(estimatedCost) : undefined,
       notes,
-      nextMaintenanceDate,
+      tenantId: "current-tenant"
     };
     
     scheduleMaintenanceTask(maintenanceTask);
@@ -171,10 +170,10 @@ const PaddockMaintenanceScheduler = () => {
   };
   
   const handleCompleteMaintenance = (recordId: string) => {
-    completeMaintenanceTask(recordId);
+    completeMaintenanceTask(recordId, { completedBy: "Current User" });
     
     toast({
-      title: "Success",
+      title: "Success", 
       description: "Maintenance task marked as completed",
     });
   };

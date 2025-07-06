@@ -154,10 +154,12 @@ const PaddockRotationPlanner = () => {
 
     const rotationPlan: Omit<PaddockRotationPlan, "id" | "createdAt" | "updatedAt"> = {
       name: planName,
+      description: notes,
+      duration: rotationInterval, // days per rotation
       paddockIds: selectedPaddocks,
       horseGroups: horseGroups.map((group, index) => ({
-        groupId: group.id,
-        groupName: group.name,
+        id: group.id,
+        name: group.name,
         horseIds: group.horseIds,
         currentPaddockId: group.currentPaddockId,
         rotationOrder: index,
@@ -166,6 +168,7 @@ const PaddockRotationPlanner = () => {
       restPeriod,
       startDate: date || new Date(),
       status: "active",
+      tenantId: "current-tenant",
       automaticRotation,
       notifications: {
         enabled: true,
@@ -400,7 +403,7 @@ const PaddockRotationPlanner = () => {
             </p>
           ) : (
             <div className="space-y-4">
-              {rotationPlans.map((plan) => (
+              {rotationPlans.map((plan: PaddockRotationPlan) => (
                 <Card key={plan.id} className="overflow-hidden">
                   <div className="bg-muted p-4">
                     <div className="flex items-center justify-between">
