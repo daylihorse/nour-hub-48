@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import HRDashboard from "@/components/hr/HRDashboard";
 import EnhancedAddEmployee from "@/components/hr/EnhancedAddEmployee";
 import EnhancedEmployeeRecords from "@/components/hr/EnhancedEmployeeRecords";
 import WorkSchedules from "@/components/hr/WorkSchedules";
@@ -32,9 +31,8 @@ const HRDepartment = () => {
         <p className="text-muted-foreground">Manage employees, schedules, and payroll</p>
       </div>
       
-      <Tabs defaultValue="dashboard">
-        <TabsList className="grid w-full md:w-auto grid-cols-4 md:grid-cols-7">
-          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+      <Tabs defaultValue="employees">
+        <TabsList className="grid w-full md:w-auto grid-cols-4 md:grid-cols-6">
           <TabsTrigger value="employees">Employees</TabsTrigger>
           <TabsTrigger value="add">Add Employee</TabsTrigger>
           <TabsTrigger value="schedules">Schedules</TabsTrigger>
@@ -42,18 +40,6 @@ const HRDepartment = () => {
           <TabsTrigger value="performance">Performance</TabsTrigger>
           <TabsTrigger value="training">Training</TabsTrigger>
         </TabsList>
-
-        <TabsContent value="dashboard">
-          <Card>
-            <CardHeader>
-              <CardTitle>HR Dashboard</CardTitle>
-              <CardDescription>Overview of HR metrics and activities</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <HRDashboard employees={employees} />
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         <TabsContent value="employees">
           <EnhancedEmployeeRecords />
