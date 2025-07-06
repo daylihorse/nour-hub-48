@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import enTranslations from '../translations/en.json';
+import arTranslations from '../translations/ar.json';
 
 export type Language = 'en' | 'ar';
 export type Direction = 'ltr' | 'rtl';
@@ -15,6 +17,12 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 interface LanguageProviderProps {
   children: React.ReactNode;
 }
+
+// Static translations object
+const translations = {
+  en: enTranslations,
+  ar: arTranslations,
+};
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
@@ -35,13 +43,8 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   };
 
   const t = (key: string, fallback?: string): string => {
-    // Import translations dynamically
-    try {
-      const translations = require(`../translations/${language}.json`);
-      return translations[key] || fallback || key;
-    } catch (error) {
-      return fallback || key;
-    }
+    const currentTranslations = translations[language];
+    return currentTranslations[key] || fallback || key;
   };
 
   useEffect(() => {
