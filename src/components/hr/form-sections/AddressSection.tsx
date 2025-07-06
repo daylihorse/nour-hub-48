@@ -1,12 +1,15 @@
 import { Control } from "react-hook-form";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface AddressSectionProps {
   control: Control<any>;
 }
 
 export const AddressSection = ({ control }: AddressSectionProps) => {
+  const { t } = useLanguage();
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <FormField
@@ -14,9 +17,9 @@ export const AddressSection = ({ control }: AddressSectionProps) => {
         name="address.street"
         render={({ field }) => (
           <FormItem className="md:col-span-2">
-            <FormLabel>Street Address</FormLabel>
+            <FormLabel>{t('hr.street_address')}</FormLabel>
             <FormControl>
-              <Input placeholder="Enter street address" {...field} />
+              <Input placeholder={t('hr.street_address_placeholder')} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -28,9 +31,9 @@ export const AddressSection = ({ control }: AddressSectionProps) => {
         name="address.city"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>City</FormLabel>
+            <FormLabel>{t('hr.city')}</FormLabel>
             <FormControl>
-              <Input placeholder="Enter city" {...field} />
+              <Input placeholder={t('hr.city_placeholder')} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -42,9 +45,9 @@ export const AddressSection = ({ control }: AddressSectionProps) => {
         name="address.state"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>State/Province</FormLabel>
+            <FormLabel>{t('hr.state')}</FormLabel>
             <FormControl>
-              <Input placeholder="Enter state or province" {...field} />
+              <Input placeholder={t('hr.state_placeholder')} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -56,9 +59,9 @@ export const AddressSection = ({ control }: AddressSectionProps) => {
         name="address.zipCode"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>ZIP/Postal Code</FormLabel>
+            <FormLabel>{t('hr.zip_code')}</FormLabel>
             <FormControl>
-              <Input placeholder="Enter ZIP or postal code" {...field} />
+              <Input placeholder={t('hr.zip_code_placeholder')} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -70,9 +73,9 @@ export const AddressSection = ({ control }: AddressSectionProps) => {
         name="address.country"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Country</FormLabel>
+            <FormLabel>{t('hr.country')}</FormLabel>
             <FormControl>
-              <Input placeholder="Enter country" {...field} />
+              <Input placeholder={t('hr.country_placeholder')} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

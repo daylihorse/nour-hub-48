@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface EmploymentDetailsSectionProps {
   control: Control<any>;
@@ -16,6 +17,8 @@ interface EmploymentDetailsSectionProps {
 }
 
 export const EmploymentDetailsSection = ({ control, date, setDate }: EmploymentDetailsSectionProps) => {
+  const { t } = useLanguage();
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <FormField
@@ -23,9 +26,9 @@ export const EmploymentDetailsSection = ({ control, date, setDate }: EmploymentD
         name="position"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Position</FormLabel>
+            <FormLabel>{t('hr.position')}</FormLabel>
             <FormControl>
-              <Input placeholder="Enter position/job title" {...field} />
+              <Input placeholder={t('hr.position_placeholder')} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -37,9 +40,9 @@ export const EmploymentDetailsSection = ({ control, date, setDate }: EmploymentD
         name="otherPosition"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Other Position</FormLabel>
+            <FormLabel>{t('hr.other_position')}</FormLabel>
             <FormControl>
-              <Input placeholder="Enter additional position if any" {...field} />
+              <Input placeholder={t('hr.other_position_placeholder')} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -51,7 +54,7 @@ export const EmploymentDetailsSection = ({ control, date, setDate }: EmploymentD
         name="hireDate"
         render={({ field }) => (
           <FormItem className="flex flex-col">
-            <FormLabel>Hire Date</FormLabel>
+            <FormLabel>{t('hr.hire_date')}</FormLabel>
             <Popover>
               <PopoverTrigger asChild>
                 <FormControl>
@@ -65,7 +68,7 @@ export const EmploymentDetailsSection = ({ control, date, setDate }: EmploymentD
                     {field.value ? (
                       format(field.value, "PPP")
                     ) : (
-                      <span>Pick a date</span>
+                      <span>{t('hr.pick_date')}</span>
                     )}
                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                   </Button>
@@ -93,17 +96,17 @@ export const EmploymentDetailsSection = ({ control, date, setDate }: EmploymentD
         name="status"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Status</FormLabel>
+            <FormLabel>{t('hr.status')}</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select employment status" />
+                  <SelectValue placeholder={t('hr.select_employment_status')} />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="inactive">Inactive</SelectItem>
-                <SelectItem value="on-leave">On Leave</SelectItem>
+                <SelectItem value="active">{t('hr.active')}</SelectItem>
+                <SelectItem value="inactive">{t('hr.inactive')}</SelectItem>
+                <SelectItem value="on-leave">{t('hr.on_leave')}</SelectItem>
               </SelectContent>
             </Select>
             <FormMessage />
@@ -116,11 +119,11 @@ export const EmploymentDetailsSection = ({ control, date, setDate }: EmploymentD
         name="salary"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Salary</FormLabel>
+            <FormLabel>{t('hr.salary')}</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
-                placeholder="Enter salary amount" 
+                placeholder={t('hr.salary_placeholder')} 
                 {...field}
                 onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : undefined)}
               />
@@ -135,11 +138,11 @@ export const EmploymentDetailsSection = ({ control, date, setDate }: EmploymentD
         name="currency"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Currency</FormLabel>
+            <FormLabel>{t('hr.currency')}</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value || "USD"}>
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select currency" />
+                  <SelectValue placeholder={t('hr.select_currency')} />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
@@ -160,16 +163,16 @@ export const EmploymentDetailsSection = ({ control, date, setDate }: EmploymentD
         name="salaryType"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Salary Type</FormLabel>
+            <FormLabel>{t('hr.salary_type')}</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value || "monthly"}>
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select salary type" />
+                  <SelectValue placeholder={t('hr.select_salary_type')} />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="daily">Daily</SelectItem>
-                <SelectItem value="monthly">Monthly</SelectItem>
+                <SelectItem value="daily">{t('hr.daily')}</SelectItem>
+                <SelectItem value="monthly">{t('hr.monthly')}</SelectItem>
               </SelectContent>
             </Select>
             <FormMessage />

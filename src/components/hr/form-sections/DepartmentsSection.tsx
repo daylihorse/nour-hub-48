@@ -1,6 +1,7 @@
 import { Control } from "react-hook-form";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface DepartmentsSectionProps {
   control: Control<any>;
@@ -26,6 +27,8 @@ export const DepartmentsSection = ({
   selectedDepartments, 
   setSelectedDepartments 
 }: DepartmentsSectionProps) => {
+  const { t } = useLanguage();
+  
   const handleDepartmentChange = (department: string, checked: boolean) => {
     if (checked) {
       setSelectedDepartments([...selectedDepartments, department]);
@@ -36,7 +39,7 @@ export const DepartmentsSection = ({
 
   return (
     <div className="space-y-4">
-      <FormLabel>Departments</FormLabel>
+      <FormLabel>{t('hr.departments')}</FormLabel>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {departments.map((department) => (
           <div key={department} className="flex items-center space-x-2">

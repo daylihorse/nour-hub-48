@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Trash2 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface PhoneSectionProps {
   control: Control<any>;
@@ -23,6 +24,7 @@ const countryCodes = [
 ];
 
 export const PhoneSection = ({ control }: PhoneSectionProps) => {
+  const { t } = useLanguage();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "phones",
@@ -41,10 +43,10 @@ export const PhoneSection = ({ control }: PhoneSectionProps) => {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <FormLabel>Phone Numbers</FormLabel>
+        <FormLabel>{t('hr.phone_numbers')}</FormLabel>
         <Button type="button" variant="outline" size="sm" onClick={addPhone}>
           <Plus className="h-4 w-4 mr-2" />
-          Add Phone
+          {t('hr.add_phone')}
         </Button>
       </div>
       
@@ -55,11 +57,11 @@ export const PhoneSection = ({ control }: PhoneSectionProps) => {
             name={`phones.${index}.countryCode`}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Country Code</FormLabel>
+                <FormLabel>{t('hr.country_code')}</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Code" />
+                      <SelectValue placeholder={t('hr.code')} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -80,9 +82,9 @@ export const PhoneSection = ({ control }: PhoneSectionProps) => {
             name={`phones.${index}.number`}
             render={({ field }) => (
               <FormItem className="md:col-span-2">
-                <FormLabel>Phone Number</FormLabel>
+                <FormLabel>{t('hr.phone_number')}</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter phone number" {...field} />
+                  <Input placeholder={t('hr.phone_number_placeholder')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -90,7 +92,7 @@ export const PhoneSection = ({ control }: PhoneSectionProps) => {
           />
           
           <div className="space-y-2">
-            <FormLabel>Apps</FormLabel>
+            <FormLabel>{t('hr.apps')}</FormLabel>
             <div className="flex flex-col space-y-2">
               <FormField
                 control={control}
@@ -106,7 +108,7 @@ export const PhoneSection = ({ control }: PhoneSectionProps) => {
                       htmlFor={`whatsapp-${index}`}
                       className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
-                      WhatsApp
+                      {t('hr.whatsapp')}
                     </label>
                   </div>
                 )}
@@ -126,7 +128,7 @@ export const PhoneSection = ({ control }: PhoneSectionProps) => {
                       htmlFor={`telegram-${index}`}
                       className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
-                      Telegram
+                      {t('hr.telegram')}
                     </label>
                   </div>
                 )}
@@ -150,7 +152,7 @@ export const PhoneSection = ({ control }: PhoneSectionProps) => {
       
       {fields.length === 0 && (
         <div className="text-center py-4 text-muted-foreground">
-          No phone numbers added. Click "Add Phone" to add one.
+          {t('hr.no_phones_message')}
         </div>
       )}
     </div>
