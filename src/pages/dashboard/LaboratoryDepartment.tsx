@@ -1,7 +1,6 @@
 
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import LaboratoryOverview from "@/components/laboratory/LaboratoryOverview";
 import SampleManagement from "@/components/laboratory/SampleManagement";
 import TestResults from "@/components/laboratory/TestResults";
 import EquipmentManagement from "@/components/laboratory/EquipmentManagement";
@@ -14,10 +13,10 @@ import StoreManagement from "@/components/store/StoreManagement";
 import POSChoiceDialog from "@/components/pos/POSChoiceDialog";
 import { usePOSChoice } from "@/hooks/usePOSChoice";
 import POSSystem from "@/components/pos/POSSystem";
-import { Store, FlaskRound, TestTube, Microscope, FileText, Settings, TrendingUp, Shield, File, ShoppingCart, Layers } from "lucide-react";
+import { Store, TestTube, Microscope, FileText, Settings, TrendingUp, Shield, File, ShoppingCart, Layers } from "lucide-react";
 
 const LaboratoryDepartment = () => {
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("samples");
   const [showPOS, setShowPOS] = useState(false);
   
   const {
@@ -48,11 +47,7 @@ const LaboratoryDepartment = () => {
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="overflow-x-auto">
-          <TabsList className="grid w-max grid-cols-11 min-w-full">
-            <TabsTrigger value="overview" className="flex items-center gap-2 whitespace-nowrap">
-              <FlaskRound className="h-4 w-4" />
-              Overview
-            </TabsTrigger>
+          <TabsList className="grid w-max grid-cols-10 min-w-full">
             <TabsTrigger value="samples" className="flex items-center gap-2 whitespace-nowrap">
               <TestTube className="h-4 w-4" />
               Samples & Tests
@@ -99,10 +94,6 @@ const LaboratoryDepartment = () => {
             </TabsTrigger>
           </TabsList>
         </div>
-        
-        <TabsContent value="overview" className="mt-6">
-          <LaboratoryOverview />
-        </TabsContent>
         
         <TabsContent value="samples" className="mt-6">
           <SampleManagement />
