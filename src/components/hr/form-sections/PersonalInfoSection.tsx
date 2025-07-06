@@ -1,12 +1,15 @@
 import { Control } from "react-hook-form";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface PersonalInfoSectionProps {
   control: Control<any>;
 }
 
 export const PersonalInfoSection = ({ control }: PersonalInfoSectionProps) => {
+  const { t } = useLanguage();
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <FormField
@@ -14,9 +17,9 @@ export const PersonalInfoSection = ({ control }: PersonalInfoSectionProps) => {
         name="firstName"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>First Name</FormLabel>
+            <FormLabel>{t('hr.first_name')}</FormLabel>
             <FormControl>
-              <Input placeholder="Enter first name" {...field} />
+              <Input placeholder={t('hr.first_name')} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -28,9 +31,9 @@ export const PersonalInfoSection = ({ control }: PersonalInfoSectionProps) => {
         name="firstNameArabic"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>First Name (Arabic)</FormLabel>
+            <FormLabel>{t('hr.first_name_arabic')}</FormLabel>
             <FormControl>
-              <Input placeholder="Enter first name in Arabic" {...field} />
+              <Input placeholder={t('hr.first_name_arabic')} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -42,9 +45,9 @@ export const PersonalInfoSection = ({ control }: PersonalInfoSectionProps) => {
         name="lastName"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Last Name</FormLabel>
+            <FormLabel>{t('hr.last_name')}</FormLabel>
             <FormControl>
-              <Input placeholder="Enter last name" {...field} />
+              <Input placeholder={t('hr.last_name')} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -56,37 +59,9 @@ export const PersonalInfoSection = ({ control }: PersonalInfoSectionProps) => {
         name="lastNameArabic"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Last Name (Arabic)</FormLabel>
+            <FormLabel>{t('hr.last_name_arabic')}</FormLabel>
             <FormControl>
-              <Input placeholder="Enter last name in Arabic" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      
-      <FormField
-        control={control}
-        name="nickname"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Nickname</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter nickname" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      
-      <FormField
-        control={control}
-        name="nicknameArabic"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Nickname (Arabic)</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter nickname in Arabic" {...field} />
+              <Input placeholder={t('hr.last_name_arabic')} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -98,9 +73,9 @@ export const PersonalInfoSection = ({ control }: PersonalInfoSectionProps) => {
         name="email"
         render={({ field }) => (
           <FormItem className="md:col-span-2">
-            <FormLabel>Email</FormLabel>
+            <FormLabel>{t('hr.email')}</FormLabel>
             <FormControl>
-              <Input type="email" placeholder="Enter email address" {...field} />
+              <Input type="email" placeholder={t('hr.email')} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

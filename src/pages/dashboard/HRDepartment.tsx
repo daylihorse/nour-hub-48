@@ -17,9 +17,12 @@ import Payroll from "@/components/hr/Payroll";
 import PerformanceReviews from "@/components/hr/PerformanceReviews";
 import TrainingRecords from "@/components/hr/TrainingRecords";
 import { mapDatabaseEmployeesToEmployees, mapEmployeeToDatabaseEmployee } from "@/utils/employeeMapper";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
 
 const HRDepartment = () => {
   const { employees: dbEmployees, addEmployee } = useEmployees();
+  const { t } = useLanguage();
   
   // Convert database employees to component employee type
   const employees = mapDatabaseEmployeesToEmployees(dbEmployees);
@@ -35,19 +38,22 @@ const HRDepartment = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">HR Department</h1>
-        <p className="text-muted-foreground">Manage employees, schedules, and payroll</p>
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold">{t('hr.department')}</h1>
+          <p className="text-muted-foreground">{t('hr.description')}</p>
+        </div>
+        <LanguageSwitcher />
       </div>
       
       <Tabs defaultValue="employees">
         <TabsList className="grid w-full md:w-auto grid-cols-4 md:grid-cols-6">
-          <TabsTrigger value="employees">Employees</TabsTrigger>
-          <TabsTrigger value="add">Add Employee</TabsTrigger>
-          <TabsTrigger value="schedules">Schedules</TabsTrigger>
-          <TabsTrigger value="payroll">Payroll</TabsTrigger>
-          <TabsTrigger value="performance">Performance</TabsTrigger>
-          <TabsTrigger value="training">Training</TabsTrigger>
+          <TabsTrigger value="employees">{t('hr.employees')}</TabsTrigger>
+          <TabsTrigger value="add">{t('hr.add_employee')}</TabsTrigger>
+          <TabsTrigger value="schedules">{t('hr.schedules')}</TabsTrigger>
+          <TabsTrigger value="payroll">{t('hr.payroll')}</TabsTrigger>
+          <TabsTrigger value="performance">{t('hr.performance')}</TabsTrigger>
+          <TabsTrigger value="training">{t('hr.training')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="employees">
@@ -61,8 +67,8 @@ const HRDepartment = () => {
         <TabsContent value="schedules">
           <Card>
             <CardHeader>
-              <CardTitle>Work Schedules</CardTitle>
-              <CardDescription>Manage employee work schedules</CardDescription>
+              <CardTitle>{t('hr.work_schedules')}</CardTitle>
+              <CardDescription>{t('hr.work_schedules_desc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <WorkSchedules employees={employees} />
@@ -73,8 +79,8 @@ const HRDepartment = () => {
         <TabsContent value="payroll">
           <Card>
             <CardHeader>
-              <CardTitle>Payroll Management</CardTitle>
-              <CardDescription>Track and manage employee payroll</CardDescription>
+              <CardTitle>{t('hr.payroll_management')}</CardTitle>
+              <CardDescription>{t('hr.payroll_desc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <Payroll employees={employees} />
@@ -85,8 +91,8 @@ const HRDepartment = () => {
         <TabsContent value="performance">
           <Card>
             <CardHeader>
-              <CardTitle>Performance Reviews</CardTitle>
-              <CardDescription>Track employee performance and reviews</CardDescription>
+              <CardTitle>{t('hr.performance_reviews')}</CardTitle>
+              <CardDescription>{t('hr.performance_desc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <PerformanceReviews employees={employees} />
@@ -97,8 +103,8 @@ const HRDepartment = () => {
         <TabsContent value="training">
           <Card>
             <CardHeader>
-              <CardTitle>Training Records</CardTitle>
-              <CardDescription>Manage employee training and certifications</CardDescription>
+              <CardTitle>{t('hr.training_records')}</CardTitle>
+              <CardDescription>{t('hr.training_desc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <TrainingRecords employees={employees} />

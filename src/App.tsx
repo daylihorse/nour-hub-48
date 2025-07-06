@@ -64,6 +64,9 @@ import PharmacyPOSPage from "./pages/pos/PharmacyPOSPage";
 // Medical Management import
 import MedicalDepartment from "./pages/dashboard/MedicalDepartment";
 
+// Language Provider import
+import { LanguageProvider } from "./contexts/LanguageContext";
+
 // Create a new QueryClient instance
 const queryClient = new QueryClient();
 
@@ -78,10 +81,11 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <AccessModeProvider>
-              <EnhancedAuthProvider>
-                <MareProvider>
-                  <StallionProvider>
+            <LanguageProvider>
+              <AccessModeProvider>
+                <EnhancedAuthProvider>
+                  <MareProvider>
+                    <StallionProvider>
                     <Routes>
                       {/* Public marketplace landing page */}
                       <Route path="/" element={<PublicMarketplace />} />
@@ -139,10 +143,11 @@ const App = () => {
                       
                       <Route path="*" element={<NotFound />} />
                     </Routes>
-                  </StallionProvider>
-                </MareProvider>
-              </EnhancedAuthProvider>
-            </AccessModeProvider>
+                    </StallionProvider>
+                  </MareProvider>
+                </EnhancedAuthProvider>
+              </AccessModeProvider>
+            </LanguageProvider>
           </BrowserRouter>
         </TooltipProvider>
       </QueryClientProvider>

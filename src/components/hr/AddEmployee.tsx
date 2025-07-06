@@ -15,6 +15,7 @@ import { PhoneSection } from "./form-sections/PhoneSection";
 import { DepartmentsSection } from "./form-sections/DepartmentsSection";
 import { EmploymentDetailsSection } from "./form-sections/EmploymentDetailsSection";
 import { AddressSection } from "./form-sections/AddressSection";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface AddEmployeeProps {
   onSubmit: (employee: Employee) => void;
@@ -68,6 +69,7 @@ type FormValues = z.infer<typeof formSchema>;
 const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
   const [date, setDate] = useState<Date>(new Date());
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
+  const { t } = useLanguage();
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -150,7 +152,7 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
         <div className="grid grid-cols-1 gap-6">
           {/* Personal Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium">Personal Information</h3>
+            <h3 className="text-lg font-medium">{t('hr.personal_information')}</h3>
             <div className="bg-muted/20 p-4 rounded-md">
               <PersonalInfoSection control={form.control} />
             </div>
@@ -158,7 +160,7 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
           
           {/* Phone Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium">Contact Information</h3>
+            <h3 className="text-lg font-medium">{t('hr.contact_information')}</h3>
             <div className="bg-muted/20 p-4 rounded-md">
               <PhoneSection control={form.control} />
             </div>
@@ -166,7 +168,7 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
           
           {/* Address Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium">Address Information</h3>
+            <h3 className="text-lg font-medium">{t('hr.address_information')}</h3>
             <div className="bg-muted/20 p-4 rounded-md">
               <AddressSection control={form.control} />
             </div>
@@ -174,7 +176,7 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
           
           {/* Departments */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium">Department Assignment</h3>
+            <h3 className="text-lg font-medium">{t('hr.departments')}</h3>
             <div className="bg-muted/20 p-4 rounded-md">
               <DepartmentsSection 
                 control={form.control}
@@ -186,7 +188,7 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
           
           {/* Employment Details */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium">Employment Details</h3>
+            <h3 className="text-lg font-medium">{t('hr.employment_details')}</h3>
             <div className="bg-muted/20 p-4 rounded-md">
               <EmploymentDetailsSection 
                 control={form.control} 
@@ -199,7 +201,7 @@ const AddEmployee = ({ onSubmit }: AddEmployeeProps) => {
         
         <Button type="submit" className="w-full">
           <UserPlus className="mr-2 h-4 w-4" />
-          Add Employee
+          {t('hr.add_employee')}
         </Button>
       </form>
     </Form>
