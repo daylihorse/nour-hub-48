@@ -27,10 +27,10 @@ const DashboardSidebar = () => {
       <Sidebar 
         className={cn(
           collapsed ? "w-16" : "w-64",
-          "border-r border-l-0"
+          "border-l border-r-0"
         )}
         collapsible="icon"
-        side="left"
+        side="right"
       >
         <SidebarHeader>
           <DashboardSidebarHeader />
