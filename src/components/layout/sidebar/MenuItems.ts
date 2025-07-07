@@ -24,97 +24,116 @@ export interface MenuItem {
   title: string;
   url: string;
   icon: LucideIcon;
+  key: string;
 }
 
 export const menuItems: MenuItem[] = [
   { 
     title: "Overview", 
     url: "/dashboard", 
-    icon: BarChart3 
+    icon: BarChart3,
+    key: "dashboard"
   },
   { 
     title: "Horses Department", 
     url: "/dashboard/horses", 
-    icon: Rabbit 
+    icon: Rabbit,
+    key: "horses"
   },
   { 
     title: "Paddock Management", 
     url: "/dashboard/paddocks", 
-    icon: MapPin 
+    icon: MapPin,
+    key: "paddocks"
   },
   { 
     title: "Clients", 
     url: "/dashboard/clients", 
-    icon: UserCheck 
+    icon: UserCheck,
+    key: "clients"
   },
   { 
     title: "Laboratory", 
     url: "/dashboard/laboratory", 
-    icon: FlaskRound 
+    icon: FlaskRound,
+    key: "laboratory"
   },
   { 
     title: "Clinic", 
     url: "/dashboard/clinic", 
-    icon: Hospital 
+    icon: Hospital,
+    key: "clinic"
   },
   { 
     title: "Pharmacy", 
     url: "/dashboard/pharmacy", 
-    icon: Pill 
+    icon: Pill,
+    key: "pharmacy"
   },
   { 
     title: "Finance", 
     url: "/dashboard/finance", 
-    icon: DollarSign 
+    icon: DollarSign,
+    key: "finance"
   },
   { 
     title: "HR Department", 
     url: "/dashboard/hr", 
-    icon: Users 
+    icon: Users,
+    key: "hr"
   },
   { 
     title: "Inventory & Warehouse", 
     url: "/dashboard/inventory", 
-    icon: Package 
+    icon: Package,
+    key: "inventory"
   },
   { 
     title: "Marketplace", 
     url: "/dashboard/marketplace", 
-    icon: Store 
+    icon: Store,
+    key: "marketplace"
   },
   { 
     title: "Horse Movements", 
     url: "/dashboard/movements", 
-    icon: ArrowRightLeft 
+    icon: ArrowRightLeft,
+    key: "movements"
   },
   { 
     title: "Training Center", 
     url: "/dashboard/training", 
-    icon: Dumbbell 
+    icon: Dumbbell,
+    key: "training"
   },
   { 
     title: "Riding Reservations", 
     url: "/dashboard/academy", 
-    icon: Rabbit 
+    icon: Rabbit,
+    key: "academy"
   },
   { 
     title: "Stable Rooms", 
     url: "/dashboard/rooms", 
-    icon: Warehouse 
+    icon: Warehouse,
+    key: "stable_rooms"
   },
   { 
     title: "Maintenance", 
     url: "/dashboard/maintenance", 
-    icon: Wrench 
+    icon: Wrench,
+    key: "maintenance"
   },
   { 
     title: "Messages", 
     url: "/dashboard/messages", 
-    icon: MessageSquare 
+    icon: MessageSquare,
+    key: "messages"
   },
   {
     title: "Settings",
     url: "/dashboard/settings",
-    icon: Settings
+    icon: Settings,
+    key: "tenant_settings"
   }
 ];

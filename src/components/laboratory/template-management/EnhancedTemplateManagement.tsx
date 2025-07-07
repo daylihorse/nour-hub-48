@@ -132,28 +132,58 @@ const EnhancedTemplateManagement = () => {
       {/* Templates Library */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className={cn(
+            "flex items-center gap-2",
+            direction === 'rtl' && "flex-row-reverse text-right"
+          )}>
             <FileText className="h-5 w-5" />
-            Templates Library
+            {t('laboratory.templates.library', 'Templates Library')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="result-templates" className="flex items-center gap-2">
+              <TabsTrigger 
+                value="result-templates" 
+                className={cn(
+                  "flex items-center gap-2",
+                  direction === 'rtl' && "flex-row-reverse"
+                )}
+              >
                 {getTabIcon("result-templates")}
-                Result Templates
-                <Badge variant="secondary" className="ml-1 text-xs">18</Badge>
+                {t('laboratory.templates.result', 'Result Templates')}
+                <Badge variant="secondary" className={cn(
+                  "text-xs",
+                  direction === 'rtl' ? "mr-1" : "ml-1"
+                )}>18</Badge>
               </TabsTrigger>
-              <TabsTrigger value="service-templates" className="flex items-center gap-2">
+              <TabsTrigger 
+                value="service-templates" 
+                className={cn(
+                  "flex items-center gap-2",
+                  direction === 'rtl' && "flex-row-reverse"
+                )}
+              >
                 {getTabIcon("service-templates")}
-                Service Templates
-                <Badge variant="secondary" className="ml-1 text-xs">6</Badge>
+                {t('laboratory.templates.service', 'Service Templates')}
+                <Badge variant="secondary" className={cn(
+                  "text-xs",
+                  direction === 'rtl' ? "mr-1" : "ml-1"
+                )}>6</Badge>
               </TabsTrigger>
-              <TabsTrigger value="qc-templates" className="flex items-center gap-2">
+              <TabsTrigger 
+                value="qc-templates" 
+                className={cn(
+                  "flex items-center gap-2",
+                  direction === 'rtl' && "flex-row-reverse"
+                )}
+              >
                 {getTabIcon("qc-templates")}
-                QC Templates
-                <Badge variant="secondary" className="ml-1 text-xs">4</Badge>
+                {t('laboratory.templates.qc', 'QC Templates')}
+                <Badge variant="secondary" className={cn(
+                  "text-xs",
+                  direction === 'rtl' ? "mr-1" : "ml-1"
+                )}>4</Badge>
               </TabsTrigger>
             </TabsList>
 
