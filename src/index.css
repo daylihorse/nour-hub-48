@@ -183,18 +183,43 @@
     flex-direction: row-reverse;
   }
   
-  /* Icon positioning in RTL */
-  [dir="rtl"] .lucide {
+  /* Icon positioning in RTL - only flip directional icons */
+  [dir="rtl"] .lucide-arrow-left,
+  [dir="rtl"] .lucide-arrow-right,
+  [dir="rtl"] .lucide-chevron-left,
+  [dir="rtl"] .lucide-chevron-right,
+  [dir="rtl"] .lucide-move-left,
+  [dir="rtl"] .lucide-move-right {
     transform: scaleX(-1);
   }
   
-  /* Preserve certain icons that shouldn't flip */
-  [dir="rtl"] .lucide-calendar,
-  [dir="rtl"] .lucide-clock,
-  [dir="rtl"] .lucide-phone,
-  [dir="rtl"] .lucide-mail,
-  [dir="rtl"] .lucide-user,
-  [dir="rtl"] .lucide-users {
-    transform: none;
+  /* Menu and sidebar RTL support */
+  [dir="rtl"] .sidebar-menu {
+    text-align: right;
+  }
+  
+  [dir="rtl"] .dropdown-menu {
+    text-align: right;
+  }
+  
+  /* Card content RTL alignment */
+  [dir="rtl"] .card-content {
+    text-align: right;
+  }
+  
+  /* Better form control alignment */
+  [dir="rtl"] input[type="text"],
+  [dir="rtl"] input[type="email"],
+  [dir="rtl"] input[type="password"],
+  [dir="rtl"] input[type="number"],
+  [dir="rtl"] textarea,
+  [dir="rtl"] select {
+    text-align: right;
+    direction: rtl;
+  }
+  
+  /* Button icon spacing in RTL */
+  [dir="rtl"] .button-with-icon {
+    flex-direction: row-reverse;
   }
 }

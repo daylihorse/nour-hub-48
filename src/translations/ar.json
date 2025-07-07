@@ -73,5 +73,18 @@
   "hr.no_phones_message": "لم يتم إضافة أرقام هاتف. انقر على \"إضافة هاتف\" لإضافة رقم.",
   "common.language": "اللغة",
   "common.english": "English",
-  "common.arabic": "العربية"
+  "common.arabic": "العربية",
+  "laboratory.filters.title": "البحث والفلترة المتقدمة",
+  "laboratory.filters.templatesFound": "قالب موجود",
+  "laboratory.filters.clearAll": "مسح الكل",
+  "laboratory.filters.searchPlaceholder": "البحث في القوالب...",
+  "laboratory.templates.result": "قوالب النتائج",
+  "laboratory.templates.service": "قوالب الخدمات",
+  "laboratory.templates.qc": "قوالب مراقبة الجودة",
+  "laboratory.templates.library": "مكتبة القوالب",
+  "laboratory.templates.newResult": "قالب نتائج جديد",
+  "laboratory.templates.newService": "قالب خدمة جديد", 
+  "laboratory.templates.newQC": "قالب مراقبة جودة جديد",
+  "laboratory.management.title": "إدارة قوالب المختبر",
+  "laboratory.management.description": "إنشاء وإدارة قوالب النتائج والخدمات ومراقبة الجودة"
 }

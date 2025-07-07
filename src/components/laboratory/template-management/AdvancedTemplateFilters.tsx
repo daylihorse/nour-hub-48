@@ -10,6 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface AdvancedTemplateFiltersProps {
   searchTerm: string;
@@ -46,24 +48,34 @@ const AdvancedTemplateFilters = ({
   onStatusChange,
   onClearFilters
 }: AdvancedTemplateFiltersProps) => {
+  const { direction, t } = useLanguage();
   const hasActiveFilters = searchTerm || categoryFilter || sampleTypeFilter || methodologyFilter || statusFilter;
 
   return (
-    <Card>
+    <Card dir={direction}>
       <CardHeader>
-        <CardTitle className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
+        <CardTitle className={cn(
+          "flex justify-between items-center",
+          direction === 'rtl' && "flex-row-reverse"
+        )}>
+          <div className={cn(
+            "flex items-center gap-2",
+            direction === 'rtl' && "flex-row-reverse"
+          )}>
             <Filter className="h-5 w-5" />
-            Advanced Search & Filters
+            {t('laboratory.filters.title', 'Advanced Search & Filters')}
           </div>
-          <div className="flex items-center gap-2">
+          <div className={cn(
+            "flex items-center gap-2",
+            direction === 'rtl' && "flex-row-reverse"
+          )}>
             <Badge variant="secondary" className="text-xs">
-              {totalResults} templates found
+              {totalResults} {t('laboratory.filters.templatesFound', 'templates found')}
             </Badge>
             {hasActiveFilters && (
-              <Button variant="outline" size="sm" onClick={onClearFilters}>
+              <Button variant="outline" size="sm" onClick={onClearFilters} className="button-with-icon">
                 <X className="h-4 w-4 mr-2" />
-                Clear All
+                {t('laboratory.filters.clearAll', 'Clear All')}
               </Button>
             )}
           </div>
@@ -73,12 +85,18 @@ const AdvancedTemplateFilters = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {/* Search Input */}
           <div className="relative">
-            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+            <Search className={cn(
+              "h-4 w-4 absolute top-1/2 transform -translate-y-1/2 text-muted-foreground",
+              direction === 'rtl' ? "right-3" : "left-3"
+            )} />
             <Input
-              placeholder="Search templates..."
+              placeholder={t('laboratory.filters.searchPlaceholder', 'Search templates...')}
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="pl-10"
+              className={cn(
+                direction === 'rtl' ? "pr-10" : "pl-10"
+              )}
+              dir={direction}
             />
           </div>
 

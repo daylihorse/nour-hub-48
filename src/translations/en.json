@@ -73,5 +73,18 @@
   "hr.no_phones_message": "No phone numbers added. Click \"Add Phone\" to add one.",
   "common.language": "Language",
   "common.english": "English",
-  "common.arabic": "العربية"
+  "common.arabic": "العربية",
+  "laboratory.filters.title": "Advanced Search & Filters",
+  "laboratory.filters.templatesFound": "templates found",
+  "laboratory.filters.clearAll": "Clear All",
+  "laboratory.filters.searchPlaceholder": "Search templates...",
+  "laboratory.templates.result": "Result Templates",
+  "laboratory.templates.service": "Service Templates", 
+  "laboratory.templates.qc": "QC Templates",
+  "laboratory.templates.library": "Templates Library",
+  "laboratory.templates.newResult": "New Result Template",
+  "laboratory.templates.newService": "New Service Template",
+  "laboratory.templates.newQC": "New QC Template",
+  "laboratory.management.title": "Laboratory Template Management",
+  "laboratory.management.description": "Create and manage result, service, and QC templates"
 }
