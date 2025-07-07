@@ -18,7 +18,6 @@ import PerformanceReviews from "@/components/hr/PerformanceReviews";
 import TrainingRecords from "@/components/hr/TrainingRecords";
 import { mapDatabaseEmployeesToEmployees, mapEmployeeToDatabaseEmployee } from "@/utils/employeeMapper";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
 
 const HRDepartment = () => {
   const { employees: dbEmployees, addEmployee } = useEmployees();
@@ -38,12 +37,9 @@ const HRDepartment = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-start">
-        <div>
-          <h1 className="text-3xl font-bold">{t('hr.department')}</h1>
-          <p className="text-muted-foreground">{t('hr.description')}</p>
-        </div>
-        <LanguageSwitcher />
+      <div>
+        <h1 className="text-3xl font-bold">{t('hr.department')}</h1>
+        <p className="text-muted-foreground">{t('hr.description')}</p>
       </div>
       
       <Tabs defaultValue="employees">

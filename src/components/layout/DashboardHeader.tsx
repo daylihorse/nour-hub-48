@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { LogOut, User, Settings, Shield, Bell, HelpCircle, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SidebarAccountSwitcher from "@/components/auth/SidebarAccountSwitcher";
+import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
 
 const DashboardHeader = () => {
   const { logout, user, currentTenant } = useAuth();
@@ -58,6 +59,9 @@ const DashboardHeader = () => {
 
         {/* Right side - Enhanced User menu */}
         <div className="flex items-center gap-4">
+          {/* Language Switcher */}
+          <LanguageSwitcher />
+          
           {/* Notifications */}
           <Button variant="ghost" size="sm" className="relative hover:bg-brown-100 hover:text-brown-800 transition-all duration-200">
             <Bell className="h-4 w-4" />
