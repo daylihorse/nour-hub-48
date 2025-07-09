@@ -1,4 +1,6 @@
+
 import { Button } from "@/components/ui/button";
+import { Edit, Trash2, Copy, Eye, MoreHorizontal } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,7 +8,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Eye, Edit, Copy, Trash2 } from "lucide-react";
 
 interface Template {
   id: string;
@@ -28,41 +29,40 @@ interface ResultTemplateActionsProps {
   onDelete: (template: Template) => void;
 }
 
-const ResultTemplateActions = ({
-  template,
-  onView,
-  onEdit,
-  onDuplicate,
-  onDelete
+const ResultTemplateActions = ({ 
+  template, 
+  onView, 
+  onEdit, 
+  onDuplicate, 
+  onDelete 
 }: ResultTemplateActionsProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Open menu</span>
+        <Button variant="ghost" size="sm">
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => onView(template)} className="cursor-pointer">
-          <Eye className="mr-2 h-4 w-4" />
-          View Template
+        <DropdownMenuItem onClick={() => onView(template)}>
+          <Eye className="h-4 w-4 mr-2" />
+          View
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onEdit(template)} className="cursor-pointer">
-          <Edit className="mr-2 h-4 w-4" />
-          Edit Template
+        <DropdownMenuItem onClick={() => onEdit(template)}>
+          <Edit className="h-4 w-4 mr-2" />
+          Edit
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onDuplicate(template)} className="cursor-pointer">
-          <Copy className="mr-2 h-4 w-4" />
-          Duplicate Template
+        <DropdownMenuItem onClick={() => onDuplicate(template)}>
+          <Copy className="h-4 w-4 mr-2" />
+          Duplicate
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem 
-          onClick={() => onDelete(template)} 
-          className="cursor-pointer text-destructive focus:text-destructive"
+          className="text-destructive"
+          onClick={() => onDelete(template)}
         >
-          <Trash2 className="mr-2 h-4 w-4" />
-          Delete Template
+          <Trash2 className="h-4 w-4 mr-2" />
+          Delete
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

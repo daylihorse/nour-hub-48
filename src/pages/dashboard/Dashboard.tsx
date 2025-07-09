@@ -9,13 +9,10 @@ import ModuleTabs from "@/components/common/ModuleTabs";
 import { createDashboardModuleTabs } from "@/components/dashboard/DashboardModuleTabs";
 import { useTenantFeatures } from "@/hooks/useTenantFeatures";
 import { useDashboardAlerts } from "@/hooks/useDashboardAlerts";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { cn } from "@/lib/utils";
 
 const Dashboard = () => {
   const { getEnabledFeatures, getAvailableFeatures } = useTenantFeatures();
   const { totalAlerts } = useDashboardAlerts();
-  const { direction } = useLanguage();
   const [activeTab, setActiveTab] = useState("all");
 
   const enabledFeatures = getEnabledFeatures();
@@ -26,10 +23,7 @@ const Dashboard = () => {
   const moduleTabs = createDashboardModuleTabs();
 
   return (
-    <div className={cn(
-      "space-y-8",
-      direction === 'rtl' && "text-right"
-    )}>
+    <div className="space-y-8">
       {/* Hero Section */}
       <DashboardHero />
 

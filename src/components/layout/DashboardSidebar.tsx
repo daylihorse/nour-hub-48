@@ -15,7 +15,6 @@ import SidebarMenu from "./sidebar/SidebarMenu";
 import SidebarFooter from "./sidebar/SidebarFooter";
 import DashboardSidebarHeader from "./sidebar/DashboardSidebarHeader";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { cn } from "@/lib/utils";
 
 const DashboardSidebar = () => {
   const { state } = useSidebar();
@@ -25,12 +24,9 @@ const DashboardSidebar = () => {
   return (
     <TooltipProvider>
       <Sidebar 
-        className={cn(
-          collapsed ? "w-16" : "w-64",
-          "border-l border-r-0"
-        )}
+        className={`${collapsed ? "w-16" : "w-64"} ${direction === 'rtl' ? 'border-l border-r-0' : 'border-r border-l-0'}`} 
         collapsible="icon"
-        side="right"
+        side={direction === 'rtl' ? 'right' : 'left'}
       >
         <SidebarHeader>
           <DashboardSidebarHeader />

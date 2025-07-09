@@ -11,26 +11,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import HorseMovementForm from "@/components/movements/HorseMovementForm";
 import HorseMovementsTable from "@/components/movements/HorseMovementsTable";
 import HorseMovementStats from "@/components/movements/HorseMovementStats";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { cn } from "@/lib/utils";
 
 const HorseMovements = () => {
-  const { direction, t } = useLanguage();
-  const [movements, setMovements] = useState<any[]>([]);
+  const [movements, setMovements] = useState<Movement[]>([]);
 
-  const addMovement = (movement: any) => {
+  const addMovement = (movement: Movement) => {
     setMovements((prev) => [movement, ...prev]);
   };
 
   return (
-    <div className={cn("space-y-6", direction === 'rtl' && "text-right")}>
+    <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">
-          {t('movements.title', 'Arrivals & Departures')}
-        </h1>
-        <p className="text-muted-foreground">
-          {t('movements.description', 'Manage horse movements and transportation')}
-        </p>
+        <h1 className="text-3xl font-bold">Arrivals & Departures</h1>
+        <p className="text-muted-foreground">Manage horse movements and transportation</p>
       </div>
       
       <HorseMovementStats movements={movements} />

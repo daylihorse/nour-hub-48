@@ -11,8 +11,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { MenuItem } from "./MenuItems";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { cn } from "@/lib/utils";
 
 interface SidebarMenuButtonProps {
   item: MenuItem;
@@ -23,7 +21,6 @@ const SidebarMenuButton = ({ item }: SidebarMenuButtonProps) => {
   const location = useLocation();
   const currentPath = location.pathname;
   const collapsed = state === "collapsed";
-  const { direction, t } = useLanguage();
 
   const isActive = (path: string) => {
     if (path === "/dashboard") {
@@ -48,22 +45,16 @@ const SidebarMenuButton = ({ item }: SidebarMenuButtonProps) => {
     >
       <NavLink
         to={item.url}
-        className={cn(
-          "flex items-center gap-3 w-full",
-          direction === 'rtl' && "flex-row-reverse"
-        )}
+        className="flex items-center gap-3 w-full"
       >
-        <item.icon className={cn(
-          "transition-all duration-200 flex-shrink-0",
-          collapsed ? 'h-6 w-6' : 'h-5 w-5',
-          isItemActive ? 'scale-110' : 'group-hover:scale-105'
-        )} />
+        <item.icon className={`
+          transition-all duration-200 flex-shrink-0
+          ${collapsed ? 'h-6 w-6' : 'h-5 w-5'}
+          ${isItemActive ? 'scale-110' : 'group-hover:scale-105'}
+        `} />
         {!collapsed && (
-          <span className={cn(
-            "truncate text-sm font-medium",
-            direction === 'rtl' ? "text-right" : "text-left"
-          )}>
-            {t(`navigation.${item.key}`, item.title)}
+          <span className="truncate text-sm font-medium">
+            {item.title}
           </span>
         )}
       </NavLink>
@@ -78,11 +69,11 @@ const SidebarMenuButton = ({ item }: SidebarMenuButtonProps) => {
             {menuButton}
           </TooltipTrigger>
           <TooltipContent 
-            side={direction === 'rtl' ? 'left' : 'right'}
+            side="right" 
             className="font-medium bg-popover text-popover-foreground border shadow-md"
             sideOffset={8}
           >
-            {t(`navigation.${item.key}`, item.title)}
+            {item.title}
           </TooltipContent>
         </Tooltip>
       ) : (
